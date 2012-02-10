@@ -902,8 +902,6 @@ static int i2c_sunxi_probe(struct platform_device *dev)
 	struct resource *res = NULL;
 #if defined CONFIG_ARCH_SUN4I
 	struct sun4i_i2c_platform_data *pdata = NULL;
-#elif defined CONFIG_ARCH_SUN5I
-    struct sun5i_i2c_platform_data *pdata = NULL;
 #endif
 	char *i2c_clk[] ={"twi0","twi1","twi2"};
 	char *i2c_pclk[] ={"apb_twi0","apb_twi1","apb_twi2"};
@@ -932,8 +930,6 @@ static int i2c_sunxi_probe(struct platform_device *dev)
 	}
 #if defined CONFIG_ARCH_SUN4I
 	strlcpy(i2c->adap.name, "sun4i-i2c", sizeof(i2c->adap.name));
-#elif defined CONFIG_ARCH_SUN5I
-    strlcpy(i2c->adap.name, "sun5i-i2c", sizeof(i2c->adap.name));
 #endif
 	i2c->adap.owner   = THIS_MODULE;
 	i2c->adap.nr      = pdata->bus_num;
@@ -965,8 +961,6 @@ static int i2c_sunxi_probe(struct platform_device *dev)
 
 #if defined CONFIG_ARCH_SUN4I
 	snprintf(i2c->adap.name, sizeof(i2c->adap.name), "sun4i-i2c.%u", i2c->adap.nr);
-#elif defined CONFIG_ARCH_SUN5I
-    snprintf(i2c->adap.name, sizeof(i2c->adap.name), "sun5i-i2c.%u", i2c->adap.nr);
 #endif
 
 	i2c->base_addr = ioremap(res->start, resource_size(res));
@@ -1074,19 +1068,23 @@ static int __exit i2c_sunxi_remove(struct platform_device *dev)
 static int i2c_sunxi_suspend(struct platform_device *pdev,  pm_message_t state)
 {
 	struct sunxi_i2c *i2c = platform_get_drvdata(pdev);
+	int i = 10;
 
 	i2c->suspend_flag = 1;
 
-	if(i2c->status != I2C_XFER_IDLE) {
-		i2c_dbg("[i2c-%d] suspend wihle xfer,dev addr = %x\n",
-			i2c->adap.nr, i2c->msg? i2c->msg->addr : 0xff);
-	}
-
+	/*
+	 * twi0 is for power, it will be accessed by axp driver
+	 * before twi resume, so, don't suspend twi0
+	 */
 	if(0 == i2c->bus_num) {
-		/* twi0 is for power, it will be accessed by axp driver
-		   before twi resume, so, don't suspend twi0            */
 		i2c->suspend_flag = 0;
 		return 0;
+	}
+
+	while((i2c->status != I2C_XFER_IDLE) && (i-- > 0)) {
+		i2c_dbg("[i2c-%d] suspend wihle xfer,dev addr = 0x%x\n",
+			i2c->adap.nr, i2c->msg? i2c->msg->addr : 0xff);
+		msleep(100);
 	}
 
 	if(i2c_sunxi_clk_exit(i2c)) {
@@ -1142,8 +1140,6 @@ static struct platform_driver i2c_sunxi_driver = {
 	.driver		= {
 #if defined CONFIG_ARCH_SUN4I
 		.name	= "sun4i-i2c",
-#elif defined CONFIG_ARCH_SUN5I
-        .name	= "sun5i-i2c",
 #endif
 		.owner	= THIS_MODULE,
 	},
