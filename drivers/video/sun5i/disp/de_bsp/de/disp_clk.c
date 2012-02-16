@@ -150,8 +150,8 @@ __s32 image_clk_init(__u32 sel)
 			OSAL_CCMU_SetMclkDiv(h_debe0mclk, 2);
 		}
 		OSAL_CCMU_MclkOnOff(h_debe0ahbclk, CLK_ON);
-		OSAL_CCMU_MclkOnOff(h_debe0dramclk, CLK_ON);
-		OSAL_CCMU_MclkOnOff(h_debe0dramclk, CLK_OFF);
+		//OSAL_CCMU_MclkOnOff(h_debe0dramclk, CLK_ON);
+		//OSAL_CCMU_MclkOnOff(h_debe0dramclk, CLK_OFF);
 		OSAL_CCMU_MclkOnOff(h_debe0mclk, CLK_ON);
 
 		g_clk_status |= (CLK_DEBE0_AHB_ON | CLK_DEBE0_MOD_ON);
@@ -178,8 +178,8 @@ __s32 image_clk_init(__u32 sel)
 		}
 
 		OSAL_CCMU_MclkOnOff(h_debe1ahbclk, CLK_ON);
-		OSAL_CCMU_MclkOnOff(h_debe1dramclk, CLK_ON);
-		OSAL_CCMU_MclkOnOff(h_debe1dramclk, CLK_OFF);
+		//OSAL_CCMU_MclkOnOff(h_debe1dramclk, CLK_ON);
+		//OSAL_CCMU_MclkOnOff(h_debe1dramclk, CLK_OFF);
 		OSAL_CCMU_MclkOnOff(h_debe1mclk, CLK_ON);
 
 		g_clk_status |= (CLK_DEBE1_AHB_ON | CLK_DEBE1_MOD_ON);
@@ -383,9 +383,8 @@ __s32 lcdc_clk_init(__u32 sel)
 		h_lcd0ch1mclk1 = OSAL_CCMU_OpenMclk(AW_MOD_CLK_LCD0CH1_S1);
 		h_lcd0ch1mclk2 = OSAL_CCMU_OpenMclk(AW_MOD_CLK_LCD0CH1_S2);
 
-		OSAL_CCMU_SetMclkSrc(h_lcd0ch0mclk0, AW_SYS_CLK_PLL7);	//Default to Video Pll0
-		OSAL_CCMU_SetMclkSrc(h_lcd0ch1mclk1, AW_SYS_CLK_PLL7);	//Default to Video Pll0
-		//OSAL_CCMU_SetMclkSrc(h_lcd0ch1mclk2, AW_SYS_CLK_PLL7);	//Default to Video Pll0
+		OSAL_CCMU_SetMclkSrc(h_lcd0ch0mclk0, AW_SYS_CLK_PLL3);	//Default to Video Pll0
+		OSAL_CCMU_SetMclkSrc(h_lcd0ch1mclk1, AW_SYS_CLK_PLL3);	//Default to Video Pll0
 		OSAL_CCMU_SetMclkDiv(h_lcd0ch1mclk2, 10);
 		OSAL_CCMU_SetMclkDiv(h_lcd0ch1mclk1, 10);
 #ifdef RESET_OSAL
@@ -408,9 +407,8 @@ __s32 lcdc_clk_init(__u32 sel)
 		h_lcd1ch1mclk1 = OSAL_CCMU_OpenMclk(AW_MOD_CLK_LCD1CH1_S1);
 		h_lcd1ch1mclk2 = OSAL_CCMU_OpenMclk(AW_MOD_CLK_LCD1CH1_S2);
 
-		OSAL_CCMU_SetMclkSrc(h_lcd1ch0mclk0, AW_SYS_CLK_PLL7);	//Default to Video Pll0
-		OSAL_CCMU_SetMclkSrc(h_lcd1ch1mclk1, AW_SYS_CLK_PLL7);	//Default to Video Pll0
-		//OSAL_CCMU_SetMclkSrc(h_lcd1ch1mclk2, AW_SYS_CLK_PLL7);	//Default to Video Pll0
+		OSAL_CCMU_SetMclkSrc(h_lcd1ch0mclk0, AW_SYS_CLK_PLL3);	//Default to Video Pll0
+		OSAL_CCMU_SetMclkSrc(h_lcd1ch1mclk1, AW_SYS_CLK_PLL3);	//Default to Video Pll0
 		OSAL_CCMU_SetMclkDiv(h_lcd1ch1mclk2, 10);
 		OSAL_CCMU_SetMclkDiv(h_lcd1ch1mclk1, 10);
 #ifdef RESET_OSAL
@@ -569,11 +567,15 @@ __s32 hdmi_clk_init(void)
 #ifdef RESET_OSAL
 	OSAL_CCMU_MclkReset(h_hdmimclk, RST_INVAILD);
 #endif
-	OSAL_CCMU_SetMclkSrc(h_hdmimclk, AW_SYS_CLK_PLL7);
+	OSAL_CCMU_SetMclkSrc(h_hdmimclk, AW_SYS_CLK_PLL3);
 	OSAL_CCMU_SetMclkDiv(h_hdmimclk, 1);
 
 	OSAL_CCMU_MclkOnOff(h_hdmiahbclk, CLK_ON);
+
+	OSAL_CCMU_MclkOnOff(h_hdmimclk, CLK_ON);
+
 	g_clk_status |= CLK_HDMI_AHB_ON;
+	g_clk_status |= CLK_HDMI_MOD_ON;
 
 	return DIS_SUCCESS;
 }
@@ -587,27 +589,20 @@ __s32 hdmi_clk_exit(void)
 	OSAL_CCMU_MclkOnOff(h_hdmiahbclk, CLK_OFF);
 	OSAL_CCMU_CloseMclk(h_hdmiahbclk);
 	OSAL_CCMU_CloseMclk(h_hdmimclk);
+	OSAL_CCMU_MclkOnOff(h_hdmimclk, CLK_OFF);
 
-	g_clk_status &= (CLK_HDMI_AHB_OFF & CLK_HDMI_MOD_OFF);
+	g_clk_status &= (CLK_HDMI_AHB_OFF & CLK_HDMI_MOD_OFF & CLK_HDMI_MOD_OFF);
 
 	return DIS_SUCCESS;
 }
 
 __s32 hdmi_clk_on(void)
 {
-	OSAL_CCMU_MclkOnOff(h_hdmimclk, CLK_ON);
-
-	g_clk_status |= CLK_HDMI_MOD_ON;
-
 	return DIS_SUCCESS;
 }
 
 __s32 hdmi_clk_off(void)
 {
-	OSAL_CCMU_MclkOnOff(h_hdmimclk, CLK_OFF);
-
-	g_clk_status &= CLK_HDMI_MOD_OFF;
-
 	return DIS_SUCCESS;
 }
 
@@ -728,53 +723,19 @@ static __s32 LCD_PLL_Calc(__u32 sel, __panel_para_t * info, __u32 *divider)
 *                            fail               <-1>
 *
 * Note               : ASSIGNMENT RULES
-*                            RULE1. video pll1(1x) work between [250,300]MHz, when no lcdc using video pll1 and required freq is in [250,300]MHz, choose video pll1;
-*                            RULE2. when video pll1 used by another lcdc, but running frequency is equal to required frequency, choose video pll1;
-*                            RULE3. when video pll1 used by another lcdc, and running frequency isNOT equal to required frequency, choose video pll0;
-*                           	CONDICTION CAN'T BE HANDLE
-*                            1.two lvds panel are both require a pll freq outside [250,300], and pll freq are different, the second panel will fail to assign.
+*                            assign video pll 0
 *
 *********************************************************************************************************
 */
 static __s32 disp_pll_assign(__u32 sel, __u32 pll_clk)
 {
-	__u32 another_lcdc, another_pll_use_status;
 	__s32 ret = -1;
 
-	another_lcdc = (sel == 0)? 1:0;
-	another_pll_use_status = gdisp.screen[another_lcdc].pll_use_status;
-
-	if(pll_clk >= 250000000 && pll_clk <= 300000000)
+    if(pll_clk <= (381000000 * 2))
 	{
-		if((!(another_pll_use_status & VIDEO_PLL1_USED)) || (OSAL_CCMU_GetSrcFreq(AW_SYS_CLK_PLL7) == pll_clk))
-		{
-			ret = 1;
-		}
-		else if((!(another_pll_use_status & VIDEO_PLL0_USED)) || (OSAL_CCMU_GetSrcFreq(AW_SYS_CLK_PLL3) == pll_clk))
-		{
-			ret = 0;
-		}
-	}
-	else if(pll_clk <= (381000000 * 2))
-	{
-		if((!(another_pll_use_status & VIDEO_PLL0_USED)) || (OSAL_CCMU_GetSrcFreq(AW_SYS_CLK_PLL3) == pll_clk))
-		{
-			ret = 0;
-		}
-		else if((!(another_pll_use_status & VIDEO_PLL1_USED)) || (OSAL_CCMU_GetSrcFreq(AW_SYS_CLK_PLL7) == pll_clk))
-		{
-			ret = 1;
-		}
+		ret = 0;
     }
-	else if(pll_clk <= 1200000000)
-	{
-	    if(OSAL_sw_get_ic_ver() > 0xA)
-	    {
-	        ret = 2;//sata pll
-	    }
-	}
-
-    if(ret == -1)
+    else
     {
         DE_WRN("Can't assign PLL for screen%d, pll_clk:%d\n",sel, pll_clk);
     }
@@ -821,8 +782,6 @@ static __s32 disp_pll_set(__u32 sel, __s32 videopll_sel, __u32 pll_freq, __u32 t
 	    if(videopll_sel == 2)//sata pll, fix to 960M
 	    {
 	        videopll = AW_SYS_CLK_PLL7X2;
-	        //pll_freq = ((pll_freq + 12000000)/ 24000000) * 24000000;
-	        //OSAL_CCMU_SetSrcFreq(AW_SYS_CLK_PLL6, pll_freq);
 	    }
 	    else//video pll0 or video pll1
 	    {
