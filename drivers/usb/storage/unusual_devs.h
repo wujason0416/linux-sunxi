@@ -2090,7 +2090,7 @@ UNUSUAL_DEV(  0x1b1c, 0x1ab5, 0x0200, 0x0200,
 		USB_SC_DEVICE, USB_PR_DEVICE, NULL,
 		US_FL_INITIAL_READ10 ),
 
-/* Patch by Richard Sch�tz <r.schtz@t-online.de>
+/* Patch by Richard Sch黷z <r.schtz@t-online.de>
  * This external hard drive enclosure uses a JMicron chip which
  * needs the US_FL_IGNORE_RESIDUE flag to work properly. */
 UNUSUAL_DEV(  0x1e68, 0x001b, 0x0000, 0x0000,
@@ -2163,7 +2163,7 @@ UNUSUAL_DEV(  0x4102, 0x1059, 0x0000,  0x0000,
                US_FL_MAX_SECTORS_64 ),
 
 /*
- * David Härdeman <david@2gen.com>
+ * David H盲rdeman <david@2gen.com>
  * The key makes the SCSI stack print confusing (but harmless) messages
  */
 UNUSUAL_DEV(  0x4146, 0xba01, 0x0100, 0x0100,

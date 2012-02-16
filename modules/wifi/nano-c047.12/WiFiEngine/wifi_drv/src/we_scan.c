@@ -1627,7 +1627,7 @@ int wei_initialize_scan(void)
       }
 
       sj = cache_add_scan_job(bcast_ssid, bcast_bssid, basic->activeScanMode,
-   			   basic->regionalChannels, ANY_MODE, 1, 0,
+			   basic->regionalChannels, ANY_MODE, 1, 0,
    			   sf, 1);
       cache_set_scan_job_state(sj, 0);
    }

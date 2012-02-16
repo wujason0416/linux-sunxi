@@ -94,7 +94,7 @@ case $1 in
     	if [ "$NATIVE_MMC_STACK_STD_HOST_LOADED" = "yes" ]; then
     		echo "Linux native stack STD host detected...attempting to remove kernel module"
             ### TODO: need to revisit why this won't remove sdhci_pci
-    		modprobe -r sdhci
+		modprobe -r sdhci
     		if [ $? -ne 0 ]; then
     			echo "failed to remove native stack std host"
     			exit -1
@@ -122,7 +122,7 @@ case $1 in
 		else
 		    if [ "$NATIVE_MMC_STACK_STD_HOST_AVAIL" = "yes" ]; then
 		     	echo "restoring linux native stack std host"
-		    	modprobe -q sdhci
+			modprobe -q sdhci
 		    fi
         fi
 	fi

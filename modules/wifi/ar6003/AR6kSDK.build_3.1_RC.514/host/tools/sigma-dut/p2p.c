@@ -1325,7 +1325,7 @@ int cmd_sta_wps_read_pin(struct sigma_dut *dut, caStaWpsReadPin_t *command,
 	send_resp(dut, conn, SIGMA_COMPLETE, resp);
 
 #if 1
- 	// Fetch the device PIN and put in 	infoResp->cmdru.wpsPin
+	// Fetch the device PIN and put in 	infoResp->cmdru.wpsPin
 	//strcpy(infoResp->cmdru.wpsPin, "12345678");
 	strcpy(&(cmdresp->cmdru.wpsPin[0]), pin);
 #endif

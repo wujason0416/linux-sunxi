@@ -53,7 +53,7 @@ int os_mktime(int year, int month, int day, int hour, int min, int sec,
  	if (year < 1970 || year > 2037 ||
 	    month < 1 || month > 12 ||
 	    day < 1 || day > 31 ||
- 	    hour < 0 || hour > 23 ||
+	    hour < 0 || hour > 23 ||
 	    min < 0 || min > 59 ||
 	    sec < 0 || sec > 60)
  		return -1;

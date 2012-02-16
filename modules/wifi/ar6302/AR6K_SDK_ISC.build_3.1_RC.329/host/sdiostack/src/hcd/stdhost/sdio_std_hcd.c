@@ -1679,7 +1679,7 @@ BOOL HcdSDInterrupt(PSDHCD_INSTANCE pHcInstance)
         statenables = READ_HOST_REG16(pHcInstance, HOST_REG_INT_STATUS_ENABLE);
         errorenables = READ_HOST_REG16(pHcInstance, HOST_REG_INT_ERR_SIGNAL_ENABLE);
         DBG_PRINT(STD_HOST_TRACE_INT,
-        	("SDIO STD HOST HcdSDInterrupt, ints: 0x%X errors: 0x%x, sigenables: 0x%X, statenable: 0x%X errorenables:0x%X\n",
+		("SDIO STD HOST HcdSDInterrupt, ints: 0x%X errors: 0x%x, sigenables: 0x%X, statenable: 0x%X errorenables:0x%X\n",
                 (UINT)ints, (UINT)errors, (UINT)enables, (UINT)statenables, (UINT)errorenables));
 
         	/* only look at ints and error ints that are enabled */

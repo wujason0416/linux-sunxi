@@ -412,31 +412,31 @@ clean()
 while getopts :r:x:e:k:p:c: option; do
 
     case $option in
- 	r)
+	r)
  	    RELEASE_VERSION=$OPTARG
  	    ;;
 
- 	x)
+	x)
  	    XMAC_VERSION=$OPTARG
  	    ;;
 
- 	e)
+	e)
  	    XTEST_VERSION=$OPTARG
  	    ;;
 
- 	k)
+	k)
  	    KERNEL=$OPTARG
  	    ;;
 
- 	p)
+	p)
  	    PLATFORM=$OPTARG
  	    ;;
 
- 	c)
+	c)
  	    CHIP_REVISION=$OPTARG
  	    ;;
 
- 	\?)
+	\?)
 	usage
 	exit 2
 	;;
@@ -456,7 +456,7 @@ case $1 in
  	;;
 
     xmac)
- 	xmac
+	xmac
  	;;
 
     xtest)

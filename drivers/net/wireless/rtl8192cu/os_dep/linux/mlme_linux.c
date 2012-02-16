@@ -760,7 +760,7 @@ int hostapd_mode_init(_adapter *padapter)
 		DBG_8192C("hostapd_mode_init(): register_netdev fail!\n");
 
 		if(pnetdev)
-      		{
+		{
 			rtw_free_netdev(pnetdev);
       		}
 	}

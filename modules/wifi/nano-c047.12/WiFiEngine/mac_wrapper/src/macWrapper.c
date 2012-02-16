@@ -600,7 +600,7 @@ bool_t MacWrapper_m80211_ie_vendor_specific_hdr_t(m80211_ie_vendor_specific_hdr_
 #if (DE_CCX == CFG_INCLUDED)
 #if 0
 bool_t MacWrapper_m80211_ie_ccx_adj_vendor_specific_hdr_t(m80211_ie_ccx_adj_parameter_set_t* object_p,
-                              						       Blob_t* blob,
+									       Blob_t* blob,
                               						       WrapperAction_t action)
 {
    if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
@@ -617,7 +617,7 @@ bool_t MacWrapper_m80211_ie_ccx_adj_vendor_specific_hdr_t(m80211_ie_ccx_adj_para
 
 
 bool_t MacWrapper_m80211_ie_wapi_vendor_specific_hdr_t(m80211_ie_wapi_vendor_specific_hdr_t* object_p,
-                              						       Blob_t* blob,
+									       Blob_t* blob,
                               						       WrapperAction_t action)
 {
    if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
@@ -1135,7 +1135,7 @@ void MacWrapper_m80211_ie_ccx_cpl_parameter_set_t(m80211_ie_ccx_cpl_parameter_se
    }
    else
    {
- 	DE_TRACE_STATIC(TR_SM_HIGH_RES, "Did not find cpl\n");
+	DE_TRACE_STATIC(TR_SM_HIGH_RES, "Did not find cpl\n");
    }
 
 } /* MacWrapper_m80211_ie_ccx_cpl_parameter_set_t */

@@ -2824,7 +2824,7 @@ doit:
 					struct sockaddr_in me;
 					socklen_t melen = sizeof(me);
 					if (getsockname(fd[0],
-				    			(struct sockaddr *)&me,
+							(struct sockaddr *)&me,
 							&melen) < 0) {
 						err("getsockname");
 					}

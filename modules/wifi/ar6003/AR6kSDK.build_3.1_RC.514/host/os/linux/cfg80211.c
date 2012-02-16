@@ -414,8 +414,8 @@ ar6k_cfg80211_connect(struct wiphy *wiphy, struct net_device *dev,
 				arPriv->arAuthMode = 0;
     } else {
      	if ((ie[0]==IEEE80211_ELEMID_RSN) ||
-    		(ie[0]==IEEE80211_ELEMID_VENDOR &&
-    		memcmp(&ie[2], wpa_oui, sizeof(wpa_oui))==0)) {
+		(ie[0]==IEEE80211_ELEMID_VENDOR &&
+		memcmp(&ie[2], wpa_oui, sizeof(wpa_oui))==0)) {
 				sme->ie_len = 0; /* Firmware will set for us. Clear the previous one */
    		}
 		/* for WAPI */

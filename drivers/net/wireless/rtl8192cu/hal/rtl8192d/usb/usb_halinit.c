@@ -2189,7 +2189,7 @@ n. LEDCFG 0x4C[15:0] = 0x8080
 
 	//1. Disable GPIO[7:0]
 	rtw_write16(Adapter, REG_GPIO_PIN_CTRL+2, 0x0000);
-    	value32 = rtw_read32(Adapter, REG_GPIO_PIN_CTRL) & 0xFFFF00FF;
+	value32 = rtw_read32(Adapter, REG_GPIO_PIN_CTRL) & 0xFFFF00FF;
 	value8 = (u8) (value32&0x000000FF);
 	value32 |= ((value8<<8) | 0x00FF0000);
 	rtw_write32(Adapter, REG_GPIO_PIN_CTRL, value32);
@@ -2672,7 +2672,7 @@ CardDisableHWSM( // HW Auto state machine
 
 	//0x20:value 05-->04
 	rtw_write8(Adapter, REG_LDOA15_CTRL,0x04);
-      	//RF Control
+	//RF Control
 	rtw_write8(Adapter, REG_RF_CTRL,0);
 
 	//  ==== Reset digital sequence   ======
@@ -2730,7 +2730,7 @@ CardDisableWithoutHWSM( // without HW Auto state machine
 
 	//0x20:value 05-->04
 	rtw_write8(Adapter, REG_LDOA15_CTRL,0x04);
-      	//RF Control
+	//RF Control
 	rtw_write8(Adapter, REG_RF_CTRL,0);
 
 	//  ==== Reset digital sequence   ======

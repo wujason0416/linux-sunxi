@@ -1581,7 +1581,7 @@ static int rtw_wx_set_wap(struct net_device *dev,
 			if(check_fwstate(pmlmepriv, WIFI_ADHOC_STATE) == _TRUE)
 			{
 	            		rtw_set_802_11_bssid(padapter, temp->sa_data);
-	    			goto exit;
+				goto exit;
 			}
 			else
 			{
@@ -1593,7 +1593,7 @@ static int rtw_wx_set_wap(struct net_device *dev,
 			if (rtw_set_802_11_bssid(padapter, temp->sa_data) == _FALSE)
 				ret = -1;
 			_exit_critical_bh(&queue->lock, &irqL);
-	    		goto exit;
+			goto exit;
 		}
 
 		pnetwork = LIST_CONTAINOR(pmlmepriv->pscanned, struct wlan_network, list);
@@ -2213,7 +2213,7 @@ static int rtw_wx_set_essid(struct net_device *dev,
 				{
 	            			rtw_set_802_11_ssid(padapter, &ndis_ssid);
 
-		    			goto exit;
+					goto exit;
 				}
 				else
 				{

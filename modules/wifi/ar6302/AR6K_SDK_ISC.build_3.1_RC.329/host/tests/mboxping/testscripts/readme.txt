@@ -46,3 +46,8 @@ The following are example mboxping test execution command line  parameters:
 5). RX-only performance 1500 byte packets, through stream 1 for 10 seconds
 
    ./mboxping -i <netif> --rxperf -t 1 -r 1 -s 1500 -d 10 -p 16
+
+
+
+
+

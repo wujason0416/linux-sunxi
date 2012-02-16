@@ -966,18 +966,18 @@ struct _cmd_callback {
 enum rtw_h2c_cmd
 {
 	GEN_CMD_CODE(_Read_MACREG) ,	/*0*/
- 	GEN_CMD_CODE(_Write_MACREG) ,
- 	GEN_CMD_CODE(_Read_BBREG) ,
- 	GEN_CMD_CODE(_Write_BBREG) ,
- 	GEN_CMD_CODE(_Read_RFREG) ,
+	GEN_CMD_CODE(_Write_MACREG) ,
+	GEN_CMD_CODE(_Read_BBREG) ,
+	GEN_CMD_CODE(_Write_BBREG) ,
+	GEN_CMD_CODE(_Read_RFREG) ,
  	GEN_CMD_CODE(_Write_RFREG) , /*5*/
- 	GEN_CMD_CODE(_Read_EEPROM) ,
- 	GEN_CMD_CODE(_Write_EEPROM) ,
- 	GEN_CMD_CODE(_Read_EFUSE) ,
- 	GEN_CMD_CODE(_Write_EFUSE) ,
+	GEN_CMD_CODE(_Read_EEPROM) ,
+	GEN_CMD_CODE(_Write_EEPROM) ,
+	GEN_CMD_CODE(_Read_EFUSE) ,
+	GEN_CMD_CODE(_Write_EFUSE) ,
 
  	GEN_CMD_CODE(_Read_CAM) ,	/*10*/
- 	GEN_CMD_CODE(_Write_CAM) ,
+	GEN_CMD_CODE(_Write_CAM) ,
  	GEN_CMD_CODE(_setBCNITV),
  	GEN_CMD_CODE(_setMBIDCFG),
  	GEN_CMD_CODE(_JoinBss),   /*14*/
@@ -991,7 +991,7 @@ enum rtw_h2c_cmd
  	GEN_CMD_CODE(_SetStaKey) ,
  	GEN_CMD_CODE(_SetAssocSta) ,
  	GEN_CMD_CODE(_DelAssocSta) ,
- 	GEN_CMD_CODE(_SetStaPwrState) ,
+	GEN_CMD_CODE(_SetStaPwrState) ,
  	GEN_CMD_CODE(_SetBasicRate) , /*25*/
  	GEN_CMD_CODE(_GetBasicRate) ,
  	GEN_CMD_CODE(_SetDataRate) ,
@@ -1004,10 +1004,10 @@ enum rtw_h2c_cmd
  	GEN_CMD_CODE(_readRssi) ,
  	GEN_CMD_CODE(_readGain) ,
  	GEN_CMD_CODE(_SetAtim) , /*35*/
- 	GEN_CMD_CODE(_SetPwrMode) ,
+	GEN_CMD_CODE(_SetPwrMode) ,
  	GEN_CMD_CODE(_JoinbssRpt),
  	GEN_CMD_CODE(_SetRaTable) ,
- 	GEN_CMD_CODE(_GetRaTable) ,
+	GEN_CMD_CODE(_GetRaTable) ,
 
  	GEN_CMD_CODE(_GetCCXReport), /*40*/
  	GEN_CMD_CODE(_GetDTMReport),
@@ -1093,8 +1093,8 @@ struct _cmd_callback 	rtw_cmd_callback[] =
 
 	{GEN_CMD_CODE(_GetCCXReport), NULL}, /*40*/
  	{GEN_CMD_CODE(_GetDTMReport),	NULL},
- 	{GEN_CMD_CODE(_GetTXRateStatistics), NULL},
- 	{GEN_CMD_CODE(_SetUsbSuspend), NULL},
+	{GEN_CMD_CODE(_GetTXRateStatistics), NULL},
+	{GEN_CMD_CODE(_SetUsbSuspend), NULL},
  	{GEN_CMD_CODE(_SetH2cLbk), NULL},
  	{GEN_CMD_CODE(_AddBAReq), NULL}, /*45*/
 	{GEN_CMD_CODE(_SetChannel), NULL},		/*46*/

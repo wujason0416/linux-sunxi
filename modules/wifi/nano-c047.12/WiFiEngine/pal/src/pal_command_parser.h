@@ -1013,7 +1013,7 @@ int HCI_Flow_Spec_Modify_Cmd_fcn(void* param);
 typedef struct
 { 	short handle;
   	char Tx_flow_spec[16];
-  	char Rx_flow_spec[16];
+	char Rx_flow_spec[16];
 }HCI_Flow_Spec_Modify_Cmd_struct;
 
 typedef struct

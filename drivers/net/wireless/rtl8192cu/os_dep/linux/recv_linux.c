@@ -394,7 +394,7 @@ _recv_indicatepkt_drop:
 		 rtw_free_recvframe(precv_frame, pfree_recv_queue);
 
 
- 	 precvpriv->rx_drop++;
+	 precvpriv->rx_drop++;
 
 	 return _FAIL;
 

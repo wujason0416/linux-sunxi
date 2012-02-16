@@ -702,8 +702,8 @@ enum rtw_c2h_event
  	GEN_EVT_CODE(_Read_EEPROM),
  	GEN_EVT_CODE(_Read_EFUSE),
 	GEN_EVT_CODE(_Read_CAM),			/*5*/
- 	GEN_EVT_CODE(_Get_BasicRate),
- 	GEN_EVT_CODE(_Get_DataRate),
+	GEN_EVT_CODE(_Get_BasicRate),
+	GEN_EVT_CODE(_Get_DataRate),
  	GEN_EVT_CODE(_Survey),	 /*8*/
  	GEN_EVT_CODE(_SurveyDone),	 /*9*/
 
@@ -711,11 +711,11 @@ enum rtw_c2h_event
  	GEN_EVT_CODE(_AddSTA),
  	GEN_EVT_CODE(_DelSTA),
  	GEN_EVT_CODE(_AtimDone) ,
- 	GEN_EVT_CODE(_TX_Report),
+	GEN_EVT_CODE(_TX_Report),
 	GEN_EVT_CODE(_CCX_Report),			/*15*/
  	GEN_EVT_CODE(_DTM_Report),
  	GEN_EVT_CODE(_TX_Rate_Statistics),
- 	GEN_EVT_CODE(_C2HLBK),
+	GEN_EVT_CODE(_C2HLBK),
  	GEN_EVT_CODE(_FWDBG),
 	GEN_EVT_CODE(_C2HFEEDBACK),               /*20*/
 	GEN_EVT_CODE(_ADDBA),

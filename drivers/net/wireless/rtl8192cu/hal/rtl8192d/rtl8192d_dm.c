@@ -280,7 +280,7 @@ odm_FalseAlarmCounterStatistics_ForSlaveOfDMSP(
 
 	FalseAlmCnt->Cnt_Fast_Fsync =FlaseAlmCntBuddyAdapter->Cnt_Fast_Fsync;
 	FalseAlmCnt->Cnt_SB_Search_fail =FlaseAlmCntBuddyAdapter->Cnt_SB_Search_fail;
-    	FalseAlmCnt->Cnt_Parity_Fail = FlaseAlmCntBuddyAdapter->Cnt_Parity_Fail;
+	FalseAlmCnt->Cnt_Parity_Fail = FlaseAlmCntBuddyAdapter->Cnt_Parity_Fail;
 	FalseAlmCnt->Cnt_Rate_Illegal = FlaseAlmCntBuddyAdapter->Cnt_Rate_Illegal;
 	FalseAlmCnt->Cnt_Crc8_fail = FlaseAlmCntBuddyAdapter->Cnt_Crc8_fail;
 	FalseAlmCnt->Cnt_Mcs_fail = FlaseAlmCntBuddyAdapter->Cnt_Mcs_fail;
@@ -931,12 +931,12 @@ static void odm_DIG(
 			}
 			else if(pDM_DigTable->Rssi_val_min  >= 35)  //low rate 1T1R Settings
 			{
-  				//Reg90C=0x81121313
-  				//RegA07=0x80
-  				//RegA11=0xbb
-  				//RegA20=0x00
-  				//RegA2E=0xd3
-  				//RegA2F=0x00
+				//Reg90C=0x81121313
+				//RegA07=0x80
+				//RegA11=0xbb
+				//RegA20=0x00
+				//RegA2E=0xd3
+				//RegA2F=0x00
   				//RegA75=0x00
 
   				rtw_write32(pAdapter, 0x90C, 0x81121313);

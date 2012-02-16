@@ -616,3 +616,4 @@ static ATHBT_STATE_INDICATION ProcessA2DPCMD(BT_FILTER_CORE_INFO *pCore,
 
     return stateIndication;
 }
+

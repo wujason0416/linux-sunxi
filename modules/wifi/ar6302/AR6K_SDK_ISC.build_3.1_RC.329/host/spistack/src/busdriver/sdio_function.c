@@ -515,7 +515,7 @@ SDIO_STATUS NotifyDeviceRemove(PSDDEVICE pDevice) {
         }
 
             /* synchronize with ISR SYNC Handlers */
-	 	status = SemaphorePendInterruptable(&pBusContext->DeviceListSem);
+		status = SemaphorePendInterruptable(&pBusContext->DeviceListSem);
         if (!SDIO_SUCCESS(status)) {
             return status;
         }

@@ -923,7 +923,7 @@ void * wfa_wmm_thread(void *thr_param)
 
                   tdata->state =  stationProcStatetbl[wmmps_info.sta_test];
                   curr_state = tdata->state[tdata->state_num];
-      	          curr_state.statefunc(curr_state.pw_offon,curr_state.sleep_period,&(tdata->state_num));
+	          curr_state.statefunc(curr_state.pw_offon,curr_state.sleep_period,&(tdata->state_num));
                }
 #endif /* WFA_WMM_PS_EXT */
            }

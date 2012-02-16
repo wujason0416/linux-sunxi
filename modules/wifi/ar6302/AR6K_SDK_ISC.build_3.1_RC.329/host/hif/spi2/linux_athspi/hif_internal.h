@@ -108,3 +108,4 @@ void HIFSpiDumpRegs(HIF_DEVICE *device);
 
 #define SPIReadInternal(d,a,p) SPIReadWriteInternal((d),(a),(p),TRUE)
 #define SPIWriteInternal(d,a,p) SPIReadWriteInternal((d),(a),(p),FALSE)
+

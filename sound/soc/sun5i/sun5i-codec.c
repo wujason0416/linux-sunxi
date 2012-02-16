@@ -327,7 +327,6 @@ static  int codec_init(void)
 	codec_wr_control(SUN5I_DAC_DPC, 0x1, DAC_EN, 0x1);
 
 	codec_wr_control(SUN5I_DAC_FIFOC ,  0x1,28, 0x1);
-
 	//pa mute
 	codec_wr_control(SUN5I_DAC_ACTL, 0x1, PA_MUTE, 0x0);
 	//enable PA
@@ -446,6 +445,7 @@ static int codec_dev_free(struct snd_device *device)
 * 	.info = snd_codec_info_volsw, .get = snd_codec_get_volsw,\.put = snd_codec_put_volsw,
 */
 static const struct snd_kcontrol_new codec_snd_controls[] = {
+	//FOR B VERSION
 	CODEC_SINGLE("Master Playback Volume", SUN5I_DAC_ACTL,0,0x3f,0),
 	CODEC_SINGLE("Playback Switch", SUN5I_DAC_ACTL,6,1,0),//全局输出开关
 	CODEC_SINGLE("Capture Volume",SUN5I_ADC_ACTL,20,7,0),//录音音量
@@ -480,12 +480,12 @@ int __init snd_chip_codec_mixer_new(struct snd_card *card)
 	*	snd_ctl_new1函数用于创建一个snd_kcontrol并返回其指针，
 	*	snd_ctl_add函数用于将创建的snd_kcontrol添加到对应的card中。
 	*/
-
 	for (idx = 0; idx < ARRAY_SIZE(codec_snd_controls); idx++) {
 		if ((err = snd_ctl_add(card, snd_ctl_new1(&codec_snd_controls[idx],clnt))) < 0) {
 			return err;
 		}
 	}
+
 	/*
 	*	当card被创建后，设备（组件）能够被创建并关联于该card。第一个参数是snd_card_create
 	*	创建的card指针，第二个参数type指的是device-level即设备类型，形式为SNDRV_DEV_XXX,包括

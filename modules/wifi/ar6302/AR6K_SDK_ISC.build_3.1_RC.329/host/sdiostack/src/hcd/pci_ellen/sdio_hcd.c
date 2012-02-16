@@ -1133,7 +1133,7 @@ BOOL HcdSDInterrupt(PSDHCD_DEVICE pDeviceContext)
                         }
                         DBG_PRINT(PXA_TRACE_DATA, ("SDIO PCI Ellen Pending from ISR %s transfer \n",
                                                 IS_SDREQ_WRITE_DATA(pReq->Flags) ? "TX":"RX"));
-                    	status = SDIO_STATUS_PENDING;
+			status = SDIO_STATUS_PENDING;
                     } else {
                         DBG_PRINT(SDDBG_ERROR, ("SDIO PCI Ellen : Response for Data transfer error :%d n",status));
                         ResetCmdDatLine(pDeviceContext);

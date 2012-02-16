@@ -138,7 +138,7 @@ enum COMMAND_IDS {
     	ISR_GET_RX_STATS_CMD_ID,			//19
     	ISR_GET_TX_STATS_CMD_ID,			//20
     	ISR_SINGLE_RX_STAT_CMD_ID,			//21
-    	ISR_SINGLE_TX_STAT_CMD_ID,			//22
+	ISR_SINGLE_TX_STAT_CMD_ID,			//22
     	WAIT_ON_EVENT_CMD_ID,				//23
 	WAIT_ON_TIME_CMD_ID,					//24
 	ISR_FEATURE_DISABLE_CMD_ID,				//25
@@ -301,9 +301,9 @@ enum COMMAND_IDS {
 // structures for the commands
 typedef struct cmdReply {
 	A_UINT32 replyCmdLen;
-  	A_UINT32 replyCmdId; // command ID of command to which this is a reply
-  	A_UINT32 status; // status of the command
-  	A_UCHAR cmdBytes[4000]; // bytes of the command reply
+	A_UINT32 replyCmdId; // command ID of command to which this is a reply
+	A_UINT32 status; // status of the command
+	A_UCHAR cmdBytes[4000]; // bytes of the command reply
 } CMD_REPLY;
 
 
@@ -326,16 +326,16 @@ typedef struct {
     		} MEM_READ_CMD;
 
     		struct initF2Cmd {
-      			A_UINT32 whichF2; // which F2 in system to initialize
+			A_UINT32 whichF2; // which F2 in system to initialize
     		} INIT_F2_CMD;
 
     		struct regReadCmd {
-      			A_UINT32 readAddr; // address to read from
+			A_UINT32 readAddr; // address to read from
     		} REG_READ_CMD;
 
     		struct regWriteCmd {
-      			A_UINT32 writeAddr; // address to write to
-      			A_UINT32 regValue; // value to write
+			A_UINT32 writeAddr; // address to write to
+			A_UINT32 regValue; // value to write
     		} REG_WRITE_CMD;
                struct rtcRegReadCmd {
                                A_UINT32 readAddr; // address to read from
@@ -347,33 +347,33 @@ typedef struct {
                } RTC_REG_WRITE_CMD;
 
     		struct selectHwCmd {
-      			A_UINT32 whichF2; // which F2 in system to initialize
+			A_UINT32 whichF2; // which F2 in system to initialize
     		} SELECT_HW_CMD;
 
     		struct cfgReadCmd {
-      			A_UINT32 cfgReadAddr; // address to read from
-      			A_UINT32 readSize;  // size to read 32, 16 or 8
+			A_UINT32 cfgReadAddr; // address to read from
+			A_UINT32 readSize;  // size to read 32, 16 or 8
     		} CFG_READ_CMD;
 
     		struct cfgWriteCmd {
-      			A_UINT32 cfgWriteAddr; // address to write to
-      			A_UINT32 cfgValue; // value to write
-      			A_UINT32 writeSize; // size to write, 32, 16 or 8
+			A_UINT32 cfgWriteAddr; // address to write to
+			A_UINT32 cfgValue; // value to write
+			A_UINT32 writeSize; // size to write, 32, 16 or 8
     		} CFG_WRITE_CMD;
 
     		struct memReadBlockCmd {
-      			A_UINT32 physAddr; // phys address to read from
+			A_UINT32 physAddr; // phys address to read from
       			A_UINT32 length; // how many bytes to read
     		} MEM_READ_BLOCK_CMD;
 
     		struct memWriteBlockCmd {
-      			A_UINT32 physAddr; // phys address to allocate at
-      			A_UINT32 length; // how many bytes to write
-      			A_UINT8 bytes[MAX_BLOCK_BYTES]; // bytes to be written
+			A_UINT32 physAddr; // phys address to allocate at
+			A_UINT32 length; // how many bytes to write
+			A_UINT8 bytes[MAX_BLOCK_BYTES]; // bytes to be written
     		} MEM_WRITE_BLOCK_CMD;
 
     		struct remapHwCmd {
-      			A_UINT32 mapAddress; // new address to map to
+			A_UINT32 mapAddress; // new address to map to
     		} REMAP_HW_CMD;
 
     		struct createEventCmd {
@@ -432,13 +432,13 @@ typedef struct {
 
 		struct eepromReadBlockCmd {
       			A_UINT32 startOffset;
-      			A_UINT32 length; // how many eeprom words to read
+			A_UINT32 length; // how many eeprom words to read
     		} EEPROM_READ_BLOCK_CMD;
 
     		struct eepromWriteBlockCmd {
       			A_UINT32 startOffset;
-      			A_UINT32 length; // how many eeprom words to read
-      			A_UINT32 eepromValue[MAX_BLOCK_DWORDS]; // words to be written
+			A_UINT32 length; // how many eeprom words to read
+			A_UINT32 eepromValue[MAX_BLOCK_DWORDS]; // words to be written
     		} EEPROM_WRITE_BLOCK_CMD;
 
                 struct eepromWriteByteBasedBlockCmd {
@@ -448,13 +448,13 @@ typedef struct {
                 } EEPROM_WRITE_BYTEBASED_BLOCK_CMD;
 
     		struct apRegReadCmd {
-      			A_UINT32 readAddr; // address to read from
+			A_UINT32 readAddr; // address to read from
        			A_UINT32 readSize;
     		} AP_REG_READ_CMD;
 
     		struct apRegWriteCmd {
-      			A_UINT32 writeAddr; // address to write to
-      			A_UINT32 regValue; // value to write
+			A_UINT32 writeAddr; // address to write to
+			A_UINT32 regValue; // value to write
       			A_UINT32 writeSize;
     		} AP_REG_WRITE_CMD;
 
@@ -467,7 +467,7 @@ typedef struct {
 
 			struct eepromReadLocsCmd {
       			A_UINT32 startOffset;
-      			A_UINT32 length; // how many eeprom locs to read
+			A_UINT32 length; // how many eeprom locs to read
                         A_UINT8 useFlash;
     		} EEPROM_READ_LOCS_CMD;
 
@@ -515,7 +515,7 @@ typedef struct {
       			A_UCHAR  bss[6];
       			A_UINT32 freq;
       			A_UINT32 turbo;
-      			A_UINT8  wlanMode;
+			A_UINT8  wlanMode;
     		} RESET_DEVICE_CMD;
 
 
@@ -528,8 +528,8 @@ typedef struct {
 			} WRITE_NEW_PROD_DATA_CMD;
 
     		struct memAllocCmd {
-      			A_UINT32 allocSize; // num bytes to allocate
-      			A_UINT32 physAddr;  // phys address to allocate at
+			A_UINT32 allocSize; // num bytes to allocate
+			A_UINT32 physAddr;  // phys address to allocate at
     		} MEM_ALLOC_CMD;
 
     	 //	struct memFreeCmd {
@@ -590,7 +590,7 @@ typedef struct {
       			A_UINT32 antenna;
       			A_UINT32 broadcast;
       			A_UINT32 dataPatternLength;
-      			A_UCHAR  dataPattern[MAX_BLOCK_BYTES]; // bytes to be written
+			A_UCHAR  dataPattern[MAX_BLOCK_BYTES]; // bytes to be written
     		} TX_DATA_SETUP_CMD;
 
      		struct txDataSetupNoEndPacketCmd {
@@ -603,7 +603,7 @@ typedef struct {
       			A_UINT32 antenna;
       			A_UINT32 broadcast;
       			A_UINT32 dataPatternLength;
-      			A_UCHAR  dataPattern[MAX_BLOCK_BYTES]; // bytes to be written
+			A_UCHAR  dataPattern[MAX_BLOCK_BYTES]; // bytes to be written
     		} TX_DATA_SETUP_NO_END_PACKET_CMD;
 
     		struct txDataBeginCmd {
@@ -631,7 +631,7 @@ typedef struct {
       			A_UINT32 remoteStats;
       			A_UINT32 enableCompare;
       			A_UINT32 dataPatternLength;
-      			A_UINT8  dataPattern[MAX_BLOCK_BYTES]; // bytes to be written
+			A_UINT8  dataPattern[MAX_BLOCK_BYTES]; // bytes to be written
     		} RX_DATA_BEGIN_CMD;
 
     		struct getStatsCmd {
@@ -772,7 +772,7 @@ typedef struct {
 		struct diagCmd {
       			A_UINT32 diagNum;
       			A_UINT32 cmdSize;
-      			A_UINT8  data[MAX_BLOCK_BYTES];  // bytes to be written
+			A_UINT8  data[MAX_BLOCK_BYTES];  // bytes to be written
     		}  DIAG_CMD;
 
 		struct getMaxPowerCmd {
@@ -891,7 +891,7 @@ typedef struct {
       			A_UINT32 broadcast;
 				A_UINT32 aggSize;
       			A_UINT32 dataPatternLength;
-      			A_UCHAR  dataPattern[MAX_BLOCK_BYTES]; // bytes to be written
+			A_UCHAR  dataPattern[MAX_BLOCK_BYTES]; // bytes to be written
     		} TX_DATA_AGG_SETUP_CMD;
 
             struct iqCal {

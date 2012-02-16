@@ -208,9 +208,9 @@ void wei_hmg_pal_init(void)
 *****************************************************************************/
 static void connected_cb(wi_msg_param_t param, void* priv)
 {
-   	DE_TRACE_STATIC(TR_AMP, "hmg_pal device connected\n");
+	DE_TRACE_STATIC(TR_AMP, "hmg_pal device connected\n");
 
-   	connected = TRUE;
+	connected = TRUE;
 #ifdef DEBUG_HMG_PAL
 	printk("CONNECTED\n");
 #endif

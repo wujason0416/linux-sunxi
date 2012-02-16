@@ -325,9 +325,6 @@ long g2d_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
 	__s32	ret = 0;
 
-	if(!mutex_trylock(&para.mutex)) {
-			mutex_lock(&para.mutex);
-	}
 	switch (cmd) {
 
 	/* Proceed to the operation */
@@ -336,8 +333,7 @@ long g2d_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		if(copy_from_user(&blit_para, (g2d_blt *)arg, sizeof(g2d_blt)))
 		{
 			kfree(&blit_para);
-			ret = -EFAULT;
-			goto err_noput;
+			return  -EFAULT;
 		}
 	    ret = g2d_blit(&blit_para);
     	break;
@@ -347,8 +343,7 @@ long g2d_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		if(copy_from_user(&fill_para, (g2d_fillrect *)arg, sizeof(g2d_fillrect)))
 		{
 			kfree(&fill_para);
-			ret = -EFAULT;
-			goto err_noput;
+			return  -EFAULT;
 		}
 	    ret = g2d_fill(&fill_para);
     	break;
@@ -358,8 +353,7 @@ long g2d_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		if(copy_from_user(&stre_para, (g2d_stretchblt *)arg, sizeof(g2d_stretchblt)))
 		{
 			kfree(&stre_para);
-			ret = -EFAULT;
-			goto err_noput;
+			return  -EFAULT;
 		}
 	    ret = g2d_stretchblit(&stre_para);
     	break;
@@ -369,8 +363,7 @@ long g2d_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 		if(copy_from_user(&pale_para, (g2d_palette *)arg, sizeof(g2d_palette)))
 		{
 			kfree(&pale_para);
-			ret = -EFAULT;
-			goto err_noput;
+			return  -EFAULT;
 		}
 	    ret = g2d_set_palette_table(&pale_para);
     	break;
@@ -405,9 +398,6 @@ long g2d_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	default:
 		return -EINVAL;
 	}
-
-err_noput:
-	mutex_unlock(&para.mutex);
 
 	return ret;
 }
@@ -482,7 +472,7 @@ static int g2d_probe(struct platform_device *pdev)
 		}
 
 	drv_g2d_init();
-	mutex_init(&info->mutex);
+
 	return 0;
 
 	relaese_regs:

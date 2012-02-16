@@ -635,8 +635,8 @@ int wfaTGRecvStop(int len, BYTE *parms, int *respLen, BYTE *respBuf)
          }
 
     	/* encode a TLV for response for "complete/error ..." */
-    	statResp.status = STATUS_COMPLETE;
-    	statResp.streamId = streamid;
+	statResp.status = STATUS_COMPLETE;
+	statResp.streamId = streamid;
 
 #if 1
     	DPRINT_INFO(WFA_OUT, "stream Id %u rx %u total %llu\n", streamid, myStream->stats.rxFrames, myStream->stats.rxPayloadBytes);

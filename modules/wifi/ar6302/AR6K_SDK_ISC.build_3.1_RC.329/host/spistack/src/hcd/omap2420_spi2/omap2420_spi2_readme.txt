@@ -39,7 +39,7 @@ Module Parameters:
     "dump_state"            = dump Atheros module spi state
 
     Module Debug Level:      Description of Kernel Prints (each level is cummalative):
-  		8					     SPI module interrupts
+		8					     SPI module interrupts
         9                        SPI request processing
        10                        SPI request with DATA
        11                        SPI request DATA dumps

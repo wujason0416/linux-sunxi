@@ -1149,9 +1149,9 @@ static int netdev_open(struct net_device *pnetdev)
 	}
 
 	if(padapter->bup == _FALSE)
-    	{
+	{
 		padapter->bDriverStopped = _FALSE;
-	 	padapter->bSurpriseRemoved = _FALSE;
+		padapter->bSurpriseRemoved = _FALSE;
 		padapter->bCardDisableWOHSM = _FALSE;
 
 		status = rtw_hal_init(padapter);

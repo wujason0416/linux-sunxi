@@ -993,7 +993,7 @@ _func_enter_;
 #ifdef CONFIG_RTL8712
         //endian_convert
  	pnetwork->Length = le32_to_cpu(pnetwork->Length);
-  	pnetwork->Ssid.SsidLength = le32_to_cpu(pnetwork->Ssid.SsidLength);
+	pnetwork->Ssid.SsidLength = le32_to_cpu(pnetwork->Ssid.SsidLength);
 	pnetwork->Privacy =le32_to_cpu( pnetwork->Privacy);
 	pnetwork->Rssi = le32_to_cpu(pnetwork->Rssi);
 	pnetwork->NetworkTypeInUse =le32_to_cpu(pnetwork->NetworkTypeInUse);
@@ -1108,9 +1108,9 @@ _func_enter_;
 
 		   		if(rtw_select_and_join_from_scanned_queue(pmlmepriv)==_SUCCESS)
 		   		{
-		       			_set_timer(&pmlmepriv->assoc_timer, MAX_JOIN_TIMEOUT );
+					_set_timer(&pmlmepriv->assoc_timer, MAX_JOIN_TIMEOUT );
                   		}
-		   		else
+				else
 		  		{
 					WLAN_BSSID_EX    *pdev_network = &(adapter->registrypriv.dev_network);
 					u8 *pibss = adapter->registrypriv.dev_network.MacAddress;
@@ -1130,7 +1130,7 @@ _func_enter_;
 
 					if(rtw_createbss_cmd(adapter)!=_SUCCESS)
 					{
-	                     		RT_TRACE(_module_rtl871x_mlme_c_,_drv_err_,("Error=>rtw_createbss_cmd status FAIL\n"));
+					RT_TRACE(_module_rtl871x_mlme_c_,_drv_err_,("Error=>rtw_createbss_cmd status FAIL\n"));
 					}
 
 			     		pmlmepriv->to_join = _FALSE;
@@ -1144,7 +1144,7 @@ _func_enter_;
 			pmlmepriv->to_join = _FALSE;
 			if(_SUCCESS == (s_ret=rtw_select_and_join_from_scanned_queue(pmlmepriv)))
 			{
-	     		     _set_timer(&pmlmepriv->assoc_timer, MAX_JOIN_TIMEOUT);
+			     _set_timer(&pmlmepriv->assoc_timer, MAX_JOIN_TIMEOUT);
 			}
 			else if(s_ret == 2)//there is no need to wait for join
 			{
@@ -3345,7 +3345,7 @@ void rtw_issue_addbareq_cmd(_adapter *padapter, struct xmit_frame *pxmitframe)
 	struct sta_info *psta=NULL;
 	struct ht_priv	*phtpriv;
 	struct pkt_attrib *pattrib =&pxmitframe->attrib;
- 	struct sta_priv *pstapriv = &padapter->stapriv;
+	struct sta_priv *pstapriv = &padapter->stapriv;
 	s32 bmcst = IS_MCAST(pattrib->ra);
 
 	if(bmcst || (padapter->mlmepriv.LinkDetectInfo.bTxBusyTraffic == _FALSE))

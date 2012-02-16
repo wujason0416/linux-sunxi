@@ -365,7 +365,7 @@ AdjustBtControlAction(ATHBT_FILTER_INFO      *pInfo,
                     pA2dpOptModeConfig->a2dpMaxAggrSize = 1;
                     pA2dpOptModeConfig->a2dpMinlowRateMbps =52;
                     pA2dpPspollConfig->a2dpMinBurstCnt = 4;
-   		  /* Continuation of addressing EV#80876 and EV#80859. if Target BT device is connected to
+		  /* Continuation of addressing EV#80876 and EV#80859. if Target BT device is connected to
 		   * EDR headeset in MASTER mode,the audio streaming stops immediately.Fixing it temporary
 		   * by forcing it to SLAVE mode.*/
 
