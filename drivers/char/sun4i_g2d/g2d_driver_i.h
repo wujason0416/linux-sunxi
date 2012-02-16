@@ -52,7 +52,6 @@ typedef struct
 	struct resource		*mem;
 	void __iomem		*io;
 	__u32				 irq;
-	struct mutex		 mutex;
 
 }__g2d_info_t;
 

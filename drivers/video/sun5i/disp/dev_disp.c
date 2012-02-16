@@ -11,7 +11,7 @@ __disp_drv_t g_disp_drv;
 static struct alloc_struct_t boot_heap_head, boot_heap_tail;
 
 static unsigned int gbuffer[4096];
-static __u32 output_type[2] = {0,0};
+static __u32 suspend_output_type[2] = {0,0};
 static __u32 suspend_status = 0;//0:normal; suspend_status&1 != 0:in early_suspend; suspend_status&2 != 0:in suspend;
 
 static struct info_mm  g_disp_mm[10];
@@ -61,6 +61,11 @@ static struct resource disp_resource[DISP_IO_NUM] =
 	[DISP_IO_TVEC1] = {
 		.start = 0x01c1b000,
 		.end   = 0x01c1bfff,
+		.flags = IORESOURCE_MEM,
+	},
+	[DISP_IO_IEP] = {
+		.start = 0x01e70000,
+		.end   = 0x01e703ff,
 		.flags = IORESOURCE_MEM,
 	},
 };
@@ -233,6 +238,7 @@ __s32 DRV_DISP_Init(void)
     para.base_lcdc1     = (__u32)g_fbi.base_lcdc1;
     para.base_tvec0      = (__u32)g_fbi.base_tvec0;
     para.base_tvec1      = (__u32)g_fbi.base_tvec1;
+    para.base_iep       = (__u32)g_fbi.base_iep;
     para.base_ccmu      = (__u32)g_fbi.base_ccmu;
     para.base_sdram     = (__u32)g_fbi.base_sdram;
     para.base_pioc      = (__u32)g_fbi.base_pioc;
@@ -241,7 +247,6 @@ __s32 DRV_DISP_Init(void)
 
 	memset(&g_disp_drv, 0, sizeof(__disp_drv_t));
 
-    sys_put_wvalue(0xf1c20118, 1<<19);
 
     BSP_disp_init(&para);
     BSP_disp_open();
@@ -391,7 +396,7 @@ static int __init disp_probe(struct platform_device *pdev)//called when platform
 	info->base_sdram = 0xf1c01000;
 	info->base_pioc = 0xf1c20800;
 	info->base_pwm = 0xf1c20c00;
-
+	info->base_iep = 0xf1e70000;
 	__inf("SCALER0 base 0x%08x\n", info->base_scaler0);
 	__inf("SCALER1 base 0x%08x\n", info->base_scaler1);
 	__inf("IMAGE0 base 0x%08x\n", info->base_image0+ 0x800);
@@ -400,6 +405,7 @@ static int __init disp_probe(struct platform_device *pdev)//called when platform
 	__inf("LCDC1 base 0x%08x\n", info->base_lcdc1);
 	__inf("TVEC0 base 0x%08x\n", info->base_tvec0);
 	__inf("TVEC1 base 0x%08x\n", info->base_tvec1);
+	__inf("IEP base 0x%08x\n", info->base_iep);
 	__inf("CCMU base 0x%08x\n", info->base_ccmu);
 	__inf("SDRAM base 0x%08x\n", info->base_sdram);
 	__inf("PIO base 0x%08x\n", info->base_pioc);
@@ -426,20 +432,20 @@ void backlight_early_suspend(struct early_suspend *h)
 
     for(i=0; i<2; i++)
     {
-        output_type[i] = BSP_disp_get_output_type(i);
-        if(output_type[i] == DISP_OUTPUT_TYPE_LCD)
+        suspend_output_type[i] = BSP_disp_get_output_type(i);
+        if(suspend_output_type[i] == DISP_OUTPUT_TYPE_LCD)
         {
             DRV_lcd_close(i);
         }
-        else if(output_type[i] == DISP_OUTPUT_TYPE_TV)
+        else if(suspend_output_type[i] == DISP_OUTPUT_TYPE_TV)
         {
             BSP_disp_tv_close(i);
         }
-        else if(output_type[i] == DISP_OUTPUT_TYPE_VGA)
+        else if(suspend_output_type[i] == DISP_OUTPUT_TYPE_VGA)
         {
             BSP_disp_vga_close(i);
         }
-        else if(output_type[i] == DISP_OUTPUT_TYPE_HDMI)
+        else if(suspend_output_type[i] == DISP_OUTPUT_TYPE_HDMI)
         {
             BSP_disp_hdmi_close(i);
         }
@@ -460,19 +466,19 @@ void backlight_late_resume(struct early_suspend *h)
 
     for(i=0; i<2; i++)
     {
-        if(output_type[i] == DISP_OUTPUT_TYPE_LCD)
+        if(suspend_output_type[i] == DISP_OUTPUT_TYPE_LCD)
         {
             DRV_lcd_open(i);
         }
-        else if(output_type[i] == DISP_OUTPUT_TYPE_TV)
+        else if(suspend_output_type[i] == DISP_OUTPUT_TYPE_TV)
         {
             BSP_disp_tv_open(i);
         }
-        else if(output_type[i] == DISP_OUTPUT_TYPE_VGA)
+        else if(suspend_output_type[i] == DISP_OUTPUT_TYPE_VGA)
         {
             BSP_disp_vga_open(i);
         }
-        else if(output_type[i] == DISP_OUTPUT_TYPE_HDMI)
+        else if(suspend_output_type[i] == DISP_OUTPUT_TYPE_HDMI)
         {
             BSP_disp_hdmi_open(i);
         }
@@ -501,20 +507,20 @@ int disp_suspend(struct platform_device *pdev, pm_message_t state)
 
     for(i=0; i<2; i++)
     {
-        output_type[i] = BSP_disp_get_output_type(i);
-        if(output_type[i] == DISP_OUTPUT_TYPE_LCD)
+        suspend_output_type[i] = BSP_disp_get_output_type(i);
+        if(suspend_output_type[i] == DISP_OUTPUT_TYPE_LCD)
         {
             DRV_lcd_close(i);
         }
-        else if(output_type[i] == DISP_OUTPUT_TYPE_TV)
+        else if(suspend_output_type[i] == DISP_OUTPUT_TYPE_TV)
         {
             BSP_disp_tv_close(i);
         }
-        else if(output_type[i] == DISP_OUTPUT_TYPE_VGA)
+        else if(suspend_output_type[i] == DISP_OUTPUT_TYPE_VGA)
         {
             BSP_disp_vga_close(i);
         }
-        else if(output_type[i] == DISP_OUTPUT_TYPE_HDMI)
+        else if(suspend_output_type[i] == DISP_OUTPUT_TYPE_HDMI)
         {
             BSP_disp_hdmi_close(i);
         }
@@ -540,19 +546,19 @@ int disp_resume(struct platform_device *pdev)
 
     for(i=0; i<2; i++)
     {
-        if(output_type[i] == DISP_OUTPUT_TYPE_LCD)
+        if(suspend_output_type[i] == DISP_OUTPUT_TYPE_LCD)
         {
             DRV_lcd_open(i);
         }
-        else if(output_type[i] == DISP_OUTPUT_TYPE_TV)
+        else if(suspend_output_type[i] == DISP_OUTPUT_TYPE_TV)
         {
             BSP_disp_tv_open(i);
         }
-        else if(output_type[i] == DISP_OUTPUT_TYPE_VGA)
+        else if(suspend_output_type[i] == DISP_OUTPUT_TYPE_VGA)
         {
             BSP_disp_vga_open(i);
         }
-        else if(output_type[i] == DISP_OUTPUT_TYPE_HDMI)
+        else if(suspend_output_type[i] == DISP_OUTPUT_TYPE_HDMI)
         {
             BSP_disp_hdmi_open(i);
         }
@@ -599,7 +605,7 @@ long disp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
     if(cmd < DISP_CMD_FB_REQUEST)
     {
-        if((ubuffer[0] != 0) && (ubuffer[0] != 1))
+        if(ubuffer[0] != 0)
         {
             __wrn("para err in disp_ioctl, screen id = %d\n", (int)ubuffer[0]);
             return -1;
@@ -739,16 +745,12 @@ long disp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
             ret = BSP_disp_get_saturation(ubuffer[0]);
     		break;
 
-        case DISP_CMD_ENHANCE_ON:
-            ret = BSP_disp_enhance_enable(ubuffer[0], 1);
+        case DISP_CMD_SET_HUE:
+            ret = BSP_disp_set_hue(ubuffer[0], ubuffer[1]);
     		break;
 
-        case DISP_CMD_ENHANCE_OFF:
-            ret = BSP_disp_enhance_enable(ubuffer[0], 0);
-    		break;
-
-        case DISP_CMD_GET_ENHANCE_EN:
-            ret = BSP_disp_get_enhance_enable(ubuffer[0]);
+        case DISP_CMD_GET_HUE:
+            ret = BSP_disp_get_hue(ubuffer[0]);
     		break;
 
     	case DISP_CMD_CAPTURE_SCREEN:
@@ -759,14 +761,58 @@ long disp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
             ret = BSP_disp_set_screen_size(ubuffer[0], (__disp_rectsz_t*)ubuffer[1]);
             break;
 
+	//----iep----
         case DISP_CMD_DE_FLICKER_ON:
-            ret = BSP_disp_de_flicker_enable(ubuffer[0], 1);
+            ret = BSP_disp_iep_deflicker_enable(ubuffer[0], 1);
             break;
 
         case DISP_CMD_DE_FLICKER_OFF:
-            ret = BSP_disp_de_flicker_enable(ubuffer[0], 0);
+            ret = BSP_disp_iep_deflicker_enable(ubuffer[0], 0);
             break;
 
+        case DISP_CMD_GET_DE_FLICKER_EN:
+        	ret = BSP_disp_iep_get_deflicker_enable(ubuffer[0]);
+        	break;
+
+        case DISP_CMD_DRC_ON:
+        	ret = BSP_disp_iep_drc_enable(ubuffer[0], 1);
+        	break;
+
+        case DISP_CMD_DRC_OFF:
+			ret = BSP_disp_iep_drc_enable(ubuffer[0], 0);
+        	break;
+
+		case DISP_CMD_GET_DRC_EN:
+			ret = BSP_disp_iep_get_drc_enable(ubuffer[0]);
+			break;
+
+        case DISP_CMD_DE_FLICKER_SET_WINDOW:
+        {
+          	__disp_rect_t para;
+
+    		if(copy_from_user(&para, (void __user *)ubuffer[1],sizeof(__disp_rect_t)))
+    		{
+    		    __wrn("copy_from_user fail\n");
+    			return  -EFAULT;
+    		}
+
+			ret = BSP_disp_iep_set_demo_win(ubuffer[0], 1, &para);
+			break;
+		}
+
+        case DISP_CMD_DRC_SET_WINDOW:
+		{
+			__disp_rect_t para;
+
+			if(copy_from_user(&para, (void __user *)ubuffer[1],sizeof(__disp_rect_t)))
+			{
+				__wrn("copy_from_user fail\n");
+				return	-EFAULT;
+			}
+
+			ret = BSP_disp_iep_set_demo_win(ubuffer[0], 2, &para);
+			break;
+		}
     //----layer----
     	case DISP_CMD_LAYER_REQUEST:
     		ret = BSP_disp_layer_request(ubuffer[0], (__disp_layer_work_mode_t)ubuffer[1]);
@@ -1168,14 +1214,22 @@ long disp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
     //----lcd----
     	case DISP_CMD_LCD_ON:
     		ret = DRV_lcd_open(ubuffer[0]);
+            if(suspend_status != 0)
+            {
+                suspend_output_type[ubuffer[0]] = DISP_OUTPUT_TYPE_LCD;
+            }
     		break;
 
     	case DISP_CMD_LCD_OFF:
     		ret = DRV_lcd_close(ubuffer[0]);
+            if(suspend_status != 0)
+            {
+                suspend_output_type[ubuffer[0]] = DISP_OUTPUT_TYPE_NONE;
+            }
     		break;
 
     	case DISP_CMD_LCD_SET_BRIGHTNESS:
-    		ret = BSP_disp_lcd_set_bright(ubuffer[0], ubuffer[1]);
+    		ret = BSP_disp_lcd_set_bright(ubuffer[0], ubuffer[1],0);
     		break;
 
     	case DISP_CMD_LCD_GET_BRIGHTNESS:
@@ -1207,10 +1261,18 @@ long disp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
     //----tv----
     	case DISP_CMD_TV_ON:
     		ret = BSP_disp_tv_open(ubuffer[0]);
+            if(suspend_status != 0)
+            {
+                suspend_output_type[ubuffer[0]] = DISP_OUTPUT_TYPE_TV;
+            }
     		break;
 
     	case DISP_CMD_TV_OFF:
     		ret = BSP_disp_tv_close(ubuffer[0]);
+            if(suspend_status != 0)
+            {
+                suspend_output_type[ubuffer[0]] = DISP_OUTPUT_TYPE_NONE;
+            }
     		break;
 
     	case DISP_CMD_TV_SET_MODE:
@@ -1266,10 +1328,18 @@ long disp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
     //----hdmi----
     	case DISP_CMD_HDMI_ON:
     		ret = BSP_disp_hdmi_open(ubuffer[0]);
+            if(suspend_status != 0)
+            {
+                suspend_output_type[ubuffer[0]] = DISP_OUTPUT_TYPE_HDMI;
+            }
     		break;
 
     	case DISP_CMD_HDMI_OFF:
     		ret = BSP_disp_hdmi_close(ubuffer[0]);
+            if(suspend_status != 0)
+            {
+                suspend_output_type[ubuffer[0]] = DISP_OUTPUT_TYPE_NONE;
+            }
     		break;
 
     	case DISP_CMD_HDMI_SET_MODE:
@@ -1302,10 +1372,18 @@ long disp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
     //----vga----
     	case DISP_CMD_VGA_ON:
     		ret = BSP_disp_vga_open(ubuffer[0]);
+            if(suspend_status != 0)
+            {
+                suspend_output_type[ubuffer[0]] = DISP_OUTPUT_TYPE_VGA;
+            }
     		break;
 
     	case DISP_CMD_VGA_OFF:
     		ret = BSP_disp_vga_close(ubuffer[0]);
+            if(suspend_status != 0)
+            {
+                suspend_output_type[ubuffer[0]] = DISP_OUTPUT_TYPE_NONE;
+            }
     		break;
 
     	case DISP_CMD_VGA_SET_MODE:

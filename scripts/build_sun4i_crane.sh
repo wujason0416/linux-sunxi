@@ -86,8 +86,6 @@ build_kernel()
 	cp drivers/net/wireless/bcm4330/firmware/bcm4330.bin ${LICHEE_MOD_DIR}
 	cp drivers/net/wireless/bcm4330/firmware/bcm4330.hcd ${LICHEE_MOD_DIR}
 	cp drivers/net/wireless/bcm4330/firmware/nvram.txt ${LICHEE_MOD_DIR}/bcm4330_nvram.txt
-	cp drivers/net/wireless/bcm4330/firmware/mw269v3_fw.bin ${LICHEE_MOD_DIR}
-	cp drivers/net/wireless/bcm4330/firmware/mw269v3_nvram.txt ${LICHEE_MOD_DIR}
 }
 
 build_modules()
@@ -129,11 +127,6 @@ build_modules()
 			CROSS_COMPILE=${CROSS_COMPILE} ARCH=arm LINUXVER=${KERNEL_VERSION} \
 			LICHEE_MOD_DIR=${LICHEE_MOD_DIR} LINUXDIR=${LICHEE_KDIR} CONFIG_CHIP_ID=${CONFIG_CHIP_ID} \
 			INSTALL_DIR=${LICHEE_MOD_DIR} dhd-cdc-sdmmc-gpl
-	#build bcm40181 sdio wifi module 5.90.125.69.2
-	make -C modules/wifi/bcm40181/5.90.125.69.2/open-src/src/dhd/linux \
-			CROSS_COMPILE=${CROSS_COMPILE} ARCH=arm LINUXVER=${KERNEL_VERSION} \
-			LICHEE_MOD_DIR=${LICHEE_MOD_DIR} LINUXDIR=${LICHEE_KDIR} CONFIG_CHIP_ID=${CONFIG_CHIP_ID} \
-			INSTALL_DIR=${LICHEE_MOD_DIR} OEM_ANDROID=1 dhd-cdc-sdmmc-gpl
 }
 
 clean_kernel()
@@ -167,11 +160,6 @@ clean_modules()
 	        clean
 	#build usi-bmc4329 sdio wifi module
 	make -C modules/wifi/usi-bcm4329/v4.218.248.15/open-src/src/dhd/linux \
-			CROSS_COMPILE=${CROSS_COMPILE} ARCH=arm LINUXVER=${KERNEL_VERSION} \
-			LICHEE_MOD_DIR=${LICHEE_MOD_DIR} LINUXDIR=${LICHEE_KDIR} CONFIG_CHIP_ID=${CONFIG_CHIP_ID} \
-			INSTALL_DIR=${LICHEE_MOD_DIR} clean
-	#build bcm40181 sdio wifi module 5.90.125.69.2
-	make -C modules/wifi/bcm40181/5.90.125.69.2/open-src/src/dhd/linux \
 			CROSS_COMPILE=${CROSS_COMPILE} ARCH=arm LINUXVER=${KERNEL_VERSION} \
 			LICHEE_MOD_DIR=${LICHEE_MOD_DIR} LINUXDIR=${LICHEE_KDIR} CONFIG_CHIP_ID=${CONFIG_CHIP_ID} \
 			INSTALL_DIR=${LICHEE_MOD_DIR} clean

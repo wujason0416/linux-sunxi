@@ -232,18 +232,20 @@
 #define SW_INT_SRCPRIO_REG2               (SW_VA_INT_IO_BASE + 0x88)
 #define SW_INT_SRCPRIO_REG3               (SW_VA_INT_IO_BASE + 0x8c)
 #define SW_INT_SRCPRIO_REG4               (SW_VA_INT_IO_BASE + 0x90)
-
+#define SW_INT_SRCPRIO_REG5               (SW_VA_INT_IO_BASE + 0x94)
 
 #define SW_UART0_THR                      (*(volatile unsigned int *)(SW_VA_UART0_IO_BASE + 0x00))
 #define SW_UART0_LSR                      (*(volatile unsigned int *)(SW_VA_UART0_IO_BASE + 0x14))
 #define SW_UART0_USR                      (*(volatile unsigned int *)(SW_VA_UART0_IO_BASE + 0x7c))
 
+#define SW_UART1_THR                      (*(volatile unsigned int *)(SW_VA_UART1_IO_BASE + 0x00))
+#define SW_UART1_LSR                      (*(volatile unsigned int *)(SW_VA_UART1_IO_BASE + 0x14))
+#define SW_UART1_USR                      (*(volatile unsigned int *)(SW_VA_UART1_IO_BASE + 0x7c))
+
 #define PA_VIC_BASE                       0x01c20400
 #define VA_VIC_BASE                       IO_ADDRESS(PA_VIC_BASE)
 #define PIO_BASE                          SW_PA_PORTC_IO_BASE
 
-#define SW_G2D_MEM_BASE                   0x58000000
-#define SW_G2D_MEM_MAX                    0x1000000
 
 /**
 *@name DRAM controller register address
@@ -251,6 +253,7 @@
 */
 #define SW_DRAM_SDR_CTL_REG               (SW_VA_DRAM_IO_BASE + 0x0C)
 #define SW_DRAM_SDR_DCR                   (SW_VA_DRAM_IO_BASE + 0x04)
+
 
 
 #endif

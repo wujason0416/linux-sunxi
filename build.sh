@@ -36,6 +36,10 @@ if [ -z "$MODULE" ]; then
 	MODULE="all"
 fi
 
+if [  "$PLATFORM" = "a12_nuclear" ]; then
+	PLATFORM="a12"
+fi
+
 if [ -x ./scripts/build_${PLATFORM}.sh ]; then
 	./scripts/build_${PLATFORM}.sh $MODULE
 else
