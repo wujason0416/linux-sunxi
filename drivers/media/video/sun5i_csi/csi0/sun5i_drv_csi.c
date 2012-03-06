@@ -68,7 +68,6 @@ static unsigned video_nr = 0;
 static unsigned first_flag = 0;
 
 
-
 static char ccm[I2C_NAME_SIZE] = "";
 static uint i2c_addr = 0xff;
 
@@ -448,6 +447,12 @@ static int update_ccm_info(struct csi_dev *dev , struct ccm_config *ccm_cfg)
 	 dev->iovdd = ccm_cfg->iovdd;
 	 dev->avdd = ccm_cfg->avdd;
 	 dev->dvdd = ccm_cfg->dvdd;
+	 dev->reset_io    = ccm_cfg->reset_io;
+	 dev->standby_io  = ccm_cfg->standby_io;
+	 dev->power_io    = ccm_cfg->power_io;
+	 dev->flash_io    = ccm_cfg->flash_io;
+	 dev->af_power_io = ccm_cfg->af_power_io;
+
 	 return v4l2_subdev_call(dev->sd,core,ioctl,CSI_SUBDEV_CMD_SET_INFO,dev->ccm_info);
 }
 
@@ -459,7 +464,6 @@ static irqreturn_t csi_isr(int irq, void *priv)
 //	__csi_int_status_t * status;
 
 	csi_dbg(3,"csi_isr\n");
-
 	bsp_csi_int_disable(dev,CSI_INT_FRAME_DONE);//CSI_INT_FRAME_DONE
 
 	spin_lock(&dev->slock);
@@ -512,7 +516,6 @@ set_next_addr:
 
 unlock:
 	spin_unlock(&dev->slock);
-
 //	bsp_csi_int_get_status(dev, status);
 //	if((status->buf_0_overflow) || (status->buf_1_overflow) || (status->buf_2_overflow))
 //	{
@@ -980,8 +983,8 @@ static int vidioc_streamon(struct file *file, void *priv, enum v4l2_buf_type i)
 	bsp_csi_int_clear_status(dev,CSI_INT_FRAME_DONE);//CSI_INT_FRAME_DONE
 	bsp_csi_int_enable(dev, CSI_INT_FRAME_DONE);//CSI_INT_FRAME_DONE
 	bsp_csi_capture_video_start(dev);
-	csi_start_generating(dev);
 
+	csi_start_generating(dev);
 	return 0;
 }
 
@@ -1253,7 +1256,7 @@ static ssize_t csi_read(struct file *file, char __user *data, size_t count, loff
 	struct csi_dev *dev = video_drvdata(file);
 
 //	csi_start_generating(dev);
-	if(csi_is_generating) {
+	if(csi_is_generating(dev)) {
 		return videobuf_read_stream(&dev->vb_vidq, data, count, ppos, 0,
 					file->f_flags & O_NONBLOCK);
 	} else {
@@ -1268,7 +1271,7 @@ static unsigned int csi_poll(struct file *file, struct poll_table_struct *wait)
 	struct videobuf_queue *q = &dev->vb_vidq;
 
 //	csi_start_generating(dev);
-	if(csi_is_generating) {
+	if(csi_is_generating(dev)) {
 		return videobuf_poll_stream(file, q, wait);
 	} else {
 		csi_err("csi is not generating!\n");
@@ -1291,6 +1294,7 @@ static int csi_open(struct file *file)
 
 	csi_clk_enable(dev);
 	csi_reset_disable(dev);
+
 	//open all the device power and set it to standby on
 	for (input_num=dev->dev_qty-1; input_num>=0; input_num--) {
 		/* update target device info and select it*/
@@ -1531,18 +1535,44 @@ static int fetch_config(struct csi_dev *dev)
 		/* fetch flip issue */
 		ret = script_parser_fetch("csi0_para","csi_vflip", &dev->ccm_cfg[0]->vflip , sizeof(int));
 		if (ret) {
-			csi_err("fetch csi0 vflip from sys_config failed\n");
+			csi_err("fetch vflip from sys_config failed\n");
 		}
 
 		ret = script_parser_fetch("csi0_para","csi_hflip", &dev->ccm_cfg[0]->hflip , sizeof(int));
 		if (ret) {
-			csi_err("fetch csi0 hflip from sys_config failed\n");
+			csi_err("fetch hflip from sys_config failed\n");
 		}
 
 		/* fetch flash light issue */
 		ret = script_parser_fetch("csi0_para","csi_flash_pol", &dev->ccm_cfg[0]->flash_pol , sizeof(int));
 		if (ret) {
-			csi_err("fetch csi0 csi_flash_pol from sys_config failed\n");
+			csi_err("fetch csi_flash_pol from sys_config failed\n");
+		}
+
+		/* fetch reset/power/standby/flash/af io issue */
+		ret = script_parser_fetch("csi0_para","csi_reset", (int *)&dev->ccm_cfg[0]->reset_io , sizeof(user_gpio_set_t)/sizeof(int));
+		if (ret) {
+			csi_err("fetch csi_reset from sys_config failed\n");
+		}
+
+		ret = script_parser_fetch("csi0_para","csi_stby", (int *)&dev->ccm_cfg[0]->standby_io , sizeof(user_gpio_set_t)/sizeof(int));
+		if (ret) {
+			csi_err("fetch csi_stby from sys_config failed\n");
+		}
+
+		ret = script_parser_fetch("csi0_para","csi_power_en", (int *)&dev->ccm_cfg[0]->power_io , sizeof(user_gpio_set_t)/sizeof(int));
+		if (ret) {
+			csi_err("fetch csi_power_en from sys_config failed\n");
+		}
+
+		ret = script_parser_fetch("csi0_para","csi_flash", (int *)&dev->ccm_cfg[0]->flash_io , sizeof(user_gpio_set_t)/sizeof(int));
+		if (ret) {
+			csi_err("fetch csi_flash from sys_config failed\n");
+		}
+
+		ret = script_parser_fetch("csi0_para","csi_af_en", (int *)&dev->ccm_cfg[0]->af_power_io , sizeof(user_gpio_set_t)/sizeof(int));
+		if (ret) {
+			csi_err("fetch csi_af_en from sys_config failed\n");
 		}
 	}
 
@@ -1596,18 +1626,44 @@ static int fetch_config(struct csi_dev *dev)
 		/* fetch flip issue */
 		ret = script_parser_fetch("csi0_para","csi_vflip_b", &dev->ccm_cfg[1]->vflip , sizeof(int));
 		if (ret) {
-			csi_err("fetch csi0 vflip_b from sys_config failed\n");
+			csi_err("fetch vflip_b from sys_config failed\n");
 		}
 
 		ret = script_parser_fetch("csi0_para","csi_hflip_b", &dev->ccm_cfg[1]->hflip , sizeof(int));
 		if (ret) {
-			csi_err("fetch csi0 hflip_b from sys_config failed\n");
+			csi_err("fetch hflip_b from sys_config failed\n");
 		}
 
 		/* fetch flash light issue */
 		ret = script_parser_fetch("csi0_para","csi_flash_pol_b", &dev->ccm_cfg[1]->flash_pol , sizeof(int));
 		if (ret) {
-			csi_err("fetch csi0 csi_flash_pol_b from sys_config failed\n");
+			csi_err("fetch csi_flash_pol_b from sys_config failed\n");
+		}
+
+		/* fetch reset/power/standby/flash/af io issue */
+		ret = script_parser_fetch("csi0_para","csi_reset_b", (int *)&dev->ccm_cfg[1]->reset_io , sizeof(user_gpio_set_t)/sizeof(int));
+		if (ret) {
+			csi_err("fetch csi_reset_b from sys_config failed\n");
+		}
+
+		ret = script_parser_fetch("csi0_para","csi_stby_b", (int *)&dev->ccm_cfg[1]->standby_io , sizeof(user_gpio_set_t)/sizeof(int));
+		if (ret) {
+			csi_err("fetch csi_stby_b from sys_config failed\n");
+		}
+
+		ret = script_parser_fetch("csi0_para","csi_power_en_b", (int *)&dev->ccm_cfg[1]->power_io , sizeof(user_gpio_set_t)/sizeof(int));
+		if (ret) {
+			csi_err("fetch csi_power_en_b from sys_config failed\n");
+		}
+
+		ret = script_parser_fetch("csi0_para","csi_flash_b", (int *)&dev->ccm_cfg[1]->flash_io , sizeof(user_gpio_set_t)/sizeof(int));
+		if (ret) {
+			csi_err("fetch csi_flash_b from sys_config failed\n");
+		}
+
+		ret = script_parser_fetch("csi0_para","csi_af_en_b", (int *)&dev->ccm_cfg[1]->af_power_io , sizeof(user_gpio_set_t)/sizeof(int));
+		if (ret) {
+			csi_err("fetch csi_af_en_b from sys_config failed\n");
 		}
 	}
 
@@ -1639,7 +1695,6 @@ static int csi_probe(struct platform_device *pdev)
 	int input_num;
 
 	csi_dbg(0,"csi_probe\n");
-
 	/*request mem for dev*/
 	dev = kzalloc(sizeof(struct csi_dev), GFP_KERNEL);
 	if (!dev) {
@@ -1817,16 +1872,6 @@ reg_sd:
 				goto free_dev;
 			}
 		}
-
-		if(dev->stby_mode == 1) {
-			csi_print("power on and power off camera!\n");
-      ret = update_ccm_info(dev, dev->ccm_cfg[input_num]);
-      if(ret<0)
-	csi_err("Error when set ccm info when probe!\n");
-
-			v4l2_subdev_call(dev->ccm_cfg[input_num]->sd,core, s_power, CSI_SUBDEV_PWR_ON);
-			v4l2_subdev_call(dev->ccm_cfg[input_num]->sd,core, s_power, CSI_SUBDEV_PWR_OFF);
-		}
 	}
 
 	for(input_num=0; input_num<dev->dev_qty; input_num++)
@@ -1852,6 +1897,19 @@ reg_sd:
 		goto unreg_dev;
 	}
 
+	/* power on and power off device */
+	for(input_num=0; input_num<dev->dev_qty; input_num++)
+	{
+		if(dev->stby_mode == 1) {
+			csi_print("power on and power off camera!\n");
+      ret = update_ccm_info(dev, dev->ccm_cfg[input_num]);
+      if(ret<0)
+	csi_err("Error when set ccm info when probe!\n");
+
+			v4l2_subdev_call(dev->ccm_cfg[input_num]->sd,core, s_power, CSI_SUBDEV_PWR_ON);
+			v4l2_subdev_call(dev->ccm_cfg[input_num]->sd,core, s_power, CSI_SUBDEV_PWR_OFF);
+		}
+	}
 //	csi_dbg("%s(): csi-%d registered successfully\n",__func__, dev->id);
 
 	/*video device register	*/
@@ -2089,7 +2147,7 @@ static struct platform_device csi_device[] = {
 	.name           	= "sun5i_csi",
 	.id             	= 0,
 	.num_resources		= ARRAY_SIZE(csi0_resource),
-	.resource       	= csi0_resource,
+  .resource       	= csi0_resource,
 	.dev.release      = csi_dev_release,
 	}
 };
@@ -2114,13 +2172,13 @@ static int __init csi_init(void)
 	}
 
 	ret = platform_driver_register(&csi_driver);
+
 	if (ret) {
 		csi_err("platform driver register failed\n");
 		return -1;
 	}
 
 	ret = platform_device_register(&csi_device[0]);
-
 	if (ret) {
 		csi_err("platform device register failed\n");
 		return -1;
