@@ -88,7 +88,7 @@ _real_start:
 	ldmia   r4, {r1, r2}
 
 #elif CONFIG_CHIP_ID == 1123
-1:	.long   0xfe0
+1:	.long   0x1008
 	.long   0x81000000
 
 _real_start:
