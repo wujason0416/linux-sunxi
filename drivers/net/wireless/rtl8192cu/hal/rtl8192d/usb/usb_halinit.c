@@ -1761,7 +1761,7 @@ _func_enter_;
 
 #else
 
-	status = FirmwareDownload92D(padapter);
+	status = FirmwareDownload92D(padapter, _FALSE);
 	RELEASE_GLOBAL_MUTEX(GlobalMutexForPowerAndEfuse);
 	if(status == _FAIL){
 		padapter->bFWReady = _FALSE;
@@ -2189,7 +2189,7 @@ n. LEDCFG 0x4C[15:0] = 0x8080
 
 	//1. Disable GPIO[7:0]
 	rtw_write16(Adapter, REG_GPIO_PIN_CTRL+2, 0x0000);
-    	value32 = rtw_read32(Adapter, REG_GPIO_PIN_CTRL) & 0xFFFF00FF;
+	value32 = rtw_read32(Adapter, REG_GPIO_PIN_CTRL) & 0xFFFF00FF;
 	value8 = (u8) (value32&0x000000FF);
 	value32 |= ((value8<<8) | 0x00FF0000);
 	rtw_write32(Adapter, REG_GPIO_PIN_CTRL, value32);
@@ -2496,8 +2496,8 @@ _ResetDigitalProcedure1(
 			}
 			#endif
 
-			rtw_write8(Adapter, REG_SYS_FUNC_EN+1, 0x54);	//Reset MAC and Enable 8051
 			rtw_write8(Adapter, REG_MCUFWDL, 0);
+			rtw_write8(Adapter, REG_SYS_FUNC_EN+1, 0x54);	//Reset MAC and Enable 8051
 
 		}
 	}
@@ -2672,7 +2672,7 @@ CardDisableHWSM( // HW Auto state machine
 
 	//0x20:value 05-->04
 	rtw_write8(Adapter, REG_LDOA15_CTRL,0x04);
-      	//RF Control
+	//RF Control
 	rtw_write8(Adapter, REG_RF_CTRL,0);
 
 	//  ==== Reset digital sequence   ======
@@ -2730,7 +2730,7 @@ CardDisableWithoutHWSM( // without HW Auto state machine
 
 	//0x20:value 05-->04
 	rtw_write8(Adapter, REG_LDOA15_CTRL,0x04);
-      	//RF Control
+	//RF Control
 	rtw_write8(Adapter, REG_RF_CTRL,0);
 
 	//  ==== Reset digital sequence   ======
@@ -4735,6 +4735,30 @@ _func_enter_;
 			}
 			break;
 #endif //CONFIG_P2P
+#ifdef CONFIG_TDLS
+		case HW_VAR_TDLS_WRCR:
+			rtw_write32(Adapter, REG_RCR, rtw_read32(Adapter, REG_RCR)&(~ BIT(6) ));
+			break;
+		case HW_VAR_TDLS_INIT_CH_SEN:
+			{
+				rtw_write32(Adapter, REG_RCR, rtw_read32(Adapter, REG_RCR)&(~ BIT(6) )&(~ BIT(7) ));
+				rtw_write16(Adapter, REG_RXFLTMAP2,0xffff);
+
+				//disable update TSF
+				rtw_write8(Adapter, REG_BCN_CTRL, rtw_read8(Adapter, REG_BCN_CTRL)|BIT(4));
+			}
+			break;
+		case HW_VAR_TDLS_DONE_CH_SEN:
+			{
+				//enable update TSF
+				rtw_write8(Adapter, REG_BCN_CTRL, rtw_read8(Adapter, REG_BCN_CTRL)&(~ BIT(4)));
+				rtw_write32(Adapter, REG_RCR, rtw_read32(Adapter, REG_RCR)|(BIT(7) ));
+			}
+			break;
+		case HW_VAR_TDLS_RS_RCR:
+			rtw_write32(Adapter, REG_RCR, rtw_read32(Adapter, REG_RCR)|(BIT(6)));
+			break;
+#endif //CONFIG_TDLS
 		case HW_VAR_INITIAL_GAIN:
 			{
 				DIG_T	*pDigTable = &pdmpriv->DM_DigTable;
@@ -4792,6 +4816,101 @@ _func_enter_;
 
 			}
 			break;
+		case HW_VAR_WOWLAN:
+#ifdef CONFIG_WOWLAN_92D
+			{
+				struct wowlan_ioctl_param *poidparam;
+
+				int res;
+				poidparam = (struct wowlan_ioctl_param *)val;
+				switch (poidparam->subcode){
+					case WOWLAN_PATTERN_MATCH:
+						//Turn on the Pattern Match feature
+						printk("\n poidparam->data[0]=%d\n",poidparam->data[0]);
+						if(poidparam->data[0]==1){
+							//rtw_write8(Adapter, REG_WOW_CTRL, (rtw_read8(Adapter, REG_WOW_CTRL)|BIT(1)));
+							Adapter->pwrctrlpriv.wowlan_pattern=_TRUE;
+							printk("%s Adapter->pwrctrlpriv.wowlan_pattern=%x\n",__FUNCTION__,Adapter->pwrctrlpriv.wowlan_pattern);
+						}
+						else{
+							//rtw_write8(Adapter, REG_WOW_CTRL, (rtw_read8(Adapter, REG_WOW_CTRL)&~BIT(1)));
+							Adapter->pwrctrlpriv.wowlan_pattern=_FALSE;
+						}
+						break;
+					case WOWLAN_MAGIC_PACKET:
+						//Turn on the Magic Packet feature
+						printk("\n poidparam->data[0]=%d\n",poidparam->data[0]);
+						if(poidparam->data[0]==1){
+							//rtw_write8(Adapter, REG_WOW_CTRL, (rtw_read8(Adapter, REG_WOW_CTRL)|BIT(2)));
+							Adapter->pwrctrlpriv.wowlan_magic=_TRUE;
+							printk("%s Adapter->pwrctrlpriv.wowlan_magic=%x\n",__FUNCTION__,Adapter->pwrctrlpriv.wowlan_magic);
+						}
+						else{
+							//rtw_write8(Adapter, REG_WOW_CTRL, (rtw_read8(Adapter, REG_WOW_CTRL)&~BIT(2)));
+							Adapter->pwrctrlpriv.wowlan_magic=_FALSE;
+						}
+						break;
+					case WOWLAN_UNICAST:
+						//Turn on the Unicast wakeup feature
+						if(poidparam->data[0]==1){
+							//rtw_write8(Adapter, REG_WOW_CTRL, (rtw_read8(Adapter, REG_WOW_CTRL)|BIT(3)));
+							Adapter->pwrctrlpriv.wowlan_unicast=_TRUE;
+						}
+						else{
+							//rtw_write8(Adapter, REG_WOW_CTRL, (rtw_read8(Adapter, REG_WOW_CTRL)&~BIT(3)));
+							Adapter->pwrctrlpriv.wowlan_unicast=_FALSE;
+							printk("%s Adapter->pwrctrlpriv.wowlan_unicast=%x\n",__FUNCTION__,Adapter->pwrctrlpriv.wowlan_unicast);
+						}
+						break;
+					case WOWLAN_SET_PATTERN:
+						//Setting the Pattern for wowlan
+						res=rtw_wowlan_set_pattern(Adapter,poidparam->data);
+						if(res)
+							printk("rtw_wowlan_set_pattern retern value=0x%x",res);
+						break;
+					case WOWLAN_DUMP_REG:
+						//dump the WKFMCAM and WOW_CTRL register
+						printk("\n\n\n\n rtw_wowlan_ctrl: WOW_CTRL=0x%x \n",rtw_read8(Adapter, REG_WOW_CTRL));
+						printk("print WKFMCAM index =%d ",poidparam->data[0]);
+						{	int cmd=0,offset=0;
+							for(offset=0;offset<5;offset++){
+								cmd=BIT(31)|(poidparam->data[0]+offset);
+								rtw_write32(Adapter, REG_WKFMCAM_CMD, cmd);
+								printk("offset[%d]=0x%.8x  ",offset,rtw_read32(Adapter, REG_WKFMCAM_RWD));
+								printk("offset[%d]=MSB 0x%x:0x%x:0x%x:0x%x  ",offset,rtw_read8(Adapter, REG_WKFMCAM_RWD+3),rtw_read8(Adapter, REG_WKFMCAM_RWD+2),rtw_read8(Adapter, REG_WKFMCAM_RWD+1),rtw_read8(Adapter, REG_WKFMCAM_RWD));
+							}
+						}
+
+						break;
+					case WOWLAN_ENABLE:
+						SetFwRelatedForWoWLAN8192CU(Adapter, _TRUE);
+						//Set Pattern
+						rtw_wowlan_reload_pattern(Adapter);
+						rtl8192c_set_wowlan_cmd(Adapter);
+						rtw_write8(Adapter, 0x6, rtw_read8(Adapter, 0x6)|BIT(3));
+						rtw_msleep_os(10);
+						printk(" \n REG_WOW_CTRL=0x%x \n",rtw_read8(Adapter, REG_WOW_CTRL));
+//						if(rtw_read8(Adapter, REG_WOW_CTRL)==0)
+//							rtw_write8(Adapter, REG_WOW_CTRL, (rtw_read8(Adapter, REG_WOW_CTRL)|BIT(1)|BIT(2)|BIT(3)));
+						printk(" \n REG_WOW_CTRL=0x%x \n",rtw_read8(Adapter, REG_WOW_CTRL));
+						break;
+
+					case WOWLAN_DISABLE:
+						Adapter->pwrctrlpriv.wowlan_mode=_FALSE;
+						rtl8192c_set_wowlan_cmd(Adapter);
+						rtw_msleep_os(10);
+						break;
+
+					default:
+						break;
+				}
+				if (Adapter->pwrctrlpriv.wowlan_unicast||Adapter->pwrctrlpriv.wowlan_magic || Adapter->pwrctrlpriv.wowlan_pattern)
+					Adapter->pwrctrlpriv.wowlan_mode =_TRUE;
+				else
+					Adapter->pwrctrlpriv.wowlan_mode =_FALSE;
+			}
+			break;
+#endif //CONFIG_WOWLAN_92D
 		case HW_VAR_CHECK_TXBUF:
 #if defined(CONFIG_CONCURRENT_MODE) || defined(CONFIG_DUALMAC_CONCURRENT)
 			{

@@ -100,3 +100,8 @@ void	rtl8192d_set_p2p_ps_offload_cmd(_adapter* padapter, u8 p2p_ps_state);
 #endif //CONFIG_P2P
 
 #endif
+
+#ifdef CONFIG_WOWLAN_92D
+void rtl8192d_set_wowlan_cmd(_adapter* padapter);
+void SetFwRelatedForWoWLAN8192DU(_adapter* 	padapter,u8 bHostIsGoingtoSleep);
+#endif // CONFIG_WOWLAN_92D

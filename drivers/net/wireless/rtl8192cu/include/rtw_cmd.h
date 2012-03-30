@@ -874,6 +874,13 @@ struct SetChannelSwitch_param
 	u8 new_ch_no;
 };
 
+/*H2C Handler index: 62 */
+struct TDLSoption_param
+{
+	u8 addr[ETH_ALEN];
+	u8 option;
+};
+
 #define GEN_CMD_CODE(cmd)	cmd ## _CMD_
 
 
@@ -943,6 +950,7 @@ u8 rtw_chk_hi_queue_cmd(_adapter*padapter);
 extern u8 rtw_set_chplan_cmd(_adapter*padapter, u8 chplan, u8 enaueue);
 extern u8 rtw_led_blink_cmd(_adapter*padapter, PLED_871x pLed);
 extern u8 rtw_set_csa_cmd(_adapter*padapter, u8 new_ch_no);
+extern u8 rtw_tdls_cmd(_adapter*padapter, u8 *addr, u8 option);
 
 u8 rtw_drvextra_cmd_hdl(_adapter *padapter, unsigned char *pbuf);
 
@@ -966,18 +974,18 @@ struct _cmd_callback {
 enum rtw_h2c_cmd
 {
 	GEN_CMD_CODE(_Read_MACREG) ,	/*0*/
- 	GEN_CMD_CODE(_Write_MACREG) ,
- 	GEN_CMD_CODE(_Read_BBREG) ,
- 	GEN_CMD_CODE(_Write_BBREG) ,
- 	GEN_CMD_CODE(_Read_RFREG) ,
+	GEN_CMD_CODE(_Write_MACREG) ,
+	GEN_CMD_CODE(_Read_BBREG) ,
+	GEN_CMD_CODE(_Write_BBREG) ,
+	GEN_CMD_CODE(_Read_RFREG) ,
  	GEN_CMD_CODE(_Write_RFREG) , /*5*/
- 	GEN_CMD_CODE(_Read_EEPROM) ,
- 	GEN_CMD_CODE(_Write_EEPROM) ,
- 	GEN_CMD_CODE(_Read_EFUSE) ,
- 	GEN_CMD_CODE(_Write_EFUSE) ,
+	GEN_CMD_CODE(_Read_EEPROM) ,
+	GEN_CMD_CODE(_Write_EEPROM) ,
+	GEN_CMD_CODE(_Read_EFUSE) ,
+	GEN_CMD_CODE(_Write_EFUSE) ,
 
  	GEN_CMD_CODE(_Read_CAM) ,	/*10*/
- 	GEN_CMD_CODE(_Write_CAM) ,
+	GEN_CMD_CODE(_Write_CAM) ,
  	GEN_CMD_CODE(_setBCNITV),
  	GEN_CMD_CODE(_setMBIDCFG),
  	GEN_CMD_CODE(_JoinBss),   /*14*/
@@ -991,7 +999,7 @@ enum rtw_h2c_cmd
  	GEN_CMD_CODE(_SetStaKey) ,
  	GEN_CMD_CODE(_SetAssocSta) ,
  	GEN_CMD_CODE(_DelAssocSta) ,
- 	GEN_CMD_CODE(_SetStaPwrState) ,
+	GEN_CMD_CODE(_SetStaPwrState) ,
  	GEN_CMD_CODE(_SetBasicRate) , /*25*/
  	GEN_CMD_CODE(_GetBasicRate) ,
  	GEN_CMD_CODE(_SetDataRate) ,
@@ -1004,10 +1012,10 @@ enum rtw_h2c_cmd
  	GEN_CMD_CODE(_readRssi) ,
  	GEN_CMD_CODE(_readGain) ,
  	GEN_CMD_CODE(_SetAtim) , /*35*/
- 	GEN_CMD_CODE(_SetPwrMode) ,
+	GEN_CMD_CODE(_SetPwrMode) ,
  	GEN_CMD_CODE(_JoinbssRpt),
  	GEN_CMD_CODE(_SetRaTable) ,
- 	GEN_CMD_CODE(_GetRaTable) ,
+	GEN_CMD_CODE(_GetRaTable) ,
 
  	GEN_CMD_CODE(_GetCCXReport), /*40*/
  	GEN_CMD_CODE(_GetDTMReport),
@@ -1035,6 +1043,7 @@ enum rtw_h2c_cmd
 	GEN_CMD_CODE(_LedBlink), /*60*/
 
 	GEN_CMD_CODE(_SetChannelSwitch), /*61*/
+	GEN_CMD_CODE(_TDLS), /*62*/
 
 	MAX_H2CCMD
 };
@@ -1093,8 +1102,8 @@ struct _cmd_callback 	rtw_cmd_callback[] =
 
 	{GEN_CMD_CODE(_GetCCXReport), NULL}, /*40*/
  	{GEN_CMD_CODE(_GetDTMReport),	NULL},
- 	{GEN_CMD_CODE(_GetTXRateStatistics), NULL},
- 	{GEN_CMD_CODE(_SetUsbSuspend), NULL},
+	{GEN_CMD_CODE(_GetTXRateStatistics), NULL},
+	{GEN_CMD_CODE(_SetUsbSuspend), NULL},
  	{GEN_CMD_CODE(_SetH2cLbk), NULL},
  	{GEN_CMD_CODE(_AddBAReq), NULL}, /*45*/
 	{GEN_CMD_CODE(_SetChannel), NULL},		/*46*/
@@ -1115,6 +1124,7 @@ struct _cmd_callback 	rtw_cmd_callback[] =
 	{GEN_CMD_CODE(_SetChannelPlan), NULL},/*59*/
 	{GEN_CMD_CODE(_LedBlink), NULL},/*60*/
 	{GEN_CMD_CODE(_SetChannelSwitch), NULL},/*61*/
+	{GEN_CMD_CODE(_TDLS), NULL},/*62*/
 };
 #endif
 
