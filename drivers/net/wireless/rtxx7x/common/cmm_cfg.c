@@ -546,6 +546,11 @@ INT RTMP_COM_IoctlHandle(
 			break;
 #endif /* CONFIG_APSTA_MIXED_SUPPORT */
 #ifdef CONFIG_STA_SUPPORT
+		case CMD_RTPRIV_IOCTL_ADAPTER_SEND_DISSASSOCIATE:
+		/* clear driver state to fRTMP_ADAPTER_SUSPEND */
+			RtmpOSWrielessEventSend(pAd->net_dev, RT_WLAN_EVENT_CGIWAP, -1, NULL, NULL, 0);
+			break;
+
 #ifdef CONFIG_PM
 #ifdef USB_SUPPORT_SELECTIVE_SUSPEND
                 case CMD_RTPRIV_IOCTL_USB_DEV_GET:
@@ -582,11 +587,13 @@ INT RTMP_COM_IoctlHandle(
 
 		case CMD_RTPRIV_IOCTL_ADAPTER_CPU_SUSPEND_SET:
 		/* set driver state to fRTMP_ADAPTER_CPU_SUSPEND */
+			DBGPRINT(RT_DEBUG_TRACE, ("CMD_RTPRIV_IOCTL_ADAPTER_CPU_SUSPEND_SET\n"));
 			RTMP_SET_FLAG(pAd,fRTMP_ADAPTER_CPU_SUSPEND);
 			break;
 
 		case CMD_RTPRIV_IOCTL_ADAPTER_CPU_SUSPEND_CLEAR:
 		/* clear driver state to fRTMP_ADAPTER_CPU_SUSPEND */
+			DBGPRINT(RT_DEBUG_TRACE, ("CMD_RTPRIV_IOCTL_ADAPTER_CPU_SUSPEND_CLEAR\n"));
 			RTMP_CLEAR_FLAG(pAd,fRTMP_ADAPTER_CPU_SUSPEND);
 			break;
 
@@ -780,11 +787,13 @@ INT RTMP_COM_IoctlHandle(
 					DBGPRINT(RT_DEBUG_TRACE, ("rt28xx_open return fail!\n"));
 					return NDIS_STATUS_FAILURE;
 				}
+				else
+					VIRTUAL_IF_INC(pAd);
 			}
 			else
 			{
 			}
-			VIRTUAL_IF_INC(pAd);
+
 		}
 			break;
 
@@ -793,9 +802,12 @@ INT RTMP_COM_IoctlHandle(
 		{
 			RT_CMD_INF_UP_DOWN *pInfConf = (RT_CMD_INF_UP_DOWN *)pData;
 
-			VIRTUAL_IF_DEC(pAd);
-			if (VIRTUAL_IF_NUM(pAd) == 0)
+
+			if (VIRTUAL_IF_NUM(pAd) > 0)
+				{
 				pInfConf->rt28xx_close(pAd->net_dev);
+				VIRTUAL_IF_DEC(pAd);
+		  }
 		}
 			break;
 
