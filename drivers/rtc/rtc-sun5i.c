@@ -85,7 +85,7 @@
 #define RTC_NAME	"pcf8563"
 
 #define F25_ALARM
-#define RTC_ALARM_DEBUG
+//#define RTC_ALARM_DEBUG
 
 static struct i2c_driver pcf8563_driver;
 static __u32 twi_id = 0;
@@ -140,8 +140,6 @@ static int rtc_fetch_sysconfig_para(void)
 	char name[I2C_NAME_SIZE];
 	script_parser_value_type_t type = SCIRPT_PARSER_VALUE_TYPE_STRING;
 
-	printk("========RTC Inital ===================\n");
-
 	if(SCRIPT_PARSER_OK != script_parser_fetch("rtc_para", "rtc_used", &device_used, 1)){
 	                printk("rtc: script_parser_fetch err. \n");
 	                goto script_parser_fetch_err;
@@ -161,20 +159,16 @@ static int rtc_fetch_sysconfig_para(void)
 		}
 		u_i2c_addr.dirty_addr_buf[0] = twi_addr;
 		u_i2c_addr.dirty_addr_buf[1] = I2C_CLIENT_END;
-		printk("%s: after: rtc_twi_addr is 0x%x, dirty_addr_buf: 0x%hx. dirty_addr_buf[1]: 0x%hx \n", \
-		__func__, twi_addr, u_i2c_addr.dirty_addr_buf[0], u_i2c_addr.dirty_addr_buf[1]);
 
 		if(SCRIPT_PARSER_OK != script_parser_fetch("rtc_para", "rtc_twi_id", &twi_id, 1)){
 			pr_err("%s: script_parser_fetch err. \n", name);
 			goto script_parser_fetch_err;
 		}
-		printk("%s: rtc_twi_id is %d. \n", __func__, twi_id);
 
 	}else{
 		pr_err("%s: rtc_unused. \n",  __func__);
 		ret = -1;
 	}
-	printk("%s:ok\n",__func__);
 	return 0;
 
 script_parser_fetch_err:
@@ -191,12 +185,12 @@ script_parser_fetch_err:
 int rtc_detect(struct i2c_client *client, struct i2c_board_info *info)
 {
 	struct i2c_adapter *adapter = client->adapter;
-printk("%s,line:%d,twi_id:%d,adapter->nr:%d\n", __func__, __LINE__,twi_id,adapter->nr);
+
 	if(twi_id == adapter->nr)
 	{
 		pr_info("%s: Detected chip %s at adapter %d, address 0x%02x\n",\
 			 __func__, RTC_NAME, i2c_adapter_id(adapter), client->addr);
-printk("%s,line:%d\n", __func__, __LINE__);
+
 		strlcpy(info->type, RTC_NAME, I2C_NAME_SIZE);
 		return 0;
 	}else{
@@ -311,9 +305,6 @@ static int pcf8563_set_datetime(struct i2c_client *client, struct rtc_time *tm)
 		tm->tm_year = 110;// 2010 = 1900 + 110
 	}
 
-	printk("%s: secs=%d, mins=%d, hours=%d, mday=%d, mon=%d, year=%d\n",\
-		__func__,tm->tm_sec, tm->tm_min, tm->tm_hour, tm->tm_mday, tm->tm_mon, tm->tm_year);
-
 	/* hours, minutes and seconds */
 	buf[PCF8563_REG_SC] = bin2bcd(tm->tm_sec);
 	buf[PCF8563_REG_MN] = bin2bcd(tm->tm_min);
@@ -385,11 +376,6 @@ static int pcf8563_get_datetime(struct i2c_client *client, struct rtc_time *tm)
 			"low voltage detected, date/time is not reliable.\n");
 #endif
 
-#if 1
-	printk("%s,raw data is st1=%d, st2=%d, sec=%d, min=%d, hr=%d, mday=%d, wday=%d, mon=%d, year=%d\n",\
-	 __func__,buf[0], buf[1], buf[2], buf[3],buf[4], buf[5], buf[6], buf[7],buf[8]);
-#endif
-
 	tm->tm_sec = bcd2bin(buf[PCF8563_REG_SC] & 0x7F);
 	tm->tm_min = bcd2bin(buf[PCF8563_REG_MN] & 0x7F);
 	tm->tm_hour = bcd2bin(buf[PCF8563_REG_HR] & 0x3F); /* rtc hr 0-23 */
@@ -410,9 +396,6 @@ static int pcf8563_get_datetime(struct i2c_client *client, struct rtc_time *tm)
 		ret = pcf8563_set_datetime(client, tm);
 	}
 	#endif
-
-	printk("%s,line:%d, tm is secs=%d, mins=%d, hours=%d,mday=%d, mon=%d, year=%d, wday=%d\n",\
-		__func__,__LINE__, tm->tm_sec, tm->tm_min, tm->tm_hour, tm->tm_mday, tm->tm_mon, tm->tm_year, tm->tm_wday);
 
 	/* the clock can give out invalid datetime, but we cannot return
 	 * -EINVAL otherwise hwclock will refuse to set the time on bootup.
@@ -440,19 +423,16 @@ int pcf8563_alarm_enable(struct i2c_client *client)
 	int stat;
     int stat_min, stat_hour, stat_day;
 
-    printk("%s,%d\n", __func__, __LINE__);
-
 	/*enable the alarm interrupt*/
     ret = i2c_smbus_read_byte_data(client, PCF8563_REG_ST2);
     if (ret < 0) {
 		goto out;
 	}
 	stat = ret;
-	printk("%s,line:%d,ret:%d,stat:%x\n", __func__, __LINE__,ret, stat);
+
 	/*clear alarm flag and enable alarm interrupt*/
     stat &= ~(1<<3);
     stat |=  (1<<1);
-	printk("%s,line:%d,stat:%x\n", __func__, __LINE__, stat);
 	ret = i2c_smbus_write_byte_data(client, PCF8563_REG_ST2, stat);
 	if (ret < 0) {
 		goto out;
@@ -464,9 +444,7 @@ int pcf8563_alarm_enable(struct i2c_client *client)
 		goto out;
 	}
 	stat_min = ret;
-	printk("%s,line:%d,ret:%d,stat_min:%x\n", __func__, __LINE__,ret,stat_min);
 	stat_min &= 0x7f;
-	printk("%s,line:%d,stat_min:%x\n", __func__, __LINE__, stat_min);
 	ret = i2c_smbus_write_byte_data(client, PCF8563_REG_AMN, stat_min);
 	if (ret < 0) {
 		goto out;
@@ -478,9 +456,7 @@ int pcf8563_alarm_enable(struct i2c_client *client)
 		goto out;
 	}
 	stat_hour = ret;
-	printk("%s,line:%d,ret:%d,stat_hour:%x\n", __func__, __LINE__, ret, stat_hour);
 	stat_hour &= 0x7f;
-	printk("%s,line:%d,stat_hour:%x\n", __func__, __LINE__, stat_hour);
 	ret = i2c_smbus_write_byte_data(client, PCF8563_REG_AHR, stat_hour);
 	if (ret < 0) {
 		goto out;
@@ -492,9 +468,7 @@ int pcf8563_alarm_enable(struct i2c_client *client)
 		goto out;
 	}
 	stat_day = ret;
-	printk("%s,line:%d,ret:%d,stat_day:%x\n", __func__, __LINE__,ret,stat_day);
 	stat_day &= 0x7f;
-	printk("%s,line:%d,stat_day:%x\n", __func__, __LINE__, stat_day);
 	ret = i2c_smbus_write_byte_data(client, PCF8563_REG_ADM, stat_day);
 	if (ret < 0) {
 		goto out;
@@ -538,7 +512,6 @@ int pcf8563_alarm_disable(struct i2c_client *client) {
     int stat;
     int stat_min, stat_hour, stat_day;
 
-    printk("%s,%d\n", __func__, __LINE__);
    /*clear the alarm counter enable bit and clear the alarm flag big*/
     ret = i2c_smbus_read_byte_data(client, PCF8563_REG_ST2);
     if (ret < 0) {
@@ -546,11 +519,9 @@ int pcf8563_alarm_disable(struct i2c_client *client) {
 		goto out;
 	}
 	stat = ret;
-	printk("%s,line:%d,ret:%d,stat:%x\n", __func__, __LINE__,ret,stat);
 	//clear alarm flag and disable alarm interrupt
 	stat &= ~(1<<3);
     stat &= ~(1<<1);
-	printk("%s,line:%d,ret:%d,stat:%x\n", __func__, __LINE__,ret,stat);
 	ret = i2c_smbus_write_byte_data(client, PCF8563_REG_ST2, stat);
 	if (ret < 0) {
 		printk("%s,%d\n", __func__, __LINE__);
@@ -563,10 +534,8 @@ int pcf8563_alarm_disable(struct i2c_client *client) {
 		goto out;
 	}
 	stat_min = ret;
-	printk("%s,line:%d,ret:%d,stat_min:%x\n", __func__, __LINE__,ret,stat_min);
 	stat_min &= 0x0;
 	stat_min |= (1<<7);
-	printk("%s,line:%d, stat_min:%x\n", __func__, __LINE__, stat_min);
 	ret = i2c_smbus_write_byte_data(client, PCF8563_REG_AMN, stat_min);
 	if (ret < 0) {
 		goto out;
@@ -578,10 +547,8 @@ int pcf8563_alarm_disable(struct i2c_client *client) {
 		goto out;
 	}
 	stat_hour = ret;
-	printk("%s,line:%d,ret:%d,stat_hour:%x\n", __func__, __LINE__,ret,stat_hour);
 	stat_hour &= 0x0;
 	stat_hour |= (1<<7);
-	printk("%s,line:%d, stat_hour:%x\n", __func__, __LINE__, stat_hour);
 	ret = i2c_smbus_write_byte_data(client, PCF8563_REG_AHR, stat_hour);
 	if (ret < 0) {
 		goto out;
@@ -593,10 +560,8 @@ int pcf8563_alarm_disable(struct i2c_client *client) {
 		goto out;
 	}
 	stat_day = ret;
-	printk("%s,line:%d,ret:%d,stat_day:%x\n", __func__, __LINE__,ret,stat_day);
 	stat_day &= 0x0;
 	stat_day |= (1<<7);
-	printk("%s,line:%d, stat_day:%x\n", __func__, __LINE__, stat_day);
 	ret = i2c_smbus_write_byte_data(client, PCF8563_REG_ADM, stat_day);
 	if (ret < 0) {
 		goto out;
@@ -638,21 +603,19 @@ static void pcf8563_work(struct work_struct *work)
 	int stat;
 
 	mutex_lock(&pcf8563->mutex);
-	//printk("%s,%d\n", __func__, __LINE__);
 
 	stat = i2c_smbus_read_byte_data(client, PCF8563_REG_ST2);
 	if (stat < 0) {
 		printk("%s,line:%d,stat:%x\n", __func__, __LINE__, stat);
 		goto unlock;
 	}
-	//printk("%s,line:%d,stat:%x\n", __func__, __LINE__, stat);
+
 	stat &= (1<<3);
 	if (stat) {
 		//clear alarm flag and disable alarm interrupt
 		stat &= ~(1<<3);
 	stat &= ~(1<<1);
 		i2c_smbus_write_byte_data(client, PCF8563_REG_ST2, stat);
-	 //	printk("%s,line:%d,stat:%x\n", __func__, __LINE__, stat);
 		rtc_update_irq(pcf8563->rtc, 1, RTC_AF | RTC_IRQF);
 	} else {
 		//printk("%s,line:%d,stat:%x\n", __func__, __LINE__, stat);
@@ -807,7 +770,6 @@ static int pcf8563_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
 	}
 	stat_min = ret;
 	stat_min |= buf[0];
-	printk("PCF8563_REG_AMN:%s,line:%d,stat_min:%x\n", __func__, __LINE__, stat_min);
 	ret = i2c_smbus_write_byte_data(client, PCF8563_REG_AMN, stat_min);
 	if (ret < 0) {
 		goto out;
@@ -819,7 +781,6 @@ static int pcf8563_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
 	}
 	stat_hour = ret;
 	stat_hour |= buf[1];
-	printk("PCF8563_REG_AHR:%s,line:%d,stat_hour:%x\n", __func__, __LINE__, stat_hour);
 	ret = i2c_smbus_write_byte_data(client, PCF8563_REG_AHR, stat_hour);
 	if (ret < 0) {
 		goto out;
@@ -839,10 +800,8 @@ static int pcf8563_set_alarm(struct device *dev, struct rtc_wkalrm *alrm)
 
 	/* enable or disable alarm */
 	if (alrm->enabled) {
-		printk("%s,%d\n", __func__, __LINE__);
 		ret = pcf8563_alarm_enable(client);
 	} else {
-		printk("%s,%d\n", __func__, __LINE__);
 		ret = pcf8563_alarm_disable(client);
 	}
 
@@ -941,7 +900,6 @@ static int pcf8563_probe(struct i2c_client *client,
 	int err = 0;
 	int ret = 0;
 
-	printk("%s,line:%d\n",__func__, __LINE__);
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
 		return -ENODEV;
 
@@ -975,7 +933,6 @@ static int pcf8563_probe(struct i2c_client *client,
 	#ifdef F25_ALARM
 	if (client->irq >= 0) {
 		err = request_irq(client->irq, pcf8563_irq_handle, IRQF_SHARED|IRQF_DISABLED, "pcf8563", pcf8563);
-		printk("%s,line:%d, client->irq:%d\n", __func__, __LINE__ , client->irq);
 		if (err < 0) {
 			dev_err(&client->dev, "pcf8563_probe: request irq failed\n");
 			goto exit_kfree;
