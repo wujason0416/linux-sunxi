@@ -200,9 +200,11 @@ __create_page_tables:
 	 * Now setup the pagetables for our kernel direct
 	 * mapped region.
 	 */
+#ifdef CONFIG_ARCH_SUN4I
 	add     r0, r4,  #((0x3000000 + KERNEL_START) & 0xff000000) >> 18
 	add	r6, r3,  #48 << 20
 	str	r6, [r0, #((0x3000000 + KERNEL_START) & 0x00f00000) >> 18]
+#endif
 
 	mov	r3, pc
 	mov	r3, r3, lsr #20
