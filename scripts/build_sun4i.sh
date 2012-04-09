@@ -87,9 +87,6 @@ build_kernel()
 
 build_modules()
 {
-    make -C modules/example LICHEE_MOD_DIR=${LICHEE_MOD_DIR} LICHEE_KDIR=${LICHEE_KDIR} \
-	CONFIG_CHIP_ID=${CONFIG_CHIP_ID} install
-
 	#build swl-n20 sdio wifi module
     make -C modules/wifi/nano-c047.12 LICHEE_MOD_DIR=${LICHEE_MOD_DIR} KERNEL_DIR=${LICHEE_KDIR} \
 	CONFIG_CHIP_ID=${CONFIG_CHIP_ID} HOST=${CROSS_COMPILE} INSTALL_DIR=${LICHEE_MOD_DIR} all install
