@@ -41,11 +41,6 @@ show_help()
     printf "\n"
 }
 
-build_standby()
-{
-    make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} KDIR=${LICHEE_KDIR} \
-	-C ${LICHEE_KDIR}/arch/arm/mach-sun4i/pm/standby all
-}
 build_kernel()
 {
     if [ ! -e .config ]; then
@@ -53,7 +48,6 @@ build_kernel()
 	cp arch/arm/configs/sun4i-debug_defconfig .config
 
     fi
-    build_standby
 
     make -j4 ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} uImage modules
 
