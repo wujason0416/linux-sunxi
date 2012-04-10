@@ -916,7 +916,7 @@ void __init arm_mm_memblock_reserve(void)
  * called function.  This means you can't use any function or debugging
  * method which may touch any device, otherwise the kernel _will_ crash.
  */
-#define EARLY_WRITE_OK defined(CONFIG_DEBUG_LL) && !defined(CONFIG_DEBUG_ICEDCC)
+#define EARLY_WRITE_OK defined(CONFIG_EARLY_PRINTK) && !defined(CONFIG_DEBUG_ICEDCC)
 static void __init devicemaps_init(struct machine_desc *mdesc)
 {
 	struct map_desc map;
