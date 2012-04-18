@@ -24,7 +24,6 @@
 #include <mach/gpio_v2.h>
 #include <mach/script_v2.h>
 #include <linux/io.h>
-#include "sndspdif.h"
 
 static int spdif_used = 0;
 #define SNDSPDIF_RATES  (SNDRV_PCM_RATE_8000_192000|SNDRV_PCM_RATE_KNOT)
@@ -69,7 +68,7 @@ static int sndspdif_set_dai_fmt(struct snd_soc_dai *codec_dai,
 {
 	return 0;
 }
-struct snd_soc_dai_ops sndspdif_dai_ops = {
+static struct snd_soc_dai_ops sndspdif_dai_ops = {
 		.startup = sndspdif_startup,
 		.shutdown = sndspdif_shutdown,
 		.hw_params = sndspdif_hw_params,
@@ -78,8 +77,9 @@ struct snd_soc_dai_ops sndspdif_dai_ops = {
 		.set_clkdiv = sndspdif_set_dai_clkdiv,
 		.set_fmt = sndspdif_set_dai_fmt,
 };
-struct snd_soc_dai sndspdif_dai = {
-	.name = "SNDSPDIF",
+
+static struct snd_soc_dai_driver sndspdif_dai = {
+	.name = "sun4i-spdif-codec",
 	/* playback capabilities */
 	.playback = {
 		.stream_name = "Playback",
@@ -91,61 +91,31 @@ struct snd_soc_dai sndspdif_dai = {
 	/* pcm operations */
 	.ops = &sndspdif_dai_ops,
 };
-EXPORT_SYMBOL(sndspdif_dai);
+
+static struct snd_soc_codec_driver sndspdif_codec;
 
 static int sndspdif_soc_probe(struct platform_device *pdev)
 {
-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-	struct snd_soc_codec *codec;
-	int ret = -ENOMEM;
-
-	(socdev->card->codec) = kzalloc(sizeof(struct snd_soc_codec), GFP_KERNEL);
-	if (socdev->card->codec == NULL)
-		return ret;
-
-	codec = socdev->card->codec;
-
-	mutex_init(&codec->mutex);
-
-	codec->name = "SNDSPDIF";
-	codec->owner = THIS_MODULE;
-	codec->dai = &sndspdif_dai;
-	codec->num_dai = 1;
-	INIT_LIST_HEAD(&codec->dapm_widgets);
-	INIT_LIST_HEAD(&codec->dapm_paths);
-
-	/* register pcms */
-	ret = snd_soc_new_pcms(socdev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1);
-	if (ret < 0) {
-//		printk(KERN_ERR "ANX7150: failed to register pcms\n");
-		goto pcm_err;
-	}
-
-	return 0;
-
-pcm_err:
-	kfree(codec);
-	return ret;
+	return snd_soc_register_codec(&pdev->dev,
+				      &sndspdif_codec,
+				      &sndspdif_dai, 1);
 }
 
 /* power down chip */
 static int sndspdif_soc_remove(struct platform_device *pdev)
 {
-	struct snd_soc_device *socdev = platform_get_drvdata(pdev);
-	struct snd_soc_codec *codec = socdev->card->codec;
-	snd_soc_free_pcms(socdev);
-
-	kfree(codec);
-
+	snd_soc_unregister_codec(&pdev->dev);
 	return 0;
 }
 
-struct snd_soc_codec_device soc_codec_dev_sndspdif = {
+static struct platform_driver sndspdif_platform_driver = {
+	.driver = {
+		.name = "sun4i-spdif-soc",
+		.owner = THIS_MODULE,
+	},
 	.probe =        sndspdif_soc_probe,
 	.remove =       sndspdif_soc_remove,
 };
-EXPORT_SYMBOL_GPL(soc_codec_dev_sndspdif);
-
 
 static int __init sndspdif_init(void)
 {
@@ -153,19 +123,13 @@ static int __init sndspdif_init(void)
 
 	ret = script_parser_fetch("spdif_para","spdif_used", &spdif_used, sizeof(int));
 	if (ret)
-    {
-        printk("[SPDIF]sndspdif_init fetch spdif using configuration failed\n");
-    }
+		printk("[SPDIF]sndspdif_init fetch spdif using configuration failed\n");
 
 	if (spdif_used)
-	{
-		return snd_soc_register_dai(&sndspdif_dai);
-	}else
-    {
-        printk("[SPDIF]sndspdif cannot find any using configuration for controllers, return directly!\n");
-        return 0;
-    }
+		return platform_driver_register(&sndspdif_platform_driver);
 
+	printk("[SPDIF]sndspdif cannot find any using configuration for controllers, return directly!\n");
+	return 0;
 }
 module_init(sndspdif_init);
 
@@ -174,7 +138,7 @@ static void __exit sndspdif_exit(void)
 	if(spdif_used)
 	{
 		spdif_used = 0;
-		snd_soc_unregister_dai(&sndspdif_dai);
+		platform_driver_unregister(&sndspdif_platform_driver);
 	}
 }
 module_exit(sndspdif_exit);

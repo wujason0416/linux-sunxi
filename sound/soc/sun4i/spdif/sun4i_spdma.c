@@ -130,7 +130,7 @@ static int sun4i_pcm_hw_params(struct snd_pcm_substream *substream,
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	unsigned long totbytes = params_buffer_bytes(params);
 	struct sun4i_dma_params *dma =
-					snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
+					snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
 	int ret = 0;
 	if (!dma)
 		return 0;
@@ -387,14 +387,14 @@ static int sun4i_pcm_new(struct snd_card *card,
 	if (!card->dev->coherent_dma_mask)
 		card->dev->coherent_dma_mask = 0xffffffff;
 
-	if (dai->playback.channels_min) {
+	if (dai->driver->playback.channels_min) {
 		ret = sun4i_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_PLAYBACK);
 		if (ret)
 			goto out;
 	}
 
-	if (dai->capture.channels_min) {
+	if (dai->driver->capture.channels_min) {
 		ret = sun4i_pcm_preallocate_dma_buffer(pcm,
 			SNDRV_PCM_STREAM_CAPTURE);
 		if (ret)
@@ -404,27 +404,44 @@ static int sun4i_pcm_new(struct snd_card *card,
 	return ret;
 }
 
-struct snd_soc_platform sun4i_soc_platform = {
-		.name			=    "sun4i-spdif",
-		.pcm_ops  =    &sun4i_pcm_ops,
-		.pcm_new	=		 sun4i_pcm_new,
-		.pcm_free	=		 sun4i_pcm_free_dma_buffers,
+static struct snd_soc_platform_driver sun4i_soc_platform = {
+	.ops		= &sun4i_pcm_ops,
+	.pcm_new	= sun4i_pcm_new,
+	.pcm_free	= sun4i_pcm_free_dma_buffers,
 };
-EXPORT_SYMBOL_GPL(sun4i_soc_platform);
 
+static int __devinit sun4i_soc_platform_probe(struct platform_device *pdev)
+{
+	return snd_soc_register_platform(&pdev->dev, &sun4i_soc_platform);
+}
+
+static int __devexit sun4i_soc_platform_remove(struct platform_device *pdev)
+{
+	snd_soc_unregister_platform(&pdev->dev);
+	return 0;
+}
+
+static struct platform_driver sun4i_soc_platform_driver = {
+	.driver = {
+		.name = "sun4i-spdif-dma",
+		.owner = THIS_MODULE,
+	},
+
+	.probe = sun4i_soc_platform_probe,
+	.remove = __devexit_p(sun4i_soc_platform_remove),
+};
 
 static int __init sun4i_soc_platform_init(void)
 {
-	return snd_soc_register_platform(&sun4i_soc_platform);
+	return platform_driver_register(&sun4i_soc_platform_driver);
 }
 module_init(sun4i_soc_platform_init);
 
 static void __exit sun4i_soc_platform_exit(void)
 {
-	snd_soc_unregister_platform(&sun4i_soc_platform);
+	platform_driver_unregister(&sun4i_soc_platform_driver);
 }
 module_exit(sun4i_soc_platform_exit);
-
 
 MODULE_AUTHOR("All winner");
 MODULE_DESCRIPTION("SUN4I SPDIF DMA module");

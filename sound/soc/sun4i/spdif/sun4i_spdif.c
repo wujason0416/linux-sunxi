@@ -206,7 +206,7 @@ static int sun4i_spdif_hw_params(struct snd_pcm_substream *substream,
 	else
 		dma_data = &sun4i_spdif_stereo_in;
 
-	snd_soc_dai_set_dma_data(rtd->dai->cpu_dai, substream, dma_data);
+	snd_soc_dai_set_dma_data(rtd->cpu_dai, substream, dma_data);
 
 	return 0;
 }
@@ -216,8 +216,7 @@ static int sun4i_spdif_trigger(struct snd_pcm_substream *substream,
 {
 	int ret = 0;
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-	struct sun4i_dma_params *dma_data =
-					snd_soc_dai_get_dma_data(rtd->dai->cpu_dai, substream);
+	struct sun4i_dma_params *dma_data = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
 
 //	printk("[SPDIF]Entered %s\n", __func__);
 	switch (cmd) {
@@ -438,7 +437,7 @@ u32 sun4i_spdif_get_clockrate(void)
 }
 EXPORT_SYMBOL_GPL(sun4i_spdif_get_clockrate);
 
-static int sun4i_spdif_probe(struct platform_device *pdev, struct snd_soc_dai *dai)
+static int sun4i_spdif_probe(struct snd_soc_dai *dai)
 {
 		int reg_val = 0;
 
@@ -566,9 +565,8 @@ static struct snd_soc_dai_ops sun4i_spdif_dai_ops = {
 		.set_clkdiv = sun4i_spdif_set_clkdiv,
 		.set_sysclk = sun4i_spdif_set_sysclk,
 };
-struct snd_soc_dai sun4i_spdif_dai = {
+static struct snd_soc_dai_driver sun4i_spdif_dai = {
 	.name 		= "sun4i-spdif",
-	.id 			= 0,
 	.probe 		= sun4i_spdif_probe,
 	.suspend 	= sun4i_spdif_suspend,
 	.resume 	= sun4i_spdif_resume,
@@ -584,7 +582,26 @@ struct snd_soc_dai sun4i_spdif_dai = {
 		.formats = SNDRV_PCM_FMTBIT_S16_LE,},
 	.ops = &sun4i_spdif_dai_ops,
 };
-EXPORT_SYMBOL_GPL(sun4i_spdif_dai);
+
+static int __devinit sun4i_spdif_platform_probe(struct platform_device *pdev)
+{
+	return snd_soc_register_dai(&pdev->dev, &sun4i_spdif_dai);
+}
+
+static int __devexit sun4i_spdif_platform_remove(struct platform_device *pdev)
+{
+	snd_soc_unregister_dai(&pdev->dev);
+	return 0;
+}
+
+static struct platform_driver sun4i_spdif_platform = {
+	.driver = {
+		.name = "sun4i-spdif",
+		.owner = THIS_MODULE,
+	},
+	.probe = sun4i_spdif_platform_probe,
+	.remove = __devexit_p(sun4i_spdif_platform_remove),
+};
 
 static int __init sun4i_spdif_init(void)
 {
@@ -592,27 +609,20 @@ static int __init sun4i_spdif_init(void)
 
 	ret = script_parser_fetch("spdif_para","spdif_used", &spdif_used, sizeof(int));
 	if (ret)
-    {
-        printk("[SPDIF]sun4i_spdif_init fetch spdif using configuration failed\n");
-    }
+		printk("[SPDIF]sun4i_spdif_init fetch spdif using configuration failed\n");
 
-	if (spdif_used)
-	{
+	if (spdif_used) {
 		spdif_handle = gpio_request_ex("spdif_para", NULL);
-		return snd_soc_register_dai(&sun4i_spdif_dai);
-	}else
-    {
-        printk("[SPDIF]sun4i-spdif cannot find any using configuration for controllers, return directly!\n");
-        return 0;
-    }
-
+		return platform_driver_register(&sun4i_spdif_platform);
+	}
+	printk("[SPDIF]sun4i-spdif cannot find any using configuration for controllers, return directly!\n");
+	return 0;
 }
 module_init(sun4i_spdif_init);
 
 static void __exit sun4i_spdif_exit(void)
 {
-	if(spdif_used)
-	{
+	if (spdif_used) {
 		spdif_used = 0;
 		//release the module clock
 		clk_disable(spdif_moduleclk);
@@ -627,7 +637,7 @@ static void __exit sun4i_spdif_exit(void)
 		clk_put(spdif_apbclk);
 
 		gpio_release(spdif_handle, 2);
-		snd_soc_unregister_dai(&sun4i_spdif_dai);
+		platform_driver_unregister(&sun4i_spdif_platform);
 	}
 }
 module_exit(sun4i_spdif_exit);

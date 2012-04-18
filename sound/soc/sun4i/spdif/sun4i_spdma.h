@@ -33,7 +33,6 @@ enum sun4idma_buffresult {
 	SUN4I_RES_ABORT
 };
 /* platform data */
-extern struct snd_soc_platform sun4i_soc_platform;
 extern int sw_dma_enqueue(unsigned int channel, void *id,
 			dma_addr_t data, int size);
 

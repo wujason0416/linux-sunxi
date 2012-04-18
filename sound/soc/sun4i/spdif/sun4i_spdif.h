@@ -154,7 +154,6 @@ struct sun4i_spdif_info {
 extern struct sun4i_spdif_info sun4i_spdif;
 
 unsigned int sun4i_spdif_get_clockrate(void);
-extern struct snd_soc_dai sun4i_spdif_dai;
 
 extern void sun4i_snd_txctrl(struct snd_pcm_substream *substream, int on);
 extern void sun4i_snd_rxctrl(int on);

@@ -29,9 +29,6 @@
 #include "sun4i_spdif.h"
 #include "sun4i_spdma.h"
 
-#include "sndspdif.h"
-
-
 static int spdif_used = 0;
 static struct clk *xtal;
 static int clk_users;
@@ -163,8 +160,8 @@ static int sun4i_sndspdif_hw_params(struct snd_pcm_substream *substream,
 					struct snd_pcm_hw_params *params)
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-	struct snd_soc_dai *codec_dai = rtd->dai->codec_dai;
-	struct snd_soc_dai *cpu_dai = rtd->dai->cpu_dai;
+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
 	int ret = 0;
 	unsigned long rate = params_rate(params);
 	u32 mclk_div=0, mpll=0, bclk_div=0, mult_fs=0;
@@ -212,21 +209,16 @@ static struct snd_soc_ops sun4i_sndspdif_ops = {
 static struct snd_soc_dai_link sun4i_sndspdif_dai_link = {
 	.name = "SNDSPDIF",
 	.stream_name = "SNDSPDIF",
-	.codec_dai = &sndspdif_dai,
-	.cpu_dai = &sun4i_spdif_dai,
+	.codec_dai_name = "sun4i-spdif-codec",
+	.cpu_dai_name = "sun4i-spdif",
+	.platform_name = "sun4i-spdif-dma",
 	.ops = &sun4i_sndspdif_ops,
 };
 
 static struct snd_soc_card snd_soc_sun4i_sndspdif = {
 	.name = "SUN4I_SNDSPDIF",
-	.platform = &sun4i_soc_platform,
 	.dai_link = &sun4i_sndspdif_dai_link,
 	.num_links = 1,
-};
-
-static struct snd_soc_device sun4i_sndspdif_snd_devdata = {
-	.card = &snd_soc_sun4i_sndspdif,
-	.codec_dev = &soc_codec_dev_sndspdif,
 };
 
 static int sun4i_sndspdif_probe(struct platform_device *pdev)
@@ -239,11 +231,9 @@ static int sun4i_sndspdif_probe(struct platform_device *pdev)
 	}
 
 	platform_set_drvdata(sun4i_sndspdif_snd_device,
-			     &sun4i_sndspdif_snd_devdata);
-	sun4i_sndspdif_snd_devdata.dev = &sun4i_sndspdif_snd_device->dev;
+			     &snd_soc_sun4i_sndspdif);
 
 	ret = platform_device_add(sun4i_sndspdif_snd_device);
-
 	if (ret) {
 		platform_device_put(sun4i_sndspdif_snd_device);
 	}
@@ -277,41 +267,31 @@ static int __init sun4i_sndspdif_init(void)
 
 	ret2 = script_parser_fetch("spdif_para","spdif_used", &spdif_used, sizeof(int));
 	if (ret2)
-    {
-        printk("[SPDIF]sun4i_sndspdif_init fetch spdif using configuration failed\n");
-    }
+		printk("[SPDIF]sun4i_sndspdif_init fetch spdif using configuration failed\n");
 
-    if (spdif_used)
-    {
+	if (spdif_used) {
 		ret = platform_driver_register(&sun4i_sndspdif_driver);
-		if (ret != 0){
+		if (ret != 0)
 			goto err;
-		}
-
 
 		ret = platform_device_register(&sun4i_sndspdif_device);
-		if (ret != 0){
+		if (ret != 0)
 			platform_driver_unregister(&sun4i_sndspdif_driver);
-		}
 
 		err:
 			return ret;
-	}else
-	{
-		printk("[SPDIF]sun4i_sndspdif cannot find any using configuration for controllers, return directly!\n");
-        return 0;
 	}
+	printk("[SPDIF]sun4i_sndspdif cannot find any using configuration for controllers, return directly!\n");
+	return 0;
 }
 
 static void __exit sun4i_sndspdif_exit(void)
 {
-	if(spdif_used)
-	{
+	if (spdif_used) {
 		spdif_used = 0;
 		platform_driver_unregister(&sun4i_sndspdif_driver);
 	}
 }
-
 
 module_init(sun4i_sndspdif_init);
 module_exit(sun4i_sndspdif_exit);
@@ -319,4 +299,3 @@ module_exit(sun4i_sndspdif_exit);
 MODULE_AUTHOR("ALL WINNER");
 MODULE_DESCRIPTION("SUN4I_SNDSPDIF ALSA SoC audio driver");
 MODULE_LICENSE("GPL");
-
