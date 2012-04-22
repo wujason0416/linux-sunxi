@@ -1499,7 +1499,7 @@ static struct platform_device sw_device_codec = {
 };
 
 /*method relating*/
-static struct platform_driver sw_codec_driver = {
+static struct platform_driver sw_codec_driver __refdata = {
 	.probe		= sw_codec_probe,
 	.remove		= sw_codec_remove,
 	.shutdown   = sw_codec_shutdown,
