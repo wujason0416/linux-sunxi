@@ -594,7 +594,7 @@ static int __devexit sun4i_spdif_platform_remove(struct platform_device *pdev)
 	return 0;
 }
 
-static struct platform_driver sun4i_spdif_platform = {
+static struct platform_driver sun4i_spdif_platform __refdata = {
 	.driver = {
 		.name = "sun4i-spdif",
 		.owner = THIS_MODULE,
