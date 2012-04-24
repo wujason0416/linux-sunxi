@@ -211,7 +211,9 @@ VOID	RTMPFreeTxRxRingMemory(
 	UINT                i, acidx;
 	PTX_CONTEXT			pNullContext   = &pAd->NullContext;
 	PTX_CONTEXT			pPsPollContext = &pAd->PsPollContext;
-
+#ifdef USB_BULK_BUF_ALIGMENT2
+	POS_COOKIE			pObj = (POS_COOKIE) pAd->OS_Cookie;
+#endif /* USB_BULK_BUF_ALIGMENT2 */
 
 	DBGPRINT(RT_DEBUG_ERROR, ("---> RTMPFreeTxRxRingMemory\n"));
 
@@ -278,7 +280,22 @@ VOID	RTMPFreeTxRxRingMemory(
 										(UCHAR **)&pHTTXContext->TransferBuffer, // warning!! by sw
 										sizeof(HTTX_BUFFER),
 										pHTTXContext->data_dma);
+
+#ifdef USB_BULK_BUF_ALIGMENT2
+		if (pHTTXContext->pBuf != NULL)
+		{
+
+			RTUSB_URB_FREE_BUFFER(pObj->pUsb_Dev, 26624,
+				pHTTXContext->pBuf,
+				pHTTXContext->data_dma2);
+				pHTTXContext->pBuf = NULL;
+		}
+
+
+#endif /* USB_BULK_BUF_ALIGMENT2 */
 	}
+
+
 
 	if (pAd->FragFrame.pFragPacket)
 		RELEASE_NDIS_PACKET(pAd, pAd->FragFrame.pFragPacket, NDIS_STATUS_SUCCESS);
@@ -372,7 +389,10 @@ NDIS_STATUS	NICInitTransmit(
 	PVOID pTransferBuffer;
 	PURB	pUrb;
 	ra_dma_addr_t data_dma;
-
+#ifdef USB_BULK_BUF_ALIGMENT2
+	ra_dma_addr_t data_dma2;
+	POS_COOKIE              pObj = (POS_COOKIE) pAd->OS_Cookie;
+#endif /* USB_BULK_BUF_ALIGMENT2 */
 	DBGPRINT(RT_DEBUG_TRACE, ("--> NICInitTransmit\n"));
 
 
@@ -415,8 +435,16 @@ NDIS_STATUS	NICInitTransmit(
 			pHTTXContext->BulkOutPipeId = acidx;
 			pHTTXContext->bRingEmpty = TRUE;
 			pHTTXContext->bCopySavePad = FALSE;
-
 			pAd->BulkOutPending[acidx] = FALSE;
+#ifdef USB_BULK_BUF_ALIGMENT2
+			if ((pHTTXContext->pBuf = RTUSB_URB_ALLOC_BUFFER(pObj->pUsb_Dev, 26624, &pHTTXContext->data_dma2)) == NULL)
+			{
+				printk("Unable to alloc Tx USB buffer.\n");
+				pHTTXContext->pBuf = NULL;
+
+			}
+#endif /* USB_BULK_BUF_ALIGMENT2 */
+
 		}
 
 
@@ -865,6 +893,15 @@ NDIS_STATUS	NICInitTransmit(
 			pHTTXContext->bRingEmpty = TRUE;
 			pHTTXContext->bCopySavePad = FALSE;
 			pAd->BulkOutPending[acidx] = FALSE;
+#ifdef USB_BULK_BUF_ALIGMENT2
+			if ((pHTTXContext->pBuf = RTUSB_URB_ALLOC_BUFFER(pObj->pUsb_Dev, 26624, &pHTTXContext->data_dma2)) == NULL)
+			{
+				printk("Unable to alloc Tx USB buffer.\n");
+				pHTTXContext->pBuf = NULL;
+				goto out1;
+			}
+#endif /* USB_BULK_BUF_ALIGMENT2 */
+
 		}
 
 
@@ -1195,6 +1232,16 @@ VOID	RTMPFreeTxRxRingMemory(
 										&pHTTXContext->TransferBuffer,
 										sizeof(HTTX_BUFFER),
 										pHTTXContext->data_dma);
+#ifdef USB_BULK_BUF_ALIGMENT2
+			if (pHTTXContext->pBuf != NULL)
+			{
+				RTUSB_URB_FREE_BUFFER(pObj->pUsb_Dev, 26624,
+					pHTTXContext->pBuf,
+					pHTTXContext->data_dma2);
+					pHTTXContext->pBuf = NULL;
+			}
+
+#endif /* USB_BULK_BUF_ALIGMENT2 */
 		}
 
 	/* Free fragement frame buffer*/
@@ -1747,13 +1794,11 @@ VOID RT28xxUsbMlmeRadioOn(
 
 #ifdef LED_CONTROL_SUPPORT
 	/* Set LED*/
-#ifdef CONFIG_STA_SUPPORT
 	RTMPSetLED(pAd, LED_RADIO_ON);
-#endif /* CONFIG_STA_SUPPORT */
 #endif /* LED_CONTROL_SUPPORT */
 
-#if defined(RT5370) || defined(RT5390)
-	if ((IS_RT5390(pAd)) && !(IS_RT5392(pAd)))
+#if defined(RT5370) || defined(RT5372) || defined(RT5390) || defined(RT5392)
+	if (IS_RT5390(pAd))
 	{
 		if (pAd->NicConfig2.field.AntOpt == 1)
 		{
@@ -1830,13 +1875,16 @@ VOID RT28xxUsbMlmeRadioOFF(
 
 		/*==========================================*/
 		/* Clean up old bss table*/
+#ifndef ANDROID_SUPPORT
+/* because abdroid will get scan table when interface down, so we not clean scan table */
 		BssTableInit(&pAd->ScanTab);
+#endif /* ANDROID_SUPPORT */
 	}
 #endif /* CONFIG_STA_SUPPORT */
 
 #ifdef LED_CONTROL_SUPPORT
 	/* Set LED*/
-	RTMPSetLEDStatus(pAd, LED_RADIO_OFF);
+	RTMPSetLED(pAd, LED_RADIO_OFF);
 #endif /* LED_CONTROL_SUPPORT */
 
 
@@ -1889,7 +1937,7 @@ VOID RT28xxUsbAsicRadioOff(
 	RTUSBWriteMACRegister(pAd, MAC_SYS_CTRL, Value);
 
 #ifdef CONFIG_STA_SUPPORT
-	AsicSendCommandToMcu(pAd, 0x30, 0xff, 0xff, 0x02);   /* send POWER-SAVE command to MCU. Timeout 40us.*/
+	//AsicSendCommandToMcu(pAd, 0x30, 0xff, 0xff, 0x02);   /* send POWER-SAVE command to MCU. Timeout 40us.*/
 
 	/* Stop bulkin pipe*/
 	if((pAd->PendingRx > 0) && (!RTMP_TEST_FLAG(pAd, fRTMP_ADAPTER_NIC_NOT_EXIST)))
@@ -1958,6 +2006,7 @@ VOID RT28xxUsbAsicRadioOn(
 	/* 1. Send wake up command.*/
 	RetryRound = 0;
 
+#if 0
 	do
 	{
 		brc = AsicSendCommandToMcu(pAd, 0x31, PowerWakeCID, 0x00, 0x02);
@@ -1979,7 +2028,7 @@ VOID RT28xxUsbAsicRadioOn(
 	} while (TRUE);
 	if (RetryRound > 10)
 		DBGPRINT(RT_DEBUG_WARN, ("PSM :ASIC 0x31 WakeUp Cmd may Fail %d*******\n", RetryRound));
-
+#endif
 
 
 	/* 2. Enable Tx DMA.*/

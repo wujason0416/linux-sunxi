@@ -139,9 +139,12 @@ VOID PeerDeauthAction(
 
 
 #ifdef NATIVE_WPA_SUPPLICANT_SUPPORT
+#ifndef ANDROID_SUPPORT
+
 			RtmpOSWrielessEventSend(pAd->net_dev,
 						RT_WLAN_EVENT_CGIWAP, -1, NULL,
 						NULL, 0);
+#endif /* ANDROID_SUPPORT */
 #endif /* NATIVE_WPA_SUPPLICANT_SUPPORT */
 
 			/* send wireless event - for deauthentication */
@@ -172,13 +175,18 @@ VOID PeerDeauthAction(
 			    )
 				bDoIterate = TRUE;
 
+#ifdef ANDROID_SUPPORT
+			RtmpOSWrielessEventSend(pAd->net_dev, RT_WLAN_EVENT_CGIWAP, -1, NULL, NULL, 0);
+#endif /* ANDROID_SUPPORT */
 			LinkDown(pAd, TRUE);
+#ifdef ANDROID_SUPPORT
+			RtmpOSWrielessEventSend(pAd->net_dev, RT_WLAN_EVENT_SCAN, -1, NULL, NULL, 0);
+#endif /* ANDROID_SUPPORT */
 
 			if (bDoIterate) {
 				pAd->MlmeAux.BssIdx++;
 				IterateOnBssTab(pAd);
 			}
-
 		}
 	} else {
 		DBGPRINT(RT_DEBUG_TRACE,
