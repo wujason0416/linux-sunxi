@@ -163,7 +163,7 @@ PNDIS_PACKET duplicate_pkt_with_VLAN(
 	IN	UCHAR					*TPID);
 
 typedef void (*RTMP_CB_8023_PACKET_ANNOUNCE)(
-			IN	VOID			*pCtrlBkPtr, 
+			IN	VOID			*pCtrlBkPtr,
 			IN	PNDIS_PACKET	pPacket,
 			IN	UCHAR			OpMode);
 
@@ -358,7 +358,7 @@ void RtmpOSNetDevDetach(
 
 int RtmpOSNetDevAttach(
 	IN	UCHAR					OpMode,
-	IN	PNET_DEV				pNetDev, 
+	IN	PNET_DEV				pNetDev,
 	IN	RTMP_OS_NETDEV_OP_HOOK	*pDevOpHook);
 
 PNET_DEV RtmpOSNetDevCreate(
@@ -499,12 +499,12 @@ INT32 RtmpThreadPidKill(
 
 /* OS Timer */
 VOID RTMP_SetPeriodicTimer(
-	IN	NDIS_MINIPORT_TIMER		*pTimerOrg, 
+	IN	NDIS_MINIPORT_TIMER		*pTimerOrg,
 	IN	unsigned long			timeout);
 
 VOID RTMP_OS_Init_Timer(
 	IN	VOID 					*pReserved,
-	IN	NDIS_MINIPORT_TIMER		*pTimerOrg, 
+	IN	NDIS_MINIPORT_TIMER		*pTimerOrg,
 	IN	TIMER_FUNCTION			function,
 	IN	PVOID					data,
 	IN	LIST_HEADER				*pTimerList);
@@ -771,7 +771,7 @@ int wext_notify_event_assoc(
 	IN	UCHAR					*ReqVarIEs,
 	IN	UINT32					ReqVarIELen);
 
-VOID    SendAssocIEsToWpaSupplicant( 
+VOID    SendAssocIEsToWpaSupplicant(
 	IN	PNET_DEV				pNetDev,
 	IN	UCHAR					*ReqVarIEs,
 	IN	UINT32					ReqVarIELen);

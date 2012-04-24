@@ -1,5 +1,6 @@
 # Support ATE function
-HAS_ATE=y
+HAS_ATE=n
+
 # Support ATE NEW TXCONT solution
 HAS_NEW_TXCONT=n
 
@@ -11,7 +12,7 @@ HAS_NEW_TXCARS=n
 
 #-----------------------------------------------#
 # NOTE : RT2xxx does not support this feature !
-# Do not touch this block !!! 
+# Do not touch this block !!!
 ifeq ($(CHIPSET),2860)
 HAS_NEW_TXCONT=n
 HAS_NEW_TXCARR=n
@@ -35,7 +36,7 @@ endif
 #-----------------------------------------------#
 
 # Support QA ATE function
-HAS_QA_SUPPORT=y
+HAS_QA_SUPPORT=n
 
 HAS_RSSI_FEEDBACK=n
 
@@ -71,6 +72,8 @@ HAS_DFS_SUPPORT=n
 #Support Carrier-Sense function
 HAS_CS_SUPPORT=n
 
+#Support USB load firmware by multibyte
+HAS_USB_FIRMWARE_MULTIBYTE_WRITE=y
 
 # Support user specific transmit rate of Multicast packet.
 HAS_MCAST_RATE_SPECIFIC_SUPPORT=n
@@ -88,7 +91,7 @@ HAS_QOS_DLS_SUPPORT=n
 #Support for EXT_CHANNEL
 HAS_EXT_BUILD_CHANNEL_LIST=n
 
-#Support for IDS 
+#Support for IDS
 HAS_IDS_SUPPORT=n
 
 
@@ -96,9 +99,9 @@ HAS_IDS_SUPPORT=n
 HAS_SNMP_SUPPORT=n
 
 #Support features of 802.11n Draft3
-HAS_DOT11N_DRAFT3_SUPPORT=n
+HAS_DOT11N_DRAFT3_SUPPORT=y
 
-#Support features of Single SKU. 
+#Support features of Single SKU.
 HAS_SINGLE_SKU_SUPPORT=n
 
 #Support features of 802.11n
@@ -108,7 +111,7 @@ HAS_DOT11_N_SUPPORT=y
 #Support for RT5392 RT5372
 HAS_TEMPERATURE_COMPENSATION=n
 
-#Support for 2860/2880 co-exist 
+#Support for 2860/2880 co-exist
 HAS_RT2880_RT2860_COEXIST=n
 
 HAS_KTHREAD_SUPPORT=n
@@ -121,22 +124,27 @@ HAS_KTHREAD_SUPPORT=n
 HAS_AUTO_CH_SELECT_ENHANCE=n
 
 #Support statistics count
-HAS_STATS_COUNT=n
+HAS_STATS_COUNT=y
 
 
 #Support USB_BULK_BUF_ALIGMENT
 HAS_USB_BULK_BUF_ALIGMENT=n
 
+
+#Support USB_BULK_BUF_ALIGMENT
+HAS_USB_BULK_BUF_ALIGMENT2=n
+
+
 #Support for USB_SUPPORT_SELECTIVE_SUSPEND
-HAS_USB_SUPPORT_SELECTIVE_SUSPEND=n
+HAS_USB_SUPPORT_SELECTIVE_SUSPEND=y
+
+
+#Support ANDROID_SUPPORT
+HAS_ANDROID_SUPPORT=y
 
 
 
 
-
-
-#Support Antenna Diversity
-HAS_ANTENNA_DIVERSITY_SUPPORT=n
 
 #Client support WDS function
 HAS_CLIENT_WDS_SUPPORT=n
@@ -190,7 +198,7 @@ HAS_REFUSE_SCAN_QUERY_WHILE_SCANING=n
 CC := $(CROSS_COMPILE)gcc
 LD := $(CROSS_COMPILE)ld
 
-WFLAGS := -DAGGREGATION_SUPPORT -DPIGGYBACK_SUPPORT -DWMM_SUPPORT  -DLINUX -Wall -Wstrict-prototypes -Wno-trigraphs 
+WFLAGS := -DAGGREGATION_SUPPORT -DPIGGYBACK_SUPPORT -DWMM_SUPPORT  -DLINUX -Wall -Wstrict-prototypes -Wno-trigraphs
 WFLAGS += -DSYSTEM_LOG_SUPPORT  -DRT28xx_MODE=$(RT28xx_MODE) -DCHIPSET=$(CHIPSET) -DRESOURCE_PRE_ALLOC
 
 ifeq ($(HAS_RESOURCE_BOOT_ALLOC),y)
@@ -201,9 +209,9 @@ ifeq ($(HAS_REFUSE_SCAN_QUERY_WHILE_SCANING),y)
 WFLAGS += -DREFUSE_SCAN_QUERY_WHILE_SCANING
 endif
 
-
-
-
+ifeq ($(HAS_USB_FIRMWARE_MULTIBYTE_WRITE),y)
+WFLAGS += -DUSB_FIRMWARE_MULTIBYTE_WRITE -DMULTIWRITE_BYTES=64
+endif
 
 
 ifeq ($(HAS_KTHREAD_SUPPORT),y)
@@ -280,6 +288,20 @@ ifeq ($(HAS_STATS_COUNT),y)
 WFLAGS += -DSTATS_COUNT_SUPPORT
 endif
 
+ifeq ($(HAS_USB_BULK_BUF_ALIGMENT),y)
+WFLAGS += -DUSB_BULK_BUF_ALIGMENT
+endif
+
+ifeq ($(HAS_USB_BULK_BUF_ALIGMENT2),y)
+WFLAGS += -DUSB_BULK_BUF_ALIGMENT2
+endif
+
+
+ifeq ($(HAS_ANDROID_SUPPORT),y)
+WFLAGS += -DANDROID_SUPPORT
+endif
+
+
 ifeq ($(HAS_USB_SUPPORT_SELECTIVE_SUSPEND),y)
 WFLAGS += -DUSB_SUPPORT_SELECTIVE_SUSPEND -DCONFIG_PM
 endif
@@ -314,9 +336,6 @@ WFLAGS += -DOS_ABL_OS_STA_SUPPORT
 endif
 endif
 
-ifeq ($(HAS_ANTENNA_DIVERSITY_SUPPORT),y)
-WFLAGS += -DANT_DIVERSITY_SUPPORT
-endif
 
 
 ifeq ($(HAS_WIDI_SUPPORT),y)
@@ -437,7 +456,7 @@ endif
 ifeq ($(CHIPSET),3562)
 WFLAGS +=-DRTMP_MAC_PCI -DRT2860 -DRT28xx -DRT30xx -DRT35xx -DRTMP_PCI_SUPPORT -DRTMP_RF_RW_SUPPORT -DRTMP_EFUSE_SUPPORT -DA_BAND_SUPPORT -DSPECIFIC_VCORECAL_SUPPORT
 ifeq ($(HAS_DFS_SUPPORT),y)
-WFLAGS += -DDFS_HARDWARE_SUPPORT  -DDFS_DEBUG 
+WFLAGS += -DDFS_HARDWARE_SUPPORT  -DDFS_DEBUG
 endif
 
 CHIPSET_DAT = 2860
@@ -512,12 +531,12 @@ endif
 
 
 ifeq ($(CHIPSET),PCI)
-#3562		
+#3562
 WFLAGS +=-DRTMP_MAC_PCI -DRT2860 -DRT28xx -DRT30xx -DRT35xx -DRTMP_PCI_SUPPORT -DRTMP_RF_RW_SUPPORT -DRTMP_EFUSE_SUPPORT -DA_BAND_SUPPORT -DSPECIFIC_VCORECAL_SUPPORT
 #3390
 WFLAGS +=-DRT33xx -DRT3090 -DRT3390 -DRTMP_INTERNAL_TX_ALC
 ifeq ($(HAS_DFS_SUPPORT),y)
-WFLAGS += -DDFS_HARDWARE_SUPPORT  -DDFS_DEBUG 
+WFLAGS += -DDFS_HARDWARE_SUPPORT  -DDFS_DEBUG
 endif
 endif
 
@@ -527,7 +546,7 @@ WFLAGS += -DMERGE_ARCH_TEAM -DCONFIG_SWMCU_SUPPORT -DCONFIG_RA_NAT_NONE -DRTMP_R
 #5350, 3050, 3350
 WFLAGS +=-DRTMP_MAC_PCI -DRT305x -DRT5350 -DRT3050 -DRT3350 -DRTMP_PCI_SUPPORT -DRTMP_RF_RW_SUPPORT -DA_BAND_SUPPORT -DVCORECAL_SUPPORT -DSPECIFIC_BCN_BUF_SUPPORT
 ifeq ($(HAS_DFS_SUPPORT),y)
-WFLAGS += -DDFS_HARDWARE_SUPPORT  -DDFS_DEBUG 
+WFLAGS += -DDFS_HARDWARE_SUPPORT  -DDFS_DEBUG
 endif
 endif
 
@@ -556,7 +575,7 @@ WFLAGS += -DLLTD_SUPPORT
 endif
 
 ifeq ($(PLATFORM),RMI)
-WFLAGS += -DRT_BIG_ENDIAN 
+WFLAGS += -DRT_BIG_ENDIAN
 endif
 
 ifeq ($(PLATFORM),BL2348)
@@ -572,7 +591,7 @@ WFLAGS += -DRT_BIG_ENDIAN
 endif
 
 ifeq ($(PLATFORM),RMI_64)
-WFLAGS += -DRT_BIG_ENDIAN 
+WFLAGS += -DRT_BIG_ENDIAN
 endif
 ifeq ($(PLATFORM),IXP)
 WFLAGS += -DRT_BIG_ENDIAN
@@ -627,7 +646,7 @@ WFLAGS += -DPLATFORM_RALINK_3052
 endif
 
 ifeq ($(PLATFORM),FREESCALE8377)
-#EXTRA_CFLAGS := -v -I$(RT28xx_DIR)/include -I$(LINUX_SRC)/include $(WFLAGS)-O2 -Wall -Wstrict-prototypes -Wno-trigraphs 
+#EXTRA_CFLAGS := -v -I$(RT28xx_DIR)/include -I$(LINUX_SRC)/include $(WFLAGS)-O2 -Wall -Wstrict-prototypes -Wno-trigraphs
 #export EXTRA_CFLAGS
 WFLAGS += -DRT_BIG_ENDIAN
 EXTRA_CFLAGS := $(WFLAGS) -I$(RT28xx_DIR)/include
@@ -636,6 +655,11 @@ endif
 ifeq ($(PLATFORM),ST)
 #WFLAGS += -DST
 WFLAGS += -DST
+endif
+
+ifeq ($(PLATFORM),JZSOC)
+        EXTRA_CFLAGS := $(WFLAGS) -I$(RT28xx_DIR)/include
+        export EXTRA_CFLAGS
 endif
 
 #kernel build options for 2.4
@@ -669,7 +693,7 @@ export CFLAGS
 endif
 
 ifeq ($(PLATFORM),5VT)
-CFLAGS := -D__KERNEL__ -I$(LINUX_SRC)/include -I$(RT28xx_DIR)/include -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -O3 -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-omit-frame-pointer -mapcs -mno-sched-prolog -mabi=apcs-gnu -mno-thumb-interwork -D__LINUX_ARM_ARCH__=5 -march=armv5te -mtune=arm926ej-s --param max-inline-insns-single=40000  -Uarm -Wdeclaration-after-statement -Wno-pointer-sign -DMODULE $(WFLAGS) 
+CFLAGS := -D__KERNEL__ -I$(LINUX_SRC)/include -I$(RT28xx_DIR)/include -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -O3 -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-omit-frame-pointer -mapcs -mno-sched-prolog -mabi=apcs-gnu -mno-thumb-interwork -D__LINUX_ARM_ARCH__=5 -march=armv5te -mtune=arm926ej-s --param max-inline-insns-single=40000  -Uarm -Wdeclaration-after-statement -Wno-pointer-sign -DMODULE $(WFLAGS)
 
 export CFLAGS
 endif
@@ -719,7 +743,7 @@ export CFLAGS
 endif
 
 ifeq ($(PLATFORM),ST)
-CFLAGS := -D__KERNEL__ -I$(LINUX_SRC)/include -I$(RT28xx_DIR)/include -Wall -O2 -Wundef -Wstrict-prototypes -Wno-trigraphs -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-aliasing -fno-common -fomit-frame-pointer -ffreestanding -m4-nofpu -o $(WFLAGS) 
+CFLAGS := -D__KERNEL__ -I$(LINUX_SRC)/include -I$(RT28xx_DIR)/include -Wall -O2 -Wundef -Wstrict-prototypes -Wno-trigraphs -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-aliasing -fno-common -fomit-frame-pointer -ffreestanding -m4-nofpu -o $(WFLAGS)
 export CFLAGS
 endif
 
@@ -748,7 +772,7 @@ endif
 ifeq ($(PLATFORM),IXP)
 	CFLAGS := -v -D__KERNEL__ -DMODULE -I$(LINUX_SRC)/include -I$(RT28xx_DIR)/include -mbig-endian -Wall -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -Uarm -fno-common -pipe -mapcs-32 -D__LINUX_ARM_ARCH__=5 -mcpu=xscale -mtune=xscale -malignment-traps -msoft-float $(WFLAGS)
         EXTRA_CFLAGS := -v $(WFLAGS) -I$(RT28xx_DIR)/include -mbig-endian
-	export CFLAGS        
+	export CFLAGS
 endif
 
 ifeq ($(PLATFORM),SMDK)
@@ -798,7 +822,7 @@ ifeq ($(PLATFORM),MT85XX)
 	                -D _NO_TYPEDEF_CHAR_ \
 	                -D _NO_TYPEDEF_INT32_ \
 	                -D _NO_TYPEDEF_INT64_ \
-	                
+
     endif
 endif
 
@@ -814,7 +838,7 @@ ifeq ($(PLATFORM),NXP_TV550)
 endif
 
 ifeq ($(PLATFORM),MVL5)
-CFLAGS := -D__KERNEL__ -I$(LINUX_SRC)/include -I$(RT28xx_DIR)/include -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -O3 -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-omit-frame-pointer -mapcs -mno-sched-prolog -mno-thumb-interwork -D__LINUX_ARM_ARCH__=5 -march=armv5te -mtune=arm926ej-s --param max-inline-insns-single=40000  -Uarm -Wdeclaration-after-statement -Wno-pointer-sign -DMODULE $(WFLAGS) 
+CFLAGS := -D__KERNEL__ -I$(LINUX_SRC)/include -I$(RT28xx_DIR)/include -mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -O3 -fno-omit-frame-pointer -fno-optimize-sibling-calls -fno-omit-frame-pointer -mapcs -mno-sched-prolog -mno-thumb-interwork -D__LINUX_ARM_ARCH__=5 -march=armv5te -mtune=arm926ej-s --param max-inline-insns-single=40000  -Uarm -Wdeclaration-after-statement -Wno-pointer-sign -DMODULE $(WFLAGS)
 export CFLAGS
 endif
 
@@ -823,8 +847,22 @@ CFLAGS := -D__KERNEL__ -I$(LINUX_SRC)/include/asm-mips/mach-generic -I$(LINUX_SR
 export CFLAGS
 endif
 
+ifeq ($(PLATFORM),IMX51)
+EXTRA_CFLAGS := $(WFLAGS) -I$(RT28xx_DIR)/include -D__KERNEL__ -DMODULE
+export EXTRA_CFLAGS
+endif
+
+ifeq ($(PLATFORM),Telechips)
+EXTRA_CFLAGS := $(WFLAGS) -I$(RT28xx_DIR)/include -D__KERNEL__ -DMODULE -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -Os -marm -mabi=aapcs-linux -mno-thumb-interwork -funwind-tables -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack
+export EXTRA_CFLAGS
+endif
+
 ifeq ($(PLATFORM),sunxi)
 #	EXTRA_CFLAGS := $(WFLAGS) -I$(LINUX_SRC)/include -I$(RT28xx_DIR)/include -I$(src)/include
 	EXTRA_CFLAGS := $(WFLAGS) -O2  -Wno-unused-variable -Wno-unused-value -Wno-unused-label -Wno-unused-parameter -Wno-uninitialized -Wno-unused -Wno-unused-function  -I$(LINUX_SRC)/include -I$(RT28xx_DIR)/include -I$(src)/include -DCONFIG_LITTLE_ENDIAN
 export EXTRA_CFLAGS
 endif
+
+#/home/carter/Desktop/Working_2011/Customer/TelechipSDK/gingerbread_rel/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-gcc -Wp,-MD,net/ipv6/.exthdrs.o.d  -nostdinc -isystem /home/carter/Desktop/Working_2011/Customer/TelechipSDK/gingerbread_rel/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/../lib/gcc/arm-eabi/4.4.3/include -I/home/carter/Desktop/Working_2011/Customer/TelechipSDK/gingerbread_rel/kernel/arch/arm/include -Iinclude  -include include/generated/autoconf.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-tcc88xx/include -Iarch/arm/plat-tcc/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -Os -marm -mabi=aapcs-linux -mno-thumb-interwork -funwind-tables -D__LINUX_ARM_ARCH__=7 -march=armv7-a -msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack
+
+#/home/carter/Desktop/Working_2011/Customer/TelechipSDK/gingerbread_rel/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/arm-eabi-gcc -Wp,-MD,lib/.idr.o.d  -nostdinc -isystem /home/carter/Desktop/Working_2011/Customer/TelechipSDK/gingerbread_rel/prebuilt/linux-x86/toolchain/arm-eabi-4.4.3/bin/../lib/gcc/arm-eabi/4.4.3/include -I/home/carter/Desktop/Working_2011/Customer/TelechipSDK/gingerbread_rel/kernel/arch/arm/include -Iinclude  -include include/generated/autoconf.h -D__KERNEL__ -mlittle-endian -Iarch/arm/mach-tcc93xx/include -Iarch/arm/plat-tcc/include -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs -fno-strict-aliasing -fno-common -Werror-implicit-function-declaration -Wno-format-security -fno-delete-null-pointer-checks -Os -marm -mabi=aapcs-linux -mno-thumb-interwork -funwind-tables -D__LINUX_ARM_ARCH__=6 -march=armv6 -mtune=arm1136j-s -msoft-float -Uarm -Wframe-larger-than=1024 -fno-stack-protector -fomit-frame-pointer -g -Wdeclaration-after-statement -Wno-pointer-sign -fno-strict-overflow -fconserve-stack   -D"KBUILD_STR(s)=#s" -D"KBUILD_BASENAME=KBUILD_STR(idr)"  -D"KBUILD_MODNAME=KBUILD_STR(idr)"  -c -o lib/idr.o lib/idr.c

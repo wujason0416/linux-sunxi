@@ -38,22 +38,22 @@ extern UCHAR AGS3x3HTRateTable[];
 
 
 #define AGS_TX_QUALITY_WORST_BOUND       8
-    
+
 /* */
 /* The size, in bytes, of an AGS entry in the rate switch table */
 /* */
 #define SIZE_OF_AGS_RATE_TABLE_ENTRY	9
-    
+
 
 typedef struct _RTMP_TX_RATE_SWITCH_AGS {
-	
+
 
 	UCHAR	ItemNo;
-	
+
 #ifdef RT_BIG_ENDIAN
 	UCHAR	Rsv2:2;
 	UCHAR	Mode:2;
-	UCHAR	Rsv1:1;	
+	UCHAR	Rsv1:1;
 	UCHAR	BW:1;
 	UCHAR	ShortGI:1;
 	UCHAR	STBC:1;
@@ -103,14 +103,14 @@ typedef struct _AGS_STATISTICS_INFO {
 /* Support AGS (Adaptive Group Switching) */
 /* */
 #define SUPPORT_AGS(__pAd)			(IS_RT3593(__pAd))
-    
+
 #define AGS_IS_USING(__pAd, __pRateTable)			\
     (SUPPORT_AGS(__pAd) && \
      ((__pRateTable == AGS1x1HTRateTable) || \
       (__pRateTable == AGS2x2HTRateTable) || \
-      (__pRateTable == AGS3x3HTRateTable))) 
- 
+      (__pRateTable == AGS3x3HTRateTable)))
+
 
 #endif /* __AGS_H__ */
-    
-/* End of ags.h */ 
+
+/* End of ags.h */
