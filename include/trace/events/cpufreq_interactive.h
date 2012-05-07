@@ -81,6 +81,31 @@ DEFINE_EVENT(loadeval, cpufreq_interactive_notyet,
 		     unsigned long curfreq, unsigned long targfreq),
 	    TP_ARGS(cpu_id, load, curfreq, targfreq)
 );
+
+TRACE_EVENT(cpufreq_interactive_boost,
+	    TP_PROTO(char *s),
+	    TP_ARGS(s),
+	    TP_STRUCT__entry(
+		    __field(char *, s)
+	    ),
+	    TP_fast_assign(
+		    __entry->s = s;
+	    ),
+	    TP_printk("%s", __entry->s)
+);
+
+TRACE_EVENT(cpufreq_interactive_unboost,
+	    TP_PROTO(char *s),
+	    TP_ARGS(s),
+	    TP_STRUCT__entry(
+		    __field(char *, s)
+	    ),
+	    TP_fast_assign(
+		    __entry->s = s;
+	    ),
+	    TP_printk("%s", __entry->s)
+);
+
 #endif /* _TRACE_CPUFREQ_INTERACTIVE_H */
 
 /* This part must be outside protection */
