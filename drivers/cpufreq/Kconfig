@@ -249,6 +249,14 @@ config CPU_FREQ_DVFS
 
 	  If in doubt, say N.
 
+config CPU_FREQ_DVFS_HW
+	bool "Use DVFS-HW module in soc to control dvfs"
+	depends on CPU_FREQ_DVFS
+	help
+	  This will allow hardware dvfs module to control the cpu frequency and voltage to adjust.
+
+	  If in doubt, say N.
+
 menu "x86 CPU frequency scaling drivers"
 depends on X86
 source "drivers/cpufreq/Kconfig.x86"

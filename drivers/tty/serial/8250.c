@@ -786,6 +786,9 @@ static void disable_rsa(struct uart_8250_port *up)
  */
 static int size_fifo(struct uart_8250_port *up)
 {
+#ifdef	CONFIG_ARCH_SUN5I
+	return 64;
+#else
 	unsigned char old_fcr, old_mcr, old_lcr;
 	unsigned short old_dl;
 	int count;
@@ -815,6 +818,7 @@ static int size_fifo(struct uart_8250_port *up)
 
 	DEBUG_SERIAL(&up->port, "caculate fifo size: %d\n", count);
 	return count;
+#endif
 }
 
 /*
@@ -1695,6 +1699,7 @@ static void serial8250_handle_port(struct uart_8250_port *up)
  * This means we need to loop through all ports. checking that they
  * don't have an interrupt pending.
  */
+
 static irqreturn_t serial8250_interrupt(int irq, void *dev_id)
 {
 	struct irq_info *i = dev_id;
@@ -1714,7 +1719,6 @@ static irqreturn_t serial8250_interrupt(int irq, void *dev_id)
 		DEBUG_SERIAL(&up->port, "irq, iir %02x \n", iir);
 		if (!(iir & UART_IIR_NO_INT)) {
 			serial8250_handle_port(up);
-
 			handled = 1;
 
 			end = NULL;
@@ -1733,6 +1737,7 @@ static irqreturn_t serial8250_interrupt(int irq, void *dev_id)
                                 serial_in(up, UART_RX);
 			serial_out(up, UART_LCR, up->lcr);
                         serial_out(up, UART_MCR, mcr_t);    //to normal mode
+
 			handled = 1;
 
 			end = NULL;
@@ -2427,6 +2432,8 @@ serial8250_do_set_termios(struct uart_port *port, struct ktermios *termios,
 	unsigned char cval, fcr = 0;
 	unsigned long flags;
 	unsigned int baud, quot;
+	unsigned char mcr_tmp=0x00;
+	unsigned int count_tmp;
 
 	DEBUG_SERIAL(&up->port, "serial8250_do_set_termios\n");
 
@@ -2582,11 +2589,36 @@ serial8250_do_set_termios(struct uart_port *port, struct ktermios *termios,
 	}
 #endif
 
+	mcr_tmp = serial_inp(up, UART_MCR);
+
 	if (up->capabilities & UART_NATSEMI) {
 		/* Switch to bank 2 not bank 1, to avoid resetting EXCR2 */
+
+		count_tmp=0;
+		mcr_tmp = serial_inp(up, UART_MCR);
+		serial_out(up, UART_MCR, mcr_tmp |(1<<4));
+		do{
+			count_tmp++;
+			serial_out(up, UART_FCR,0x07);
 		serial_outp(up, UART_LCR, 0xe0);
+			if(count_tmp==1000)
+				 break;
+		}while(serial_inp(up, UART_USR)&0x01);
 	} else {
+
+		/*loopback mode to set lcr*/
+		mcr_tmp	= serial_inp(up, UART_MCR);
+		serial_out(up, UART_MCR, mcr_tmp |(1<<4));
+
+		count_tmp=0;
+		do{
+			count_tmp++;
+
+			serial_out(up, UART_FCR,0x07);
 		serial_outp(up, UART_LCR, cval | UART_LCR_DLAB);/* set DLAB */
+			if(count_tmp==1000)
+				break;
+		}while(serial_inp(up, UART_USR)&0x01);
 	}
 
 	serial_dl_write(up, quot);
@@ -2597,8 +2629,19 @@ serial8250_do_set_termios(struct uart_port *port, struct ktermios *termios,
 	 */
 	if (up->port.type == PORT_16750)
 		serial_outp(up, UART_FCR, fcr);
+		count_tmp=0;
+	do{
+		count_tmp++;
 
+		serial_out(up, UART_FCR,0x07);
+		serial_outp(up, UART_LCR, cval);		/* reset DLAB */
+		if(count_tmp==1000)
+			break;
+	}while(serial_inp(up, UART_USR)&0x01);
+	/*to normal from loopback*/
+	serial_out(up, UART_MCR, mcr_tmp);
 	serial_outp(up, UART_LCR, cval);		/* reset DLAB */
+
 	up->lcr = cval;					/* Save LCR */
 	if (up->port.type != PORT_16750) {
 		if (fcr & UART_FCR_ENABLE_FIFO) {
@@ -2623,10 +2666,11 @@ static void
 serial8250_set_termios(struct uart_port *port, struct ktermios *termios,
 		       struct ktermios *old)
 {
-	if (port->set_termios)
+	if (port->set_termios){
 		port->set_termios(port, termios, old);
-	else
+	}else{
 		serial8250_do_set_termios(port, termios, old);
+}
 }
 
 static void
