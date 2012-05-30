@@ -2774,19 +2774,11 @@ DBG_871X("\n");
 	pattrib->mdata = GetMData(ptr);
 	pattrib->privacy = GetPrivacy(ptr);
 	pattrib->order = GetOrder(ptr);
-#if 0 //for debug
-
-if(pHalData->bDumpRxPkt ==1){
-	int i;
-	DBG_871X("############################# \n");
-
-	for(i=0; i<64;i=i+8)
-		DBG_871X("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:\n", *(ptr+i),
-		*(ptr+i+1), *(ptr+i+2) ,*(ptr+i+3) ,*(ptr+i+4),*(ptr+i+5), *(ptr+i+6), *(ptr+i+7));
-	DBG_871X("############################# \n");
-}
-else if(pHalData->bDumpRxPkt ==2){
-	if(type== WIFI_MGT_TYPE){
+#if 1 //Dump rx packets
+{
+	u8 bDumpRxPkt;
+	adapter->HalFunc.GetHalDefVarHandler(adapter, HAL_DEF_DBG_DUMP_RXPKT, &(bDumpRxPkt));
+	if(bDumpRxPkt ==1){//dump all rx packets
 		int i;
 		DBG_871X("############################# \n");
 
@@ -2795,19 +2787,29 @@ else if(pHalData->bDumpRxPkt ==2){
 			*(ptr+i+1), *(ptr+i+2) ,*(ptr+i+3) ,*(ptr+i+4),*(ptr+i+5), *(ptr+i+6), *(ptr+i+7));
 		DBG_871X("############################# \n");
 	}
-}
-else if(pHalData->bDumpRxPkt ==3){
-	if(type== WIFI_DATA_TYPE){
-		int i;
-		DBG_871X("############################# \n");
+	else if(bDumpRxPkt ==2){
+		if(type== WIFI_MGT_TYPE){
+			int i;
+			DBG_871X("############################# \n");
 
-		for(i=0; i<64;i=i+8)
-			DBG_871X("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:\n", *(ptr+i),
-			*(ptr+i+1), *(ptr+i+2) ,*(ptr+i+3) ,*(ptr+i+4),*(ptr+i+5), *(ptr+i+6), *(ptr+i+7));
-		DBG_871X("############################# \n");
+			for(i=0; i<64;i=i+8)
+				DBG_871X("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:\n", *(ptr+i),
+				*(ptr+i+1), *(ptr+i+2) ,*(ptr+i+3) ,*(ptr+i+4),*(ptr+i+5), *(ptr+i+6), *(ptr+i+7));
+			DBG_871X("############################# \n");
+		}
+	}
+	else if(bDumpRxPkt ==3){
+		if(type== WIFI_DATA_TYPE){
+			int i;
+			DBG_871X("############################# \n");
+
+			for(i=0; i<64;i=i+8)
+				DBG_871X("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:\n", *(ptr+i),
+				*(ptr+i+1), *(ptr+i+2) ,*(ptr+i+3) ,*(ptr+i+4),*(ptr+i+5), *(ptr+i+6), *(ptr+i+7));
+			DBG_871X("############################# \n");
+		}
 	}
 }
-
 #endif
 	switch (type)
 	{
@@ -3426,7 +3428,7 @@ int amsdu_to_msdu(_adapter *padapter, union recv_frame *prframe)
 			{
 				sub_skb->data = pdata;
 				sub_skb->len = nSubframe_Length;
-				sub_skb->tail = sub_skb->data + nSubframe_Length;
+				sub_skb->tail = (sk_buff_data_t)((SIZE_PTR)sub_skb->data + nSubframe_Length);
 			}
 			else
 			{
@@ -4514,6 +4516,8 @@ int recv_func(_adapter *padapter, void *pcontext)
 		}
 	}
 #endif
+
+
 
 	//check the frame crtl field and decache
 	retval = validate_recv_frame(padapter, prframe);

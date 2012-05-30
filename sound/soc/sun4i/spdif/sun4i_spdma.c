@@ -45,7 +45,7 @@ static const struct snd_pcm_hardware sun4i_pcm_hardware = {
 	.rate_min		= 8000,
 	.rate_max		= 192000,
 	.channels_min		= 1,
-	.channels_max		= 2,
+	.channels_max		= 4,
 	.buffer_bytes_max	= 128*1024,  //1024*1024  /* value must be (2^n)Kbyte size */
 	.period_bytes_min	= 1024*4,//1024*4,
 	.period_bytes_max	= 1024*32,//1024*128,
@@ -235,6 +235,7 @@ static int sun4i_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 	case SNDRV_PCM_TRIGGER_SUSPEND:
 	case SNDRV_PCM_TRIGGER_STOP:
 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+		printk("[SPDIF] dma trigger stop\n");
 		sw_dma_ctrl(prtd->params->channel, SW_DMAOP_STOP);
 		break;
 
