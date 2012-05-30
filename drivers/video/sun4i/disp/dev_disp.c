@@ -1072,6 +1072,19 @@ long disp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
     		break;
         }
 
+        case DISP_CMD_SCALER_EXECUTE_EX:
+    	{
+    	    __disp_scaler_para_t para;
+
+    		if(copy_from_user(&para, (void __user *)ubuffer[2],sizeof(__disp_scaler_para_t)))
+    		{
+    		    __wrn("copy_from_user fail\n");
+    			return  -EFAULT;
+    		}
+    		ret = BSP_disp_scaler_start_ex(ubuffer[1],&para);
+    		break;
+        }
+
     //----hwc----
     	case DISP_CMD_HWC_OPEN:
     		ret =  BSP_disp_hwc_enable(ubuffer[0], 1);

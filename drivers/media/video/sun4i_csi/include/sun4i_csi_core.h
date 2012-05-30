@@ -320,6 +320,7 @@ struct csi_dev {
 	unsigned int            height;
 	unsigned int						frame_size;
 	struct videobuf_queue   vb_vidq;
+	unsigned int 						capture_mode;
 
 	/*working state*/
 	unsigned long 		   	generating;
