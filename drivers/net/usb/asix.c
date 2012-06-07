@@ -1114,7 +1114,7 @@ static int ax88772b_reset(struct usbnet *dev)
 
 	mii_nway_restart(&dev->mii);
 
-	if ((ret = asix_write_medium_mode(dev, AX88772_MEDIUM_DEFAULT)) < 0) 
+	if ((ret = asix_write_medium_mode(dev, AX88772_MEDIUM_DEFAULT)) < 0)
 		netdev_err(dev->net, "Failed to write medium mode: %d", ret);
 
 	if ((ret = asix_write_cmd(dev, AX_CMD_WRITE_IPG0,
@@ -1253,8 +1253,8 @@ static int ax88772b_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
 			return 0;
 		}
 
-		if (skb->len - ((rx_hdr.len + 
-						sizeof (struct ax88772b_rx_header) + 3) & 
+		if (skb->len - ((rx_hdr.len +
+						sizeof (struct ax88772b_rx_header) + 3) &
 					0xfffc) == 0) {
 			skb_pull(skb, sizeof (struct ax88772b_rx_header));
 			skb->len = rx_hdr.len;
@@ -1271,7 +1271,7 @@ static int ax88772b_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
 		ax_skb = skb_clone(skb, GFP_ATOMIC);
 		if (ax_skb) {
 			ax_skb->len = rx_hdr.len;
-			ax_skb->data = skb->data + 
+			ax_skb->data = skb->data +
 				sizeof (struct ax88772b_rx_header);
 
 			skb_set_tail_pointer(ax_skb, rx_hdr.len);
@@ -1287,7 +1287,7 @@ static int ax88772b_rx_fixup(struct usbnet *dev, struct sk_buff *skb)
 			return 0;
 		}
 
-		skb_pull(skb, ((rx_hdr.len + 
+		skb_pull(skb, ((rx_hdr.len +
 						sizeof (struct ax88772b_rx_header) + 3)
 					& 0xfffc));
 	}

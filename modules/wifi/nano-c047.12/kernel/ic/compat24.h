@@ -24,7 +24,7 @@ static inline unsigned long msecs_to_jiffies(const unsigned int m)
 }
 #endif /* < 2.4.33 */
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15) 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15)
 static inline void
 setup_timer(struct timer_list *timer,
             void (*function)(unsigned long),
@@ -36,7 +36,7 @@ setup_timer(struct timer_list *timer,
 }
 #endif
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(2,4,23) 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,4,23)
 static inline struct proc_dir_entry *PDE(const struct inode *inode)
 {
 	return (struct proc_dir_entry *)inode->u.generic_ip;

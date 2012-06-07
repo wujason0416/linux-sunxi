@@ -27,7 +27,7 @@ This module implements the WiFiEngine debugging interface
 
 *****************************************************************************/
 /** @defgroup we_dbg WiFiEngine debugging interface
- * 
+ *
  * @brief This module contains functions to facilitate debugging of WiFiEngine
  * and the driver.
  *
@@ -95,7 +95,7 @@ int WiFiEngine_GetCmdReplyPendingFlag()
  * the device).
  *
  * @return The number of outstanding data packets awaiting data confirm.
- */ 
+ */
 int WiFiEngine_GetDataReplyPendingFlag()
 {
    return wifiEngineState.dataReqPending;
@@ -132,10 +132,8 @@ int WiFiEngine_Tickle()
 {
    DE_TRACE_STATIC(TR_NOISE, "Tickle clearing cmdReplyPending. Here be dragons!\n");
    wifiEngineState.cmdReplyPending = 0;
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
 /** @} */ /* End of we_dbg group */
-
-

@@ -213,7 +213,7 @@ static int aw_set_next_clkevt(unsigned long delta, struct clock_event_device *de
     TMR_REG_TMR1_CTL |= (1<<1);
 
     /* enable timer */
-    TMR_REG_TMR1_CTL |= (1<<0);     
+    TMR_REG_TMR1_CTL |= (1<<0);
     spin_unlock_irqrestore(&timer1_spin_lock, flags);
     return 0;
 }

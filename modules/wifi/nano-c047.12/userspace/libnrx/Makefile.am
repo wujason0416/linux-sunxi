@@ -32,7 +32,7 @@ libnrx_a_LIBADD  = $(LIBOBJS)
 include_HEADERS = nrx_lib.h nrx_proto.h
 
 # By default, do not build test_abar because it requires -pthread option
-# which is not supported by many GNU compilers for embedded platforms 
+# which is not supported by many GNU compilers for embedded platforms
 noinst_PROGRAMS = test test_trig mibtable show_scan btcoex_ratio #test_abar
 
 test_abar_CFLAGS = -pthread

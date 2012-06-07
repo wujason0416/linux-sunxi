@@ -10,7 +10,7 @@
 *
 * Author 		: javen
 *
-* Description 	: Ö÷»ú¿ØÖÆÆ÷Çý¶¯
+* Description 	: ä¸»æœºæŽ§åˆ¶å™¨é©±åŠ¨
 *
 * History 		:
 *      <author>    		<time>       	<version >    		<desc>
@@ -1131,31 +1131,3 @@ irqreturn_t generic_interrupt(int irq, void *__hci)
 	return IRQ_HANDLED;
 }
 EXPORT_SYMBOL(generic_interrupt);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

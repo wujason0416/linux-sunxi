@@ -92,4 +92,3 @@ __s32 standby_ir_verify(void)
 {
     return -1;
 }
-

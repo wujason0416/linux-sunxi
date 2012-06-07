@@ -339,7 +339,3 @@ __s32 PHY_SetDefaultParam(__u32 bank);
 __s32 PHY_ScanDDRParam(void);
 
 #endif  //ifnedf __NAND_PHYSIC_H__
-
-
-
-

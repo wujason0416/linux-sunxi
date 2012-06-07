@@ -56,7 +56,7 @@ static int wpa_supplicant_select_config(struct wpa_supplicant *wpa_s)
 
 	wpa_printf(MSG_DEBUG, "Network configuration found for the current "
 		   "AP");
-	
+
 	if (ssid->key_mgmt & (WPA_KEY_MGMT_PSK | WPA_KEY_MGMT_IEEE8021X |
 			      WPA_KEY_MGMT_WPA_NONE)) {
 		u8 wpa_ie[80];
@@ -68,19 +68,19 @@ static int wpa_supplicant_select_config(struct wpa_supplicant *wpa_s)
 		size_t wapi_ie_len = sizeof(wapi_ie);
 		wpa_supplicant_wapi_set_suites(wpa_s, NULL, ssid,
 					  wapi_ie, &wapi_ie_len);
-		
+
 	} else {
 		wpa_supplicant_set_non_wpa_policy(wpa_s, ssid);
 	}
 	if (wpa_s->current_ssid && wpa_s->current_ssid != ssid)
 		eapol_sm_invalidate_cached_session(wpa_s->eapol);
 	wpa_s->current_ssid = ssid;
-	
+
 	if (wpa_s->key_mgmt == WAPI_KEY_MGMT_PSK || wpa_s->key_mgmt == WAPI_KEY_MGMT_CERT)
 		wapi_sm_set_config(wpa_s->wapi, wpa_s->current_ssid);
 	else
 		wpa_sm_set_config(wpa_s->wpa, wpa_s->current_ssid);
-	
+
 	wpa_supplicant_initiate_eapol(wpa_s);
 	return 0;
 }
@@ -107,7 +107,7 @@ void wpa_supplicant_mark_disassoc(struct wpa_supplicant *wpa_s)
 	os_memset(wpa_s->pending_bssid, 0, ETH_ALEN);
 	eapol_sm_notify_portEnabled(wpa_s->eapol, FALSE);
 	eapol_sm_notify_portValid(wpa_s->eapol, FALSE);
-	
+
 	if ( (wpa_s->key_mgmt == WPA_KEY_MGMT_PSK) || (wpa_s->key_mgmt == WAPI_KEY_MGMT_PSK))
 		eapol_sm_notify_eap_success(wpa_s->eapol, FALSE);
 }
@@ -191,7 +191,7 @@ int wpa_supplicant_scard_init(struct wpa_supplicant *wpa_s,
 			      struct wpa_ssid *ssid)
 {
 #ifdef IEEE8021X_EAPOL
-	int aka = 0, sim = 0; 
+	int aka = 0, sim = 0;
 	scard_sim_type type;
 
 	if (ssid->pcsc == NULL || wpa_s->scard != NULL)
@@ -321,7 +321,7 @@ static int wpa_supplicant_ssid_bss_match(struct wpa_ssid *ssid,
 			break;
 		}
 
-		
+
 		wpa_printf(MSG_DEBUG, "   selected based on WAPI IE");
 		return 1;
 	}
@@ -519,7 +519,7 @@ wpa_supplicant_select_bss(struct wpa_supplicant *wpa_s, struct wpa_ssid *group,
 					   "BSSID mismatch");
 				continue;
 			}
-			
+
 			if (!(ssid->key_mgmt & WPA_KEY_MGMT_NONE) &&
 			    !(ssid->key_mgmt & WPA_KEY_MGMT_IEEE8021X_NO_WPA))
 			{
@@ -528,7 +528,7 @@ wpa_supplicant_select_bss(struct wpa_supplicant *wpa_s, struct wpa_ssid *group,
 				continue;
 			}
 
-			if ((ssid->key_mgmt & 
+			if ((ssid->key_mgmt &
 			     (WPA_KEY_MGMT_IEEE8021X | WPA_KEY_MGMT_PSK)) &&
 			    (bss->wpa_ie_len != 0 || bss->rsn_ie_len != 0)) {
 				wpa_printf(MSG_DEBUG, "   skip - "
@@ -824,7 +824,7 @@ static void wpa_supplicant_event_assoc(struct wpa_supplicant *wpa_s,
                                                     REASON_DEAUTH_LEAVING);
 			return;
 		}
-			
+
 
 	l2_packet_notify_auth_start(wpa_s->l2);
 
@@ -885,7 +885,7 @@ static void wpa_supplicant_event_disassoc(struct wpa_supplicant *wpa_s)
 			"pre-shared key may be incorrect");
 	}
 
-	if ( ( wpa_s->conf->ap_scan > 0) 
+	if ( ( wpa_s->conf->ap_scan > 0)
      && (wpa_s->wpa_state >= WPA_ASSOCIATED) )
 	{
 		wpa_supplicant_req_scan(wpa_s, 0, 100000);

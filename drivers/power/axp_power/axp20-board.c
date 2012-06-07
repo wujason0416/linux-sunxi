@@ -636,13 +636,13 @@ static int __init axp_board_init(void)
         {
             printk("axp driver uning configuration failed(%d)\n", __LINE__);
             pmu_intotp_en = 1;
-        }   
+        }
         ret = script_parser_fetch("pmu_para", "pmu_pekon_time", &pmu_pekon_time, sizeof(int));
         if (ret)
         {
             printk("axp driver uning configuration failed(%d)\n", __LINE__);
             pmu_pekon_time = 1000;
-        }           
+        }
 
         axp_regl_init_data[1].constraints.state_standby.uV = ldo2_vol * 1000;
         axp_regl_init_data[2].constraints.state_standby.uV = ldo3_vol * 1000;
@@ -674,4 +674,3 @@ fs_initcall(axp_board_init);
 MODULE_DESCRIPTION("Krosspower axp board");
 MODULE_AUTHOR("Donglu Zhang Krosspower");
 MODULE_LICENSE("GPL");
-

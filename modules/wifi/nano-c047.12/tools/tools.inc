@@ -112,4 +112,3 @@ socat: obj
 	cp socat ../)
 	rm $(OBJ_DIR)/socat-1.5.0.0.tar.gz
 	rm -Rf $(OBJ_DIR)/socat-1.5.0.0
-

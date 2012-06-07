@@ -90,8 +90,8 @@ static void eventNotificationCallback ( tHCIUTILS_NOTIFICATION * pEvent)
             lmp_features = &eventPtr[3];
             A_DUMP_BUFFER(lmp_features, sizeof(lmp_features),"Remote Device LMP Features:");
 
-            if ((lmp_features[LMP_FEATURE_ACL_EDR_2MBPS_BYTE_INDEX] & LMP_FEATURE_ACL_EDR_2MBPS_BIT_MASK)  ||    
-                (lmp_features[LMP_FEATURE_ACL_EDR_3MBPS_BYTE_INDEX] & LMP_FEATURE_ACL_EDR_3MBPS_BIT_MASK)) 
+            if ((lmp_features[LMP_FEATURE_ACL_EDR_2MBPS_BYTE_INDEX] & LMP_FEATURE_ACL_EDR_2MBPS_BIT_MASK)  ||
+                (lmp_features[LMP_FEATURE_ACL_EDR_3MBPS_BYTE_INDEX] & LMP_FEATURE_ACL_EDR_3MBPS_BIT_MASK))
             {
                 A_DEBUG("Device is EDR capable \n");
                 pAbfBtInfo->DefaultAudioDeviceLmpVersion = 3;
@@ -100,7 +100,7 @@ static void eventNotificationCallback ( tHCIUTILS_NOTIFICATION * pEvent)
                 pAbfBtInfo->DefaultAudioDeviceLmpVersion = 2;
             }
             pAbfBtInfo->DefaultRemoteAudioDevicePropsValid = TRUE;
-            pInfo->A2DPConnection_LMPVersion =  pInfo->SCOConnection_LMPVersion = 
+            pInfo->A2DPConnection_LMPVersion =  pInfo->SCOConnection_LMPVersion =
                                                 pAbfBtInfo->DefaultAudioDeviceLmpVersion;
         }
         if(pEvent->nOpCode ==  HCI_EVT_REMOTE_DEV_VERSION) {
@@ -133,8 +133,8 @@ static void eventNotificationCallback ( tHCIUTILS_NOTIFICATION * pEvent)
 /*                    pAbfBtInfo->DefaultAudioDeviceLmpVersion = 4; */
 		        A_DEBUG("Its 2.1 \n");
             }
-           
-            pInfo->A2DPConnection_LMPVersion =  pInfo->SCOConnection_LMPVersion = 
+
+            pInfo->A2DPConnection_LMPVersion =  pInfo->SCOConnection_LMPVersion =
                                                 pAbfBtInfo->DefaultAudioDeviceLmpVersion;
 	    }
         if (pEvent->nOpCode == EVT_INQUIRY_COMPLETE) {
@@ -293,7 +293,7 @@ A_STATUS  Abf_IssueAFHViaHciLib (ABF_BT_INFO  * pAbfBtInfo,
         setChannels.last = 79;
         center = 0;
    }else {
-        if( (CurrentWLANChannel < 2412) || 
+        if( (CurrentWLANChannel < 2412) ||
            (CurrentWLANChannel >  2470))
         {
             return A_ERROR;
@@ -317,7 +317,7 @@ A_STATUS  Abf_IssueAFHViaHciLib (ABF_BT_INFO  * pAbfBtInfo,
 }
 
 A_STATUS Abf_HciLibInit(A_UINT32 *btfiltFlags)
-{        
+{
 #ifdef STATIC_LINK_HCILIBS
     pfn_HCIUTILS_RegisterHCINotification = HCIUTILS_RegisterHCINotification;
     pfn_HCIUTILS_SendCmd = HCIUTILS_SendCmd;
@@ -334,7 +334,7 @@ A_STATUS Abf_HciLibInit(A_UINT32 *btfiltFlags)
         pfn_HCIUTILS_RegisterHCINotification = dlsym(g_hciHandle, "HCIUTILS_RegisterHCINotification");
         pfn_HCIUTILS_SendCmd = dlsym(g_hciHandle, "HCIUTILS_SendCmd");
         pfn_HCIUTILS_UnRegisterHCINotification = dlsym(g_hciHandle, "HCIUTILS_UnRegisterHCINotification");
-        if ( (NULL == pfn_HCIUTILS_RegisterHCINotification) || (NULL == pfn_HCIUTILS_SendCmd) || 
+        if ( (NULL == pfn_HCIUTILS_RegisterHCINotification) || (NULL == pfn_HCIUTILS_SendCmd) ||
               (NULL == pfn_HCIUTILS_UnRegisterHCINotification) )
         {
 		    A_ERR("ERROR GETTING HCIUTILS SYMBOLS \n");
@@ -358,4 +358,3 @@ void Abf_HciLibDeInit(void)
     }
 #endif
 }
-

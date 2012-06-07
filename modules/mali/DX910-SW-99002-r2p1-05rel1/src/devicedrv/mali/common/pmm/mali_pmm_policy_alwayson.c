@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -59,13 +59,13 @@ _mali_osk_errcode_t pmm_policy_process_always_on( _mali_pmm_internal_state_t *pm
 			/* Nothing to do */
 			_mali_osk_pmm_power_up_done( event->data );
 		break;
-		
+
 		case MALI_PMM_EVENT_JOB_SCHEDULED:
 		case MALI_PMM_EVENT_JOB_QUEUED:
 		case MALI_PMM_EVENT_JOB_FINISHED:
 			/* Nothing to do - we are always on */
 		break;
-	
+
 		case MALI_PMM_EVENT_TIMEOUT:
 			/* Not expected in this policy */
 			MALI_DEBUG_ASSERT( MALI_FALSE );

@@ -232,9 +232,9 @@ void show_help()
    int j;
    printf("This progam's options:\n");
    for (j = 0; j < ELEMENTS_IN_VECTOR(options); j++) {
-      printf("    %s,  %-14s %-5s %s ", 
-             options[j].arg_short, 
-             options[j].arg_name, 
+      printf("    %s,  %-14s %-5s %s ",
+             options[j].arg_short,
+             options[j].arg_name,
              options[j].opt_type == INT ? "<n>" : options[j].opt_type == STR ? "<str>" : "",
              options[j].help_text);
       if (options[j].opt_type == INT)
@@ -302,7 +302,7 @@ int trigger_callback(nrx_context ctx,
    struct trig_entry *p, *t = (struct trig_entry *)user_data;
 
    /* Check trigger exists */
-   TAILQ_FOREACH(p, &trig_list, next) 
+   TAILQ_FOREACH(p, &trig_list, next)
       if (p == t)
          break;
    if (p == NULL) {
@@ -317,8 +317,8 @@ int trigger_callback(nrx_context ctx,
          FAILED("CANCEL: Unexpected cancel");
 
       if (t->expected_trig != t->actual_trig)
-         DEBUG_HIGH("CANCEL: Expected != Actual triggers (diff %d of %d)", 
-                t->expected_trig - t->actual_trig, 
+         DEBUG_HIGH("CANCEL: Expected != Actual triggers (diff %d of %d)",
+                t->expected_trig - t->actual_trig,
                 t->expected_trig);
       TAILQ_REMOVE(&trig_list, t, next);
       free(t);
@@ -358,25 +358,25 @@ int trigger_callback(nrx_context ctx,
       FAILED("Level same as thr");
    else if (t->rising == NRX_THR_RISING) {
       if (level <= t->thr)
-         FAILED("Rising: Trigger level not above thr, mib_id %d, thr %d %s (now %d)", 
+         FAILED("Rising: Trigger level not above thr, mib_id %d, thr %d %s (now %d)",
                 t->thr_id, t->thr, rising2str(t->rising), level);
       if (t->actual_trig > 1 && prev_level > t->thr)
-         FAILED("Rising: Level has not been below thr, mib_id %d, thr %d %s (now %d)", 
+         FAILED("Rising: Level has not been below thr, mib_id %d, thr %d %s (now %d)",
                 t->thr_id, t->thr, rising2str(t->rising), level);
    }
    else if (t->rising == NRX_THR_FALLING) {
       if (level >= t->thr)
-         FAILED("Falling: Trigger level not below thr, mib_id %d, thr %d %s (now %d)", 
+         FAILED("Falling: Trigger level not below thr, mib_id %d, thr %d %s (now %d)",
                 t->thr_id, t->thr, rising2str(t->rising), level);
       if (t->actual_trig > 1 && prev_level < t->thr)
-         FAILED("Falling: Level has not been above thr, mib_id %d, thr %d %s (now %d)", 
+         FAILED("Falling: Level has not been above thr, mib_id %d, thr %d %s (now %d)",
                 t->thr_id, t->thr, rising2str(t->rising), level);
    }
    else if (t->rising == (NRX_THR_RISING | NRX_THR_FALLING) && t->actual_trig > 1) {
-      if (prev_level < t->thr && level <= t->thr) 
+      if (prev_level < t->thr && level <= t->thr)
          FAILED("Both dir: Did not rise above thr, thr_id %d, thr %d, prev %d %s (now %d)",
                 t->thr_id, t->thr, prev_level, rising2str(t->rising), curr_level);
-      if (prev_level > t->thr && level >= t->thr) 
+      if (prev_level > t->thr && level >= t->thr)
          FAILED("Both dir: Did not fall below thr , thr_id %d, thr %d, prev %d %s (now %d)",
                 t->thr_id, t->thr, prev_level, rising2str(t->rising), curr_level);
    }
@@ -426,7 +426,7 @@ int main(int argc, char *argv[])
    if(nrx_init_context(&ctx, settings.ifname) != 0)
       FATAL("nrx_init_context failed");
    TAILQ_INIT(&trig_list);
-   
+
    /* Settings */
    srand(settings.seed);
    curr_level = settings.level_min + rand() % (settings.level_max - settings.level_min + 1);
@@ -443,16 +443,16 @@ int main(int argc, char *argv[])
 
       while (1) {
          ret = nrx_wait_event(ctx, settings.sw_speed);
-         if (ret == 0) 
+         if (ret == 0)
             nrx_next_event(ctx);
          else if (ret == EWOULDBLOCK) /* about a second should have passed */
             break;
          else if (ret < 0)
             FATAL("nrx_next_event failed");
-         else 
+         else
             FATAL("Unknown return code (%d).", ret);
       }
-      
+
       /* Check that all expected events have been reset to 0 */
       TAILQ_FOREACH(t, &trig_list, next) {
          if (t->incomming > 0) {
@@ -463,9 +463,9 @@ int main(int argc, char *argv[])
                      rising2str(t->rising),
                      curr_level);
             else
-               FAILED("Expected trigger event did not happen, thr_id %d, thr %d, dir %s, level %d", 
-                      t->thr_id, 
-                      t->thr, 
+               FAILED("Expected trigger event did not happen, thr_id %d, thr %d, dir %s, level %d",
+                      t->thr_id,
+                      t->thr,
                       rising2str(t->rising),
                       curr_level);
             t->incomming = -1;
@@ -498,11 +498,11 @@ int main(int argc, char *argv[])
          /* Write in expected / incomming in list */
          TAILQ_FOREACH(t, &trig_list, next) {
             if (t->ready_to_trig)
-               if ((t->rising == NRX_THR_RISING && curr_level > t->thr) 
+               if ((t->rising == NRX_THR_RISING && curr_level > t->thr)
                    || ((t->rising == NRX_THR_FALLING) && curr_level < t->thr)
                    || ((t->rising == (NRX_THR_RISING | NRX_THR_FALLING))
-                       && ((prev_level <= t->thr && curr_level > t->thr) 
-                           || (prev_level >= t->thr && curr_level < t->thr)))) 
+                       && ((prev_level <= t->thr && curr_level > t->thr)
+                           || (prev_level >= t->thr && curr_level < t->thr))))
                {
                   DEBUG_LOW("Incomming, thr_id %d, thr %d %s (now %d)", t->thr_id, t->thr, rising2str(t->rising), curr_level);
                   t->ready_to_trig = 0;
@@ -525,7 +525,7 @@ int main(int argc, char *argv[])
       prob -= settings.prob_level;
 
       /* Create new trigger */
-      if (prob >= 0 && prob < settings.prob_new) { 
+      if (prob >= 0 && prob < settings.prob_new) {
          struct trig_entry *trig = malloc(sizeof(struct trig_entry));
          if (trig == NULL)
             FATAL("No mem");
@@ -535,10 +535,10 @@ int main(int argc, char *argv[])
          trig->thr = settings.level_min + rand() % (settings.level_max - settings.level_min + 1);
          trig->prev_level = curr_level;
          trig->rising = 1 + rand() % 3;
-         trig->ready_to_trig = ((trig->rising & NRX_THR_RISING) && curr_level <= trig->thr) 
+         trig->ready_to_trig = ((trig->rising & NRX_THR_RISING) && curr_level <= trig->thr)
             || ((trig->rising & NRX_THR_FALLING) && curr_level >= trig->thr);
          trig->actual_trig = 0;
-         trig->expected_trig = ((trig->rising & NRX_THR_RISING) && curr_level > trig->thr) 
+         trig->expected_trig = ((trig->rising & NRX_THR_RISING) && curr_level > trig->thr)
             || ((trig->rising & NRX_THR_FALLING) && curr_level < trig->thr);
          trig->incomming = 2 * trig->expected_trig - 1;
          trig->cancel = 0;
@@ -570,10 +570,10 @@ int main(int argc, char *argv[])
             num_trig_reached = 1;
          }
 
-         DEBUG_MED("%d: Created new trigger, thr_id %d, thr %d, dir %s. Total %d trig", 
-                   loop, 
-                   trig->thr_id, 
-                   trig->thr, 
+         DEBUG_MED("%d: Created new trigger, thr_id %d, thr %d, dir %s. Total %d trig",
+                   loop,
+                   trig->thr_id,
+                   trig->thr,
                    rising2str(trig->rising),
                    triggers);
       }
@@ -613,7 +613,7 @@ int main(int argc, char *argv[])
          if (t == NULL) {
             FAILED("Unaware about the number of triggers. Assumed %d", triggers);
             triggers = 0;
-            TAILQ_FOREACH(t, &trig_list, next) 
+            TAILQ_FOREACH(t, &trig_list, next)
                triggers++;
             ERROR("Have %d triggers", triggers);
          }
@@ -627,10 +627,10 @@ int main(int argc, char *argv[])
       t->cancel = 1;
       nrx_disable_rssi_threshold(ctx, t->thr_id);
    }
-   
+
    /* Take care of events */
    while ((ret = nrx_wait_event(ctx, settings.sw_speed)) != EWOULDBLOCK) {
-      if (ret == 0) 
+      if (ret == 0)
          nrx_next_event(ctx);
       else if (ret < 0) {
          FATAL("nrx_next_event failed");
@@ -651,4 +651,3 @@ int main(int argc, char *argv[])
 
    return !failures;
 }
-

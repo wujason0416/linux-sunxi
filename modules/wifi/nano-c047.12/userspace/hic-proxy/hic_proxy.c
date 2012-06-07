@@ -1,19 +1,19 @@
 
-#include <stdio.h>      
+#include <stdio.h>
 #include <string.h>
-#include <stdlib.h>     
-#include <unistd.h>     
+#include <stdlib.h>
+#include <unistd.h>
 #include <signal.h>
-#include <sys/types.h>  
+#include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/ioctl.h>
-#include <sys/stat.h>   
+#include <sys/stat.h>
 #include <inttypes.h>
 #include <linux/if.h>
 #include <errno.h>
-#include <fcntl.h>      
+#include <fcntl.h>
 #include <termios.h>
 #include <err.h>
 #include <nanoioctl.h>
@@ -40,13 +40,13 @@ printbuf(const void *data, size_t len, const char *prefix)
       printf("%s %04x: ", prefix, i);
       for(j = 0; j < 16; j++) {
          if(i + j < len)
-            printf("%02x ", p[i+j]); 
+            printf("%02x ", p[i+j]);
          else
             printf("   ");
-      }   
+      }
       printf(" : ");
       for(j = 0; j < 16; j++) {
-         if(i + j < len) {   
+         if(i + j < len) {
 #define isprint(c) ((c) >= 32 && (c) <= 126)
             if(isprint(p[i+j]))
                printf("%c", p[i+j]);
@@ -114,7 +114,7 @@ static void host_write(int host_fd, void* buf, size_t len)
    int status;
 
    APP_DEBUG("forwarding reply\n");
-   
+
    while(num_written < len) {
       status = write(host_fd, buf + num_written, len - num_written);
       if(status < 0) err(1, "write");
@@ -130,24 +130,24 @@ static int open_socket(int port)
    int one = 1;
    int status;
    int flags;
-    
+
    s = socket(AF_INET, SOCK_STREAM, 0);
    if(s < 0) err(1, "socket");
-	    
+
    memset(&sin, 0, sizeof(sin));
    sin.sin_port = htons(port);
-	    
+
    status = setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &one, sizeof(one));
    if(status < 0) warn("SO_REUSEADDR");
-    
+
    status = bind(s, (struct sockaddr*) &sin, sizeof(sin));
    if(status < 0) err(1, "bind");
-	    
+
    status = listen(s, 1);
    if(status < 0) err(1, "listen");
-    	    
+
    APP_INFO("listening on port %d\n", (int) ntohs(sin.sin_port));
-	    
+
    sin_len = sizeof(sin);
    s2 = accept(s, (struct sockaddr*) &sin, &sin_len);
    if(s2 < 0) err(1, "accept");
@@ -173,7 +173,7 @@ static int open_serial(char* dev, speed_t speed)
 
    status = tcgetattr(fd, &ios);
    if(status < 0) err(1, "tcgetattr");
-    
+
    ios.c_cflag = CS8 | CREAD | CLOCAL;
    ios.c_lflag = 0;
    ios.c_iflag = 0;
@@ -184,7 +184,7 @@ static int open_serial(char* dev, speed_t speed)
    if(status < 0) err(1, "tcsetattr");
 
    tcflush(fd, TCIOFLUSH);
-   if(cfsetispeed(&ios, speed)) err(1,"input baudrate");   
+   if(cfsetispeed(&ios, speed)) err(1,"input baudrate");
    if(cfsetospeed(&ios, speed)) err(1,"output baudrate");
 
    status = tcsetattr(fd, TCSANOW, &ios);
@@ -218,10 +218,10 @@ static int open_terminal(void)
    struct sigaction sa;
    int ret;
    int flags;
-   
+
    if(!isatty(STDIN_FILENO))
       errx(1, "stdin is not a terminal");
-      
+
    tty = ttyname(STDIN_FILENO);
    term_fd = open(tty, O_RDWR);
    if(term_fd < 0)
@@ -230,7 +230,7 @@ static int open_terminal(void)
    ret = tcgetattr(term_fd, &term_otio);
    if(ret < 0)
       err(1, "tcgetattr(%s)", tty);
-    
+
    tio = term_otio;
    tio.c_cflag = CS8 | CREAD | CLOCAL;
    tio.c_lflag = 0;
@@ -277,7 +277,7 @@ void usage()
           "f: HOST persistent storage MIB data filename (default mib.bin)\n\t" \
           "\nInterface:" \
           "\n\t Nanoradio wireless network interface\n\n");
-   exit(0);	
+   exit(0);
 }
 
 
@@ -285,9 +285,9 @@ int poll_target(int nrx_fd, struct ifreq *ifr)
 {
    int status;
    struct nanoioctl* nr = (struct nanoioctl*) ifr->ifr_data;
-    
-   nr->length = sizeof(nr->data);    
-   status = ioctl(nrx_fd, SIOCNRXRAWRX, ifr);    
+
+   nr->length = sizeof(nr->data);
+   status = ioctl(nrx_fd, SIOCNRXRAWRX, ifr);
    if(status < 0) err(1, "ioctl (rawrx)");
 
    return nr->length;
@@ -305,11 +305,11 @@ int poll_host(int host_fd, struct ifreq *ifr)
    int flags;
 
    status = read(host_fd, buf, 2);
-    
+
    if(status == 0)
      return 0;
-     
-   if(status < 0) 
+
+   if(status < 0)
      {
        if (errno == EAGAIN)
 	 return 0;
@@ -318,41 +318,41 @@ int poll_host(int host_fd, struct ifreq *ifr)
      }
 
    num_read += status;
-    
+
    while(num_read < 2) {
       status = read(host_fd, buf + num_read, 2 - num_read);
-      if(status < 0) 
+      if(status < 0)
 	{
-	  if(errno != EAGAIN)  
+	  if(errno != EAGAIN)
 	    err(1, "read");
 	}
       else
 	num_read += status;
    }
-            
+
    /* Ok, we got 2 bytes from nanoloader */
    len = *((uint16_t*) buf);
    APP_ASSERT((len > 0 && len < 1022));
-   
+
    APP_DEBUG("Packet size is %d\n", len);
 
    /*  Read the rest of the packet */
    while(num_read < len + 2) {
      status = read(host_fd, buf + num_read, (len + 2 ) - num_read);
-     if(status < 0) 
+     if(status < 0)
 	{
-	  if(errno != EAGAIN)  
+	  if(errno != EAGAIN)
 	    err(1, "read");
 	}
      else
        {
 	 num_read += status;
        }
-   }		 
-   APP_DEBUG("Packet recieved\n"); 
-   
+   }
+   APP_DEBUG("Packet recieved\n");
+
    memcpy(nr->data, buf, num_read);
-    
+
    nr->length = num_read;
    return num_read;
 }
@@ -362,8 +362,8 @@ void nrx_write(int nrx_fd, struct ifreq* ifr)
    int status;
    struct nanoioctl* nr = (struct nanoioctl*) ifr->ifr_data;
 
-   APP_INFO("Writing packet to target\n"); 
-     
+   APP_INFO("Writing packet to target\n");
+
    APP_ASSERT(ifr != NULL);
 
    status = ioctl(nrx_fd, SIOCNRXRAWTX, ifr);
@@ -374,7 +374,7 @@ void nrx_write(int nrx_fd, struct ifreq* ifr)
 
 void * flash_cmd(struct ifreq* ifr, void * handle, char * filename)
 {
-  
+
    static int host_flash_active = 0;
 
    int data_index;
@@ -384,17 +384,17 @@ void * flash_cmd(struct ifreq* ifr, void * handle, char * filename)
    struct nanoioctl* nr = (struct nanoioctl*) ifr->ifr_data;
 
    message_id = nr->data[ID_INDEX];
-   data_index = nr->data[HEADER_PAD_INDEX] + 4; 
- 
+   data_index = nr->data[HEADER_PAD_INDEX] + 4;
+
    APP_DEBUG("flash message id: %d\n",message_id);
-    
+
    switch(message_id) {
- 
+
    case HIC_MAC_START_PRG_REQ:
       //start a flash write
       vendor = nr->data[data_index];
       sector = nr->data[data_index+1];
- 
+
       if(vendor == HOST_FLASH_VENDOR)
          {
             APP_DEBUG("host flash command \n");
@@ -411,31 +411,31 @@ void * flash_cmd(struct ifreq* ifr, void * handle, char * filename)
 
    case HIC_MAC_WRITE_FLASH_REQ:
 
-      if(host_flash_active) 
+      if(host_flash_active)
          {
-            //start to write flash data	                                    	
+            //start to write flash data
             nr->data[data_index] = host_flash_write(&nr->data[data_index],nr->length - data_index,handle);
             //reply
             nr->data[ID_INDEX] = HIC_MAC_WRITE_FLASH_CFM;;
          }
       else return NULL;
-      break; 
-                                    
+      break;
+
    case HIC_MAC_END_PRG_REQ:
-     
+
       if(host_flash_active)
          {
-            //stop write to flash                               
+            //stop write to flash
             //reply
             nr->data[ID_INDEX] = HIC_MAC_END_PRG_CFM;
             nr->data[data_index] =  host_flash_close(handle);
-            
+
             host_flash_active = 0;
          }
       else return NULL;
       break;
    case HIC_MAC_START_READ_REQ:
-     
+
       //start a flash read cmd
       vendor = nr->data[data_index];
       sector = nr->data[data_index+1];
@@ -445,7 +445,7 @@ void * flash_cmd(struct ifreq* ifr, void * handle, char * filename)
             host_flash_active = 1;
             //reply
             nr->data[ID_INDEX] = HIC_MAC_START_READ_CFM;
-            
+
             handle = host_flash_open(filename,HOST_FLASH_READ_FLAG);
             if (handle) nr->data[data_index] = 0;
             else nr->data[data_index] = 1;
@@ -456,29 +456,29 @@ void * flash_cmd(struct ifreq* ifr, void * handle, char * filename)
 
    case HIC_MAC_READ_FLASH_REQ:
       //start to read flash data
-        			  
+
       if(host_flash_active)
          {
             nr->data[ID_INDEX] = HIC_MAC_READ_FLASH_CFM;
             nr->data[TYPE_INDEX] = HIC_MESSAGE_TYPE_FLASH_PRG;
-            nr->data[PAYLOAD_PAD_INDEX] = 0; 
-            { 
+            nr->data[PAYLOAD_PAD_INDEX] = 0;
+            {
                int i;
-               i = host_flash_read(&nr->data[data_index],HOST_FLASH_MAX_READ_SIZE,handle);      
+               i = host_flash_read(&nr->data[data_index],HOST_FLASH_MAX_READ_SIZE,handle);
                APP_ASSERT(i);
                nr->length = data_index + i;
                *(uint16_t*)nr->data = (nr->length - 2);
             }
          }
       else return NULL;
-      break; 
-      
+      break;
+
    case HIC_MAC_END_READ_REQ:
-      
+
       if(host_flash_active)
          {
             host_flash_active = 0;
-            //stop read from flash                             
+            //stop read from flash
             //reply
             nr->data[ID_INDEX] = HIC_MAC_END_READ_CFM;
             nr->data[data_index] =  host_flash_close(handle);
@@ -494,11 +494,11 @@ void * flash_cmd(struct ifreq* ifr, void * handle, char * filename)
       //Common reply data
       *(uint16_t*)nr->data = (data_index - 1);
       nr->data[TYPE_INDEX] = HIC_MESSAGE_TYPE_FLASH_PRG;
-      nr->data[PAYLOAD_PAD_INDEX] = 0; 
+      nr->data[PAYLOAD_PAD_INDEX] = 0;
       nr->length = (*(uint16_t*)nr->data) + 2;
    }
 
-   return handle;    
+   return handle;
 }
 
 int main(int argc, char **argv)
@@ -519,7 +519,7 @@ int main(int argc, char **argv)
 
    struct ifreq ifr;
    struct nanoioctl nr;
-   
+
    while((opt = getopt(argc, argv, "d:s:p:f:b:i")) != -1) {
       switch(opt) {
          case 'b':
@@ -567,32 +567,32 @@ int main(int argc, char **argv)
       APP_INFO("Using stdin/stdout as client interface\n");
       host_wfd = host_rfd = open_terminal();
       redirect_stdout("/tmp/hic_proxy.log");
-   } else if(ser_dev) 
+   } else if(ser_dev)
       {
 	APP_INFO("Using %s (baudrate = %d) as serial client interface\n", ser_dev,input_baudrate);
 	host_wfd = host_rfd = open_serial(ser_dev, baudrate);
       }
-   else 
+   else
       {
          APP_INFO("Using ethernet as client interface\n");
          host_wfd = host_rfd = open_socket(port);
       }
-    
+
    nrx_fd = socket(AF_INET, SOCK_DGRAM, 0);
    if(nrx_fd < 0) err(1, "socket");
 
-   for(;;) {      
+   for(;;) {
       status = poll_host(host_rfd, &ifr);
       if(status) {
-	
-         
+
+
          if((nr.data[TYPE_INDEX] ==  HIC_MESSAGE_TYPE_FLASH_PRG))
             {
                APP_DEBUG("flash cmd recieved\n");
 
                //examine flash cmd
                handle = flash_cmd(&ifr,handle,filename);
- 
+
                if(handle)
                   {
                      //send local host flash cmd reply
@@ -610,9 +610,9 @@ int main(int argc, char **argv)
                nrx_write(nrx_fd, &ifr);
             }
       }
-	
+
       status = poll_target(nrx_fd, &ifr);
-  
+
       if(status)
          host_write(host_wfd, nr.data, nr.length);
 
@@ -624,6 +624,3 @@ int main(int argc, char **argv)
    }
    close(nrx_fd);
 }
-
-
-

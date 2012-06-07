@@ -2,13 +2,13 @@
  * Linux Wireless Extensions support
  *
  * Copyright (C) 1999-2011, Broadcom Corporation
- * 
+ *
  *         Unless you and Broadcom execute a separate written software license
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
  * following added to such license:
- * 
+ *
  *      As a special exception, the copyright holders of this software give you
  * permission to link this software with independent modules, and to copy and
  * distribute the resulting executable under terms of your choice, provided that
@@ -16,7 +16,7 @@
  * the license of that module.  An independent module is a module which is not
  * derived from this software.  The special exception does not apply to any
  * modifications of the software.
- * 
+ *
  *      Notwithstanding the above, under no circumstances may you combine this
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
@@ -72,7 +72,7 @@ bool g_set_essid_before_scan = TRUE;
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)) && 1
 	struct mutex  g_wl_ss_scan_lock; /* lock/unlock for ISCAN cache settings */
-#endif 
+#endif
 
 #if defined(SOFTAP)
 #define WL_SOFTAP(x) printk x
@@ -101,7 +101,7 @@ wl_iw_extra_params_t	g_wl_iw_params;
 
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 25)) && 1
-/* 
+/*
  * wl_start_lock to replace MUTEX_LOCK[dhd.h]/dhd_pub_t::wl_start_stop_lock[dhd.h]
  * wl_cache_lock  to replace MUTEX_LOCK_WL_SCAN_SET[dhd.h]/g_wl_ss_scan_lock[wl_iw.c]
  */
@@ -119,7 +119,7 @@ static struct mutex	wl_softap_lock;
 #define DHD_OS_MUTEX_LOCK(a)
 #define DHD_OS_MUTEX_UNLOCK(a)
 
-#endif 
+#endif
 
 #include <bcmsdbus.h>
 extern void dhd_customer_gpio_wlan_ctrl(int onoff);
@@ -3224,7 +3224,7 @@ wl_iw_delete_bss_from_ss_cache(void *addr)
 	return 0;
 }
 
-#endif	
+#endif
 
 static int
 wl_iw_set_scan(
@@ -3252,7 +3252,7 @@ wl_iw_set_scan(
 		WL_TRACE(("\n>%s: Not executed, reason -'SOFTAP is active'\n", __FUNCTION__));
 		return 0;
 	}
-#endif 
+#endif
 
 	/* Android may send scan request even before START if finished
 	     Ignoring scan request when chip is still off
@@ -3734,7 +3734,7 @@ wl_iw_get_scan(
 	else {
 		g_ss_cache_ctrl.m_cons_br_scan_cnt++;
 	}
-#endif 
+#endif
 
 
 	/* For specific SSID allocate local buffer */
@@ -3848,7 +3848,7 @@ wl_iw_get_scan(
 		list = (wl_scan_results_t *) g_scan;
 		len_ret = (__u16) wl_iw_get_scan_prep(list, info, extra, buflen_from_user);
 	}
-#endif	
+#endif
 
 #if defined(WL_IW_USE_ISCAN)
 	/* Clean up when specific scan results retrived */
@@ -6021,7 +6021,7 @@ exit_proc:
 	return res;
 }
 
-#endif 
+#endif
 
 
 /***************** SOFT AP implemenation  *******************
@@ -7195,7 +7195,7 @@ static const iw_handler wl_iw_handler[] =
 	(iw_handler) wl_iw_iscan_get_aplist,	/* SIOCGIWAPLIST */
 #else
 	(iw_handler) wl_iw_get_aplist,		/* SIOCGIWAPLIST */
-#endif 
+#endif
 #if WIRELESS_EXT > 13
 #if defined(WL_IW_USE_ISCAN)
 	(iw_handler) wl_iw_iscan_set_scan,	/* SIOCSIWSCAN */
@@ -7297,7 +7297,7 @@ static const iw_handler wl_iw_priv_handler[] = {
 	/* Combined scan call */
 	NULL,
 	(iw_handler)iwpriv_set_cscan
-#endif 	
+#endif
 };
 
 static const struct iw_priv_args wl_iw_priv_args[] =
@@ -7405,14 +7405,14 @@ static const struct iw_priv_args wl_iw_priv_args[] =
 		0,
 		"CSCAN"
 	},
-#endif 
+#endif
 	};
 
 const struct iw_handler_def wl_iw_handler_def =
 {
 	.num_standard = ARRAYSIZE(wl_iw_handler),
 	.standard = (iw_handler *) wl_iw_handler,
-#ifdef CONFIG_WEXT_PRIV	
+#ifdef CONFIG_WEXT_PRIV
 	.num_private = ARRAYSIZE(wl_iw_priv_handler),
 	.num_private_args = ARRAY_SIZE(wl_iw_priv_args),
 	.private = (iw_handler *)wl_iw_priv_handler,
@@ -7726,7 +7726,7 @@ wl_iw_event(struct net_device *dev, wl_event_msg_t *e, void* data)
 			}
 		}
 		break;
-#endif 
+#endif
 	case WLC_E_TXFAIL:
 		cmd = IWEVTXDROP;
 		memcpy(wrqu.addr.sa_data, &e->addr, ETHER_ADDR_LEN);
@@ -7742,7 +7742,7 @@ wl_iw_event(struct net_device *dev, wl_event_msg_t *e, void* data)
 			wl_iw_send_priv_event(priv_dev, "STA_JOIN");
 			goto wl_iw_event_end;
 		}
-#endif 
+#endif
 		memcpy(wrqu.addr.sa_data, &e->addr, ETHER_ADDR_LEN);
 		wrqu.addr.sa_family = ARPHRD_ETHER;
 		cmd = IWEVREGISTERED;
@@ -7776,7 +7776,7 @@ wl_iw_event(struct net_device *dev, wl_event_msg_t *e, void* data)
 			wl_iw_send_priv_event(priv_dev, "STA_LEAVE");
 			goto wl_iw_event_end;
 		}
-#endif 
+#endif
 		cmd = SIOCGIWAP;
 		bzero(wrqu.addr.sa_data, ETHER_ADDR_LEN);
 		wrqu.addr.sa_family = ARPHRD_ETHER;

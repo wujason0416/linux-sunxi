@@ -23,7 +23,7 @@ extern unsigned int nrx_debug;
 #define DEBUG_CALL	(1 << 6)
 #define DEBUG_MEMORY	(1 << 7)
 
-/* for gcc 2.95, the space before the comma just 
+/* for gcc 2.95, the space before the comma just
    before ##__VA_ARGS__ is important */
 #define KDEBUGU(F, ...) ({                  \
    printk(PRINTK_LEVEL "%s:%d:[%d]: " F,    \

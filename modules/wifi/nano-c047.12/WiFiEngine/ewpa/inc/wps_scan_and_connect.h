@@ -26,4 +26,3 @@ int wps_get_ssid(char *dst, size_t size);
 int wps_get_ssid_as_string(char *dst, size_t size);
 int wps_get_key(char *dst, size_t size);
 int wps_get_wep_key_index(int *index);
-

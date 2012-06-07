@@ -99,10 +99,10 @@ int wpa_driver_WE_set_bssid(void *priv, const u8 *bssid)
 int wpa_driver_WE_get_ssid(void *priv, u8 *ssid)
 {
 	m80211_ie_ssid_t id;
-	
+
 	if(WiFiEngine_GetSSID(&id) != WIFI_ENGINE_SUCCESS)
 		return -1;
-	
+
 	DE_MEMCPY(ssid, id.ssid, id.hdr.len);
 	return id.hdr.len;
 }
@@ -122,7 +122,7 @@ int wpa_driver_WE_set_ssid(void *priv, const u8 *ssid, size_t ssid_len)
 	status = WiFiEngine_SetSSID((void*)ssid, ssid_len);
 	if(status != WIFI_ENGINE_SUCCESS)
 		return -1;
-   
+
 	return 0;
 }
 
@@ -366,7 +366,7 @@ int wpa_driver_WE_set_key(void *priv, wpa_alg alg,
 	m80211_mac_addr_t bssid;
 	m80211_key_type_t keytype;
 	receive_seq_cnt_t rsc, *rscp = NULL;
-	
+
 	if(addr == NULL)
 		os_memset(bssid.octet, 0xff, M80211_ADDRESS_SIZE);
 	else
@@ -397,14 +397,14 @@ int wpa_driver_WE_set_key(void *priv, wpa_alg alg,
 		} else
 			status = WIFI_ENGINE_SUCCESS;
 	} else {
-		status = WiFiEngine_AddKey(key_idx, 
-					   key_len, 
-					   key, 
+		status = WiFiEngine_AddKey(key_idx,
+					   key_len,
+					   key,
 					   keytype,
 					   M80211_PROTECT_TYPE_RX_TX,
-					   TRUE, 
-					   &bssid, 
-					   rscp, 
+					   TRUE,
+					   &bssid,
+					   rscp,
 					   set_tx);
 		drv->keymask |= (1 << key_idx);
 		drv->keymask &= ~KEYMASK_KEY_CLEARED;
@@ -591,19 +591,19 @@ static int wpa_driver_WE_get_capa(void *priv, struct wpa_driver_capa *capa)
 		| WPA_DRIVER_CAPA_KEY_MGMT_WPA_PSK
 		| WPA_DRIVER_CAPA_KEY_MGMT_WPA2_PSK
 		/* | WPA_DRIVER_CAPA_KEY_MGMT_WPA_NONE */;
-	
+
 	capa->enc =  WPA_DRIVER_CAPA_ENC_WEP40
 		| WPA_DRIVER_CAPA_ENC_WEP104
 		| WPA_DRIVER_CAPA_ENC_TKIP
 		| WPA_DRIVER_CAPA_ENC_CCMP;
-	
+
 	capa->auth = WPA_DRIVER_AUTH_OPEN
 		| WPA_DRIVER_AUTH_SHARED
 		| WPA_DRIVER_AUTH_LEAP;
 
 	capa->flags = WPA_DRIVER_FLAGS_DRIVER_IE
 		| WPA_DRIVER_FLAGS_SET_KEYS_AFTER_ASSOC; /* XXX needed? */
-	
+
 	return 0;
 }
 
@@ -614,7 +614,7 @@ static const u8 * wpa_driver_WE_get_mac_addr(void *priv)
 {
 	int byte_count = sizeof(iface_addr);
 	int status;
-	
+
 	status = WiFiEngine_GetMACAddress(iface_addr, &byte_count);
 	if(status != WIFI_ENGINE_SUCCESS)
 		return NULL;
@@ -623,12 +623,12 @@ static const u8 * wpa_driver_WE_get_mac_addr(void *priv)
 
 #ifndef __rtke__
 /* @brief Detect final WPA 4-way & WAPI handshake message.
- * 
+ *
  * We need to delay the final 4-way handshake message until we've had
  * time to set the keys, but we also can't set the keys before we send
  * the message (since then it would be encrypted). This is solved by
  * delaying the frame in the firmware until encryption is enabled (for
- * a maximum of 50ms). 
+ * a maximum of 50ms).
  *
  * @param [in] frame       points to ethernet frame
  * @param [in] frame_len   size of ethernet frame
@@ -658,14 +658,14 @@ is_wpa_4way_final(const void *frame, size_t frame_len)
 	 * [20][ 2] packet length
 	 * more stuff follows...
 	 */
-	if(pkt[12] == 0x88 && pkt[13] == 0xb4) { /* WAPI ethernet frame */   
+	if(pkt[12] == 0x88 && pkt[13] == 0xb4) { /* WAPI ethernet frame */
 		if(frame_len < 3+12+16+20) /* flags + addid + key + mic */
 			return FALSE;
 		if(pkt[16] != 1)
 			return FALSE;
 		if(pkt[17] != 0x0c)
 			return FALSE;
-	} else {  
+	} else {
 		/* Ethernet frame layout (WPA):
 		 * [offset][size]
 		 * [ 0][ 6] dst address
@@ -710,7 +710,7 @@ static int wpa_driver_WE_send_eapol(void *priv, const u8 *dst, u16 proto,
 {
 #ifdef __rtke__
 	struct queued_packet *qp;
-	
+
 	qp = nr_rtke_alloc_tx_packet(data_len);
 	if(qp == NULL)
 		return -1;
@@ -718,8 +718,8 @@ static int wpa_driver_WE_send_eapol(void *priv, const u8 *dst, u16 proto,
 	qp->tid = 197;
 
 	/*
-	 * DST SRC PROTO DATA 
-	 *  6   6    2    N 
+	 * DST SRC PROTO DATA
+	 *  6   6    2    N
 	 */
 	DE_MEMCPY(qp->pkt, dst, 6);
 	DE_MEMCPY(qp->pkt + 6, iface_addr, 6);
@@ -748,16 +748,16 @@ static int wpa_driver_WE_send_eapol(void *priv, const u8 *dst, u16 proto,
 	proto = ntohs(proto);
 	DE_MEMCPY(pkt + dhsize + 12, (u8 *)&proto, 2);
 	DE_MEMCPY(pkt + dhsize + 14, data, data_len);
-	status = WiFiEngine_ProcessSendPacket(pkt + dhsize, 14, 
-					      len - dhsize, 
+	status = WiFiEngine_ProcessSendPacket(pkt + dhsize, 14,
+					      len - dhsize,
 					      pkt, &dhsize, 0, NULL);
    pkt_size = HIC_MESSAGE_LENGTH_GET(pkt);
-   
+
 	if(status == WIFI_ENGINE_SUCCESS) {
 		if(is_wpa_4way_final(pkt + dhsize, len - dhsize)) {
 			pkt[pkt[4] + 4 + 2] |= 4; /* set wait-encrypt flag */
 			wpa_printf(MSG_DEBUG, "Detected final 4-way frame");
-			wpa_hexdump(MSG_MSGDUMP, "EAPOL-Key Frame:", 
+			wpa_hexdump(MSG_MSGDUMP, "EAPOL-Key Frame:",
 				    (u8*)pkt, len);
 		}
    	DriverEnvironment_HIC_Send(pkt, pkt_size);
@@ -780,8 +780,8 @@ static int wpa_driver_WE_set_operstate(void *priv, int state)
 	return 0;
 }
 
-static void wpa_driver_WE_notify_state_change(void *priv, 
-					      wpa_states new_state, 
+static void wpa_driver_WE_notify_state_change(void *priv,
+					      wpa_states new_state,
 					      wpa_states old_state)
 {
 	switch(new_state) {

@@ -1,9 +1,9 @@
 /**
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -26,7 +26,7 @@
 #include <asm/delay.h>
 #include <linux/suspend.h>
 
-#include "mali_platform.h" 
+#include "mali_platform.h"
 #include "mali_osk.h"
 #include "mali_uk_types.h"
 #include "mali_pmm.h"
@@ -278,7 +278,7 @@ static int mali_wait_for_power_management_policy_event(void)
  */
 int mali_device_suspend(unsigned int event_id, struct task_struct **pwr_mgmt_thread)
 {
-	int err = 0;	
+	int err = 0;
 	_mali_uk_pmm_message_s event = {
 	                               NULL,
 	                               event_id,
@@ -450,7 +450,7 @@ static ssize_t show_file(struct device *dev, struct device_attribute *attr, char
 	char *str = buf;
 #if !MALI_POWER_MGMT_TEST_SUITE
 	int pm_counter = 0;
-	for (pm_counter = 0; pm_counter<_MALI_MAX_DEBUG_OPERATIONS; pm_counter++) 
+	for (pm_counter = 0; pm_counter<_MALI_MAX_DEBUG_OPERATIONS; pm_counter++)
 	{
 		str += sprintf(str, "%s  ", mali_states[pm_counter]);
 	}
@@ -502,7 +502,7 @@ static ssize_t store_file(struct device *dev, struct device_attribute *attr, con
 	}
 #endif /* MALI_POWER_MGMT_TEST_SUITE */
 
-	else if (!strncmp(buf,mali_states[_MALI_DEVICE_RESUME],strlen(mali_states[_MALI_DEVICE_RESUME]))) 
+	else if (!strncmp(buf,mali_states[_MALI_DEVICE_RESUME],strlen(mali_states[_MALI_DEVICE_RESUME])))
 	{
 		MALI_DEBUG_PRINT(4, ("PMMDEBUG: MALI Resume Power operation is scheduled\n" ));
 		err = mali_pm_resume(NULL);
@@ -523,7 +523,7 @@ static ssize_t store_file(struct device *dev, struct device_attribute *attr, con
 		test_flag_dvfs = 1;
 #endif /* MALI_POWER_MGMT_TEST_SUITE */
 	}
-	else 
+	else
 	{
 		MALI_DEBUG_PRINT(4, ("PMMDEBUG: Invalid Power Mode Operation selected\n" ));
 	}
@@ -586,7 +586,7 @@ static int mali_pm_probe(struct platform_device *pdev)
 int _mali_dev_platform_register(void)
 {
 	int err;
-#if MALI_PMM_RUNTIME_JOB_CONTROL_ON	
+#if MALI_PMM_RUNTIME_JOB_CONTROL_ON
 	set_mali_parent_power_domain(&mali_gpu_device);
 #endif
 
@@ -601,7 +601,7 @@ int _mali_dev_platform_register(void)
 #endif /* CONFIG_PM_RUNTIME_MIN */
 	err = platform_device_register(&mali_gpu_device);
 	lock = _mali_osk_lock_init((_mali_osk_lock_flags_t)( _MALI_OSK_LOCKFLAG_READERWRITER | _MALI_OSK_LOCKFLAG_ORDERED), 0, 0);
-	if (!err) 
+	if (!err)
 	{
 		err = platform_driver_register(&mali_plat_driver);
 		if (err)

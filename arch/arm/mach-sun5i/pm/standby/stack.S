@@ -83,4 +83,3 @@ standby_preload_tlb:
 
     pop     {r0-r3}
     mov pc,lr
-

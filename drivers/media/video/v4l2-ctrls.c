@@ -467,7 +467,7 @@ void v4l2_ctrl_fill(u32 id, const char **name, enum v4l2_ctrl_type *type,
 	case V4L2_CID_COLORFX:
 	case V4L2_CID_TUNE_PREEMPHASIS:
 	/* Add camera flash light by raymonxiu */
-	case V4L2_CID_CAMERA_FLASH_MODE:	
+	case V4L2_CID_CAMERA_FLASH_MODE:
 		*type = V4L2_CTRL_TYPE_MENU;
 		break;
 	case V4L2_CID_RDS_TX_PS_NAME:

@@ -1,9 +1,9 @@
 /**
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -100,8 +100,8 @@ struct file_operations mali_fops =
 
 int mali_driver_init(void)
 {
-	int err;	
-	
+	int err;
+
 #if USING_MALI_PMM
 #if MALI_LICENSE_IS_GPL
 #ifdef CONFIG_PM
@@ -201,7 +201,7 @@ init_chrdev_err:
 void terminate_kernel_device(void)
 {
 	dev_t dev = MKDEV(mali_major, 0);
-	
+
 	mali_sysfs_unregister(&device, dev, mali_dev_name);
 
 	/* unregister char device */

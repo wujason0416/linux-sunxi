@@ -352,12 +352,12 @@ static int wpa_config_parse_phase2(const struct parse_data *data,
 			len = pos - value;
 		else
 			len = os_strlen(value);
-		
+
 		wpa_hexdump_ascii(MSG_MSGDUMP, "PHASE2 TYPE (ASCII)",
 				      (u8 *) value, len);
-		
+
 		os_memcpy(ssid->phase2, value, len);
-		
+
 		ssid->phase2[len] = '\0';
 		return 0;
 	}
@@ -1726,10 +1726,10 @@ void wpa_config_update_psk(struct wpa_ssid *ssid)
 			    ssid->psk, PMK_LEN);
         } else {
 		/* WAPI */
-		kd_hmac_sha256((u8*)ssid->passphrase, strlen(ssid->passphrase), 
+		kd_hmac_sha256((u8*)ssid->passphrase, strlen(ssid->passphrase),
 			       (u8*)"preshared key expansion for authentication and key negotiation",
 			       62, ssid->psk, 16);
-		
+
 		wpa_hexdump(MSG_MSGDUMP, "PSK (from passphrase)",
 			    ssid->psk, 16);
 	}

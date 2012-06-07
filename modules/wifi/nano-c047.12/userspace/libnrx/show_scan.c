@@ -18,7 +18,7 @@ main(int argc, char **argv)
    nrx_context ctx;
    char nets[4096];
    size_t len = sizeof(nets);
-   
+
    char *from_file = NULL;
    char *to_file = NULL;
    char *ifname = "eth1";
@@ -41,7 +41,7 @@ main(int argc, char **argv)
             exit(1);
       }
    }
-   
+
    if(nrx_init_context(&ctx, ifname) != 0)
       err(1, "nrx_init_context");
 

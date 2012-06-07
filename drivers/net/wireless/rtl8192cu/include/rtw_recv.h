@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
  *
  *
- 
+
 ******************************************************************************/
 #ifndef _RTW_RECV_H_
 #define _RTW_RECV_H_
@@ -61,14 +61,14 @@ struct recv_reorder_ctrl
 	u8 enable;
 	u16 indicate_seq;//=wstart_b, init_value=0xffff
 	u16 wend_b;
-       u8 wsize_b;	
+       u8 wsize_b;
 	_queue pending_recvframe_queue;
 	_timer reordering_ctrl_timer;
 };
 
 struct	stainfo_rxcache	{
 	u16 	tid_rxseq[16];
-/*	
+/*
 	unsigned short 	tid0_rxseq;
 	unsigned short 	tid1_rxseq;
 	unsigned short 	tid2_rxseq;
@@ -97,10 +97,10 @@ struct smooth_rssi_data {
 };
 
 struct signal_stat {
-	u8	update_req;		//used to indicate 
+	u8	update_req;		//used to indicate
 	u8	avg_val;		//avg of valid elements
 	u32	total_num;		//num of valid elements
-	u32	total_val;		//sum of valid elements	
+	u32	total_val;		//sum of valid elements
 };
 
 struct rx_pkt_attrib	{
@@ -116,7 +116,7 @@ struct rx_pkt_attrib	{
 	u8	frag_num;
 	u8	pw_save;
 	u8	mfrag;
-	u8	mdata;	
+	u8	mdata;
 	u8	privacy; //in frame_ctrl field
 	u8	bdecrypted;
 	int	hdrlen;		//the WLAN Header Len
@@ -144,7 +144,7 @@ struct rx_pkt_attrib	{
 	u8	mcs_rate;
 	u8	rxht;
 	u8	signal_qual;
-	s8	rx_mimo_signal_qual[2];	
+	s8	rx_mimo_signal_qual[2];
 	u8	signal_strength;
 
 	u32	RxPWDBAll;
@@ -213,23 +213,23 @@ struct recv_priv {
 
   	  _lock	lock;
 
-#ifdef CONFIG_RECV_THREAD_MODE	
+#ifdef CONFIG_RECV_THREAD_MODE
 	_sema	recv_sema;
 	_sema	terminate_recvthread_sema;
 #endif
-	
+
 	//_queue	blk_strms[MAX_RX_NUMBLKS];    // keeping the block ack frame until return ack
 	_queue	free_recv_queue;
 	_queue	recv_pending_queue;
-	
+
 
 	u8 *pallocated_frame_buf;
-	u8 *precv_frame_buf; 
-	
+	u8 *precv_frame_buf;
+
 	uint free_recvframe_cnt;
-	
+
 	_adapter	*adapter;
-	
+
 #ifdef PLATFORM_WINDOWS
 	_nic_hdl  RxPktPoolHdl;
 	_nic_hdl  RxBufPoolHdl;
@@ -237,9 +237,9 @@ struct recv_priv {
 #ifdef PLATFORM_OS_XP
 	PMDL	pbytecnt_mdl;
 #endif
-	uint	counter; //record the number that up-layer will return to drv; only when counter==0 can we  release recv_priv 
+	uint	counter; //record the number that up-layer will return to drv; only when counter==0 can we  release recv_priv
 	NDIS_EVENT 	recv_resource_evt ;
-#endif	
+#endif
 
 	u32	bIsAnyNonBEPkts;
 	u64	rx_bytes;
@@ -252,12 +252,12 @@ struct recv_priv {
 	uint  rx_smallpacket_crcerr;
 	uint  rx_middlepacket_crcerr;
 
-#ifdef CONFIG_USB_HCI	
+#ifdef CONFIG_USB_HCI
 	//u8 *pallocated_urb_buf;
 	_sema allrxreturnevt;
 	uint	ff_hwaddr;
 	u8	rx_pending_cnt;
-	
+
 #ifdef CONFIG_USB_INTERRUPT_IN_PIPE
 #ifdef PLATFORM_LINUX
 	PURB	int_in_urb;
@@ -266,7 +266,7 @@ struct recv_priv {
 	u8	*int_in_buf;
 #endif
 
-#endif	
+#endif
 #ifdef PLATFORM_LINUX
 	struct tasklet_struct irq_prepare_beacon_tasklet;
 	struct tasklet_struct recv_tasklet;
@@ -279,7 +279,7 @@ struct recv_priv {
 #endif
 
 	u8 *pallocated_recv_buf;
-	u8 *precv_buf;    // 4 alignment	
+	u8 *precv_buf;    // 4 alignment
 	_queue	free_recv_buf_queue;
 	u32	free_recv_buf_queue_cnt;
 
@@ -319,7 +319,7 @@ struct recv_priv {
 	struct smooth_rssi_data signal_qual_data;
 	struct smooth_rssi_data signal_strength_data;
 #endif //CONFIG_NEW_SIGNAL_STAT_PROCESS
-	
+
 };
 
 #ifdef CONFIG_NEW_SIGNAL_STAT_PROCESS
@@ -327,15 +327,15 @@ struct recv_priv {
 #endif //CONFIG_NEW_SIGNAL_STAT_PROCESS
 
 struct sta_recv_priv {
-    
+
     _lock	lock;
-	sint	option;	
-	
+	sint	option;
+
 	//_queue	blk_strms[MAX_RX_NUMBLKS];
 	_queue defrag_q;	 //keeping the fragment frame until defrag
-	
-	struct	stainfo_rxcache rxcache;  
-	
+
+	struct	stainfo_rxcache rxcache;
+
 	//uint	sta_rx_bytes;
 	//uint	sta_rx_pkts;
 	//uint	sta_rx_fail;
@@ -420,7 +420,7 @@ struct recv_frame_hdr{
 	_pkt *pkt_newalloc;
 
 	_adapter  *adapter;
-	
+
 	u8 fragcnt;
 
 	int frame_tag;
@@ -460,10 +460,10 @@ union recv_frame{
 
 extern union recv_frame *rtw_alloc_recvframe (_queue *pfree_recv_queue);  //get a free recv_frame from pfree_recv_queue
 extern void rtw_init_recvframe(union recv_frame *precvframe ,struct recv_priv *precvpriv);
-extern int	 rtw_free_recvframe(union recv_frame *precvframe, _queue *pfree_recv_queue);  
+extern int	 rtw_free_recvframe(union recv_frame *precvframe, _queue *pfree_recv_queue);
 extern union recv_frame *rtw_dequeue_recvframe (_queue *queue);
 extern int	rtw_enqueue_recvframe(union recv_frame *precvframe, _queue *queue);
-extern void rtw_free_recvframe_queue(_queue *pframequeue,  _queue *pfree_recv_queue);  
+extern void rtw_free_recvframe_queue(_queue *pframequeue,  _queue *pfree_recv_queue);
 
 sint rtw_enqueue_recvbuf(struct recv_buf *precvbuf, _queue *queue);
 struct recv_buf *rtw_dequeue_recvbuf (_queue *queue);
@@ -481,32 +481,32 @@ __inline static u8 *get_rxmem(union recv_frame *precvframe)
 
 __inline static u8 *get_rx_status(union recv_frame *precvframe)
 {
-	
+
 	return get_rxmem(precvframe);
-	
+
 }
 
 __inline static u8 *get_recvframe_data(union recv_frame *precvframe)
 {
-	
-	//alwasy return rx_data	
+
+	//alwasy return rx_data
 	if(precvframe==NULL)
 		return NULL;
 
 	return precvframe->u.hdr.rx_data;
-	
+
 }
 
 __inline static u8 *recvframe_push(union recv_frame *precvframe, sint sz)
-{	
-	// append data before rx_data 
+{
+	// append data before rx_data
 
 	/* add data to the start of recv_frame
  *
  *      This function extends the used data area of the recv_frame at the buffer
  *      start. rx_data must be still larger than rx_head, after pushing.
  */
- 
+
 	if(precvframe==NULL)
 		return NULL;
 
@@ -521,7 +521,7 @@ __inline static u8 *recvframe_push(union recv_frame *precvframe, sint sz)
 	precvframe->u.hdr.len +=sz;
 
 	return precvframe->u.hdr.rx_data;
-	
+
 }
 
 
@@ -535,7 +535,7 @@ __inline static u8 *recvframe_pull(union recv_frame *precvframe, sint sz)
 	if(precvframe==NULL)
 		return NULL;
 
-	
+
 	precvframe->u.hdr.rx_data += sz;
 
 	if(precvframe->u.hdr.rx_data > precvframe->u.hdr.rx_tail)
@@ -545,9 +545,9 @@ __inline static u8 *recvframe_pull(union recv_frame *precvframe, sint sz)
 	}
 
 	precvframe->u.hdr.len -=sz;
-	
+
 	return precvframe->u.hdr.rx_data;
-	
+
 }
 
 __inline static u8 *recvframe_put(union recv_frame *precvframe, sint sz)
@@ -555,16 +555,16 @@ __inline static u8 *recvframe_put(union recv_frame *precvframe, sint sz)
 	// rx_tai += sz; move rx_tail sz bytes  hereafter
 
 	//used for append sz bytes from ptr to rx_tail, update rx_tail and return the updated rx_tail to the caller
-	//after putting, rx_tail must be still larger than rx_end. 
+	//after putting, rx_tail must be still larger than rx_end.
  	unsigned char * prev_rx_tail;
 
 	if(precvframe==NULL)
 		return NULL;
 
 	prev_rx_tail = precvframe->u.hdr.rx_tail;
-	
+
 	precvframe->u.hdr.rx_tail += sz;
-	
+
 	if(precvframe->u.hdr.rx_tail > precvframe->u.hdr.rx_end)
 	{
 		precvframe->u.hdr.rx_tail -= sz;
@@ -582,7 +582,7 @@ __inline static u8 *recvframe_put(union recv_frame *precvframe, sint sz)
 __inline static u8 *recvframe_pull_tail(union recv_frame *precvframe, sint sz)
 {
 	// rmv data from rx_tail (by yitsen)
-	
+
 	//used for extract sz bytes from rx_end, update rx_end and return the updated rx_end to the caller
 	//after pulling, rx_end must be still larger than rx_data.
 
@@ -608,10 +608,10 @@ __inline static u8 *recvframe_pull_tail(union recv_frame *precvframe, sint sz)
 __inline static _buffer * get_rxbuf_desc(union recv_frame *precvframe)
 {
 	_buffer * buf_desc;
-	
+
 	if(precvframe==NULL)
 		return NULL;
-#ifdef PLATFORM_WINDOWS	
+#ifdef PLATFORM_WINDOWS
 	NdisQueryPacket(precvframe->u.hdr.pkt, NULL, NULL, &buf_desc, NULL);
 #endif
 
@@ -621,17 +621,17 @@ __inline static _buffer * get_rxbuf_desc(union recv_frame *precvframe)
 
 __inline static union recv_frame *rxmem_to_recvframe(u8 *rxmem)
 {
-	//due to the design of 2048 bytes alignment of recv_frame, we can reference the union recv_frame 
+	//due to the design of 2048 bytes alignment of recv_frame, we can reference the union recv_frame
 	//from any given member of recv_frame.
 	// rxmem indicates the any member/address in recv_frame
-	
+
 	return (union recv_frame*)(((uint)rxmem>>RXFRAME_ALIGN) <<RXFRAME_ALIGN) ;
-	
+
 }
 
 __inline static union recv_frame *pkt_to_recvframe(_pkt *pkt)
 {
-	
+
 	u8 * buf_star;
 	union recv_frame * precv_frame;
 #ifdef PLATFORM_WINDOWS
@@ -649,7 +649,7 @@ __inline static union recv_frame *pkt_to_recvframe(_pkt *pkt)
 __inline static u8 *pkt_to_recvmem(_pkt *pkt)
 {
 	// return the rx_head
-	
+
 	union recv_frame * precv_frame = pkt_to_recvframe(pkt);
 
 	return 	precv_frame->u.hdr.rx_head;
@@ -663,7 +663,7 @@ __inline static u8 *pkt_to_recvdata(_pkt *pkt)
 	union recv_frame * precv_frame =pkt_to_recvframe(pkt);
 
 	return 	precv_frame->u.hdr.rx_data;
-	
+
 }
 
 
@@ -692,8 +692,8 @@ __inline static s32 translate_percentage_to_dbm(u32 SignalStrengthIndex)
 	s32	SignalPower; // in dBm.
 
 	// Translate to dBm (x=0.5y-95).
-	SignalPower = (s32)((SignalStrengthIndex + 1) >> 1); 
-	SignalPower -= 95; 
+	SignalPower = (s32)((SignalStrengthIndex + 1) >> 1);
+	SignalPower -= 95;
 
 	return SignalPower;
 }
@@ -706,4 +706,3 @@ extern void _rtw_init_sta_recv_priv(struct sta_recv_priv *psta_recvpriv);
 extern void  mgt_dispatcher(_adapter *padapter, union recv_frame *precv_frame);
 
 #endif
-

@@ -23,15 +23,15 @@
 #define SUN5I_IISBASE 		(0x01C22400)
 
 #define SUN5I_IISCTL 	  (0x00)
-	#define SUN5I_IISCTL_SDO0EN		(1<<8) 
-	#define SUN5I_IISCTL_ASS			(1<<6) 
+	#define SUN5I_IISCTL_SDO0EN		(1<<8)
+	#define SUN5I_IISCTL_ASS			(1<<6)
 	#define SUN5I_IISCTL_MS			(1<<5)
 	#define SUN5I_IISCTL_PCM			(1<<4)
 	#define SUN5I_IISCTL_LOOP			(1<<3)
 	#define SUN5I_IISCTL_TXEN			(1<<2)
 	#define SUN5I_IISCTL_RXEN			(1<<1)
 	#define SUN5I_IISCTL_GEN			(1<<0)
-	 
+
 #define SUN5I_IISFAT0 		(0x04)
 	#define SUN5I_IISFAT0_LRCP					(1<<7)
 	#define SUN5I_IISFAT0_BCP					(1<<6)
@@ -47,7 +47,7 @@
 	#define SUN5I_IISFAT0_FMT_LFT				(1<<0)
 	#define SUN5I_IISFAT0_FMT_RGT				(2<<0)
 	#define SUN5I_IISFAT0_FMT_RVD				(3<<0)
-	
+
 #define SUN5I_IISFAT1		(0x08)
 	#define SUN5I_IISFAT1_SYNCLEN_16BCLK		(0<<12)
 	#define SUN5I_IISFAT1_SYNCLEN_32BCLK		(1<<12)
@@ -72,7 +72,7 @@
 	#define SUN5I_IISFAT1_TXPDM_8PCM			(1<<0)
 	#define SUN5I_IISFAT1_TXPDM_8ULAW			(2<<0)
 	#define SUN5I_IISFAT1_TXPDM_8ALAW  		(3<<0)
-	
+
 #define SUN5I_IISTXFIFO 	(0x0C)
 
 #define SUN5I_IISRXFIFO 	(0x10)
@@ -89,13 +89,13 @@
 	#define SUN5I_IISFCTL_RXOM_MOD1		(1<<0)
 	#define SUN5I_IISFCTL_RXOM_MOD2		(2<<0)
 	#define SUN5I_IISFCTL_RXOM_MOD3		(3<<0)
-	
+
 #define SUN5I_IISFSTA   	(0x18)
 	#define SUN5I_IISFSTA_TXE				(1<<28)
 	#define SUN5I_IISFSTA_TXECNT(v)		((v)<<16)
 	#define SUN5I_IISFSTA_RXA				(1<<8)
 	#define SUN5I_IISFSTA_RXACNT(v)		((v)<<0)
-	
+
 #define SUN5I_IISINT    	(0x1C)
 	#define SUN5I_IISINT_TXDRQEN				(1<<7)
 	#define SUN5I_IISINT_TXUIEN				(1<<6)
@@ -104,14 +104,14 @@
 	#define SUN5I_IISINT_RXDRQEN				(1<<2)
 	#define SUN5I_IISINT_RXOIEN				(1<<1)
 	#define SUN5I_IISINT_RXAIEN				(1<<0)
-	
+
 #define SUN5I_IISISTA   	(0x20)
 	#define SUN5I_IISISTA_TXUISTA			(1<<6)
 	#define SUN5I_IISISTA_TXOISTA			(1<<5)
 	#define SUN5I_IISISTA_TXEISTA			(1<<4)
 	#define SUN5I_IISISTA_RXOISTA			(1<<1)
 	#define SUN5I_IISISTA_RXAISTA			(1<<0)
-		
+
 #define SUN5I_IISCLKD   	(0x24)
 	#define SUN5I_IISCLKD_MCLKOEN			(1<<7)
 	#define SUN5I_IISCLKD_BCLKDIV_2		(0<<4)
@@ -133,7 +133,7 @@
 	#define SUN5I_IISCLKD_MCLKDIV_32		(8<<0)
 	#define SUN5I_IISCLKD_MCLKDIV_48		(9<<0)
 	#define SUN5I_IISCLKD_MCLKDIV_64		(10<<0)
-		
+
 #define SUN5I_IISTXCNT  	(0x28)
 
 #define SUN5I_IISRXCNT  	(0x2C)
@@ -150,7 +150,7 @@
 
 #define SUN5I_RXCHMAP		(0x3C)
 	#define SUN5I_RXCHMAP_CH1(v)			(((v)-1)<<4)
-	#define SUN5I_RXCHMAP_CH0(v)			(((v)-1)<<0)	
+	#define SUN5I_RXCHMAP_CH0(v)			(((v)-1)<<0)
 
 
 /* DMA REGISTER */
@@ -159,11 +159,11 @@
 #define SUN5I_DMAIRQEN						(0x0)
 	#define SUN5I_DMAIRQEN_NDMA_FULLEN(v)				(1<<((v)*2+1))
 	#define SUN5I_DMAIRQEN_NDMA_HALFEN(v)				(1<<((v)*2))
-	
+
 #define SUN5I_DMAIRQPENDING	 		(0x4)
 	#define SUN5I_DMAIRQPENGDING_NDMA_FULLPEND(v)		(1<<((v)*2+1))
-	#define SUN5I_DMAIRQPENGDING_NDMA_HALFPEND(v)		(1<<((v)*2))	
-	
+	#define SUN5I_DMAIRQPENGDING_NDMA_HALFPEND(v)		(1<<((v)*2))
+
 #define SUN5I_NDMACFG(v)				((v)*0x20+0x100)
 	#define SUN5I_NDMACFG_DMALOAD					(1<<31)
 	#define SUN5I_NDMACFG_BUSY						(1<<30)
@@ -222,7 +222,7 @@
 	#define SUN5I_NDMACFG_SRCTYPE_UART5RX			(0x13<<0)
 	#define SUN5I_NDMACFG_SRCTYPE_UART6RX			(0x14<<0)
 	#define SUN5I_NDMACFG_SRCTYPE_UART7RX			(0x15<<0)
-					
+
 #define SUN5I_NDMASRCADDR(v)				((v)*0x20 + 0x100 + 4)
 
 #define SUN5I_NDMADSTADDR(v)				((v)*0x20 + 0x100 + 8)
@@ -237,10 +237,10 @@
 	#define SUN5I_CCM_AUDIO_HOSC_PLL_REG_AUDIOEN		(1<<31)
 	#define SUN5I_CCM_AUDIO_HOSC_PLL_REG_FRE225792MHZ	(0<<27)
 	#define SUN5I_CCM_AUDIO_HOSC_PLL_REG_FRE24576MHZ	(1<<27)
-	
+
 #define SUN5I_CCM_APB_GATE_REG    		 (0x68)
 	#define SUN5I_CCM_APB_GATE_REG_IISGATE				(1<<3)
-	
+
 #define SUN5I_CCM_AUDIO_CLK_REG				(0xb8)
 	#define SUN5I_CCM_AUDIO_CLK_REG_IISSPECIALGATE		(1<<31)
 	#define SUN5I_CCM_AUDIO_CLK_REG_DIV(v)					((v)<<16)
@@ -269,7 +269,7 @@ struct sun5i_i2s_info {
 	void __iomem   *ccmregs;  //CCM BASE
 	void __iomem   *ioregs;   //IO BASE
 
-	u32 slave;					//0: master, 1: slave					
+	u32 slave;					//0: master, 1: slave
 	u32 mono;					//0: stereo, 1: mono
 	u32 samp_fs;				//audio sample rate (unit in kHz)
 	u32 samp_res;			//16 bits, 20 bits , 24 bits, 32 bits)

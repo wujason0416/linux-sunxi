@@ -65,4 +65,3 @@
 #define MMC328X_IOC_READXYZ		_IOR(MMC328X_IOM, 0x03, int[3])
 
 #endif /* __MMC328X_H__ */
-

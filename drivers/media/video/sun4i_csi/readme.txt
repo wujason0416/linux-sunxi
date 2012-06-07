@@ -25,7 +25,7 @@ insmod sun4i_csiX.ko ccm="ov5640" i2c_addr=0x78
 V1_11
 CSI: Mainly fix bugs on mt9m112,ov5640 and ov7670
 1) Fix bug on calling poll or read before streamon
-2) Fix bug on mt9m112 and ov5640 multiplex use 
+2) Fix bug on mt9m112 and ov5640 multiplex use
 3) Fix ov7670 sensor init
 4) Modify the delay on ov2655 after every i2c command
 5) Modify camera debug info
@@ -36,7 +36,7 @@ CSI: Fix bugs, add new modules support and modity power/standby interface
 2) Fix bugs for crash when insmod after rmmod
 3) Add default format for csi driver
 4) Modify the power on/off,stanby on/off interface
-5) Fix bugs for multipex dual sensors using one csi 
+5) Fix bugs for multipex dual sensors using one csi
 6) Add gc0307, mt9d112 and ov5640 modules support
 7) Fix gc0308 AWB alternation bug
 
@@ -49,5 +49,3 @@ CSI: Add HI253 support IC version detection and fix HI704 i2c bug
 V1_00
 CSI:Initial version for linux 3.0.8
 1) Ported from linux2.3.36
-
-

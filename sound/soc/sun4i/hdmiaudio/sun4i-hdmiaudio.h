@@ -29,15 +29,15 @@ extern __audio_hdmi_func g_hdmi_func;
 	#define SUN4I_HDMIAUDIOCTL_SDO3EN		(1<<11)
 	#define SUN4I_HDMIAUDIOCTL_SDO2EN		(1<<10)
 	#define SUN4I_HDMIAUDIOCTL_SDO1EN		(1<<9)
-	#define SUN4I_HDMIAUDIOCTL_SDO0EN		(1<<8) 
-	#define SUN4I_HDMIAUDIOCTL_ASS			(1<<6) 
+	#define SUN4I_HDMIAUDIOCTL_SDO0EN		(1<<8)
+	#define SUN4I_HDMIAUDIOCTL_ASS			(1<<6)
 	#define SUN4I_HDMIAUDIOCTL_MS			(1<<5)
 	#define SUN4I_HDMIAUDIOCTL_PCM			(1<<4)
 	#define SUN4I_HDMIAUDIOCTL_LOOP			(1<<3)
 	#define SUN4I_HDMIAUDIOCTL_TXEN			(1<<2)
 	#define SUN4I_HDMIAUDIOCTL_RXEN			(1<<1)
 	#define SUN4I_HDMIAUDIOCTL_GEN			(1<<0)
-	 
+
 #define SUN4I_HDMIAUDIOFAT0 		(0x04)
 	#define SUN4I_HDMIAUDIOFAT0_LRCP					(1<<7)
 	#define SUN4I_HDMIAUDIOFAT0_BCP					(1<<6)
@@ -53,7 +53,7 @@ extern __audio_hdmi_func g_hdmi_func;
 	#define SUN4I_HDMIAUDIOFAT0_FMT_LFT				(1<<0)
 	#define SUN4I_HDMIAUDIOFAT0_FMT_RGT				(2<<0)
 	#define SUN4I_HDMIAUDIOFAT0_FMT_RVD				(3<<0)
-	
+
 #define SUN4I_HDMIAUDIOFAT1		(0x08)
 	#define SUN4I_HDMIAUDIOFAT1_SYNCLEN_16BCLK		(0<<12)
 	#define SUN4I_HDMIAUDIOFAT1_SYNCLEN_32BCLK		(1<<12)
@@ -78,7 +78,7 @@ extern __audio_hdmi_func g_hdmi_func;
 	#define SUN4I_HDMIAUDIOFAT1_TXPDM_8PCM			(1<<0)
 	#define SUN4I_HDMIAUDIOFAT1_TXPDM_8ULAW			(2<<0)
 	#define SUN4I_HDMIAUDIOFAT1_TXPDM_8ALAW  		(3<<0)
-	
+
 #define SUN4I_HDMIAUDIOTXFIFO 	(0x0C)
 
 #define SUN4I_HDMIAUDIORXFIFO 	(0x10)
@@ -95,13 +95,13 @@ extern __audio_hdmi_func g_hdmi_func;
 	#define SUN4I_HDMIAUDIOFCTL_RXOM_MOD1		(1<<0)
 	#define SUN4I_HDMIAUDIOFCTL_RXOM_MOD2		(2<<0)
 	#define SUN4I_HDMIAUDIOFCTL_RXOM_MOD3		(3<<0)
-	
+
 #define SUN4I_HDMIAUDIOFSTA   	(0x18)
 	#define SUN4I_HDMIAUDIOFSTA_TXE				(1<<28)
 	#define SUN4I_HDMIAUDIOFSTA_TXECNT(v)		((v)<<16)
 	#define SUN4I_HDMIAUDIOFSTA_RXA				(1<<8)
 	#define SUN4I_HDMIAUDIOFSTA_RXACNT(v)		((v)<<0)
-	
+
 #define SUN4I_HDMIAUDIOINT    	(0x1C)
 	#define SUN4I_HDMIAUDIOINT_TXDRQEN				(1<<7)
 	#define SUN4I_HDMIAUDIOINT_TXUIEN				(1<<6)
@@ -110,14 +110,14 @@ extern __audio_hdmi_func g_hdmi_func;
 	#define SUN4I_HDMIAUDIOINT_RXDRQEN				(1<<2)
 	#define SUN4I_HDMIAUDIOINT_RXOIEN				(1<<1)
 	#define SUN4I_HDMIAUDIOINT_RXAIEN				(1<<0)
-	
+
 #define SUN4I_HDMIAUDIOISTA   	(0x20)
 	#define SUN4I_HDMIAUDIOISTA_TXUISTA			(1<<6)
 	#define SUN4I_HDMIAUDIOISTA_TXOISTA			(1<<5)
 	#define SUN4I_HDMIAUDIOISTA_TXEISTA			(1<<4)
 	#define SUN4I_HDMIAUDIOISTA_RXOISTA			(1<<1)
 	#define SUN4I_HDMIAUDIOISTA_RXAISTA			(1<<0)
-		
+
 #define SUN4I_HDMIAUDIOCLKD   	(0x24)
 	#define SUN4I_HDMIAUDIOCLKD_MCLKOEN			(1<<7)
 	#define SUN4I_HDMIAUDIOCLKD_BCLKDIV_2		(0<<4)
@@ -139,7 +139,7 @@ extern __audio_hdmi_func g_hdmi_func;
 	#define SUN4I_HDMIAUDIOCLKD_MCLKDIV_32		(8<<0)
 	#define SUN4I_HDMIAUDIOCLKD_MCLKDIV_48		(9<<0)
 	#define SUN4I_HDMIAUDIOCLKD_MCLKDIV_64		(10<<0)
-		
+
 #define SUN4I_HDMIAUDIOTXCNT  	(0x28)
 
 #define SUN4I_HDMIAUDIORXCNT  	(0x2C)
@@ -164,7 +164,7 @@ extern __audio_hdmi_func g_hdmi_func;
 	#define SUN4I_RXCHMAP_CH3(v)			(((v)-1)<<12)
 	#define SUN4I_RXCHMAP_CH2(v)			(((v)-1)<<8)
 	#define SUN4I_RXCHMAP_CH1(v)			(((v)-1)<<4)
-	#define SUN4I_RXCHMAP_CH0(v)			(((v)-1)<<0)	
+	#define SUN4I_RXCHMAP_CH0(v)			(((v)-1)<<0)
 
 
 /* DMA REGISTER */
@@ -173,11 +173,11 @@ extern __audio_hdmi_func g_hdmi_func;
 #define SUN4I_DMAIRQEN						(0x0)
 	#define SUN4I_DMAIRQEN_NDMA_FULLEN(v)				(1<<((v)*2+1))
 	#define SUN4I_DMAIRQEN_NDMA_HALFEN(v)				(1<<((v)*2))
-	
+
 #define SUN4I_DMAIRQPENDING	 		(0x4)
 	#define SUN4I_DMAIRQPENGDING_NDMA_FULLPEND(v)		(1<<((v)*2+1))
-	#define SUN4I_DMAIRQPENGDING_NDMA_HALFPEND(v)		(1<<((v)*2))	
-	
+	#define SUN4I_DMAIRQPENGDING_NDMA_HALFPEND(v)		(1<<((v)*2))
+
 #define SUN4I_NDMACFG(v)				((v)*0x20+0x100)
 	#define SUN4I_NDMACFG_DMALOAD					(1<<31)
 	#define SUN4I_NDMACFG_BUSY						(1<<30)
@@ -236,7 +236,7 @@ extern __audio_hdmi_func g_hdmi_func;
 	#define SUN4I_NDMACFG_SRCTYPE_UART5RX			(0x13<<0)
 	#define SUN4I_NDMACFG_SRCTYPE_UART6RX			(0x14<<0)
 	#define SUN4I_NDMACFG_SRCTYPE_UART7RX			(0x15<<0)
-					
+
 #define SUN4I_NDMASRCADDR(v)				((v)*0x20 + 0x100 + 4)
 
 #define SUN4I_NDMADSTADDR(v)				((v)*0x20 + 0x100 + 8)
@@ -251,10 +251,10 @@ extern __audio_hdmi_func g_hdmi_func;
 	#define SUN4I_CCM_AUDIO_HOSC_PLL_REG_AUDIOEN		(1<<31)
 	#define SUN4I_CCM_AUDIO_HOSC_PLL_REG_FRE225792MHZ	(0<<27)
 	#define SUN4I_CCM_AUDIO_HOSC_PLL_REG_FRE24576MHZ	(1<<27)
-	
+
 #define SUN4I_CCM_APB_GATE_REG    		 (0x68)
 	#define SUN4I_CCM_APB_GATE_REG_IISGATE				(1<<3)
-	
+
 #define SUN4I_CCM_AUDIO_CLK_REG				(0xb8)
 	#define SUN4I_CCM_AUDIO_CLK_REG_IISSPECIALGATE		(1<<31)
 	#define SUN4I_CCM_AUDIO_CLK_REG_DIV(v)					((v)<<16)
@@ -282,7 +282,7 @@ struct sun4i_hdmiaudio_info {
 	void __iomem   *ccmregs;  //CCM BASE
 	void __iomem   *ioregs;   //IO BASE
 
-	u32 slave;					//0: master, 1: slave					
+	u32 slave;					//0: master, 1: slave
 	u32 mono;					//0: stereo, 1: mono
 	u32 samp_fs;				//audio sample rate (unit in kHz)
 	u32 samp_res;			//16 bits, 20 bits , 24 bits, 32 bits)

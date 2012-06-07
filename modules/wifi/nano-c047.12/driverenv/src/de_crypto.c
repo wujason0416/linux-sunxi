@@ -10,7 +10,7 @@
 #define TR_CRYPTO TR_WPA
 
 static int
-DriverEnvironment_HMAC(const char *algo, 
+DriverEnvironment_HMAC(const char *algo,
                        const void *key,
                        size_t key_len,
                        const void *data,
@@ -59,7 +59,7 @@ DriverEnvironment_HMAC(const char *algo,
 
    return WIFI_ENGINE_SUCCESS;
 }
-                           
+
 int
 DriverEnvironment_HMAC_MD5(const void *key,
                            size_t key_len,
@@ -68,9 +68,9 @@ DriverEnvironment_HMAC_MD5(const void *key,
                            void *result,
                            size_t result_len)
 {
-   return DriverEnvironment_HMAC("hmac(md5)", 
-                                 key, key_len, 
-                                 data, data_len, 
+   return DriverEnvironment_HMAC("hmac(md5)",
+                                 key, key_len,
+                                 data, data_len,
                                  result, result_len);
 }
 
@@ -82,8 +82,8 @@ DriverEnvironment_HMAC_SHA1(const void *key,
                             void *result,
                             size_t result_len)
 {
-   return DriverEnvironment_HMAC("hmac(sha1)", 
-                                 key, key_len, 
-                                 data, data_len, 
+   return DriverEnvironment_HMAC("hmac(sha1)",
+                                 key, key_len,
+                                 data, data_len,
                                  result, result_len);
 }

@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -16,7 +16,7 @@
 #include "mali_osk.h"
 #include "mali_platform.h"
 
-#include <linux/module.h>  
+#include <linux/module.h>
 #include <linux/clk.h>
 #include <mach/gpio_v2.h>
 #include <mach/irqs.h>
@@ -34,7 +34,7 @@ _mali_osk_errcode_t mali_platform_init(_mali_osk_resource_t *resource)
 	unsigned long rate;
 	int clk_div;
 	int mali_used = 0;
-	
+
 	//get mali ahb clock
 	h_ahb_mali = clk_get(NULL, "ahb_mali");
 	if(!h_ahb_mali){
@@ -55,7 +55,7 @@ _mali_osk_errcode_t mali_platform_init(_mali_osk_resource_t *resource)
 	if(clk_set_parent(h_mali_clk, h_ve_pll)){
 		MALI_PRINT(("try to set mali clock source failed!\n"));
 	}
-	
+
 	//set mali clock
 	rate = clk_get_rate(h_ve_pll);
 
@@ -76,7 +76,7 @@ _mali_osk_errcode_t mali_platform_init(_mali_osk_resource_t *resource)
 	if(clk_set_rate(h_mali_clk, rate)){
 		MALI_PRINT(("try to set mali clock failed!\n"));
 	}
-	
+
 	if(clk_enable(h_ahb_mali)){
 		MALI_PRINT(("try to enable mali ahb failed!\n"));
 	}

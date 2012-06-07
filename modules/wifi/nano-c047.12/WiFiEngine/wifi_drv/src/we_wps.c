@@ -197,7 +197,7 @@ int m80211_ie_is_wps_configured(m80211_ie_wps_parameter_set_t *ie)
    return TRUE;
 }
 
-/* 
+/*
  * Workaround for some platforms
  *
  * WARNING: THIS WILL MODIFY THE IE
@@ -224,7 +224,7 @@ int m80211_ie_remove_wps_configured(m80211_ie_wps_parameter_set_t *ie)
          (unsigned char*)ie->wps_pool,
          wps_pool_len,
          WSC_ID_SELECTED_REGISTRAR,
-         &tlv, 
+         &tlv,
          (void**)&tlv_data);
 
    *tlv_data = 0;
@@ -238,4 +238,3 @@ int we_net_wps_remove_configured(WiFiEngine_net_t* net)
    return m80211_ie_remove_wps_configured(ie);
 }
 #endif
-

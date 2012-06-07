@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
  *
  *
- 
+
 ******************************************************************************/
 #ifndef _SDIO_OPS_WINCE_H_
 #define _SDIO_OPS_WINCE_H_
@@ -53,4 +53,3 @@ extern void sdio_read_int(_adapter *padapter, u32 addr,u8 sz,void *pdata);
 #endif
 
 #endif
-

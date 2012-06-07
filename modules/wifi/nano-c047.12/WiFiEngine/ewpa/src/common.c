@@ -34,7 +34,7 @@ hexdump(const unsigned char *pos, size_t len, int is_ascii)
 		p = line;
 		for(j = 0; j < 16; j++) {
 			if(i + j < len)
-				snprintf(p, line + sizeof(line) - p, "%02x ", 
+				snprintf(p, line + sizeof(line) - p, "%02x ",
 					 (unsigned char)pos[i + j]);
 			else
 				strcpy(p, "   ");

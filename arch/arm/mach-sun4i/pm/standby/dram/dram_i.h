@@ -95,4 +95,3 @@ extern void mctl_disable_dll(void);
 extern void DRAMC_hostport_on_off(__u32 port_idx, __u32 on);
 
 #endif  //__DRAM_REG_H__
-

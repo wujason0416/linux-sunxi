@@ -8,7 +8,7 @@ This software is copyrighted by and is the sole property of Nanoradio AB.
 All rights, title, ownership, or other interests in the
 software remain the property of Nanoradio AB.  This software may
 only be used in accordance with the corresponding license agreement.  Any
-unauthorized use, duplication, transmission, distribution, or disclosure of	
+unauthorized use, duplication, transmission, distribution, or disclosure of
 this software is expressly forbidden.
 
 This Copyright notice may not be removed or modified without prior written
@@ -52,7 +52,7 @@ T E M P O R A R Y   T E S T V A R I A B L E S
 C O N S T A N T S / M A C R O S
 *****************************************************************************/
 #define OBJID_MYSELF    SYSDEF_OBJID_HOST_MANAGER_PAL
-			
+
 #define EXECUTE_STATE(_StateFunction)   (StateFn_t)(_StateFunction)(msg, (wei_sm_queue_param_s *)sm_param)
 #define INIT_STATE(_StateFunction)      (_StateFunction)(INTSIG_INIT, DUMMY)
 #define EXIT_STATE(_StateFunction)      (_StateFunction)(INTSIG_EXIT, DUMMY)
@@ -113,15 +113,15 @@ G L O B A L   F U N C T I O N S
 void HMG_init_pal(void)
 {
    /* Set the default state. */
-   stateVars.newState_fn = StateFunction_Init; 
+   stateVars.newState_fn = StateFunction_Init;
    stateVars.currentState_fn = StateFunction_Idle;
    stateVars.subState_fn = StateFunction_Idle;
-   stateVars.newSubState_fn = StateFunction_Idle; 
+   stateVars.newSubState_fn = StateFunction_Idle;
 
    ucos_register_object(OBJID_MYSELF,
                         SYSCFG_UCOS_OBJECT_PRIO_LOW,
                         (ucos_object_entry_t)HMG_entry_pal,
-                        "HMG Pal");   
+                        "HMG Pal");
 }
 
 /* This function is called from ucos */
@@ -142,7 +142,7 @@ static void HMG_entry_pal(ucos_msg_id_t msg, ucos_msg_param_t param)
    {
       if (stateVars.newState_fn != stateVars.currentState_fn)
       {
-         /* Make a state transition. 
+         /* Make a state transition.
             Note that the init and exit signals will be propagated to any substate.
          */
          EXIT_STATE(stateVars.currentState_fn);
@@ -158,15 +158,15 @@ static void HMG_entry_pal(ucos_msg_id_t msg, ucos_msg_param_t param)
       {
          if (stateVars.newSubState_fn != stateVars.subState_fn)
          {
-            /* Make a state transition. 
+            /* Make a state transition.
                Note that the init and exit signals will be propagated to any substate.
-            */          
+            */
             EXIT_STATE(stateVars.subState_fn);
             INIT_STATE(stateVars.newSubState_fn);
             stateVars.subState_fn = stateVars.newSubState_fn;
          }
          else
-         {            
+         {
             stateVars.newSubState_fn = EXECUTE_STATE(stateVars.subState_fn);
          }
       } while (stateVars.newSubState_fn != stateVars.subState_fn);
@@ -178,16 +178,16 @@ static void HMG_entry_pal(ucos_msg_id_t msg, ucos_msg_param_t param)
          WrapperFreeStructure(sm_param->p);
       }
       DriverEnvironment_Nonpaged_Free(sm_param);
-   }  
+   }
 }
 
 void HMG_Unplug_pal(void)
 {
-   stateVars.currentState_fn = StateFunction_Init; 
-   stateVars.newState_fn = StateFunction_Init; 
+   stateVars.currentState_fn = StateFunction_Init;
+   stateVars.newState_fn = StateFunction_Init;
    stateVars.subState_fn = StateFunction_Idle;
    stateVars.newSubState_fn = StateFunction_Idle;
-   connected = FALSE; 
+   connected = FALSE;
 
    we_ind_deregister_null(&ps_ctx.connected_h);
    we_ind_deregister_null(&ps_ctx.disconnecting_h);
@@ -197,7 +197,7 @@ void HMG_Unplug_pal(void)
 void wei_hmg_pal_init(void)
 {
    DE_MEMSET(&ps_ctx,0,sizeof(ps_ctx));
-   
+
    HMG_Unplug_pal();
 }
 
@@ -208,10 +208,10 @@ void wei_hmg_pal_init(void)
 *****************************************************************************/
 static void connected_cb(wi_msg_param_t param, void* priv)
 {
-   	DE_TRACE_STATIC(TR_AMP, "hmg_pal device connected\n");  
+   	DE_TRACE_STATIC(TR_AMP, "hmg_pal device connected\n");
 
-   	connected = TRUE;  
-#ifdef DEBUG_HMG_PAL   
+   	connected = TRUE;
+#ifdef DEBUG_HMG_PAL
 	printk("CONNECTED\n");
 #endif
 
@@ -226,9 +226,9 @@ static void connected_cb(wi_msg_param_t param, void* priv)
 *****************************************************************************/
 static void disconnecting_cb(wi_msg_param_t param, void* priv)
 {
-   DE_TRACE_STATIC(TR_SM, "hmg_pal device disconnected\n");  
-   connected = FALSE;    
-   
+   DE_TRACE_STATIC(TR_SM, "hmg_pal device disconnected\n");
+   connected = FALSE;
+
    wei_sm_queue_sig(INTSIG_DEVICE_DISCONNECTED, OBJID_MYSELF, DUMMY, TRUE);
 }
 
@@ -265,7 +265,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Init)
 	{
 	//printk ("Init Command PArser\n");
 	//Init_Command_Parser();
-	//nextState_fn = (StateFn_ref)StateFunction_NotConnected;	
+	//nextState_fn = (StateFn_ref)StateFunction_NotConnected;
 	//wei_sm_queue_sig(INTSIG_INIT, OBJID_MYSELF, msg, TRUE);
 	}
          break;
@@ -275,42 +275,42 @@ DEFINE_STATE_FUNCTION(StateFunction_Init)
 
       case INTSIG_CASE(INTSIG_EXECUTE):
          Init_Command_Parser();
-		   nextState_fn = (StateFn_ref)StateFunction_NotConnected;	
+		   nextState_fn = (StateFn_ref)StateFunction_NotConnected;
          break;
 
       case INTSIG_CASE(INTSIG_POWER_UP):
       {
          int s;
-         DE_TRACE_STATIC(TR_SM, "Enter State Init\n");  
+         DE_TRACE_STATIC(TR_SM, "Enter State Init\n");
 
          s = we_ind_cond_register(&ps_ctx.connected_h,
                   WE_IND_80211_CONNECTED, "WE_IND_80211_CONNECTED",
-                  connected_cb, NULL, 0, NULL);   
+                  connected_cb, NULL, 0, NULL);
          DE_ASSERT(WIFI_ENGINE_SUCCESS == s);
 
          s = we_ind_cond_register(&ps_ctx.disconnecting_h,
                   WE_IND_80211_DISCONNECTING, "WE_IND_80211_DISCONNECTING",
-                  disconnecting_cb, NULL, 0, NULL);  
+                  disconnecting_cb, NULL, 0, NULL);
          DE_ASSERT(WIFI_ENGINE_SUCCESS == s);
- 
+
          if(WIFI_ENGINE_SUCCESS == s)
          {
             wei_sm_queue_sig(INTSIG_EXECUTE, OBJID_MYSELF, DUMMY, TRUE);
-         }	 
+         }
       }
       break;
 
       case INTSIG_CASE(INTSIG_DEVICE_CONNECTED):
-         nextState_fn = (StateFn_ref)StateFunction_Connected;   
+         nextState_fn = (StateFn_ref)StateFunction_Connected;
          break;
 
       case INTSIG_CASE(INTSIG_DEVICE_DISCONNECTED):
          /* Ok to discard */
          break;
-         		
+
 	case INTSIG_CASE(INTSIG_DISABLE_PS):
          break;
-   
+
       default:
          DE_TRACE_INT(TR_WARN, "Unhandled PAL message type %x\n",msg);
          DE_TRACE_STATIC2(TR_WARN, "msg %s\n", HMG_Signal_toToName(msg));
@@ -327,31 +327,31 @@ DEFINE_STATE_FUNCTION(StateFunction_Init)
 DEFINE_STATE_FUNCTION(StateFunction_Connected)
 {
    StateFn_ref nextState_fn = (StateFn_ref)StateFunction_Connected;
-   
+
    if( (msg != INTSIG_INIT) && (msg != INTSIG_EXIT)) {
       DE_TRACE_STATIC2(TR_SM, "handling msg %s\n", HMG_Signal_toToName(msg));
    }
 
    switch(msg) {
       case INTSIG_CASE(INTSIG_INIT):
-		{	
-	
-		}     
+		{
+
+		}
          break;
 
-//For receiving data confirmations		 
+//For receiving data confirmations
 /*	case INTSIG_CASE(HIC_AMP_DATA_CFM):
-         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Data confirmation StateFunction_Connected\n"); 
-		
+         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Data confirmation StateFunction_Connected\n");
+
 		// Notify that data conf is received
 		 number_of_completed_data_blocks(Trans id);
          break;
-*/		 
-//		 
+*/
+//
       case INTSIG_CASE(INTSIG_EXIT):
-	 DE_TRACE_STATIC(TR_SM_HIGH_RES, "Exit State StateFunction_Connected\n"); 
+	 DE_TRACE_STATIC(TR_SM_HIGH_RES, "Exit State StateFunction_Connected\n");
 	  //HCI_Disconnect_Physical_Link_Evt((char*)param);
-         
+
          break;
 	 case INTSIG_CASE(INTSIG_EVAL_HCI):
         {
@@ -359,11 +359,11 @@ DEFINE_STATE_FUNCTION(StateFunction_Connected)
 			eval_hci_cmd((char*)param);
 		}
          break;
-		 
+
       case INTSIG_CASE(INTSIG_DEVICE_DISCONNECTED):
 		//Disconnect event
 		HCI_Disconnect_Physical_Link_Evt((char*)param);
-        nextState_fn = (StateFn_ref)StateFunction_NotConnected;   
+        nextState_fn = (StateFn_ref)StateFunction_NotConnected;
          break;
 	case INTSIG_CASE(INTSIG_DISABLE_PS):
          	//nextState_fn = (StateFn_ref)StateFunction_Connected;
@@ -383,7 +383,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Connected)
 ** start of period.
 *****************************************************************************/
 DEFINE_STATE_FUNCTION(StateFunction_NotConnected)
-{   
+{
    StateFn_ref nextState_fn = (StateFn_ref)StateFunction_NotConnected;
 
    if( (msg != INTSIG_INIT) && (msg != INTSIG_EXIT)) {
@@ -392,19 +392,19 @@ DEFINE_STATE_FUNCTION(StateFunction_NotConnected)
 
    switch(msg) {
       case INTSIG_CASE(INTSIG_INIT):
-         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Enter State StateFunction_NotConnected\n");   
-	  
+         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Enter State StateFunction_NotConnected\n");
+
          break;
-   
+
       case INTSIG_CASE(INTSIG_EXIT):
          DE_TRACE_STATIC(TR_SM_HIGH_RES, "Exit State StateFunction_NotConnected\n");
-	
 
-  
+
+
       break;
 		 case INTSIG_CASE(INTSIG_EVAL_HCI):
          {
-			
+
 			eval_hci_cmd((char*)param);
 		}
          break;
@@ -433,12 +433,12 @@ DEFINE_STATE_FUNCTION(StateFunction_NotConnected)
 #ifdef WIFI_DEBUG_ON
 static char* HMG_Signal_toToName(int msg)
 {
-   
+
    #define INTSIG_DEBUG_CASE(name)  case INTSIG_CASE(name): return #name
    #define CTRL_DEBUG_CASE(name)    case CTRL_RX_CASE(name): return #name
    #define MGMT_RX_DEBUG_CASE(name) case MGMT_RX_CASE(name): return #name
    #define MGMT_TX_DEBUG_CASE(name) case MGMT_TX_CASE(name): return #name
-  
+
 
    switch(msg) {
       INTSIG_DEBUG_CASE(INTSIG_INIT);
@@ -446,7 +446,7 @@ static char* HMG_Signal_toToName(int msg)
       INTSIG_DEBUG_CASE(INTSIG_EXECUTE);
       INTSIG_DEBUG_CASE(INTSIG_POWER_UP);
 	 // INTSIG_DEBUG(INTSIG_EVAL_HCI);
-	  
+
       default:
          DE_TRACE_INT(TR_SEVERE, "Unknown Signal %x, please update this function!!!!\n" , msg);
          return "unknown";

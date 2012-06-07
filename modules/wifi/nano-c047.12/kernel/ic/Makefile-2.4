@@ -8,7 +8,7 @@ V?=0
 
 ifeq ($V,0)
 Q=@
-endif	
+endif
 
 CFLAGS += $(filter-out -pipe, $(shell echo 'blorg:;@echo $$(CFLAGS) $$(MODFLAGS)' | $(MAKE) -s -C $(KERNEL_DIR) -f Makefile -f - blorg))
 CFLAGS += $(DEFS) $(WIFI_FLAGS) $(DEBUG_FLAGS) $(PLATFORM_FLAGS)
@@ -30,7 +30,7 @@ nano_if.mod: $(OBJ)
 %.d: %.c
 	@echo DEPS $(notdir $<)
 	$(Q)$(CC) $(CFLAGS) -MM -MG $< | \
-	sed 's%^\(.*\)\.o\:%$(dir $@)\1.d $(dir $@)\1.o:%' > $@	
+	sed 's%^\(.*\)\.o\:%$(dir $@)\1.d $(dir $@)\1.o:%' > $@
 
 clean:
 	rm -f $(OBJ)
@@ -44,4 +44,3 @@ strip:
 ifneq ($(MAKECMDGOALS),clean)
 -include $(OBJ:.o=.d)
 endif
-

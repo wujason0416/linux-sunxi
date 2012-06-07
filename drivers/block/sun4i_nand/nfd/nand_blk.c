@@ -1604,4 +1604,3 @@ module_exit(nand_exit);
 MODULE_LICENSE ("GPL");
 MODULE_AUTHOR ("nand flash groups");
 MODULE_DESCRIPTION ("Generic NAND flash driver code");
-

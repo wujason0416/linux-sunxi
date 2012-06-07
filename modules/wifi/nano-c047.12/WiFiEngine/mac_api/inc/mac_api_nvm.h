@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-            Copyright (c) 2004 by Nanoradio AB 
+            Copyright (c) 2004 by Nanoradio AB
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
  All rights, title, ownership, or other interests in the
@@ -67,7 +67,7 @@ Thing are coming in and things are coming out, bla bla bla.
 #define NVMEM_CFG_IN_NVM_TAG 0xFE
 #define NVMEM_VERSION_IN_FLASH 0x01
 
-typedef struct 
+typedef struct
 {
    uint8_t cfg_tag;
    uint8_t version;

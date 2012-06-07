@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -1365,7 +1365,7 @@ static mali_bool mali_mmu_enable_stall(mali_kernel_memory_mmu * mmu)
 			return MALI_FALSE;
 		}
 	}
-	
+
 	return MALI_TRUE;
 }
 
@@ -1767,7 +1767,7 @@ _mali_osk_errcode_t _mali_ukk_release_ump_mem( _mali_uk_release_ump_mem_s *args 
 	}
 
 	mali_descriptor_mapping_free(session_data->descriptor_mapping, args->cookie);
-	
+
 	_mali_osk_lock_wait( session_data->lock, _MALI_OSK_LOCKMODE_RW );
 
 	mali_allocation_engine_release_memory(memory_engine, descriptor);
@@ -2839,7 +2839,7 @@ _mali_osk_errcode_t _mali_ukk_mem_munmap( _mali_uk_mem_munmap_s *args )
     descriptor at this point. */
 
     MALI_DEBUG_ASSERT_POINTER((memory_session*)descriptor->mali_addr_mapping_info);
-    
+
 	descriptor_lock = descriptor->lock; /* should point to the session data lock... */
 
 	err = _MALI_OSK_ERR_BUSY;
@@ -2856,7 +2856,7 @@ _mali_osk_errcode_t _mali_ukk_mem_munmap( _mali_uk_mem_munmap_s *args )
 		{
 			_mali_osk_lock_signal( descriptor_lock, _MALI_OSK_LOCKMODE_RW );
 		}
-		
+
 		if (err == _MALI_OSK_ERR_BUSY)
 		{
 			/*

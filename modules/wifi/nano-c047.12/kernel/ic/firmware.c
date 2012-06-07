@@ -54,7 +54,7 @@ struct bm_descr {
 #define HARMLESS_ADDRESS_IN_NRX2_CHIP 0x60000
 
 #define IS_DLM_ENTRY(ehdr, phdr) \
-   (ehdr->e_machine == EM_ARM && (phdr)->p_paddr >= 0x1000000) 
+   (ehdr->e_machine == EM_ARM && (phdr)->p_paddr >= 0x1000000)
 
 /* XXX should really be p_memsz below, but the mib table should not
  * have any bss */
@@ -140,8 +140,8 @@ setup_load_header(uint32_t base)
 static size_t
 make_data_header(unsigned char *buf,
                  size_t len,
-                 Elf32_Addr addr, 
-                 void *data, 
+                 Elf32_Addr addr,
+                 void *data,
                  size_t data_len)
 {
    unsigned char *hdr = buf;
@@ -150,14 +150,14 @@ make_data_header(unsigned char *buf,
       size_t l = data_len;
       if(l > PAYLOAD_MAXSIZE)
          l = PAYLOAD_MAXSIZE;
-      
+
       hdr[0] = l & 0xff;
       hdr[1] = (l >> 8) & 0xff;
       hdr[2] = addr & 0xff;
       hdr[3] = (addr >> 8) & 0xff;
       hdr[4] = (addr >> 16) & 0xff;
       hdr[5] = (addr >> 24) & 0xff;
-   
+
       memcpy(hdr + PAYLOAD_HEADERSIZE, data, l);
 
       addr += l;
@@ -173,9 +173,9 @@ static int nrx_fw_init(struct nrx_px_softc*);
 static int nrx_fw_release(struct nrx_px_softc*, struct inode*, struct file*);
 
 struct nrx_px_entry fw_px_entry = {
-   .name = "firmware", 
-   .mode = S_IRUSR|S_IWUSR, 
-   .blocksize = 128 * 1024, 
+   .name = "firmware",
+   .mode = S_IRUSR|S_IWUSR,
+   .blocksize = 128 * 1024,
    .init = nrx_fw_init,
    .open = NULL,
    .release = nrx_fw_release
@@ -191,7 +191,7 @@ nano_fw_download(struct net_device *dev)
    KDEBUG(TRACE, "ENTRY");
 
    psc = nrx_px_lookup(&fw_px_entry, sc->proc_dir);
-   
+
    if(psc == NULL) {
       KDEBUG(ERROR, "proc entry not found");
       return -EIO;
@@ -209,8 +209,8 @@ nano_fw_download(struct net_device *dev)
       KDEBUG(TRACE, "no transport firmware interface");
       ret = -EINVAL;
    } else{
-      ret =  (*sc->transport->fw_download)(nrx_px_data(psc), 
-                                             nrx_px_size(psc), 
+      ret =  (*sc->transport->fw_download)(nrx_px_data(psc),
+                                             nrx_px_size(psc),
                                              sc->transport_data);
    }
    nrx_px_runlock(psc);
@@ -244,13 +244,13 @@ parse_elf_fw(struct nrx_px_softc *psc, unsigned char *data, size_t len)
    unsigned int start_exec_addr;
    unsigned int trig_swi_addr;
    unsigned int trig_swi_data;
-   
+
    if(len < sizeof(*ehdr))
       return -EINVAL;
 
    ehdr = (Elf32_Ehdr*)data;
 
-   if(ehdr->e_type != ET_EXEC) 
+   if(ehdr->e_type != ET_EXEC)
       return -EINVAL;
 
    if(ehdr->e_machine == EM_ARM) {
@@ -272,7 +272,7 @@ parse_elf_fw(struct nrx_px_softc *psc, unsigned char *data, size_t len)
       KDEBUG(ERROR, "ELF file with unexpected phdr size");
       return -EINVAL;
    }
-   
+
    if(len < ehdr->e_phoff + ehdr->e_phnum * ehdr->e_phentsize) {
       KDEBUG(ERROR, "ELF phdrs extend beyond end of file");
       return -EINVAL;
@@ -322,7 +322,7 @@ parse_elf_fw(struct nrx_px_softc *psc, unsigned char *data, size_t len)
        * table vaddr is the same as the section address */
       /* .mibtable used with GNU toolchain */
       if(shdr_shstrtab->sh_size - shdr[i].sh_name >= sizeof(".mibtable")
-         && memcmp(&shstrtab[shdr[i].sh_name], ".mibtable", 
+         && memcmp(&shstrtab[shdr[i].sh_name], ".mibtable",
                    sizeof(".mibtable")) == 0) {
          KDEBUG(TRACE, "found MIB table section (%u)", i);
          mib_table_addr = shdr[i].sh_addr;
@@ -331,7 +331,7 @@ parse_elf_fw(struct nrx_px_softc *psc, unsigned char *data, size_t len)
       }
       /* MIB_TABLE used with ARM toolchain */
       if(shdr_shstrtab->sh_size - shdr[i].sh_name >= sizeof("MIB_TABLE")
-         && memcmp(&shstrtab[shdr[i].sh_name], "MIB_TABLE", 
+         && memcmp(&shstrtab[shdr[i].sh_name], "MIB_TABLE",
                    sizeof("MIB_TABLE")) == 0) {
          KDEBUG(TRACE, "found MIB table section (%u)", i);
          mib_table_addr = shdr[i].sh_addr;
@@ -355,7 +355,7 @@ parse_elf_fw(struct nrx_px_softc *psc, unsigned char *data, size_t len)
    }
    size += PAYLOAD_HEADERSIZE + 4; /* exec addr */
    size += PAYLOAD_HEADERSIZE + 4; /* trig */
-   
+
 #ifndef NO_FIRMWARE_PADDING
    /* Pad the firmware blob to a multiple of the hardware transport
       size alignment. There is also a min size requirement, but for
@@ -385,7 +385,7 @@ parse_elf_fw(struct nrx_px_softc *psc, unsigned char *data, size_t len)
    offset = 0;
    memcpy(tmp_fw + offset, &load_header, sizeof(load_header));
    offset += sizeof(load_header);
-   
+
 #ifndef NO_FIRMWARE_PADDING
    if(pad_size != 0) {
       ASSERT(pad_size < len);
@@ -393,7 +393,7 @@ parse_elf_fw(struct nrx_px_softc *psc, unsigned char *data, size_t len)
                                  size - offset,
 #define SAFE_RAM_ADDRESS 0x40000 /* XXX */
                                  SAFE_RAM_ADDRESS,
-                                 data, 
+                                 data,
                                  pad_size - PAYLOAD_HEADERSIZE);
    }
 #endif /* NO_FIRMWARE_PADDING */
@@ -421,7 +421,7 @@ parse_elf_fw(struct nrx_px_softc *psc, unsigned char *data, size_t len)
              * p_filesz, if not this will select a piece of the
              * segment */
             WiFiEngine_RegisterMIBTable(data + phdr[i].p_offset         \
-                                        + mib_table_addr - phdr[i].p_vaddr, 
+                                        + mib_table_addr - phdr[i].p_vaddr,
                                         mib_table_size,
                                         mib_table_addr);
 	 }
@@ -432,7 +432,7 @@ parse_elf_fw(struct nrx_px_softc *psc, unsigned char *data, size_t len)
 			      start_exec_addr,
 			      &ehdr->e_entry,
 			      sizeof(ehdr->e_entry));
-   
+
    offset += make_data_header(tmp_fw + offset,
 			      size - offset,
 			      trig_swi_addr,
@@ -478,13 +478,13 @@ nrx_fw_init(struct nrx_px_softc *psc)
 }
 
 static int
-nrx_fw_release(struct nrx_px_softc *psc, 
-               struct inode *inode, 
+nrx_fw_release(struct nrx_px_softc *psc,
+               struct inode *inode,
                struct file *file)
 {
    struct net_device *dev = nrx_px_priv(psc);
    struct nrx_softc *sc = netdev_priv(dev);
-   
+
    /* already locked */
 
    void *elf_data = nrx_px_data(psc);
@@ -493,7 +493,7 @@ nrx_fw_release(struct nrx_px_softc *psc,
    KDEBUG(TRACE, "ENTRY");
 
    //determine data type (elf or binary)
-   
+
    if(elf_size >= 4 && memcmp(elf_data, "\177ELF", 4) == 0) {
       if(parse_elf_fw(psc, elf_data, elf_size) == 0) {
          nrx_set_flag(sc, NRX_FLAG_HAVE_FW);

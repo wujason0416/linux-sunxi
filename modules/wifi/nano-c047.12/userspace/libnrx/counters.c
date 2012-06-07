@@ -14,7 +14,7 @@ get_counter_mib(nrx_context ctx, const char *mib, uint32_t *count)
    NRX_ASSERT(ctx);
    NRX_ASSERT(mib);
    NRX_ASSERT(count);
-    
+
    ret = nrx_get_mib_val(ctx, mib, &mib_val, &mib_len);
    if (ret == 0)
       *count = mib_val;
@@ -28,10 +28,10 @@ get_counter_mib(nrx_context ctx, const char *mib, uint32_t *count)
  * @internal
  * @ingroup RADIO
  * @brief <b>Get the current transmitted fragment count</b>
- * 
+ *
  * This counter is incremented for each acknowledged
- * transmitted fragment. A frame that is not fragmented will 
- * be considered as a single "fragment" and increases the 
+ * transmitted fragment. A frame that is not fragmented will
+ * be considered as a single "fragment" and increases the
  * counter with 1.
  *
  * The maximum value is 2^32-1, then it will wrap around
@@ -58,7 +58,7 @@ nrx_get_tx_fragment_count(nrx_context ctx, uint32_t *count)
  * @internal
  * @ingroup RADIO
  * @brief <b>Get the current transmitted multicast frame count</b>
- * 
+ *
  * This counter is incremented for each successfully
  * transmitted multicast frame. Note that multicast in this case refers to
  * the 802.11 destination address, not to the ultimate destination
@@ -88,7 +88,7 @@ nrx_get_tx_mcast_frame_count(nrx_context ctx, uint32_t *count)
  * @internal
  * @ingroup RADIO
  * @brief <b>Get the current failed transmitted frame count</b>
- * 
+ *
  * This counter is incremented when the transmit retry count
  * exceeds the retry limit.
  *
@@ -116,7 +116,7 @@ nrx_get_tx_failed_count(nrx_context ctx, uint32_t *count)
  * @internal
  * @ingroup RADIO
  * @brief <b>Get the current transmit retry count</b>
- * 
+ *
  * This counter is incremented for each frame successfully
  * transmitted after one or more retransmissions.
  *
@@ -144,7 +144,7 @@ nrx_get_tx_retry_count(nrx_context ctx, uint32_t *count)
  * @internal
  * @ingroup RADIO
  * @brief <b>Get the current multiple transmit retry count</b>
- * 
+ *
  * This counter is incremented for each frame successfully
  * transmitted after more than one retransmission.
  *
@@ -172,7 +172,7 @@ nrx_get_tx_multiple_retry_count(nrx_context ctx, uint32_t *count)
  * @internal
  * @ingroup RADIO
  * @brief <b>Get the current received duplicate frame count</b>
- * 
+ *
  * This counter is incremented for received frame duplicates.
  *
  * The maximum value is 2^32-1, then it will wrap around
@@ -199,7 +199,7 @@ nrx_get_rx_frame_duplicates_count(nrx_context ctx, uint32_t *count)
  * @internal
  * @ingroup RADIO
  * @brief <b>Get the current successful RTS/CTS count</b>
- * 
+ *
  * This counter is incremented when a CTS is received in
  * response to an RTS.
  *
@@ -227,7 +227,7 @@ nrx_get_rts_success_count(nrx_context ctx, uint32_t *count)
  * @internal
  * @ingroup RADIO
  * @brief <b>Get the current failed RTS/CTS count</b>
- * 
+ *
  * This counter is incremented when a CTS is not received in
  * response to an RTS.
  *
@@ -255,7 +255,7 @@ nrx_get_rts_failure_count(nrx_context ctx, uint32_t *count)
  * @internal
  * @ingroup RADIO
  * @brief <b>Get the current ACK failure count</b>
- * 
+ *
  * This counter is incremented when an ACK is not received when
  * expected.
  *
@@ -283,9 +283,9 @@ nrx_get_ack_failure_count(nrx_context ctx, uint32_t *count)
  * @internal
  * @ingroup RADIO
  * @brief <b>Get the current received fragment count</b>
- * 
+ *
  * This counter is incremented for each successfully received
- * fragment. A frame that is not fragmented will be considered 
+ * fragment. A frame that is not fragmented will be considered
  * as a single "fragment" and increases the counter with 1.
  *
  * The maximum value is 2^32-1, then it will wrap around
@@ -312,7 +312,7 @@ nrx_get_rx_fragment_count(nrx_context ctx, uint32_t *count)
  * @internal
  * @ingroup RADIO
  * @brief <b>Get the current received multicast frame count</b>
- * 
+ *
  * This counter is incremented for each successfully received
  * multicast frame (even though the frame is not intended for this STA).
  *
@@ -342,9 +342,9 @@ nrx_get_rx_mcast_frame_count(nrx_context ctx, uint32_t *count)
  * @internal
  * @ingroup RADIO
  * @brief <b>Get the current received FCS error count</b>
- * 
+ *
  * This counter is incremented when an FCS error is detected in
- * a received fragment. 
+ * a received fragment.
  *
  * The maximum value is 2^32-1, then it will wrap around
  * (i.e. restart from 0).
@@ -370,7 +370,7 @@ nrx_get_rx_fcs_error_count(nrx_context ctx, uint32_t *count)
  * @internal
  * @ingroup RADIO
  * @brief <b>Get the current transmitted frame count</b>
- * 
+ *
  * This counter is incremented for each successfully
  * transmitted frame.
  *
@@ -398,7 +398,7 @@ nrx_get_tx_frame_count(nrx_context ctx, uint32_t *count)
  * @internal
  * @ingroup RADIO
  * @brief <b>Get the current received undecryptable frame count</b>
- * 
+ *
  * This counter is incremented when a received frame could not
  * be decrypted.
  *
@@ -420,4 +420,3 @@ nrx_get_rx_undecryptable_count(nrx_context ctx, uint32_t *count)
 {
    return get_counter_mib(ctx, MIB_dot11WEPUndecryptableCount, count);
 }
-

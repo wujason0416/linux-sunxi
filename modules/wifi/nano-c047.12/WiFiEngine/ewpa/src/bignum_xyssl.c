@@ -6,7 +6,7 @@
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions
  *  are met:
- *  
+ *
  *    * Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
  *    * Redistributions in binary form must reproduce the above copyright
@@ -15,7 +15,7 @@
  *    * Neither the name of XySSL nor the names of its contributors may be
  *      used to endorse or promote products derived from this software
  *      without specific prior written permission.
- *  
+ *
  *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
  *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
  *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
@@ -866,7 +866,7 @@ int mpi_sub_int( mpi *X, mpi *A, int b )
 
 /*
  * Helper for mpi multiplication
- */ 
+ */
 static void mpi_mul_hlp( int i, t_int_xyssl *s, t_int_xyssl *d, t_int_xyssl b )
 {
     t_int_xyssl c = 0, t = 0;
@@ -1372,7 +1372,7 @@ int mpi_exp_mod( mpi *X, mpi *A, mpi *E, mpi *N, mpi *_SR )
 
         for( i = 0; i < wsize - 1; i++ )
             mpi_montmul( &W[j], &W[j], N, mm, &T );
-    
+
         /*
          * W[i] = W[i - 1] * W[1]
          */

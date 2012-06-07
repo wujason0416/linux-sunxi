@@ -1,16 +1,16 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
 /**
  * @file mali_pmm_policy.c
- * Implementation of the common routines for power management module 
+ * Implementation of the common routines for power management module
  * policies
  */
 
@@ -33,10 +33,10 @@ static void pmm_policy_timer_callback( void *arg );
 _mali_osk_errcode_t pmm_policy_timer_init( _pmm_policy_timer_t *pptimer, u32 timeout, mali_pmm_event_id id )
 {
 	MALI_DEBUG_ASSERT_POINTER(pptimer);
-	
+
 	/* All values get 0 as default */
 	_mali_osk_memset(pptimer, 0, sizeof(*pptimer));
-	
+
 	pptimer->timer = _mali_osk_timer_init();
 	if( pptimer->timer )
 	{
@@ -45,14 +45,14 @@ _mali_osk_errcode_t pmm_policy_timer_init( _pmm_policy_timer_t *pptimer, u32 tim
 		pptimer->event_id = id;
 		MALI_SUCCESS;
 	}
-	
+
 	return _MALI_OSK_ERR_FAULT;
 }
 
 static void pmm_policy_timer_callback( void *arg )
 {
 	_pmm_policy_timer_t *pptimer = (_pmm_policy_timer_t *)arg;
-	
+
 	MALI_DEBUG_ASSERT_POINTER(pptimer);
 	MALI_DEBUG_ASSERT( pptimer->set );
 
@@ -84,7 +84,7 @@ mali_bool pmm_policy_timer_start( _pmm_policy_timer_t *pptimer )
 		_mali_osk_timer_add( pptimer->timer, pptimer->timeout );
 		return MALI_TRUE;
 	}
-	
+
 	return MALI_FALSE;
 }
 
@@ -100,7 +100,7 @@ mali_bool pmm_policy_timer_stop( _pmm_policy_timer_t *pptimer )
 		pptimer->expired = MALI_FALSE;
 		return MALI_TRUE;
 	}
-	
+
 	return MALI_FALSE;
 }
 
@@ -122,12 +122,12 @@ mali_bool pmm_policy_timer_raise_event( _pmm_policy_timer_t *pptimer )
 		pptimer->expired = MALI_FALSE;
 		/* Unset timer so it is free to be set again */
 		pptimer->set = MALI_FALSE;
-		
+
 		_mali_ukk_pmm_event_message( &event );
-				
+
 		return MALI_TRUE;
 	}
-	
+
 	return MALI_FALSE;
 }
 
@@ -161,7 +161,7 @@ _mali_osk_errcode_t pmm_policy_init(_mali_pmm_internal_state_t *pmm)
 		default:
 			err = _MALI_OSK_ERR_FAULT;
 	}
-	
+
 	return err;
 }
 
@@ -215,7 +215,7 @@ _mali_osk_errcode_t pmm_policy_process(_mali_pmm_internal_state_t *pmm, mali_pmm
 		default:
 			err = _MALI_OSK_ERR_FAULT;
 	}
-	
+
 	return err;
 }
 
@@ -240,4 +240,3 @@ void pmm_policy_check_policy( _mali_pmm_internal_state_t *pmm )
 
 
 #endif /* USING_MALI_PMM */
-

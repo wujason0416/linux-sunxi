@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -57,17 +57,17 @@
 		//#define CONFIG_IPS_LEVEL_2	1 //enable this to set default IPS mode to IPS_LEVEL_2
 	#endif
 	#define SUPPORT_HW_RFOFF_DETECTED	1
-	
+
 	#define CONFIG_LPS	1
 	#define CONFIG_BT_COEXIST	1
 	//befor link
-	#define CONFIG_ANTENNA_DIVERSITY	 	
+	#define CONFIG_ANTENNA_DIVERSITY
 	//after link
 	#ifdef CONFIG_ANTENNA_DIVERSITY
-	#define CONFIG_SW_ANTENNA_DIVERSITY	 
-	//#define CONFIG_HW_ANTENNA_DIVERSITY	
+	#define CONFIG_SW_ANTENNA_DIVERSITY
+	//#define CONFIG_HW_ANTENNA_DIVERSITY
 	#endif
-	
+
 	#define CONFIG_IOL
 #else  //#ifndef CONFIG_MP_INCLUDED
 	#define CONFIG_MP_IWPRIV_SUPPORT	1
@@ -91,11 +91,11 @@
 
 //	Added by Kurt 20110511
 //#define CONFIG_TDLS	1
-			
+
 #ifdef CONFIG_AP_MODE
 	#ifndef CONFIG_NATIVEAP_MLME
 		#define CONFIG_HOSTAPD_MLME	1
-	#endif			
+	#endif
 	#define CONFIG_FIND_BEST_CHANNEL	1
 #endif
 
@@ -155,13 +155,13 @@
 //#define CONFIG_REDUCE_USB_TX_INT	1	// Trade-off: Improve performance, but may cause TX URBs blocked by USB Host/Bus driver on few platforms.
 //#define CONFIG_EASY_REPLACEMENT	1
 
-/* 
+/*
  * CONFIG_USE_USB_BUFFER_ALLOC_XX uses Linux USB Buffer alloc API and is for Linux platform only now!
  */
 #define CONFIG_USE_USB_BUFFER_ALLOC_TX 1	// Trade-off: For TX path, improve stability on some platforms, but may cause performance degrade on other platforms.
 //#define CONFIG_USE_USB_BUFFER_ALLOC_RX 1	// For RX path
 
-/* 
+/*
  * USB VENDOR REQ BUFFER ALLOCATION METHOD
  * if not set we'll use function local variable (stack memory)
  */
@@ -265,4 +265,3 @@
 
 #define DBG_CONFIG_ERROR_DETECT
 //#define DBG_CONFIG_ERROR_RESET
-

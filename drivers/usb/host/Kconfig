@@ -655,8 +655,8 @@ config USB_SW_SUN4I_OHCI1
 	depends on USB_SW_SUN4I_HCI
 	help
 	    SoftWinner SUN4I USB OHCI1.
-	    
-	    
+
+
 #-----------------------------------------------------
 #
 # A12 USB Host Controller Drivers
@@ -692,5 +692,3 @@ config USB_SW_SUN5I_OHCI0
 	depends on USB_SW_SUN5I_HCI
 	help
 	    SoftWinner SUN5I USB OHCI0.
-
-

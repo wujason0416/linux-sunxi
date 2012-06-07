@@ -9,7 +9,7 @@
 
 #include "wlantype.h"
 #include "manlib.h"
-#if defined(VXWORKS) || defined(SIM) 
+#if defined(VXWORKS) || defined(SIM)
 #include "hw.h"
 #else
 #include "common_hw.h"
@@ -18,15 +18,15 @@
 
 A_UINT32 m_eepromRead
 (
- 	A_UINT32 devNum, 
+ 	A_UINT32 devNum,
  	A_UINT32 eepromOffset
 );
 
 
 void m_eepromWrite
 (
- 	A_UINT32 devNum, 
- 	A_UINT32 eepromOffset, 
+ 	A_UINT32 devNum,
+ 	A_UINT32 eepromOffset,
  	A_UINT32 eepromValue
 );
 
@@ -39,23 +39,23 @@ PDWORDBUFFER m_eepromReadBlock
 
 void m_eepromWriteBlock
 (
- 	A_UINT32 devNum, 
- 	A_UINT32 startOffset, 
+ 	A_UINT32 devNum,
+ 	A_UINT32 startOffset,
 	PDWORDBUFFER pDwordBuffer
 );
 
 A_UINT32 m_resetDevice
 (
- 	A_UINT32 devNum, 
- 	PDATABUFFER mac, 
- 	PDATABUFFER bss, 
- 	A_UINT32 freq, 
- 	A_UINT32 turbo 
+ 	A_UINT32 devNum,
+ 	PDATABUFFER mac,
+ 	PDATABUFFER bss,
+ 	A_UINT32 freq,
+ 	A_UINT32 turbo
 );
 
 void m_setResetParams
 (
- 	A_UINT32 devNum, 
+ 	A_UINT32 devNum,
  	A_CHAR fileName[256],
  	A_UINT32 eePromLoad,
 	A_UINT32 eePromHeaderLoad,
@@ -65,8 +65,8 @@ void m_setResetParams
 
 void m_getDeviceInfo
 (
- 	A_UINT32 devNum, 
- 	SUB_DEV_INFO *pDevStruct		
+ 	A_UINT32 devNum,
+ 	SUB_DEV_INFO *pDevStruct
 );
 
 A_UINT32 m_checkRegs
@@ -93,14 +93,14 @@ void m_rereadProm
 
 void m_txDataSetup
 (
- 	A_UINT32 devNum, 
- 	A_UINT32 rateMask, 
- 	PDATABUFFER dest, 
- 	A_UINT32 numDescPerRate, 
- 	A_UINT32 dataBodyLength, 
- 	PDATABUFFER dataPattern, 
- 	A_UINT32 retries, 
- 	A_UINT32 antenna, 
+ 	A_UINT32 devNum,
+ 	A_UINT32 rateMask,
+ 	PDATABUFFER dest,
+ 	A_UINT32 numDescPerRate,
+ 	A_UINT32 dataBodyLength,
+ 	PDATABUFFER dataPattern,
+ 	A_UINT32 retries,
+ 	A_UINT32 antenna,
  	A_UINT32 broadcast
 );
 
@@ -126,7 +126,7 @@ void m_rxDataBegin
  	A_UINT32 waitTime,
  	A_UINT32 timeout,
  	A_UINT32 remoteStats,
- 	A_UINT32 enableCompare, 
+ 	A_UINT32 enableCompare,
  	PDATABUFFER dataPattern
 );
 
@@ -136,7 +136,7 @@ void m_txrxDataBegin
  	A_UINT32 waitTime,
  	A_UINT32 timeout,
  	A_UINT32 remoteStats,
- 	A_UINT32 enableCompare, 
+ 	A_UINT32 enableCompare,
  	PDATABUFFER dataPattern
 );
 
@@ -148,14 +148,14 @@ void m_cleanupTxRxMemory
 
 PDWORDBUFFER m_txGetStats
 (
- 	A_UINT32 devNum, 
+ 	A_UINT32 devNum,
  	A_UINT32 rateInMb,
  	A_UINT32 remote
 );
 
 PDWORDBUFFER m_txPrintStats
 (
- 	A_UINT32 devNum, 
+ 	A_UINT32 devNum,
  	A_UINT32 rateInMb,
  	A_UINT32 remote
 );
@@ -186,10 +186,10 @@ PDATABUFFER m_rxGetData
 
 void m_txContBegin
 (
- 	A_UINT32 devNum, 
- 	A_UINT32 type, 
+ 	A_UINT32 devNum,
+ 	A_UINT32 type,
  	A_UINT32 typeOption1,
- 	A_UINT32 typeOption2, 
+ 	A_UINT32 typeOption2,
  	A_UINT32 antenna
 );
 
@@ -200,26 +200,26 @@ void m_txContEnd
 
 void m_setAntenna
 (
- 	A_UINT32 devNum, 
+ 	A_UINT32 devNum,
  	A_UINT32 antenna
 );
 
 void m_setPowerScale
 (
- 	A_UINT32 devNum, 
+ 	A_UINT32 devNum,
  	A_UINT32 powerScale
 );
 
 void m_setTransmitPower
 (
- 	A_UINT32 devNum, 
+ 	A_UINT32 devNum,
  	PDATABUFFER txPowerArray
 );
 
 void m_setSingleTransmitPower
 (
- 	A_UINT32 devNum, 
- 	A_UCHAR pcdac 
+ 	A_UINT32 devNum,
+ 	A_UCHAR pcdac
 );
 
 void m_devSleep
@@ -259,7 +259,7 @@ void closeMLIB
 void m_changeField
 (
  	A_UINT32 devNum,
- 	A_CHAR *fieldName, 
+ 	A_CHAR *fieldName,
  	A_UINT32 newValue
 );
 
@@ -296,7 +296,7 @@ A_BOOL m_testLib
 );
 
 
-void m_displayFieldValues 
+void m_displayFieldValues
 (
  	A_UINT32 devNum,
  	A_CHAR *fieldName,
@@ -340,7 +340,7 @@ A_UINT32 m_readField
 void m_writeField
 (
  	A_UINT32 devNum,
- 	A_CHAR *fieldName, 
+ 	A_CHAR *fieldName,
  	A_UINT32 newValue
 );
 
@@ -399,32 +399,32 @@ void m_devlibCleanup
 
 void m_specifySubSystemID
 (
- 	A_UINT32 devNum, 
- 	A_UINT16 subsystemID 
+ 	A_UINT32 devNum,
+ 	A_UINT16 subsystemID
 );
 
 
 void m_changeMultipleFieldsAllModes
 (
  	A_UINT32		devNum,
- 	PARSE_MODE_INFO *fieldsToChange, 
+ 	PARSE_MODE_INFO *fieldsToChange,
  	A_UINT32 numFields
 );
 
 void m_changeMultipleFields
 (
  	A_UINT32		devNum,
- 	PARSE_FIELD_INFO *fieldsToChange, 
+ 	PARSE_FIELD_INFO *fieldsToChange,
  	A_UINT32 numFields
 );
 
 void m_txContFrameBegin
 (
- 	A_UINT32 devNum, 
+ 	A_UINT32 devNum,
 	A_UINT32 length,
 	A_UINT32 ifswait,
  	A_UINT32 typeOption1,
- 	A_UINT32 typeOption2, 
+ 	A_UINT32 typeOption2,
  	A_UINT32 antenna,
 	A_BOOL   performStabilizePower,
 	A_UINT32 numDescriptors,
@@ -462,5 +462,4 @@ void changePciWritesFlag
 
 void createDescriptors(A_UINT32 devNumIndex, A_UINT32 descBaseAddress,  A_UINT32 descInfo, A_UINT32 bufAddrIncrement, A_UINT32 descOp, A_UINT32 *descWords);
 
-#endif 
-
+#endif

@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -214,7 +214,7 @@ void rtl8192c_query_rx_phy_status(union recv_frame *prframe, struct phy_stat *pp
 
 #ifdef CONFIG_HW_ANTENNA_DIVERSITY
 	PHY_RX_DRIVER_INFO_8192CD *pDrvInfo = ((PHY_RX_DRIVER_INFO_8192CD *)pphy_stat);
-	u8 	bant1_sel = (pDrvInfo->ANTSEL == 1)?_TRUE:_FALSE;	
+	u8 	bant1_sel = (pDrvInfo->ANTSEL == 1)?_TRUE:_FALSE;
 #endif
 
 	// Record it for next packet processing
@@ -223,12 +223,12 @@ void rtl8192c_query_rx_phy_status(union recv_frame *prframe, struct phy_stat *pp
 	if(bcck_rate) //CCK
 	{
 		u8 report;
-#ifdef CONFIG_HW_ANTENNA_DIVERSITY		
+#ifdef CONFIG_HW_ANTENNA_DIVERSITY
 		if(bant1_sel == _TRUE)
 			pHalData->CCK_Ant1_Cnt++;
 		else
 			pHalData->CCK_Ant2_Cnt++;
-#endif		
+#endif
 
 		// CCK Driver info Structure is not the same as OFDM packet.
 		pCck_buf = (PHY_STS_CCK_8192CD_T *)pphy_stat;
@@ -361,7 +361,7 @@ void rtl8192c_query_rx_phy_status(union recv_frame *prframe, struct phy_stat *pp
 	}
 	else //OFDM/HT
 	{
-#ifdef CONFIG_HW_ANTENNA_DIVERSITY	
+#ifdef CONFIG_HW_ANTENNA_DIVERSITY
 		if(bant1_sel == _TRUE)
 			pHalData->OFDM_Ant1_Cnt++;
 		else
@@ -370,7 +370,7 @@ void rtl8192c_query_rx_phy_status(union recv_frame *prframe, struct phy_stat *pp
 		pdmpriv->OFDM_Pkt_Cnt++;
 
 		pOfdm_buf = (PHY_STS_OFDM_8192CD_T *)pphy_stat;
-	
+
 		//
 		// (1)Get RSSI per-path
 		//
@@ -509,7 +509,7 @@ static void process_rssi(_adapter *padapter,union recv_frame *prframe)
 	//DBG_8192C("process_rssi=> pattrib->rssil(%d) signal_strength(%d)\n ",pattrib->RecvSignalPower,pattrib->signal_strength);
 	//if(pRfd->Status.bPacketToSelf || pRfd->Status.bPacketBeacon)
 	{
-	
+
 	#ifdef CONFIG_NEW_SIGNAL_STAT_PROCESS
 		if(signal_stat->update_req) {
 			signal_stat->total_num = 0;
@@ -519,9 +519,9 @@ static void process_rssi(_adapter *padapter,union recv_frame *prframe)
 
 		signal_stat->total_num++;
 		signal_stat->total_val  += pattrib->signal_strength;
-		signal_stat->avg_val = signal_stat->total_val / signal_stat->total_num;		
+		signal_stat->avg_val = signal_stat->total_val / signal_stat->total_num;
 	#else //CONFIG_NEW_SIGNAL_STAT_PROCESS
-	
+
 		//Adapter->RxStats.RssiCalculateCnt++;	//For antenna Test
 		if(padapter->recvpriv.signal_strength_data.total_num++ >= PHY_RSSI_SLID_WIN_MAX)
 		{
@@ -537,7 +537,7 @@ static void process_rssi(_adapter *padapter,union recv_frame *prframe)
 
 
 		tmp_val = padapter->recvpriv.signal_strength_data.total_val/padapter->recvpriv.signal_strength_data.total_num;
-		
+
 		if(padapter->recvpriv.is_signal_dbg) {
 			padapter->recvpriv.signal_strength= padapter->recvpriv.signal_strength_dbg;
 			padapter->recvpriv.rssi=(s8)translate2dbm((u8)padapter->recvpriv.signal_strength_dbg);
@@ -623,8 +623,8 @@ static void process_PWDB(_adapter *padapter, union recv_frame *prframe)
 					(pattrib->RxPWDBAll)) /(Rx_Smooth_Factor);
 		}
 	}
-	
-	
+
+
 	if(psta)
 	{
 		//psta->UndecoratedSmoothedPWDB = UndecoratedSmoothedPWDB;//todo:
@@ -637,7 +637,7 @@ static void process_PWDB(_adapter *padapter, union recv_frame *prframe)
 			psta->rssi_stat.UndecoratedSmoothedPWDB = UndecoratedSmoothedCCK;
 		}
 		else{
-			if(UndecoratedSmoothedPWDB <0 ) 
+			if(UndecoratedSmoothedPWDB <0 )
 				pdmpriv->UndecoratedSmoothedPWDB = UndecoratedSmoothedCCK;
 			else
 				pdmpriv->UndecoratedSmoothedPWDB = UndecoratedSmoothedPWDB;
@@ -655,11 +655,11 @@ static void process_PWDB(_adapter *padapter, union recv_frame *prframe)
 			pdmpriv->UndecoratedSmoothedPWDB = UndecoratedSmoothedCCK;
 		}
 		else	{
-			if(UndecoratedSmoothedPWDB <0 ) 
+			if(UndecoratedSmoothedPWDB <0 )
 				pdmpriv->UndecoratedSmoothedPWDB = UndecoratedSmoothedCCK;
 			else
 				pdmpriv->UndecoratedSmoothedPWDB = UndecoratedSmoothedPWDB;
-			
+
 		}
 		pdmpriv->UndecoratedSmoothedCCK = UndecoratedSmoothedCCK;
 	}
@@ -698,7 +698,7 @@ static void process_link_qual(_adapter *padapter,union recv_frame *prframe)
 	signal_stat->total_num++;
 	signal_stat->total_val  += pattrib->signal_qual;
 	signal_stat->avg_val = signal_stat->total_val / signal_stat->total_num;
-	
+
 #else //CONFIG_NEW_SIGNAL_STAT_PROCESS
 	if(pattrib->signal_qual != 0)
 	{
@@ -739,8 +739,8 @@ void rtl8192c_process_phy_info(_adapter *padapter, void *prframe)
 	union recv_frame *precvframe = (union recv_frame *)prframe;
 
 #ifdef CONFIG_SW_ANTENNA_DIVERSITY
-	// If we switch to the antenna for testing, the signal strength 
-	// of the packets in this time shall not be counted into total receiving power. 
+	// If we switch to the antenna for testing, the signal strength
+	// of the packets in this time shall not be counted into total receiving power.
 	// This prevents error counting Rx signal strength and affecting other dynamic mechanism.
 
 	// Select the packets to do RSSI checking for antenna switching.
@@ -756,7 +756,7 @@ void rtl8192c_process_phy_info(_adapter *padapter, void *prframe)
 	//
 	// Check PWDB.
 	//
-	process_PWDB(padapter, precvframe); 
+	process_PWDB(padapter, precvframe);
 	//
 	// Check EVM
 	//

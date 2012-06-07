@@ -139,14 +139,14 @@ void mctl_disable_dll(void)
 }
 
 __u32 hpcr_value[32] = {
-		0x0,0x0,0x0,0x0,		
+		0x0,0x0,0x0,0x0,
 		0x0,0x0,0x0,0x0,
 		0x0,0x0,0x0,0x0,
 		0x0,0x0,0x0,0x0,
 		0x00001031,0x00001031,0x00000735,0x00001035,
 		0x00001035,0x00000731,0x00001031,0x0,
 		0x00000301,0x00000301,0x00000301,0x00000301,
-		0x00000301,0x00000301,0x00000301,0x0		
+		0x00000301,0x00000301,0x00000301,0x0
 };
 
 void mctl_configure_hostport(void)
@@ -182,9 +182,9 @@ void mctl_setup_dram_clock(__u32 clk)
     mctl_write_w(DRAM_CCM_SDRAM_PLL_REG, reg_val);
 
 	//setup MBUS clock
-    reg_val &= (0x1<<31)|(0x2<<24)|(0x1); 	
+    reg_val &= (0x1<<31)|(0x2<<24)|(0x1);
     mctl_write_w(DRAM_CCM_MUS_CLK_REG, reg_val);
-        
+
     //open DRAMC AHB & DLL register clock
     //close it first
     reg_val = mctl_read_w(DRAM_CCM_AHB_GATE_REG);
@@ -543,4 +543,3 @@ __s32 dram_scan_readpipe(void)
 {
     return DRAMC_scan_readpipe();
 }
-

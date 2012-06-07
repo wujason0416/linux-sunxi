@@ -47,15 +47,15 @@ Caution, there be dragons!
 /* send a raw hic command, command_mask specifies which commands to
  * allow, data/length is the formatter buffer, and tid returns a
  * transaction id that can be passed to WiFiEngine_SWM500_Reply to retreive
- * the response. 
+ * the response.
  * HAVING MORE THAN ONE OUTSTANDING COMMAND WILL
  * PROBABLY BREAK THE DRIVER, BUT THIS IS NOT ENFORCED BY THIS
  * FUNCTION
  */
 int
-WiFiEngine_SWM500_Command(unsigned int command_mask, 
-                  const void *data, 
-                  size_t length, 
+WiFiEngine_SWM500_Command(unsigned int command_mask,
+                  const void *data,
+                  size_t length,
                   uint32_t *ret_tid)
 {
    int status, size;
@@ -104,19 +104,19 @@ WiFiEngine_SWM500_Command(unsigned int command_mask,
             break;
 
          case MLME_SET_REQ:
-           
+
             if((command_mask & WE_SWM500_MIBSET) == 0)
                 return WIFI_ENGINE_FAILURE_NOT_ACCEPTED;
-                
+
             set.value.ref = NULL;
             HicWrapper_mlme_mib_set_req_t(&set, &blob, ACTION_UNPACK);
             DE_MEMCPY(mib_id.octets, set.identifier, sizeof(mib_id.octets));
             status = wei_send_mib_set_binary(mib_id,
-                                             &tid, 
-                                             set.value.ref, 
+                                             &tid,
+                                             set.value.ref,
                                              set.value.size,
                                              NULL);
-            
+
 
 	    DE_ASSERT((tid & WE_SWM500_TID_CMASK) == 0);
             *ret_tid = WE_SWM500_TID_MIB | tid;
@@ -131,7 +131,7 @@ WiFiEngine_SWM500_Command(unsigned int command_mask,
 
       status = WiFiEngine_SendHICMessage((char*)data, length, NULL);
       *ret_tid = WE_SWM500_TID_CONSOLE;
-      if(status != WIFI_ENGINE_SUCCESS) 
+      if(status != WIFI_ENGINE_SUCCESS)
          return status;
    } else if(type == HIC_MESSAGE_TYPE_FLASH_PRG) {
       /* XXX we should really handle these more like mib requets */
@@ -140,7 +140,7 @@ WiFiEngine_SWM500_Command(unsigned int command_mask,
 
       status = WiFiEngine_SendHICMessage((char*)data, length, NULL);
       *ret_tid = WE_SWM500_TID_FLASH;
-      if(status != WIFI_ENGINE_SUCCESS) 
+      if(status != WIFI_ENGINE_SUCCESS)
          return status;
    } else {
       DE_TRACE_INT2(TR_SEVERE, "bad command sent %d/%d\n", type, id);
@@ -153,9 +153,9 @@ WiFiEngine_SWM500_Command(unsigned int command_mask,
 /* takes a buffer with multiple hic packets, executes the first, and
    updates date and length to point to next packet */
 int
-WiFiEngine_SWM500_Command_Multi(unsigned int command_mask, 
+WiFiEngine_SWM500_Command_Multi(unsigned int command_mask,
                                 const void **data,
-                                size_t *length, 
+                                size_t *length,
                                 uint32_t *ret_tid,
                                 int *ret_status)
 {
@@ -163,13 +163,13 @@ WiFiEngine_SWM500_Command_Multi(unsigned int command_mask,
 
    if(*length < 2)
       return WIFI_ENGINE_FAILURE_INVALID_LENGTH;
-   
+
    len = HIC_MESSAGE_LENGTH_GET(*data);
 
- 
-   if(*length < len) 
+
+   if(*length < len)
       return WIFI_ENGINE_FAILURE_INVALID_LENGTH;
-      
+
    *ret_status = WiFiEngine_SWM500_Command(command_mask,
                                            *data,
                                            len,
@@ -184,7 +184,7 @@ WiFiEngine_SWM500_Command_Multi(unsigned int command_mask,
 /* loops over all packets in a buffer, and optimistically executes
    them  */
 int
-WiFiEngine_SWM500_Command_All(unsigned int command_mask, 
+WiFiEngine_SWM500_Command_All(unsigned int command_mask,
                               const void *data,
                               size_t length)
 {
@@ -193,7 +193,7 @@ WiFiEngine_SWM500_Command_All(unsigned int command_mask,
    uint32_t tid;
 
    while(length > 0) {
-      status = WiFiEngine_SWM500_Command_Multi(command_mask, &data, &length, 
+      status = WiFiEngine_SWM500_Command_Multi(command_mask, &data, &length,
                                                &tid, &error);
       if(status != WIFI_ENGINE_SUCCESS)
          return status;
@@ -209,17 +209,17 @@ int
 WiFiEngine_SWM500_Reply(uint32_t tid, void *data, size_t *length)
 {
    int status = WIFI_ENGINE_FAILURE;
-   
+
    if((tid & WE_SWM500_TID_CMASK) == WE_SWM500_TID_CONSOLE ||
       (tid & WE_SWM500_TID_CMASK) == WE_SWM500_TID_FLASH) {
       status = WiFiEngine_GetConsoleReply(data, length);
       if(status == WIFI_ENGINE_FAILURE)  /* XXX this should probably
                                             be changed at the source */
          status = WIFI_ENGINE_FAILURE_DEFER;
-      
+
       return status;
    } else if((tid & WE_SWM500_TID_CMASK) == WE_SWM500_TID_MIB) {
-      status = WiFiEngine_GetMIBResponse_raw(tid & WE_SWM500_TID_MASK, 
+      status = WiFiEngine_GetMIBResponse_raw(tid & WE_SWM500_TID_MASK,
                                              data, length);
    }
 

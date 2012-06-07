@@ -263,7 +263,7 @@ __create_page_tables:
 	add	r3, r3, #1 << 20
 	teq	r0, r6
 	bne	1b
-	
+
 #ifdef CONFIG_DEBUG_LL
 #ifndef CONFIG_DEBUG_ICEDCC
 	/*

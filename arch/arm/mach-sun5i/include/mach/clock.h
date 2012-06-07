@@ -57,4 +57,3 @@ typedef struct clk
 extern int clk_reset(struct clk *clk, int reset);
 
 #endif  /* #ifndef __SW_CLOCK_H__ */
-

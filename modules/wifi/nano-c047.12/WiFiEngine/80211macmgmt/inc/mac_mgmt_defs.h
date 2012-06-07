@@ -4,7 +4,7 @@
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
  All rights, title, ownership, or other interests in the
-software remain the property of Nanoradio AB.  This software may 
+software remain the property of Nanoradio AB.  This software may
 only be used in accordance with the corresponding license agreement.  Any
 unauthorized use, duplication, transmission, distribution, or disclosure of
 this software is expressly forbidden.
@@ -16,8 +16,8 @@ Nanoradio AB reserves the right to modify this software without
 notice.
 
 Nanoradio AB
-Torshamnsgatan 39                       
-164 40 Kista                            
+Torshamnsgatan 39
+164 40 Kista
 SWEDEN
 
 Module Description :
@@ -29,8 +29,8 @@ Revision History:
 =================
 
 --------------------------------------------------------------------
-$Workfile:  
-$Revision:   
+$Workfile:
+$Revision:
 --------------------------------------------------------------------
 
 *****************************************************************************/
@@ -95,7 +95,7 @@ T Y P E D E F ' S
 
 
 
-typedef struct 
+typedef struct
 {
    uint8_t          no_ssIDs;
    m80211_ie_ssid_t ssIDList[M80211_SSID_LIST_MAX_LENGTH];
@@ -117,26 +117,26 @@ typedef struct
 /* Types for MAC PDUs                                                       */
 /****************************************************************************/
 typedef struct
-{   
-   uint64_t                                  timestamp; 
-   uint16_t                                  mpilot_interval; 
-   uint16_t                                  beacon_period; 
+{
+   uint64_t                                  timestamp;
+   uint16_t                                  mpilot_interval;
+   uint16_t                                  beacon_period;
    uint16_t                                  capability_info;
    m80211_country_string_t                   country_string;
    m80211_max_regulatory_power_t             max_reg_power;
-   m80211_max_tx_power_t                     max_tx_power;   
-   m80211_tx_power_used_t                    tx_power_used;   
-   m80211_trx_noise_floor_t                  trx_noise_floor;   
-   m80211_ie_ds_par_set_t                    ds_parameter_set;   
+   m80211_max_tx_power_t                     max_tx_power;
+   m80211_tx_power_used_t                    tx_power_used;
+   m80211_trx_noise_floor_t                  trx_noise_floor;
+   m80211_ie_ds_par_set_t                    ds_parameter_set;
 }mac_mmpdu_mpilot_t;
 
 typedef struct
 {
    uint16_t                            algorithm_number;
    uint16_t                            sequence_number;
-   m80211_mgmt_status_t                status_code;   
-   m80211_ie_challenge_text_t          challenge_text; 
-} mac_mmpdu_authenticate_t; 
+   m80211_mgmt_status_t                status_code;
+   m80211_ie_challenge_text_t          challenge_text;
+} mac_mmpdu_authenticate_t;
 
 typedef struct
 {
@@ -148,14 +148,14 @@ typedef common_IEs_t           mac_mmpdu_probe_req_t;
 typedef mac_mmpdu_beacon_ind_t mac_mmpdu_probe_rsp_t;
 
 typedef struct
-{   
+{
    uint16_t                            capability_info;
    uint16_t                            listen_interval;
    common_IEs_t                        ie;
 }mac_mmpdu_associate_req_t;
 
 typedef struct
-{   
+{
    uint16_t                            capability_info;
    m80211_mgmt_status_t                status_code;
    uint16_t                            aid;
@@ -163,27 +163,27 @@ typedef struct
 }mac_mmpdu_associate_rsp_t;
 
 typedef struct
-{   
+{
    uint16_t                            capability_info;
    uint16_t                            listen_interval;
-   m80211_mac_addr_t                   bssId; 
+   m80211_mac_addr_t                   bssId;
    common_IEs_t                        ie;
 }mac_mmpdu_reassociate_req_t;
 
 typedef mac_mmpdu_associate_rsp_t mac_mmpdu_reassociate_rsp_t;
 
 typedef struct
-{   
+{
    uint16_t  reason_code;
 }mac_mmpdu_disassociate_t;
 
 typedef struct
-{   
+{
    m80211_radio_measurement_req_t      mreq_body;
 }mac_mmpdu_radio_measurement_req_t;
 
 typedef struct
-{   
+{
    m80211_radio_measurement_rep_t      mrep_body;
 }mac_mmpdu_radio_measurement_rep_t;
 
@@ -200,7 +200,7 @@ typedef union GENERATE_WRAPPER_FUNCTIONS(802.11_MAC)
    mac_mmpdu_associate_req_t           mac_mmpdu_associate_req;
    mac_mmpdu_associate_rsp_t           mac_mmpdu_associate_rsp;
    mac_mmpdu_reassociate_req_t         mac_mmpdu_reassociate_req;
-   mac_mmpdu_reassociate_rsp_t         mac_mmpdu_reassociate_rsp;      
+   mac_mmpdu_reassociate_rsp_t         mac_mmpdu_reassociate_rsp;
    mac_mmpdu_disassociate_t            mac_mmpdu_disassociate;
    mac_mmpdu_mpilot_t                  mac_mmpdu_mpilot;
    mac_mmpdu_radio_measurement_req_t   mac_mmpdu_radio_measurement_req;

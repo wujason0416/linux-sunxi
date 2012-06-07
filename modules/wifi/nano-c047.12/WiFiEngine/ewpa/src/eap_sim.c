@@ -200,7 +200,7 @@ static int eap_sim_learn_ids(struct eap_sm *sm,
 	if (attr->next_pseudonym) {
 		os_free(data->pseudonym);
 		/* XXX make sure pseudonym doesn't contain realm */
-		data->pseudonym = os_malloc(attr->next_pseudonym_len + 
+		data->pseudonym = os_malloc(attr->next_pseudonym_len +
 					    config->nai_len);
 		if (data->pseudonym == NULL) {
 			wpa_printf(MSG_INFO, "EAP-SIM: (encr) No memory for "
@@ -209,7 +209,7 @@ static int eap_sim_learn_ids(struct eap_sm *sm,
 		}
 		os_memcpy(data->pseudonym, attr->next_pseudonym,
 			  attr->next_pseudonym_len);
-		os_memcpy(data->pseudonym + attr->next_pseudonym_len, 
+		os_memcpy(data->pseudonym + attr->next_pseudonym_len,
 			  config->nai, config->nai_len);
 		data->pseudonym_len = attr->next_pseudonym_len + config->nai_len;
 		wpa_hexdump_ascii(MSG_DEBUG,
@@ -538,7 +538,7 @@ static u8 * eap_sim_process_challenge(struct eap_sm *sm,
 
 	os_memcpy(data->rand, attr->rand, attr->num_chal * GSM_RAND_LEN);
 	data->num_chal = attr->num_chal;
-		
+
 #if 1
 	/* We won't receive a result from the gsm auth operation until
 	   later and we also can't sleep here, so start the operation
@@ -546,9 +546,9 @@ static u8 * eap_sim_process_challenge(struct eap_sm *sm,
 	   the result is available, start operation on next RAND
 	   piece. */
 	while(data->gsm_auth_step < data->num_chal) {
-		if(scard_gsm_auth(sm->scard_ctx, 
+		if(scard_gsm_auth(sm->scard_ctx,
 				  data->rand[data->gsm_auth_step],
-				  data->sres[data->gsm_auth_step], 
+				  data->sres[data->gsm_auth_step],
 				  data->kc[data->gsm_auth_step]) == 1) {
 			sm->again = TRUE;
 			return NULL;

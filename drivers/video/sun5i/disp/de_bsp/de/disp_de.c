@@ -7,42 +7,42 @@
 
 __s32 Image_init(__u32 sel)
 {
-    
+
     image_clk_init(sel);
 	image_clk_on(sel);	//when access image registers, must open MODULE CLOCK of image
 	DE_BE_Reg_Init(sel);
-	
+
     BSP_disp_sprite_init(sel);
     BSP_disp_set_output_csc(sel, DISP_OUTPUT_TYPE_LCD);
-    
+
     Image_open(sel);
-	
+
     return DIS_SUCCESS;
 }
-      
+
 __s32 Image_exit(__u32 sel)
-{    
+{
     DE_BE_DisableINT(sel, DE_IMG_IRDY_IE);
     BSP_disp_sprite_exit(sel);
     image_clk_exit(sel);
-        
+
     return DIS_SUCCESS;
 }
 
 __s32 Image_open(__u32  sel)
 {
    DE_BE_Enable(sel);
-      
+
    return DIS_SUCCESS;
 }
-      
+
 
 __s32 Image_close(__u32 sel)
 {
    DE_BE_Disable(sel);
-   
+
    gdisp.screen[sel].status &= IMAGE_USED_MASK;
-   
+
    return DIS_SUCCESS;
 }
 
@@ -101,7 +101,7 @@ __s32 BSP_disp_get_enhance_enable(__u32 sel)
 
 
 __s32 BSP_disp_set_screen_size(__u32 sel, __disp_rectsz_t * size)
-{    
+{
     DE_BE_set_display_size(sel, size->width, size->height);
 
     gdisp.screen[sel].screen_width = size->width;
@@ -119,7 +119,7 @@ __s32 BSP_disp_set_output_csc(__u32 sel, __disp_output_type_t type)
     {
         __s32 ret = 0;
         __s32 value = 0;
-        
+
         out_color_range = DISP_COLOR_RANGE_16_255;
 
         ret = OSAL_Script_FetchParser_Data("disp_init", "screen0_out_color_range", &value, 1);
@@ -137,7 +137,7 @@ __s32 BSP_disp_set_output_csc(__u32 sel, __disp_output_type_t type)
     {
         bout_yuv = TRUE;
     }
-   
+
     DE_BE_Output_Cfg_Csc_Coeff(sel, bout_yuv, out_color_range);
 
     gdisp.screen[sel].bout_yuv = bout_yuv;
@@ -146,7 +146,7 @@ __s32 BSP_disp_set_output_csc(__u32 sel, __disp_output_type_t type)
 }
 
 __s32 BSP_disp_de_flicker_enable(__u32 sel, __bool b_en)
-{   
+{
 	if(b_en)
 	{
 		gdisp.screen[sel].de_flicker_status |= DE_FLICKER_REQUIRED;
@@ -165,10 +165,10 @@ __s32 Disp_de_flicker_enable(__u32 sel, __u32 enable )
 	__u32 scan_mode;
 	__u32 i;
 	__u32 scaler_index;
-	
+
 	tv_mode = gdisp.screen[sel].tv_mode;
 	scan_mode = Disp_get_screen_scan_mode(tv_mode);
-			
+
 	if(enable)
 	{
 		if((gdisp.screen[sel].de_flicker_status & DE_FLICKER_REQUIRED) && (scan_mode == 1))	//when output device is ntsc/pal/480i/576i
@@ -187,13 +187,13 @@ __s32 Disp_de_flicker_enable(__u32 sel, __u32 enable )
 			if(i == gdisp.screen[sel].max_layers)//no scaler using de-interlaced
 			{
 				BSP_disp_cfg_start(sel);
-				
+
 				DE_BE_deflicker_enable(sel, TRUE);
 
 				//config scaler to fit de-flicker
 				for(i = 0; i < gdisp.screen[sel].max_layers; i++)
 				{
-					if((gdisp.screen[sel].layer_manage[i].para.mode == DISP_LAYER_WORK_MODE_SCALER) && 
+					if((gdisp.screen[sel].layer_manage[i].para.mode == DISP_LAYER_WORK_MODE_SCALER) &&
 						 ((scaler_index = gdisp.screen[sel].layer_manage[i].scaler_index) == sel))
 					{
 						Scaler_Set_Outitl(scaler_index, FALSE);
@@ -209,7 +209,7 @@ __s32 Disp_de_flicker_enable(__u32 sel, __u32 enable )
 		{
 			DE_INF("de: Will OPEN de-flicker when output to interlaced device !\n");
 		}
-		
+
 	}
 	else
 	{
@@ -217,7 +217,7 @@ __s32 Disp_de_flicker_enable(__u32 sel, __u32 enable )
 
 		for(i = 0; i < gdisp.screen[sel].max_layers; i++)
 		{
-			if((gdisp.screen[sel].layer_manage[i].para.mode == DISP_LAYER_WORK_MODE_SCALER) && 
+			if((gdisp.screen[sel].layer_manage[i].para.mode == DISP_LAYER_WORK_MODE_SCALER) &&
 					((scaler_index = gdisp.screen[sel].layer_manage[i].scaler_index) == sel))
 			{
 				Scaler_Set_Outitl(scaler_index, TRUE);
@@ -229,6 +229,6 @@ __s32 Disp_de_flicker_enable(__u32 sel, __u32 enable )
 
 		BSP_disp_cfg_finish(sel);
 	}
-	
+
 	return DIS_SUCCESS;
 }

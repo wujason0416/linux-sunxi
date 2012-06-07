@@ -68,7 +68,7 @@ wei_multicast_add(m80211_mac_addr_t addr)
    m = (struct mcast_range *)DriverEnvironment_Nonpaged_Malloc(sizeof(*m));
    if(m == NULL)
    {
-      DE_TRACE_INT(TR_SEVERE, "unable to allocate non-paged memory of size " TR_FSIZE_T "\n", 
+      DE_TRACE_INT(TR_SEVERE, "unable to allocate non-paged memory of size " TR_FSIZE_T "\n",
                    TR_ASIZE_T(sizeof(*m)));
       return WIFI_ENGINE_FAILURE_RESOURCES;
    }
@@ -116,7 +116,7 @@ wei_multicast_set(const m80211_mac_addr_t *addr, unsigned int count)
    status = wei_multicast_clear();
    if(status != WIFI_ENGINE_SUCCESS)
       return status;
-   
+
    for(i = 0; i < count; i++) {
       status = wei_multicast_add(addr[i]);
       if(status != WIFI_ENGINE_SUCCESS)
@@ -209,13 +209,13 @@ wei_multicast_update(void)
 	 num_addrs++;
       }
    }
-   status = WiFiEngine_SendMIBSet(MIB_dot11trafficFilterDiscard, 
+   status = WiFiEngine_SendMIBSet(MIB_dot11trafficFilterDiscard,
                                   NULL,
                                   (char*)&discard,
                                   sizeof(discard));
    if(status != WIFI_ENGINE_SUCCESS)
       return status;
-   return WiFiEngine_SendMIBSet(MIB_dot11trafficFilterList, 
+   return WiFiEngine_SendMIBSet(MIB_dot11trafficFilterList,
 				NULL,
 				(char*)macaddrs,
 				num_addrs * M80211_ADDRESS_SIZE);
@@ -334,7 +334,7 @@ WiFiEngine_MulticastClearFlags(unsigned int flags)
 
 /*!
  * @brief Set the adapter multicast filter list
- * 
+ *
  * @param filter An array of multicast addresses
  * @param count Number of addresses in filter
  * @param discard Indicates how the list should interpreted
@@ -349,8 +349,8 @@ WiFiEngine_MulticastClearFlags(unsigned int flags)
  * that is what you want.
  */
 int
-WiFiEngine_SetMulticastFilter(m80211_mac_addr_t *filter, 
-                              size_t count, 
+WiFiEngine_SetMulticastFilter(m80211_mac_addr_t *filter,
+                              size_t count,
                               int discard)
 {
    int status;
@@ -371,4 +371,3 @@ WiFiEngine_SetMulticastFilter(m80211_mac_addr_t *filter,
 }
 
 /** @} */ /* End of we_mcast group */
-

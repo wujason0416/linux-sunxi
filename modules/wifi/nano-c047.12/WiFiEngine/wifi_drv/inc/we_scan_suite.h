@@ -4,7 +4,7 @@
 #include "driverenv.h"
 #include "we_cm.h"
 
-typedef struct scan_suite_t 
+typedef struct scan_suite_t
 {
    struct {
       uint32_t id;
@@ -18,7 +18,7 @@ typedef struct scan_suite_t
       int filter_id;
       uint8_t run_every_nth_period;
    } scan_job;
-   
+
    int use_scan_filter;
 
    struct {
@@ -43,4 +43,3 @@ int WiFiEngine_ActivateScanSuite(scan_suite_s *ss, i_func_t scan_ind_cb, i_func_
 void WiFiEngine_DeactivateScanSuite(scan_suite_s *ss);
 
 #endif /* _we_scan_suite_h_ */
-

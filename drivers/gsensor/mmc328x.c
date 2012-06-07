@@ -100,7 +100,7 @@ static int mmc328x_i2c_tx_data(char *buf, int len)
 			.buf	= buf,
 		}
 	};
-	
+
 	for (i = 0; i < MMC328X_RETRY_COUNT; i++) {
 		if (i2c_transfer(this_client->adapter, msg, 1) >= 0) {
 			break;
@@ -125,7 +125,7 @@ static int mmc328x_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
-static int mmc328x_ioctl(struct inode *inode, struct file *file, 
+static int mmc328x_ioctl(struct inode *inode, struct file *file,
 	unsigned int cmd, unsigned long arg)
 {
 	void __user *pa = (void __user *)arg;
@@ -161,7 +161,7 @@ static int mmc328x_ioctl(struct inode *inode, struct file *file,
 		vec[1] = data[3] << 8 | data[2];
 		vec[2] = data[5] << 8 | data[4];
 	#if DEBUG
-		printk("[X - %04x] [Y - %04x] [Z - %04x]\n", 
+		printk("[X - %04x] [Y - %04x] [Z - %04x]\n",
 			vec[0], vec[1], vec[2]);
 	#endif
 		if (copy_to_user(pa, vec, sizeof(vec))) {
@@ -208,7 +208,7 @@ static int mmc328x_ioctl(struct inode *inode, struct file *file,
 				return -EFAULT;
 			}
 		}
-#endif		
+#endif
 		/* read xyz raw data */
 		read_idx++;
 		data[0] = MMC328X_REG_DATA;
@@ -219,7 +219,7 @@ static int mmc328x_ioctl(struct inode *inode, struct file *file,
 		vec[1] = data[3] << 8 | data[2];
 		vec[2] = data[5] << 8 | data[4];
 	#if DEBUG
-		printk("[X - %04x] [Y - %04x] [Z - %04x]\n", 
+		printk("[X - %04x] [Y - %04x] [Z - %04x]\n",
 			vec[0], vec[1], vec[2]);
 	#endif
 		if (copy_to_user(pa, vec, sizeof(vec))) {
@@ -341,4 +341,3 @@ module_exit(mmc328x_exit);
 MODULE_AUTHOR("Dale Hou<byhou@memsic.com>");
 MODULE_DESCRIPTION("MEMSIC MMC328X Magnetic Sensor Driver");
 MODULE_LICENSE("GPL");
-

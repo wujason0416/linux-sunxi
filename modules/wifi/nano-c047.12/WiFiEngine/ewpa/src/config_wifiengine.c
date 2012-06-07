@@ -32,7 +32,7 @@
 #include "wapi_i.h"
 #include "cert.h"
 
-/* 
+/*
  * defined in cert.h
  * TODO: This should be moved to eloop structs
  */
@@ -72,7 +72,7 @@ set_ssid_wps(struct wpa_ssid *new, const char *ssid, const char *pin, int wps_mo
 #ifdef EAP_WSC
 	new->use_wps = wps_mode;
 #endif
-	
+
 	if(wps_mode == 2) { /* PIN Config method selected */
 		DE_SNPRINTF(str, sizeof(str), "\"%s\"", pin);
 		if(wpa_config_set(new, "password", str, 1) != 0) {
@@ -528,7 +528,7 @@ wpa_set_ssid_psk(const char *name, const char *psk)
 	if(ssid != NULL) {
 		wpa_config_set_network_defaults(ssid);
 		set_ssid_psk(ssid, mmi_ssid, mmi_passphrase);
-		
+
 		/* This is a bit ugly, but there is no simple way to
 		 * get the PSK from the configuration entry, so we
 		 * might just as well use the raw fields directly.
@@ -555,7 +555,7 @@ void
 wps_set_ssid(const char *pin, char *ssid_str, int wps_mode)
 {
 	/*
-	 * Use tpin only for WPS WiFi Certification if 
+	 * Use tpin only for WPS WiFi Certification if
 	 * PIN Code method is not available through MMI
 	 */
 
@@ -693,13 +693,13 @@ wpa_set_network_param(struct wpa_ssid *wpa_conf, const struct wpa_param *wp)
 
          os_snprintf(s, sizeof(s), "\"%s\"", wp->u.wapi_cert.ca_certs);
 			WCS("ca_cert", "\"blob://ca-cert\"");
-        
+
 	   os_snprintf(s, sizeof(s), "\"%s\"", wp->u.wapi_cert.client_cert);
 			WCS("client_cert", "\"blob://client-key\"");
-	 
+
 	   os_snprintf(s, sizeof(s), "\"%s\"", wp->u.wapi_cert.private_key);
 			WCS("private_key", "\"blob://client-key\"");
-#endif	   
+#endif
 			wapi_cert.cert_info.config.used_cert = 1; /* 1: x509 Certificate */
 			if((wp->u.wapi_param_cert.ca_certs == NULL) || (wp->u.wapi_param_cert.client_cert == NULL))
 			{
@@ -731,11 +731,11 @@ wpa_set_network_param(struct wpa_ssid *wpa_conf, const struct wpa_param *wp)
       case WPA_EAP_TTLS:
          WCS("key_mgmt", "WPA-EAP");
          WCS("eap", "TTLS");
-         
+
          //WCS("phase2", "\"auth=CHAP\"");
          os_snprintf(s, sizeof(s), "\"%s\"", eap_phase2_to_str(wp->u.ttls.identity_phase2));
-         WCS("phase2", s);          
-		 
+         WCS("phase2", s);
+
          /*if(wp->u.ttls.identity_phase1 != NULL) {
             os_snprintf(s, sizeof(s), "\"%s\"", wp->u.ttls.identity_phase1);
             WCS("anonymous_identity", s);
@@ -743,7 +743,7 @@ wpa_set_network_param(struct wpa_ssid *wpa_conf, const struct wpa_param *wp)
 
          os_snprintf(s, sizeof(s), "\"%s\"", wp->u.ttls.identity_phase1);
          WCS("identity", s);
-         
+
          os_snprintf(s, sizeof(s), "\"%s\"", wp->u.ttls.password);
          WCS("password", s);
 
@@ -755,7 +755,7 @@ wpa_set_network_param(struct wpa_ssid *wpa_conf, const struct wpa_param *wp)
          WCS("eap", "PEAP");
          //WCS("phase2", "\"auth=MSCHAPV2\"");
          os_snprintf(s, sizeof(s), "\"%s\"", eap_phase2_to_str(wp->u.peap.identity_phase2));
-         WCS("phase2", s); 
+         WCS("phase2", s);
 
          /*if(wp->u.peap.identity_phase1 != NULL) {
             os_snprintf(s, sizeof(s), "\"%s\"", wp->u.peap.identity_phase1);
@@ -798,12 +798,12 @@ wpa_new_network(const char *ssid, const struct wpa_param *wp)
     /*
         Check Bug 1861 to see why we are not using this method
         to add new networks
-        
+
         wpa_conf = wpa_config_add_network(config);
         if(wpa_conf == NULL)
             return -1;
     */
-    
+
     wpa_conf = wpa_config_get_network(config, dummy_id);
 	if(wpa_conf != NULL) {
         wpa_config_set_network_defaults(wpa_conf);
@@ -835,11 +835,11 @@ struct wpa_config * wpa_config_read(const char *name)
 		return NULL;
 
         for (i = 0; i < DE_ARRAY_SIZE(paths); i++) {
-                if( wpa_config_read_file(config, paths[i]) >= 0) 
-                        // success 
+                if( wpa_config_read_file(config, paths[i]) >= 0)
+                        // success
                         break;
         }
-	
+
 #ifdef EAP_WSC
 	use_wps = config->ssid != NULL && config->ssid->use_wps;
 #endif // EAP_WSC
@@ -857,7 +857,7 @@ struct wpa_config * wpa_config_read(const char *name)
 			if(set_ssid_psk(ssid, mmi_ssid, mmi_passphrase) < 0) {
 				wpa_config_free_ssid(ssid);
 				ssid = NULL;
-                config->ssid = NULL;                
+                config->ssid = NULL;
 			} else {
 				dummy_id = ssid->id;
 #if 0
@@ -868,7 +868,7 @@ struct wpa_config * wpa_config_read(const char *name)
 				 * requesting EAP-Identity
 				 */
 #if defined(EAP_SIM) || defined(EAP_AKA)
-				wpa_config_set(ssid, "eap", 
+				wpa_config_set(ssid, "eap",
 #if defined(EAP_SIM)
 					       "SIM "
 #endif
@@ -886,7 +886,7 @@ struct wpa_config * wpa_config_read(const char *name)
 
 	config->ap_scan = 0;
 	wpa_config_debug_dump_networks(config);
-	
+
 	return config;
 }
 
@@ -1035,7 +1035,7 @@ int wpa_config_find_and_add_pkey(const char *name, const void *src, int src_len)
    blob = find_and_decode_base64(name, src, src_len, mark_pkey_s, mark_pkey_e, &err);
    if(blob == NULL)
    {
-      wpa_printf(MSG_ERROR, "failed to find or decode %s %s returned %d", 
+      wpa_printf(MSG_ERROR, "failed to find or decode %s %s returned %d",
             mark_pkey_s, mark_pkey_e, err);
 
       return -__LINE__;

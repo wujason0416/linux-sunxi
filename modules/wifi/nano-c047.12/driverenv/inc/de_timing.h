@@ -101,7 +101,7 @@ void DriverEnvironment_GetTimestamp_wall(long *sec, long *usec);
 /*!
  * Allocate a new timer from the timer array.
  * @param id (driver_timer_id_t *) OUTPUT: Id of the allocated timer.
- * @param restartFromCb (int) 1 if the timer should be able to be restarted by 
+ * @param restartFromCb (int) 1 if the timer should be able to be restarted by
  *   the timer callback.
  * @return (int) 1 on success. 0 otherwise.
  */

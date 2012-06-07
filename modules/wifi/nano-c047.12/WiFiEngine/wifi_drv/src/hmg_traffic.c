@@ -133,7 +133,7 @@ static char* HMG_Signal_toToName(int);
 static StateVariables_t stateVars = { StateFunction_Idle, StateFunction_Idle,
                                       StateFunction_Idle, StateFunction_Idle };
 static m80211_mlme_deauthenticate_cfm_t deauthenticate_cfm;
-  
+
 
 /*********************/
 /* Error class table */
@@ -168,7 +168,7 @@ void HMG_init_traffic(void)
    ucos_register_object(OBJID_MYSELF,
                         SYSCFG_UCOS_OBJECT_PRIO_LOW,
                         (ucos_object_entry_t)HMG_entry_traffic,
-                        "HMG_TRAFFIC");  
+                        "HMG_TRAFFIC");
 }
 
 void HMG_startUp_traffic(void)
@@ -304,17 +304,17 @@ static void coredump_started_cb(wi_msg_param_t param, void *priv)
       case driverJoining:
       case driverStarting:
       case driverAuthenticating:
-      case driverAssociating: 
-      NotifyConnectFailed();   
+      case driverAssociating:
+      NotifyConnectFailed();
       DriverEnvironment_indicate(WE_IND_80211_DISCONNECTED, NULL, 0);
       break;
 
-      case driverAssociated:   
+      case driverAssociated:
       case driverDisassociating:
       case driverDeauthenticating:
-      case driverDisconnecting:         
+      case driverDisconnecting:
       DriverEnvironment_indicate(WE_IND_80211_DISCONNECTED, NULL, 0);
-      break;   
+      break;
 
       default:
       break;
@@ -353,7 +353,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Disconnected)
             soft_shutdown = FALSE;
             wei_sm_queue_sig(INTSIG_PS_SLEEP_FOREVER, OBJID_MYSELF, NULL, TRUE);
          }
-         
+
          break;
 
       case INTSIG_CASE(INTSIG_EXIT):
@@ -375,37 +375,37 @@ DEFINE_STATE_FUNCTION(StateFunction_Disconnected)
       case INTSIG_CASE(INTSIG_NET_JOIN):
          wei_sm_queue_sig(INTSIG_NET_JOIN, OBJID_MYSELF, NULL, TRUE);
          nextState_fn = (StateFn_ref)StateFunction_Connecting;
-         break;  
+         break;
 
       case INTSIG_CASE(INTSIG_NET_AUTHENTICATE):
          wei_sm_queue_sig(INTSIG_NET_AUTHENTICATE, OBJID_MYSELF, NULL, TRUE);
          nextState_fn = (StateFn_ref)StateFunction_Connecting;
-         break;         
+         break;
 
       case INTSIG_CASE(INTSIG_NET_ASSOCIATE):
          wei_sm_queue_sig(INTSIG_NET_ASSOCIATE, OBJID_MYSELF, NULL, TRUE);
          nextState_fn = (StateFn_ref)StateFunction_Connecting;
          break;
-         
+
       case INTSIG_CASE(INTSIG_NET_DISASSOCIATE):
          DE_TRACE_STATIC(TR_SM, "Already disassociated\n");
          break;
 
       case INTSIG_CASE(INTSIG_NET_DEAUTHENTICATE):
          DE_TRACE_STATIC(TR_SM, "Already deauthenticated\n");
-         break;         
-         
+         break;
+
       case INTSIG_CASE(INTSIG_NET_START):
          wei_sm_queue_sig(INTSIG_NET_START, OBJID_MYSELF, NULL, TRUE);
          nextState_fn = (StateFn_ref)StateFunction_Connecting;
-         break;         
+         break;
 
       case INTSIG_CASE(INTSIG_POWER_UP):
          /* ignore */
          break;
 
       /* CTRL */
-      case INTSIG_CASE(INTSIG_PS_SLEEP_FOREVER):   
+      case INTSIG_CASE(INTSIG_PS_SLEEP_FOREVER):
          nextState_fn = (StateFn_ref)StateFunction_PowerOff;
          wei_sm_queue_sig(INTSIG_PS_SLEEP_FOREVER, OBJID_MYSELF, NULL, TRUE);
          break;
@@ -478,13 +478,13 @@ DEFINE_STATE_FUNCTION(StateFunction_Connecting)
          */
          break;
 
-      case INTSIG_CASE(INTSIG_PS_SLEEP_FOREVER):   
+      case INTSIG_CASE(INTSIG_PS_SLEEP_FOREVER):
          soft_shutdown = TRUE;
-#if 0         
+#if 0
          nextState_fn = (StateFn_ref)StateFunction_PowerOff;
          wei_sm_queue_sig(INTSIG_PS_SLEEP_FOREVER, OBJID_MYSELF, NULL, TRUE);
 #endif
-         break;         
+         break;
 
       case INTSIG_CASE(INTSIG_UNPLUG_TRAFFIC):
          DriverEnvironment_indicate(WE_IND_80211_CONNECT_FAILED, NULL, 0);
@@ -516,14 +516,14 @@ DEFINE_STATE_FUNCTION(StateFunction_Connecting)
 
       case INTSIG_CASE(INTSIG_NET_JOIN):
          DE_ASSERT(net);
-         
+
          /* Infrastructure */
          if (!Mlme_Send(Mlme_CreateJoinRequest, 0, wei_send_cmd))
          {
             m80211_mlme_join_cfm_t cfm;
 
             cfm.result = M80211_MLME_RESULT_REFUSED;
-            
+
             nextState_fn = (StateFn_ref)StateFunction_Disconnected;
             we_ind_send(WE_IND_JOIN_CFM,(void *)&cfm);
          }
@@ -535,7 +535,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Connecting)
 
       case INTSIG_CASE(INTSIG_NET_AUTHENTICATE):
          DE_ASSERT(net);
-         
+
          /* update net with selected authentication mode, having this
           * set to auto is error in non-hmgAutoMode */
          net->auth_mode = wifiEngineState.config.authenticationMode;
@@ -547,9 +547,9 @@ DEFINE_STATE_FUNCTION(StateFunction_Connecting)
 
             cfm.peer_sta = net->bssId_AP;
             cfm.result = M80211_MLME_RESULT_REFUSED;
-            
+
             we_ind_send(WE_IND_AUTHENTICATE_CFM,(void *)&cfm);
-            wei_sm_queue_sig(INTSIG_NET_LEAVE_BSS, OBJID_MYSELF, NULL, TRUE); 
+            wei_sm_queue_sig(INTSIG_NET_LEAVE_BSS, OBJID_MYSELF, NULL, TRUE);
             SET_NEW_STATE(StateFunction_Disconnecting);
          }
          else
@@ -557,12 +557,12 @@ DEFINE_STATE_FUNCTION(StateFunction_Connecting)
             /* success */
             wifiEngineState.main_state = driverAuthenticating;
          }
-         
-         break;   
+
+         break;
 
       case INTSIG_CASE(INTSIG_NET_ASSOCIATE):
          DE_ASSERT(net);
-         
+
          /* Try to associate with the network. */
 
          if (!Mlme_Send(Mlme_CreateAssociateRequest, 0, wei_send_cmd))
@@ -573,7 +573,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Connecting)
 
             we_ind_send(WE_IND_ASSOCIATE_CFM,(void *)&cfm);
             wei_sm_queue_sig(INTSIG_NET_LEAVE_BSS, OBJID_MYSELF, NULL, TRUE);
-            
+
             SET_NEW_STATE(StateFunction_Disconnecting);
 
          }
@@ -581,13 +581,13 @@ DEFINE_STATE_FUNCTION(StateFunction_Connecting)
          {
             wifiEngineState.main_state = driverAssociating;
          }
-   
-         break;         
+
+         break;
       case INTSIG_NET_START:
          /* Start an ibss network */
          if (!Mlme_Send(Mlme_CreateStartRequest, 0, wei_send_cmd))
          {
-            nextState_fn = (StateFn_ref)StateFunction_Disconnected;                        
+            nextState_fn = (StateFn_ref)StateFunction_Disconnected;
             NotifyConnectFailed();
          }
          break;
@@ -645,13 +645,13 @@ DEFINE_STATE_FUNCTION(StateFunction_Connecting)
                   DE_ASSERT(FALSE);
 
                case MLME_PEER_STATUS_RESTARTED:
-                  /* Handled by firmware */  
-                  break;               /* infrastructure */                        
-               case MLME_PEER_STATUS_INCOMPATIBLE:      
+                  /* Handled by firmware */
+                  break;               /* infrastructure */
+               case MLME_PEER_STATUS_INCOMPATIBLE:
                case MLME_PEER_STATUS_TX_FAILED:
                case MLME_PEER_STATUS_RX_BEACON_FAILED:
                case MLME_PEER_STATUS_NOT_CONNECTED:
-               case MLME_PEER_STATUS_ROUNDTRIP_FAILED: 
+               case MLME_PEER_STATUS_ROUNDTRIP_FAILED:
                   {
                      nextState_fn = (StateFn_ref)StateFunction_Disconnecting;
 
@@ -662,13 +662,13 @@ DEFINE_STATE_FUNCTION(StateFunction_Connecting)
                         NotifyConnectFailed();
                      }
                      else
-                     {  
-                        
+                     {
+
                         we_ind_send(WE_IND_LINK_LOSS_IND,(void *)ind);
-                     
+
                         if(wifiEngineState.main_state == driverAuthenticating)
                         {
-                           /* 
+                           /*
                                Send leave and change state to disconnecting
                            */
                            wei_sm_queue_sig(INTSIG_NET_LEAVE_BSS, OBJID_MYSELF, NULL, TRUE);
@@ -687,12 +687,12 @@ DEFINE_STATE_FUNCTION(StateFunction_Connecting)
             m80211_nrp_mlme_peer_status_ind_t *sta_ind_p;
             sta_ind_p = (m80211_nrp_mlme_peer_status_ind_t *)param->p;
             Mlme_HandleBssPeerStatusInd(sta_ind_p);
-            if(wei_is_ibss_connected(sta_ind_p)) 
+            if(wei_is_ibss_connected(sta_ind_p))
             {
                nextState_fn = (StateFn_ref)StateFunction_Connected;
-            }    
+            }
          }
-         break;         
+         break;
       case MGMT_RX_CASE(MLME_JOIN_CFM):
       case MGMT_RX_CASE(MLME_AUTHENTICATE_CFM):
       case MGMT_RX_CASE(MLME_DEAUTHENTICATE_CFM):
@@ -769,19 +769,19 @@ DEFINE_STATE_FUNCTION(StateFunction_Connected)
          DE_TRACE_STATIC(TR_SM, "net_start should only be received in state disconnected\n");
          DE_ASSERT(FALSE);
          break;
-         
+
       case INTSIG_CASE(INTSIG_NET_DEAUTHENTICATE):
          wei_save_con_lost_reason(WE_DISCONNECT_DEAUTH, M80211_MGMT_RC_NOT_VALID);
          nextState_fn = (StateFn_ref)StateFunction_Disconnecting;
          wei_sm_queue_sig(INTSIG_NET_DEAUTHENTICATE, OBJID_MYSELF, NULL, TRUE);
          break;
 
-      case INTSIG_CASE(INTSIG_PS_SLEEP_FOREVER): 
+      case INTSIG_CASE(INTSIG_PS_SLEEP_FOREVER):
          soft_shutdown = TRUE;
          wei_save_con_lost_reason(WE_DISCONNECT_DEAUTH, M80211_MGMT_RC_NOT_VALID);
          nextState_fn = (StateFn_ref)StateFunction_Disconnecting;
          wei_sm_queue_sig(INTSIG_NET_DEAUTHENTICATE, OBJID_MYSELF, NULL, TRUE);
-#if 0         
+#if 0
          nextState_fn = (StateFn_ref)StateFunction_PowerOff;
          wei_sm_queue_sig(INTSIG_PS_SLEEP_FOREVER, OBJID_MYSELF, NULL, TRUE);
 
@@ -800,7 +800,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Connected)
             It will cause firmware to deactivate power save and wait for a new connect.
             Also in case of RSN_elements(encryption)4-way handshake need to be
             re-negotiated to be able to send data again. */
-#if 0            
+#if 0
          if (Mlme_Send(Mlme_CreateReassociateRequest, 0, wei_send_cmd))
          {
             wifiEngineState.main_state = driverAssociating;
@@ -819,19 +819,19 @@ DEFINE_STATE_FUNCTION(StateFunction_Connected)
          wei_sm_queue_sig(INTSIG_NET_LEAVE_IBSS, OBJID_MYSELF, NULL, TRUE);
          break;
 
-      case INTSIG_CASE(INTSIG_UNPLUG_TRAFFIC): 
+      case INTSIG_CASE(INTSIG_UNPLUG_TRAFFIC):
          return (StateFn_ref)StateFunction_PowerOff;
 
       /* MGMT */
       case MGMT_RX_CASE(MLME_DEAUTHENTICATE_IND):
-      case MGMT_RX_CASE(MLME_DISASSOCIATE_IND):         
+      case MGMT_RX_CASE(MLME_DISASSOCIATE_IND):
       case MGMT_RX_CASE(NRP_MLME_PEER_STATUS_IND):
       case MGMT_RX_CASE(MLME_REASSOCIATE_CFM):
       case MGMT_RX_CASE(MLME_AUTHENTICATE_IND):
       case MGMT_RX_CASE(MLME_MICHAEL_MIC_FAILURE_IND):
          nextState_fn = (StateFn_ref)handle_events(msg, param, nextState_fn);
          break;
-         
+
 
       case MGMT_RX_CASE(MLME_JOIN_CFM):
       case MGMT_RX_CASE(MLME_AUTHENTICATE_CFM):
@@ -884,16 +884,16 @@ DEFINE_STATE_FUNCTION(StateFunction_Disconnecting)
          wifiEngineState.main_state = driverDisconnecting;
          break;
 
-      case INTSIG_CASE(INTSIG_EXIT): 
+      case INTSIG_CASE(INTSIG_EXIT):
          break;
 
-      case INTSIG_CASE(INTSIG_PS_SLEEP_FOREVER):   
+      case INTSIG_CASE(INTSIG_PS_SLEEP_FOREVER):
          soft_shutdown = TRUE;
-#if 0         
+#if 0
          nextState_fn = (StateFn_ref)StateFunction_PowerOff;
          wei_sm_queue_sig(INTSIG_PS_SLEEP_FOREVER, OBJID_MYSELF, NULL, TRUE);
 #endif
-         break;         
+         break;
 
       case INTSIG_CASE(INTSIG_NET_DEAUTHENTICATE):
          if( wifiEngineState.main_state == driverDisconnecting)
@@ -909,17 +909,17 @@ DEFINE_STATE_FUNCTION(StateFunction_Disconnecting)
             DE_ASSERT(net);
             wifiEngineState.main_state = driverDisassociating;
             net = wei_netlist_get_current_net();
-            if(net->bss_p->bssType == M80211_CAPABILITY_ESS) 
+            if(net->bss_p->bssType == M80211_CAPABILITY_ESS)
             {
                Mlme_Send(Mlme_CreateDisassociateRequest, 0, wei_send_cmd);
-            } 
-            else 
+            }
+            else
             {
                wei_sm_queue_sig(INTSIG_NET_LEAVE_IBSS, OBJID_MYSELF, DUMMY, TRUE);
             }
          }
          break;
-         
+
       case INTSIG_CASE(INTSIG_NET_LEAVE_BSS):
          Mlme_Send(Mlme_CreateLeaveBSSRequest, 0, wei_send_cmd);
          break;
@@ -939,14 +939,14 @@ DEFINE_STATE_FUNCTION(StateFunction_Disconnecting)
                 we_ind_send(WE_IND_DEAUTHENTICATE_CFM,(void *)&deauthenticate_cfm);
              }
           }
-          
+
           nextState_fn = (StateFn_ref)StateFunction_Disconnected;
          break;
 
       case MGMT_RX_CASE(NRP_MLME_IBSS_LEAVE_CFM):
          Mlme_HandleLeaveIBSSConfirm((m80211_nrp_mlme_ibss_leave_cfm_t *)param->p);
          nextState_fn = (StateFn_ref)StateFunction_Disconnected;
-         break;        
+         break;
       case INTSIG_CASE(INTSIG_NET_LEAVE_IBSS):
          wei_netlist_clear_sta_nets();
          Mlme_Send(Mlme_CreateLeaveIBSSRequest, 0, wei_send_cmd);
@@ -961,12 +961,12 @@ DEFINE_STATE_FUNCTION(StateFunction_Disconnecting)
 
       case MGMT_RX_CASE(MLME_DEAUTHENTICATE_IND):  /* occur seldomly */
       case MGMT_RX_CASE(NRP_MLME_PEER_STATUS_IND): /* occur frequently */
-         break;         
+         break;
 
       /* MGMT */
       case MGMT_RX_CASE(MLME_DEAUTHENTICATE_CFM):
       case MGMT_RX_CASE(MLME_DISASSOCIATE_CFM):
-         nextState_fn = (StateFn_ref)handle_events(msg, param, nextState_fn);         
+         nextState_fn = (StateFn_ref)handle_events(msg, param, nextState_fn);
          break;
 
       default:
@@ -1004,8 +1004,8 @@ DEFINE_STATE_FUNCTION(StateFunction_PowerOff)
           ps_ctx.coredump_started_h = NULL;
           ps_ctx.coredump_started_h = we_ind_register(
                   WE_IND_CORE_DUMP_START, "WE_IND_CORE_DUMP_START",
-                  coredump_started_cb, NULL, RELEASE_IND_AFTER_EVENT, NULL);   
-         DE_ASSERT(ps_ctx.coredump_started_h != NULL);  
+                  coredump_started_cb, NULL, RELEASE_IND_AFTER_EVENT, NULL);
+         DE_ASSERT(ps_ctx.coredump_started_h != NULL);
          nextState_fn = (StateFn_ref)StateFunction_Disconnected;
          break;
 
@@ -1018,18 +1018,18 @@ DEFINE_STATE_FUNCTION(StateFunction_PowerOff)
 
          if (Mlme_Send(Mlme_CreateSleepForeverReq, 0, wei_send_cmd))
          {
-            DE_TRACE_STATIC(TR_SM, "Sending HIC_CTRL_SLEEP_FOREVER_REQ\n");            
+            DE_TRACE_STATIC(TR_SM, "Sending HIC_CTRL_SLEEP_FOREVER_REQ\n");
          }
-         else 
+         else
          {
-            DE_TRACE_STATIC(TR_SM, "Mlme_CreateSleepForeverReq() failed in WiFiEngine_SoftShutdown()\n");              
+            DE_TRACE_STATIC(TR_SM, "Mlme_CreateSleepForeverReq() failed in WiFiEngine_SoftShutdown()\n");
             DE_BUG_ON(1, "Mlme_CreateSleepForeverReq() failed in WiFiEngine_SoftShutdown()\n");
          }
       }
       break;
 
       case CTRL_RX_CASE(HIC_CTRL_SLEEP_FOREVER_CFM):
-         wifiEngineState.main_state = driverDisconnected;         
+         wifiEngineState.main_state = driverDisconnected;
          Mlme_HandleHICInterfaceSleepForeverConfirm((hic_ctrl_sleep_forever_cfm_t *)param->p);
          DriverEnvironment_indicate(WE_IND_SLEEP_FOREVER, NULL, 0);
          break;
@@ -1058,10 +1058,10 @@ DEFINE_STATE_FUNCTION(StateFunction_Idle)
 
 static StateFn_ref handle_events(ucos_msg_id_t msg, wei_sm_queue_param_s *param, StateFn_ref fn)
 {
-   StateFn_ref Statefn = (StateFn_ref)fn; 
-   
+   StateFn_ref Statefn = (StateFn_ref)fn;
+
    if(Statefn == (StateFn_ref)StateFunction_Connecting)
-   {    
+   {
       if(wei_is_hmg_auto_mode())
       {
          Statefn = handle_auto_connecting_events(msg, param, Statefn);
@@ -1072,12 +1072,12 @@ static StateFn_ref handle_events(ucos_msg_id_t msg, wei_sm_queue_param_s *param,
       }
    }
    else if(Statefn == (StateFn_ref)StateFunction_Connected)
-   {   
+   {
       Statefn = handle_connected_events(msg, param, Statefn);
    }
    else if(Statefn == (StateFn_ref)StateFunction_Disconnecting)
-   {  
-      Statefn = handle_disconnecting_events(msg, param, Statefn);      
+   {
+      Statefn = handle_disconnecting_events(msg, param, Statefn);
    }
    else
    {
@@ -1085,7 +1085,7 @@ static StateFn_ref handle_events(ucos_msg_id_t msg, wei_sm_queue_param_s *param,
       DE_ASSERT(FALSE);
    }
    return Statefn;
-      
+
 }
 
 
@@ -1110,8 +1110,8 @@ static int do_authenticate(int first_try,
    }
 
    DE_TRACE_INT3(TR_AUTH, "first_try = %u, auth_mode = %u (%u)\n",
-                 first_try, 
-                 wifiEngineState.config.authenticationMode, 
+                 first_try,
+                 wifiEngineState.config.authenticationMode,
                  net->auth_mode);
    return Mlme_Send(Mlme_CreateAuthenticateRequest, 0, wei_send_cmd);
 }
@@ -1124,12 +1124,12 @@ static int do_authenticate(int first_try,
 static StateFn_ref handle_auto_connecting_events(ucos_msg_id_t msg, wei_sm_queue_param_s *param, StateFn_ref fn)
 {
    WiFiEngine_net_t *net;
-   StateFn_ref nextState_fn = (StateFn_ref)fn;    
+   StateFn_ref nextState_fn = (StateFn_ref)fn;
 
    net = wei_netlist_get_current_net();
    DE_ASSERT(net != NULL);
-   
-   switch(msg) 
+
+   switch(msg)
    {
       case MGMT_RX_CASE(MLME_JOIN_CFM):
          {
@@ -1198,7 +1198,7 @@ static StateFn_ref handle_auto_connecting_events(ucos_msg_id_t msg, wei_sm_queue
             else
             {
                int failure = TRUE;
-               if(wifiEngineState.config.authenticationMode == 
+               if(wifiEngineState.config.authenticationMode ==
                   Authentication_Autoselect
                   && net->auth_mode == Authentication_Shared) {
                   /* try again with open */
@@ -1212,7 +1212,7 @@ static StateFn_ref handle_auto_connecting_events(ucos_msg_id_t msg, wei_sm_queue
                }
             }
          }
-         break;         
+         break;
 
          case MGMT_RX_CASE(MLME_ASSOCIATE_CFM):
          {
@@ -1234,7 +1234,7 @@ static StateFn_ref handle_auto_connecting_events(ucos_msg_id_t msg, wei_sm_queue
                wei_save_con_failed_reason(WE_CONNECT_ASSOC_FAIL, cfm->result);
                NotifyConnectFailed();
             }
-            
+
          }
          break;
 
@@ -1257,7 +1257,7 @@ static StateFn_ref handle_auto_connecting_events(ucos_msg_id_t msg, wei_sm_queue
             }
          }
          break;
-         
+
 
          case MGMT_RX_CASE(MLME_REASSOCIATE_CFM):
          {
@@ -1306,21 +1306,21 @@ static StateFn_ref handle_auto_connecting_events(ucos_msg_id_t msg, wei_sm_queue
 *****************************************************************************/
 static StateFn_ref handle_transparent_connecting_events(ucos_msg_id_t msg, wei_sm_queue_param_s *param, StateFn_ref fn)
 {
-   StateFn_ref nextState_fn = (StateFn_ref)fn;     
-   
-   switch(msg) 
+   StateFn_ref nextState_fn = (StateFn_ref)fn;
+
+   switch(msg)
    {
       case MGMT_RX_CASE(MLME_JOIN_CFM):
          {
             m80211_mlme_join_cfm_t *cfm = (m80211_mlme_join_cfm_t *)param->p;
             if (Mlme_HandleJoinConfirm(cfm))
             {
-               wifiEngineState.main_state = driverAuthenticating; 
+               wifiEngineState.main_state = driverAuthenticating;
             }
             else
             {
                /* failure */
-               nextState_fn = (StateFn_ref)StateFunction_Disconnected; 
+               nextState_fn = (StateFn_ref)StateFunction_Disconnected;
             }
             we_ind_send(WE_IND_JOIN_CFM,(void *)cfm);
          }
@@ -1332,12 +1332,12 @@ static StateFn_ref handle_transparent_connecting_events(ucos_msg_id_t msg, wei_s
 
             if (Mlme_HandleAuthenticateConfirm(cfm))
             {
-              wifiEngineState.main_state = driverAssociating;               
+              wifiEngineState.main_state = driverAssociating;
             }
 
             we_ind_send(WE_IND_AUTHENTICATE_CFM,(void *)cfm);
          }
-         break;         
+         break;
 
          case MGMT_RX_CASE(MLME_ASSOCIATE_CFM):
          {
@@ -1347,7 +1347,7 @@ static StateFn_ref handle_transparent_connecting_events(ucos_msg_id_t msg, wei_s
             {
 #ifdef WITH_8021X_PORT
                check_if_close_port();
-#endif /* WITH_8021X_PORT */               
+#endif /* WITH_8021X_PORT */
                nextState_fn = (StateFn_ref)StateFunction_Connected;
                wifiEngineState.main_state = driverAssociated;
             }
@@ -1356,12 +1356,12 @@ static StateFn_ref handle_transparent_connecting_events(ucos_msg_id_t msg, wei_s
                /* DHCP is needed */
                WiFiEngine_DHCPStart();
             }
-            we_ind_send(WE_IND_ASSOCIATE_CFM,(void *)cfm);  
+            we_ind_send(WE_IND_ASSOCIATE_CFM,(void *)cfm);
          }
          break;
 
 
-         
+
 
          case MGMT_RX_CASE(MLME_REASSOCIATE_CFM):
          {
@@ -1370,9 +1370,9 @@ static StateFn_ref handle_transparent_connecting_events(ucos_msg_id_t msg, wei_s
             if (Mlme_HandleReassociateConfirm(cfm))
             {
                nextState_fn = (StateFn_ref)StateFunction_Connected;
-               wifiEngineState.main_state = driverAssociated;               
+               wifiEngineState.main_state = driverAssociated;
             }
-            we_ind_send(WE_IND_REASSOCIATE_CFM,(void *)cfm);  
+            we_ind_send(WE_IND_REASSOCIATE_CFM,(void *)cfm);
          }
          break;
 
@@ -1381,8 +1381,8 @@ static StateFn_ref handle_transparent_connecting_events(ucos_msg_id_t msg, wei_s
          {
             m80211_mlme_deauthenticate_ind_t *ind = (m80211_mlme_deauthenticate_ind_t *)param->p;
 
-            we_ind_send(WE_IND_DEAUTHENTICATE_IND,(void *)ind); 
-            
+            we_ind_send(WE_IND_DEAUTHENTICATE_IND,(void *)ind);
+
             nextState_fn = (StateFn_ref)StateFunction_Disconnecting;
             wei_sm_queue_sig(INTSIG_NET_LEAVE_BSS, OBJID_MYSELF, NULL, TRUE);
          }
@@ -1393,11 +1393,11 @@ static StateFn_ref handle_transparent_connecting_events(ucos_msg_id_t msg, wei_s
       break;
 
    }
-   
+
    return nextState_fn;
 }
 
-   
+
 /****************************************************************************
 ** handle_connected_events
 **
@@ -1406,13 +1406,13 @@ static StateFn_ref handle_transparent_connecting_events(ucos_msg_id_t msg, wei_s
 static StateFn_ref handle_connected_events(ucos_msg_id_t msg, wei_sm_queue_param_s *param, StateFn_ref fn )
 {
    WiFiEngine_net_t *net;
-   StateFn_ref nextState_fn = (StateFn_ref)fn;      
-    
-   
+   StateFn_ref nextState_fn = (StateFn_ref)fn;
+
+
 
    net = wei_netlist_get_current_net();
-   
-   switch(msg) 
+
+   switch(msg)
    {
       case MGMT_RX_CASE(MLME_DEAUTHENTICATE_IND):
          {
@@ -1440,14 +1440,14 @@ static StateFn_ref handle_connected_events(ucos_msg_id_t msg, wei_sm_queue_param
             Mlme_HandleDisassociateInd(ind);
             wei_save_con_lost_reason(WE_DISCONNECT_DISASS_IND, M80211_MGMT_RC_NOT_VALID);
             if(wei_is_hmg_auto_mode())
-            {           
-               
+            {
+
                wei_sm_queue_sig(INTSIG_NET_DISASSOCIATE, OBJID_MYSELF, NULL, TRUE);
-               
+
             }
             else
             {
-               we_ind_send(WE_IND_DISASSOCIATE_IND,(void *)ind);  
+               we_ind_send(WE_IND_DISASSOCIATE_IND,(void *)ind);
             }
          }
          break;
@@ -1458,7 +1458,7 @@ static StateFn_ref handle_connected_events(ucos_msg_id_t msg, wei_sm_queue_param
             m80211_nrp_mlme_peer_status_ind_t *ind;
             ind = (m80211_nrp_mlme_peer_status_ind_t *)param->p;
             Mlme_HandleBssPeerStatusInd(ind);
-            switch (ind->status) 
+            switch (ind->status)
             {
                case MLME_PEER_STATUS_CONNECTED:
                {
@@ -1476,25 +1476,25 @@ static StateFn_ref handle_connected_events(ucos_msg_id_t msg, wei_sm_queue_param
 
                /* ibss */
                case MLME_PEER_STATUS_NOT_CONNECTED:
-               /* infrastructure */   
-               case MLME_PEER_STATUS_INCOMPATIBLE:      
+               /* infrastructure */
+               case MLME_PEER_STATUS_INCOMPATIBLE:
                case MLME_PEER_STATUS_TX_FAILED:
                case MLME_PEER_STATUS_RX_BEACON_FAILED:
                {
 
                   if(net->bss_p->bssType == M80211_CAPABILITY_ESS)
                   {
-                     nextState_fn = (StateFn_ref)StateFunction_Disconnecting; 
+                     nextState_fn = (StateFn_ref)StateFunction_Disconnecting;
 
                      if(wei_is_hmg_auto_mode())
                      {
-                        
-                         DriverEnvironment_indicate(WE_IND_AP_MISSING_IN_ACTION, 
-                           &ind->status, sizeof(ind->status));                        
-                         wei_sm_queue_sig(INTSIG_NET_DEAUTHENTICATE, OBJID_MYSELF, NULL, TRUE); 
+
+                         DriverEnvironment_indicate(WE_IND_AP_MISSING_IN_ACTION,
+                           &ind->status, sizeof(ind->status));
+                         wei_sm_queue_sig(INTSIG_NET_DEAUTHENTICATE, OBJID_MYSELF, NULL, TRUE);
                      }
                      else
-                     {                 
+                     {
                         if(ind->status == MLME_PEER_STATUS_TX_FAILED)
                         {
                            /* There is no listener for this event yet */
@@ -1516,13 +1516,13 @@ static StateFn_ref handle_connected_events(ucos_msg_id_t msg, wei_sm_queue_param
                   else
                   {
                      wei_ibss_remove_net(ind);
-                     
+
                      if(wei_ibss_disconnect(ind))
                      {
                         /* No more ibss stations */
                         DriverEnvironment_indicate(WE_IND_80211_IBSS_DISCONNECTED, NULL, 0);
-                        wei_sm_queue_sig(INTSIG_NET_LEAVE_IBSS, OBJID_MYSELF, NULL, TRUE); 
-                        nextState_fn = (StateFn_ref)StateFunction_Disconnecting; 
+                        wei_sm_queue_sig(INTSIG_NET_LEAVE_IBSS, OBJID_MYSELF, NULL, TRUE);
+                        nextState_fn = (StateFn_ref)StateFunction_Disconnecting;
                      }
                   }
                }
@@ -1533,23 +1533,23 @@ static StateFn_ref handle_connected_events(ucos_msg_id_t msg, wei_sm_queue_param
                case MLME_PEER_STATUS_TX_FAILED_WARNING:
                   DriverEnvironment_indicate(WE_IND_TXFAIL, NULL, 0);
                   break;
-               case MLME_PEER_STATUS_ROUNDTRIP_FAILED: 
+               case MLME_PEER_STATUS_ROUNDTRIP_FAILED:
                {
                   we_conn_incompatible_ind_t data;
                   data.reason_code = 0;
                   DriverEnvironment_indicate(WE_IND_CONN_INCOMPATIBLE, &data, sizeof(data));
                }
                break;
-               
+
                default:
                   DE_TRACE_STATIC(TR_ASSOC, "Unknown BSS peer status\n");
-               break;                     
+               break;
             }
          }
          break;
 
       case MGMT_RX_CASE(MLME_REASSOCIATE_CFM):
-         {            
+         {
             m80211_mlme_reassociate_cfm_t *cfm = (m80211_mlme_reassociate_cfm_t *)param->p;
             if (Mlme_HandleReassociateConfirm((m80211_mlme_associate_cfm_t *)param->p))
             {
@@ -1581,12 +1581,12 @@ static StateFn_ref handle_connected_events(ucos_msg_id_t msg, wei_sm_queue_param
          break;
 
       default:
-         DE_TRACE_INT(TR_SM, "Unhandled message %X\n",msg);         
+         DE_TRACE_INT(TR_SM, "Unhandled message %X\n",msg);
          break;
-         
+
    }
 
-   return nextState_fn;   
+   return nextState_fn;
 }
 
 /****************************************************************************
@@ -1596,14 +1596,14 @@ static StateFn_ref handle_connected_events(ucos_msg_id_t msg, wei_sm_queue_param
 *****************************************************************************/
 static StateFn_ref handle_disconnecting_events(ucos_msg_id_t msg, wei_sm_queue_param_s *param, StateFn_ref fn)
 {
-   StateFn_ref nextState_fn = (StateFn_ref)fn;      
+   StateFn_ref nextState_fn = (StateFn_ref)fn;
 
-   switch(msg) 
-   {   
+   switch(msg)
+   {
       case MGMT_RX_CASE(MLME_DEAUTHENTICATE_CFM):
          {
             m80211_mlme_deauthenticate_cfm_t *cfm = (m80211_mlme_deauthenticate_cfm_t *)param->p;
-               
+
             Mlme_HandleDeauthenticateConfirm(cfm);
             if(!wei_is_hmg_auto_mode())
             {
@@ -1618,8 +1618,8 @@ static StateFn_ref handle_disconnecting_events(ucos_msg_id_t msg, wei_sm_queue_p
 
       case MGMT_RX_CASE(MLME_DISASSOCIATE_CFM):
          {
-            m80211_mlme_disassociate_cfm_t *cfm = (m80211_mlme_disassociate_cfm_t *)param->p; 
-            
+            m80211_mlme_disassociate_cfm_t *cfm = (m80211_mlme_disassociate_cfm_t *)param->p;
+
             Mlme_HandleDisassociateConfirm((m80211_mlme_disassociate_cfm_t *)param->p);
             if(!wei_is_hmg_auto_mode())
             {
@@ -1638,7 +1638,7 @@ static StateFn_ref handle_disconnecting_events(ucos_msg_id_t msg, wei_sm_queue_p
          break;
    }
 
-   return nextState_fn;   
+   return nextState_fn;
 }
 
 
@@ -1652,7 +1652,7 @@ static void check_if_close_port(void)
 {
    WiFiEngine_Auth_t auth;
    int close_policy = 0;
-  
+
    if (!WiFiEngine_GetAuthenticationMode(&auth))
    {
       // Eh?

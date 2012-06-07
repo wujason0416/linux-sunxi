@@ -59,9 +59,9 @@ wei_console_init(void)
 }
 
 /*!
- * Prune all queued console replies so list is at most len items long 
+ * Prune all queued console replies so list is at most len items long
  */
-static int wei_prune_console_reply_list(size_t len) 
+static int wei_prune_console_reply_list(size_t len)
 {
    struct console_cfm_container *cfm;
    WIFI_LOCK();
@@ -107,8 +107,8 @@ int wei_queue_console_reply(char *replyPacked, size_t replySize)
 
 
 /*!
- * @brief Send a raw HIC message to target. 
- * 
+ * @brief Send a raw HIC message to target.
+ *
  * The inbuf is assumed to be a completeHIC-packet, no header will be
  * prepended.  The reply can be retrieved with a subsequent matching
  * call to WiFiEnging_GetConsoleReply().
@@ -121,7 +121,7 @@ int wei_queue_console_reply(char *replyPacked, size_t replySize)
  * @bug The transaction id returned is currently forgotten by the
  *      x_test firmware, and all replies have transaction id 0.
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success
  * - WIFI_ENGINE_FAILURE_RESOURCES if the a cmd reply is pending
  * - WIFI_ENGINE_FAILURE on failure
@@ -146,13 +146,13 @@ WiFiEngine_SendHICMessage(char *inbuf, size_t inbuflen, uint32_t *num)
       min_hic_size = wei_get_hic_hdr_min_size();
 
    if(inbuflen < min_hic_size) {
-      DE_TRACE_INT(TR_CONSOLE, "input buffer too short (" TR_FSIZE_T ")\n", 
+      DE_TRACE_INT(TR_CONSOLE, "input buffer too short (" TR_FSIZE_T ")\n",
                    TR_ASIZE_T(inbuflen));
       return WIFI_ENGINE_FAILURE_INVALID_LENGTH;
    }
    hic_len = HIC_MESSAGE_LENGTH_GET(inbuf);
    if(hic_len > inbuflen) {
-      DE_TRACE_INT2(TR_CONSOLE, 
+      DE_TRACE_INT2(TR_CONSOLE,
                     "input buffer too short %u < " TR_FSIZE_T "\n",
                     hic_len,
                     TR_ASIZE_T(inbuflen));
@@ -160,7 +160,7 @@ WiFiEngine_SendHICMessage(char *inbuf, size_t inbuflen, uint32_t *num)
    }
    pad_len = HIC_MESSAGE_PADDING_GET(inbuf);
    if(pad_len > 0xfff8 || hic_len < pad_len + min_hic_size) {
-      DE_TRACE_INT3(TR_CONSOLE, 
+      DE_TRACE_INT3(TR_CONSOLE,
                     "input buffer has too much padding %u < %u + %u\n",
                     hic_len,
                     pad_len,
@@ -187,7 +187,7 @@ WiFiEngine_SendHICMessage(char *inbuf, size_t inbuflen, uint32_t *num)
       DE_TRACE_STATIC(TR_CONSOLE, "failed to allocate buffer\n");
       return WIFI_ENGINE_FAILURE_RESOURCES;
    }
-   
+
    /* setup hic header */
    DE_MEMSET(sendbuf, 0x70, hic_hdr_len);
    HIC_MESSAGE_LENGTH_SET(sendbuf, hic_len);
@@ -221,10 +221,10 @@ WiFiEngine_SendHICMessage(char *inbuf, size_t inbuflen, uint32_t *num)
 
     return WIFI_ENGINE_SUCCESS;
 }
- 
+
 /*!
- * @brief Send a console command to target. 
- * 
+ * @brief Send a console command to target.
+ *
  * The command should be a zero-terminated string with the command to
  * issue, it should end in a newline.
  *
@@ -232,7 +232,7 @@ WiFiEngine_SendHICMessage(char *inbuf, size_t inbuflen, uint32_t *num)
  * WiFiEnging_GetConsoleReply().
  *
  * @param [in]  command Console command to execute.
- * @param [out] tid     Output buffer, will contain the 
+ * @param [out] tid     Output buffer, will contain the
  *                      transaction id of the request
  *                      which should be used to retrieve the reply.
  *
@@ -248,7 +248,7 @@ WiFiEngine_SendConsoleRequest(const char *command, uint32_t *tid)
 {
         hic_message_context_t msg_ref;
         int status;
-   
+
         Mlme_CreateMessageContext(msg_ref);
         if (Mlme_CreateConsoleRequest(&msg_ref, command, tid) == 0) {
                 Mlme_ReleaseMessageContext(msg_ref);
@@ -258,9 +258,9 @@ WiFiEngine_SendConsoleRequest(const char *command, uint32_t *tid)
         status = wei_send_cmd(&msg_ref);
         Mlme_ReleaseMessageContext(msg_ref);
 
-        if (status == WIFI_ENGINE_FAILURE_DEFER) 
+        if (status == WIFI_ENGINE_FAILURE_DEFER)
                 status = WIFI_ENGINE_FAILURE_RESOURCES;
-        
+
         return status;
 }
 
@@ -271,7 +271,7 @@ WiFiEngine_SendConsoleRequest(const char *command, uint32_t *tid)
  * @param buflen Output buffer length. Will contain the needed size on
  *               INVALID_LENGTH failure.
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success.
  * - WIFI_ENGINE_INVALID_LENGTH if the output buffer was too small.
  * - WIFI_ENGINE_FAILURE if no reply is available.
@@ -279,7 +279,7 @@ WiFiEngine_SendConsoleRequest(const char *command, uint32_t *tid)
 int   WiFiEngine_GetConsoleReply(void *outbuf, IN OUT size_t *buflen)
 {
    struct console_cfm_container *c;
-   
+
    BAIL_IF_UNPLUGGED;
    WIFI_LOCK();
    if((c = WEI_TQ_FIRST(&console_replies)) != NULL) {
@@ -297,10 +297,9 @@ int   WiFiEngine_GetConsoleReply(void *outbuf, IN OUT size_t *buflen)
       return WIFI_ENGINE_SUCCESS;
    }
    *buflen = 0;
-   
+
    WIFI_UNLOCK();
    return WIFI_ENGINE_FAILURE;
 }
 
 /** @} */ /* End of we_console group */
-

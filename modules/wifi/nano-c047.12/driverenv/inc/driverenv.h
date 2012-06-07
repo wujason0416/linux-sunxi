@@ -41,7 +41,7 @@
 #include <registry.h>
 #ifndef driver_packet_ref
  #define driver_packet_ref void*
-#endif 
+#endif
 
 
 /*******/
@@ -77,11 +77,11 @@ struct de_timer {
  */
 
 /*!
- * \brief Initialize the Driver Environment 
- * 
+ * \brief Initialize the Driver Environment
+ *
  * Calls platform specific initialization routines.
  * Called by WiFiEnding_Initialize.
- * 
+ *
  * @return (unsigned int) A platform specific Id for the initialized driver used
  * later by DriverEnvironment_Terminate
  */
@@ -93,19 +93,19 @@ unsigned int   DriverEnvironment_Startup(void);
  * Gracefully releasing all allocated resources during DriverEnvironment_Startup()
  *
  * @param driver_id (unsigned int) The Id returned by DriverEnvironment_Startup()
- * @return (int) DRIVERENVIRONMENT_SUCCESS on success or 
+ * @return (int) DRIVERENVIRONMENT_SUCCESS on success or
  * DRIVERENVIRONMENT_FAILURE in case of error
  */
 int            DriverEnvironment_Terminate(unsigned int driver_id);
 
 
 /*!
- * Set read thread priority higher. 
+ * Set read thread priority higher.
  */
 void DriverEnvironment_SetPriorityThreadHigh(void);
 
 /*!
- * Set read thread priority to default value. 
+ * Set read thread priority to default value.
  */
 void DriverEnvironment_SetPriorityThreadLow(void);
 
@@ -117,7 +117,7 @@ void           DriverEnvironment_Disable_Boot(void);
  * @brief Indicate that a coredump has started.
  *
  * The function is called on the first message that a coredump is in progress.
- * The driverenvironment coredump functions is controled by the excistens if a 
+ * The driverenvironment coredump functions is controled by the excistens if a
  * non-NULL *ctx variable that will not be modified only by the platform.
  *
  * if on return
@@ -136,9 +136,9 @@ void           DriverEnvironment_Disable_Boot(void);
  */
 void DriverEnvironment_Core_Dump_Started(
       int coredump,
-      int restart, 
-      uint8_t objId, 
-      uint8_t errCode, 
+      int restart,
+      uint8_t objId,
+      uint8_t errCode,
       size_t expected_size, /* or more */
       size_t max_size, /* used to help malloc */
       void **ctx);
@@ -153,7 +153,7 @@ void DriverEnvironment_Core_Dump_Started(
  */
 void DriverEnvironment_Core_Dump_Write(
    void *ctx,
-   void *data, 
+   void *data,
    size_t len);
 
 
@@ -166,9 +166,9 @@ void DriverEnvironment_Core_Dump_Write(
  */
 void DriverEnvironment_Core_Dump_Abort(
       int coredump,
-      int restart, 
-      uint8_t objid, 
-      uint8_t err_code, 
+      int restart,
+      uint8_t objid,
+      uint8_t err_code,
       void **ctx);
 
 /*!
@@ -180,9 +180,9 @@ void DriverEnvironment_Core_Dump_Abort(
  */
 void DriverEnvironment_Core_Dump_Complete(
       int coredump,
-      int restart, 
-      uint8_t objid, 
-      uint8_t err_code, 
+      int restart,
+      uint8_t objid,
+      uint8_t err_code,
       void **ctx);
 
 
@@ -193,8 +193,8 @@ void memtrace_free(const void *ptr, int type, int poison, const char *func, unsi
 #define MTALLOC(S, B, L) memtrace_alloc((B), (S), (L), __func__, __LINE__)
 #define MTFREE(B, L, P) memtrace_free((B), (L), (P), __func__, __LINE__)
 #else
-#define MTALLOC(S, B, L) 
-#define MTFREE(B, L, P) 
+#define MTALLOC(S, B, L)
+#define MTFREE(B, L, P)
 #endif
 
 
@@ -227,7 +227,7 @@ int            DriverEnvironment__HIC_Send(char* message, size_t size);
 /* Hooks to enable/disable target device sleep (such as with a IOCTL in a driver) */
 
 /*!
- * \brief Allow the device to go into deep sleep mode. 
+ * \brief Allow the device to go into deep sleep mode.
  *
  * This will be called in 802.11 sleep mode before requesting
  * that the device enter deep sleep mode and should allow the
@@ -237,7 +237,7 @@ int            DriverEnvironment__HIC_Send(char* message, size_t size);
 void           DriverEnvironment_enable_target_sleep(void);
 
 /*!
- * \brief Disallow the device to go into deep sleep mode. 
+ * \brief Disallow the device to go into deep sleep mode.
  *
  * This will be called in deep sleep mode when waking up,
  * either because the device indicates that it wants to be
@@ -261,7 +261,7 @@ void           DriverEnvironment_disable_target_interface(void);
 
 /*!
  * \brief Perform power up housekeeping tasks
- * 
+ *
  * This will be called when the device has been woken up from power
  * save mode.  It can perform driver-specific tasks that need to be
  * taken care of in this case (such as starting to send queued packets).
@@ -283,7 +283,7 @@ void DriverEnvironment_RandomData(void *data, size_t len);
  * This function registers an opaque data object in WiFiEngine.
  * This is purely a utility function for the user of WiFiEngine
  * and is never called from within WiFiEngine (and can thus
- * be left unimplemented). 
+ * be left unimplemented).
  * @param hndl (void *) A pointer to the handle.
  */
 void DriverEnvironment_Register_Handle(void *hndl);

@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2011, Broadcom Corporation
  * All Rights Reserved.
- * 
+ *
  * This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
  * the contents of this file may not be disclosed to third parties, copied
  * or duplicated in any form, in whole or in part, without the prior
@@ -270,7 +270,7 @@ int wlmWLMVersionGet(const char **buffer);
 WLM_FUNCTION
 int wlmApiInit(void);
 
-/* Performs any cleanup required internally by the DLL. 
+/* Performs any cleanup required internally by the DLL.
  * NOTE: This method needs to be called by the user at the end of the application.
  *
  * return - True for success, false for failure.
@@ -479,7 +479,7 @@ int wlmPaParametersSet(WLM_BANDRANGE bandrange,
 /* Retrieves the tx power control parameters for MIMO system.
  *
  * param[in] bandrange The desired band range for getting PA parameters.
- * param[in] chain. The desired tx chain for getting PA parameters 
+ * param[in] chain. The desired tx chain for getting PA parameters
  * param[out] b0 PA parameter returned.
  * param[out] b1 PA parameter returned.
  * param[out] a1 PA parameter returned.
@@ -527,7 +527,7 @@ int wlmMacAddrSet(const char* macAddr);
  *
  * param[in] enable Set to true to enable carrier tone, false to disable.
  * param[in] channel Desired channel. Ignored if <i>enable</i> is false.
- * 
+ *
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
@@ -751,10 +751,10 @@ int wlmMimoPreambleSet(int type);
 WLM_FUNCTION
 int wlmMimoPreambleGet(int* type);
 
-/* Set/Get the CGA coefficients in the 2.4G/5G band 
+/* Set/Get the CGA coefficients in the 2.4G/5G band
  * requires an array of 24 uint8s to be set
  * and a specified length of 24 to get
- * All of these CGA value query functions only applies to 4329 solution  
+ * All of these CGA value query functions only applies to 4329 solution
  */
 
 WLM_FUNCTION
@@ -769,7 +769,7 @@ int wlmCga2gOffsetsSet(char* values, int len);
 WLM_FUNCTION
 int wlmCga2gOffsetsGet(char* buffer, int len);
 
-/* Set Glacial Timer 
+/* Set Glacial Timer
  * param[in] timer duration in msec
  *
  * return - True for success, false for failure.
@@ -777,7 +777,7 @@ int wlmCga2gOffsetsGet(char* buffer, int len);
 WLM_FUNCTION
 int wlmGlacialTimerSet(int val);
 
-/* Set Fast Timer 
+/* Set Fast Timer
  * param[in] timer duration in msec
  *
  * return - True for success, false for failure.
@@ -785,7 +785,7 @@ int wlmGlacialTimerSet(int val);
 WLM_FUNCTION
 int wlmFastTimerSet(int val);
 
-/* Set Slow Timer 
+/* Set Slow Timer
  * param[in] timer duration in msec
  *
  * return - True for success, false for failure.
@@ -793,7 +793,7 @@ int wlmFastTimerSet(int val);
 WLM_FUNCTION
 int wlmSlowTimerSet(int val);
 
-/* Enable/Disable Scansuppress 
+/* Enable/Disable Scansuppress
  * param[in] set to TRUE enables scansuppress, set to false disable scansuppress
  *
  * return - True for success, false for failure.
@@ -801,7 +801,7 @@ int wlmSlowTimerSet(int val);
 WLM_FUNCTION
 int wlmScanSuppress(int val);
 
-/* Set Country Code 
+/* Set Country Code
  * param[in] country code abbrv. Default use WLM_COUNTRY_CODE_ABBRV_ALL
  *
  * return - True for success, false for failure.
@@ -809,37 +809,37 @@ int wlmScanSuppress(int val);
 WLM_FUNCTION
 int wlmCountryCodeSet(const char *country_name);
 
-/* Set fullcal 
+/* Set fullcal
  * Trigger lpphy fullcal
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmFullCal(void);
 
-/* Get Receiver IQ Estimation 
+/* Get Receiver IQ Estimation
  * param[out] estimated rxiq power in dBm at 0.25dBm resolution
  * param[in] sampel count, 0 to 15
- * param[in] antenna, 0 to 3  
- * return - True for success, false for failure. 
+ * param[in] antenna, 0 to 3
+ * return - True for success, false for failure.
 */
 WLM_FUNCTION
 int wlmRxIQEstGet(float *val, int sampleCount, int ant);
 
-/* Get PHY txpwrindex  
- * param[out] txpwrindex 
- * param[in] chip id: 4325, 4329, 43291, 4330, 4336 and 43236 
+/* Get PHY txpwrindex
+ * param[out] txpwrindex
+ * param[in] chip id: 4325, 4329, 43291, 4330, 4336 and 43236
  */
 WLM_FUNCTION
 int wlmPHYTxPowerIndexGet(unsigned int *val, const char *chipid);
 
-/* Set PHY txpwrindex  
+/* Set PHY txpwrindex
  * param[in] txpwrindex
- * param[in] chip id: 4325, 4329, 43291, 4330, 4336 and 43236 
+ * param[in] chip id: 4325, 4329, 43291, 4330, 4336 and 43236
  */
 WLM_FUNCTION
 int wlmPHYTxPowerIndexSet(unsigned int val, const char *chipid);
 
-/* Enable/Disable RIFS  
+/* Enable/Disable RIFS
  * param[in] Set RIFS mode. 1 = enable ; 0 = disable
  */
 WLM_FUNCTION
@@ -899,8 +899,8 @@ int wlmRadioOn(void);
 WLM_FUNCTION
 int wlmRadioOff(void);
 
-/* Set Power Saving Mode 
- * param[in] 0 = CAM, 1 =Power Save, 2 = Fast PS Mode 
+/* Set Power Saving Mode
+ * param[in] 0 = CAM, 1 =Power Save, 2 = Fast PS Mode
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
@@ -928,7 +928,7 @@ WLM_FUNCTION
 int wlmRoamTriggerLevelGet(int *val, WLM_BAND band);
 
 /* Set roaming trigger level
- * param[in] roaming trigger level in dBm 
+ * param[in] roaming trigger level in dBm
  * param[in]  frequence band
  * return - True for success, false for failure.
  */
@@ -947,21 +947,21 @@ int wlmFrameBurstOn(void);
 WLM_FUNCTION
 int wlmFrameBurstOff(void);
 
-/* Set beacon interval 
+/* Set beacon interval
  * param[in] beacon interval in ms
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmBeaconIntervalSet(int val);
 
-/* Set AMPDU mode on/off 
+/* Set AMPDU mode on/off
  * param[in] on = 1, off = 0
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmAMPDUModeSet(int val);
 
-/* Set MIMO bandwidth capability 
+/* Set MIMO bandwidth capability
  * param[in] mimo bandwidth capability. 0 = 20Mhz, 1 =40Mhz
  * return - True for success, false for failure.
  */
@@ -969,101 +969,101 @@ WLM_FUNCTION
 int wlmMIMOBandwidthCapabilitySet(int val);
 
 /* Set interference on/off
- * param[in] on = 1, 0ff = 0 
+ * param[in] on = 1, 0ff = 0
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmInterferenceSet(int val);
 
 /* Set interferenceoverride on/off
- * param[in] on = 1, 0ff = 0  
+ * param[in] on = 1, 0ff = 0
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmInterferenceOverrideSet(int val);
 
-/* Set MIMO transmit banddwith 
- * param[in] auto = -1, 2 = 20Mhz, 3 = 20Mhz upper , 4 =40 Mhz, 5 =40dup (mcs32 only)  
+/* Set MIMO transmit banddwith
+ * param[in] auto = -1, 2 = 20Mhz, 3 = 20Mhz upper , 4 =40 Mhz, 5 =40dup (mcs32 only)
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmTransmitBandwidthSet(int val);
 
-/* Set MIMO short guard intervaltransmit banddwith 
- * param[in] auto = -1, 1 = on, 0 = off  
+/* Set MIMO short guard intervaltransmit banddwith
+ * param[in] auto = -1, 1 = on, 0 = off
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmShortGuardIntervalSet(int val);
 
-/* Set MIMO OBSS coex set 
- * param[in] auto = -1, 1 = on, 0 = off  
+/* Set MIMO OBSS coex set
+ * param[in] auto = -1, 1 = on, 0 = off
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmObssCoexSet(int val);
 
-/* Set PHY Periodical call 
+/* Set PHY Periodical call
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmPHYPeriodicalCalSet(void);
 
-/* Set PHY Force call 
+/* Set PHY Force call
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmPHYForceCalSet(void);
 
-/* Disable scrambler update 
+/* Disable scrambler update
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmPHYScramblerUpdateDisable(void);
 
-/* Enable scrambler update 
+/* Enable scrambler update
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmPHYScramblerUpdateEnable(void);
 
 /* Turn PHY watchdog on/off
- * param[in] on = 1, off = 0  
+ * param[in] on = 1, off = 0
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmPHYWatchdogSet(int val);
 
-/* Disable temperature sensore 
+/* Disable temperature sensore
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmTemperatureSensorDisable(void);
 
-/* Enable temperature sensore 
+/* Enable temperature sensore
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmTemperatureSensorEnable(void);
 
 /* Set transmit core
- * param[in] 
+ * param[in]
  * return - True for success, false for failure.
- */ 
+ */
 WLM_FUNCTION
 int wlmTransmitCoreSet(int val);
 
 /* Get temperation sensor read
  * param[out] chip core temperature in F
  * return - True for success, false for failure.
- */ 
+ */
 WLM_FUNCTION
 int wlmPhyTempSenseGet(int *val);
 
 /* Get chip OTP Fab ID
  * param[out] chip fab id
  * return - True for success, false for failure.
- */ 
+ */
 WLM_FUNCTION
 int wlmOtpFabidGet(int *val);
 
@@ -1072,40 +1072,40 @@ int wlmOtpFabidGet(int *val);
  * param[in] bandwidth 20 = 20Mhz, 40 = 40Mhz
  * param[in] sideband 1 = upper, -1 = lower, 0 = none
  * return - True for success, false for failure.
- */ 
+ */
 WLM_FUNCTION
 int wlmChannelSpecSet(int channel, int bandwidth, int sideband);
 
-/* Set rts threshold 
+/* Set rts threshold
  * param[in] rts threshold value
  * return - True for success, false for failure.
- */ 
+ */
 WLM_FUNCTION
 int wlmRtsThresholdOverride(int val);
 
 /* Turn STBC Tx mode on/off
- * param[in] on = 1, off = 0  
+ * param[in] on = 1, off = 0
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmSTBCTxSet(int val);
 
 /* Turn STBC Rx mode on/off
- * param[in] on = 1, off = 0  
+ * param[in] on = 1, off = 0
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmSTBCRxSet(int val);
 
 /* MIMO single stream tx chain selection
- * param[in] chain 1 = 1, chain 2 = 2  
+ * param[in] chain 1 = 1, chain 2 = 2
  * return - True for success, false for failure.
  */
 WLM_FUNCTION
 int wlmTxChainSet(int val);
 
 /* MIMO single stream rx chain selection
- * param[in] chain 1 = 1, chain 2 = 2  
+ * param[in] chain 1 = 1, chain 2 = 2
  * return - True for success, false for failure.
  */
 WLM_FUNCTION

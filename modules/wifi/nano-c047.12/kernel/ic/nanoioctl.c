@@ -37,9 +37,9 @@ ns_net_ioctl_command(struct net_device *dev, struct ifreq *ifr, int cmd)
       KDEBUG(ERROR, "EXIT EACCES");
       return -EACCES;
    }
-   
+
    error = copy_from_user(&ni, ifr->ifr_data, sizeof(ni));
-   
+
    if (error) {
       KDEBUG(ERROR, "EXIT EFAULT");
       return -EFAULT;
@@ -48,12 +48,12 @@ ns_net_ioctl_command(struct net_device *dev, struct ifreq *ifr, int cmd)
       KDEBUG(ERROR, "EXIT EINVAL");
       return -EINVAL;
    }
-                
+
    switch(cmd) {
    case SIOCNRXRAWTX:
       error = nrx_raw_tx(dev,ni.data,ni.length);
       break;
-      
+
    case SIOCNRXRAWRX:
       ni.length = sizeof(ni.data);
       error = nrx_raw_rx(dev,ni.data,&ni.length);
@@ -63,18 +63,18 @@ ns_net_ioctl_command(struct net_device *dev, struct ifreq *ifr, int cmd)
          ni.length = 0;
       }
       break;
-      
+
    }
    if(error != 0)
       return error;
-   
+
    error = copy_to_user(ifr->ifr_data, &ni, sizeof(ni));
-   
+
    if(error) {
       KDEBUG(ERROR, "EXIT EFAULT");
       return -EFAULT;
    }
-   
+
    return 0;
 }
 
@@ -95,7 +95,7 @@ nrx_is_ibss(void)
 #include "registryAccess.h"
 
 static int
-nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd) 
+nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
 {
    struct nrx_softc *sc = netdev_priv(dev);
    int error;
@@ -117,7 +117,7 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
       KDEBUG(ERROR, "EXIT EINVAL");
       return -EINVAL;
    }
-   
+
    len = NRXIOCSIZE(ioc->cmd);
    if(len > sizeof(buf)) {
       KDEBUG(ERROR, "EXIT EINVAL");
@@ -174,28 +174,28 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
          struct nrx_ioc_scan_conf *val = (struct nrx_ioc_scan_conf *)ioc;
          int ret;
          unsigned int flags = 0;
-         if(val->notif_pol & 1) 
+         if(val->notif_pol & 1)
             flags |= SCAN_NOTIFICATION_FLAG_FIRST_HIT;
-         if(val->notif_pol & 2) 
+         if(val->notif_pol & 2)
             flags |= SCAN_NOTIFICATION_FLAG_JOB_COMPLETE;
-         if(val->notif_pol & 4) 
+         if(val->notif_pol & 4)
             flags |= SCAN_NOTIFICATION_FLAG_BG_PERIOD_COMPLETE;
-         if(val->notif_pol & 8) 
+         if(val->notif_pol & 8)
             flags |= SCAN_NOTIFICATION_FLAG_HIT;
-         
+
          ret = synchronous_ConfigureScan(dev,
-                                   (preamble_t)val->preamble, 
-                                   val->rate, 
-                                   val->probes_per_ch, 
+                                   (preamble_t)val->preamble,
+                                   val->rate,
+                                   val->probes_per_ch,
                                    flags,
-                                   val->scan_period, 
-                                   val->probe_delay, 
-                                   val->pa_min_ch_time, 
-                                   val->pa_max_ch_time, 
-                                   val->ac_min_ch_time, 
-                                   val->ac_max_ch_time, 
-                                   val->as_scan_period, 
-                                   val->as_min_ch_time, 
+                                   val->scan_period,
+                                   val->probe_delay,
+                                   val->pa_min_ch_time,
+                                   val->pa_max_ch_time,
+                                   val->ac_min_ch_time,
+                                   val->ac_max_ch_time,
+                                   val->as_scan_period,
+                                   val->as_min_ch_time,
                                    val->as_max_ch_time,
                                    val->max_scan_period,
                                    val->max_as_scan_period,
@@ -231,10 +231,10 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
       case NRXIOWRSCANADDFILTER: {
          int ret;
          struct nrx_ioc_scan_add_filter *val = (struct nrx_ioc_scan_add_filter *)ioc;
-         ret = synchronous_AddScanFilter(dev, 
-                                   &val->sf_id, 
-                                   val->bss_type, 
-                                   val->rssi_thr, 
+         ret = synchronous_AddScanFilter(dev,
+                                   &val->sf_id,
+                                   val->bss_type,
+                                   val->rssi_thr,
                                    val->snr_thr,
                                    val->threshold_type);
          if (ret != 0) {
@@ -306,7 +306,7 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
          break;
       }
       case NRXIOWSCANLISTFLUSH:
-         WIFI_CHECK( WiFiEngine_FlushScanList() );      
+         WIFI_CHECK( WiFiEngine_FlushScanList() );
          break;
 
       case NRXIOWCWINCONF: {
@@ -316,12 +316,12 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
          int ac, minmax;
 
          for (ac = 0; ac < 4; ac++)
-            for (minmax = 0; minmax < 2; minmax++) 
+            for (minmax = 0; minmax < 2; minmax++)
                if (val->cwin[ac][minmax] != 0xFF) {
                   sprintf(mib, "2.4.%d.%d",
                           ac+1,           /* 1=bk, 2=be, 3=vi, 4=vo */
                           minmax+2);      /* 2=min, 3=max */
-                  if (val->override) { 
+                  if (val->override) {
                      /* Save current value */
                      error = nrx_get_mib(dev, mib, &sc->cwin[ac][minmax], &mib_len);
                      if(error) {
@@ -329,18 +329,18 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
                         return error;
                      }
                      KDEBUG(TRACE, "MIB %s, saved prev val %u\n", mib, sc->cwin[ac][minmax]);
-                     
-                     WIFI_CHECK( WiFiEngine_SendMIBSet(mib, 
-                                                       NULL, 
-                                                       &val->cwin[ac][minmax], 
+
+                     WIFI_CHECK( WiFiEngine_SendMIBSet(mib,
+                                                       NULL,
+                                                       &val->cwin[ac][minmax],
                                                        mib_len) );
                      KDEBUG(TRACE, "MIB %s, stored new val %u\n", mib, val->cwin[ac][minmax]);
                   }
                   else {
-                     if (sc->cwin[ac][minmax] != 0xFF) { 
-                        WIFI_CHECK( WiFiEngine_SendMIBSet(mib, 
-                                                          NULL, 
-                                                          &sc->cwin[ac][minmax], 
+                     if (sc->cwin[ac][minmax] != 0xFF) {
+                        WIFI_CHECK( WiFiEngine_SendMIBSet(mib,
+                                                          NULL,
+                                                          &sc->cwin[ac][minmax],
                                                           mib_len) );
                         KDEBUG(TRACE, "MIB %s, restored prev val %u)\n", mib, sc->cwin[ac][minmax]);
                      }
@@ -474,8 +474,8 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
          channel_list_t channels;
 
          WIFI_CHECK( WiFiEngine_GetRegionalChannels(&channels) );
-         for(i = 0; 
-             i < ARRAY_SIZE(val->channel) && i < channels.no_channels; 
+         for(i = 0;
+             i < ARRAY_SIZE(val->channel) && i < channels.no_channels;
              i++)
             val->channel[i] = channels.channelList[i];
          val->num_channels = i;
@@ -486,17 +486,17 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
          struct nrx_ioc_channels *val = (struct nrx_ioc_channels *)ioc;
          channel_list_t channels;
 
-         for(i = 0; 
-             i < ARRAY_SIZE(channels.channelList) && i < val->num_channels; 
+         for(i = 0;
+             i < ARRAY_SIZE(channels.channelList) && i < val->num_channels;
              i++)
             channels.channelList[i] = val->channel[i];
          channels.no_channels = i;
 
          WIFI_CHECK( WiFiEngine_SetRegionalChannels(&channels) );
-         
+
          /* Bug 524 */
          WiFiEngine_ActivateRegionChannels();
-         
+
          break;
       }
       case NRXIOWLINKSUPERV: {
@@ -546,10 +546,10 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
       }
       case NRXIOWWMMPSCONF: {
          struct nrx_ioc_wmm_power_save_conf *val = (struct nrx_ioc_wmm_power_save_conf *)ioc;
-         WIFI_CHECK( WiFiEngine_WmmPowerSaveConfigure(val->tx_period, 
-                                          val->be != 0, 
-                                          val->bk != 0, 
-                                          val->vi != 0, 
+         WIFI_CHECK( WiFiEngine_WmmPowerSaveConfigure(val->tx_period,
+                                          val->be != 0,
+                                          val->bk != 0,
+                                          val->vi != 0,
                                           val->vo != 0) );
          break;
       }
@@ -575,7 +575,7 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
          WIFI_CHECK( WiFiEngine_GetPowerMode(&pmode) ); /* Read mode */
          if (pmode == WIFI_ENGINE_PM_ALWAYS_ON)
             val->value = 0;     /* PS disabled */
-         else 
+         else
             val->value = 1;     /* PS enabled */
       }
       case NRXIOCPSDISABLE: {
@@ -590,16 +590,16 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
          /* Set new value in fw */
          WiFiEngine_SetMibListenInterval(val->listen_interval);
 
-         /* Set value in register */         
+         /* Set value in register */
          WiFiEngine_SetReceiveDTIM(val->rx_all_dtim);
-         /* Set new value in fw */         
+         /* Set new value in fw */
          WiFiEngine_SetReceiveAllDTIM(val->rx_all_dtim);
 
-         /* Set value in register */   
+         /* Set value in register */
          WiFiEngine_EnableLegacyPsPollPowerSave(val->ps_poll);
-         /* Set new value in fw */           
-         WiFiEngine_SetUsePsPoll(val->ps_poll);  
-         
+         /* Set new value in fw */
+         WiFiEngine_SetUsePsPoll(val->ps_poll);
+
          break;
       }
       case NRXIOCREASSOCIATE: {
@@ -687,7 +687,7 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
          struct nrx_ioc_mib_value *val = (struct nrx_ioc_mib_value *)ioc;
          unsigned char mib_param[512];
          size_t mib_len;
-         
+
          mib_len = sizeof(mib_param);
          error = nrx_get_mib(dev, val->mib_id, mib_param, &mib_len);
          if(error) {
@@ -709,7 +709,7 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
       case NRXIOWSETMIB: {
          struct nrx_ioc_mib_value *val = (struct nrx_ioc_mib_value *)ioc;
          unsigned char mib_param[512];
-         
+
          if(val->mib_param_size > sizeof(mib_param)) {
             KDEBUG(ERROR, "EXIT EINVAL");
             return -EINVAL;
@@ -729,7 +729,7 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
          strncpy(mib_id, val->mib_id, val->mib_id_len);
          mib_id[val->mib_id_len] = '\0';
          WIFI_CHECK( WiFiEngine_RegisterVirtualTrigger(&trig_id, /* Assigned trigger id */
-                                                mib_id, 
+                                                mib_id,
                                                 val->gating_trig_id,
                                                 val->supv_interval,
                                                 val->level,
@@ -750,7 +750,7 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
          char mib_id[val->mib_id_len + 1];
          strncpy(mib_id, val->mib_id, val->mib_id_len);
          mib_id[val->mib_id_len] = '\0';
-         val->does_exist = WiFiEngine_DoesVirtualTriggerExist(val->trig_id, 
+         val->does_exist = WiFiEngine_DoesVirtualTriggerExist(val->trig_id,
                                                               val->mib_id_len ? mib_id : NULL);
          break;
       }
@@ -769,49 +769,49 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
          break;
       }
 
-         
+
     case NRXIOWROAMENABLE: {
        struct nrx_ioc_uint32_t *val = (struct nrx_ioc_uint32_t*) ioc;
        WIFI_CHECK(WiFiEngine_roam_enable(val->value));
        break;
     }
- 
+
     case NRXIOWROAMADDSSIDFILTER: {
        m80211_ie_ssid_t ssid;
        struct nrx_ioc_roam_ssid *val = (struct nrx_ioc_roam_ssid*) ioc;
- 
+
        if(val->ssid_len > sizeof(ssid.ssid)) {
           KDEBUG(ERROR, "EXIT EINVAL");
           return -EINVAL;
        }
- 
+
        memset(&ssid, 0, sizeof(ssid));
        memcpy(ssid.ssid, val->ssid, val->ssid_len);
        ssid.hdr.id = M80211_IE_ID_SSID;
        ssid.hdr.len = val->ssid_len;
-          
+
        WIFI_CHECK(WiFiEngine_roam_add_ssid_filter(ssid));
        break;
     }
- 
+
     case NRXIOWROAMDELSSIDFILTER: {
        m80211_ie_ssid_t ssid;
        struct nrx_ioc_roam_ssid *val = (struct nrx_ioc_roam_ssid*) ioc;
- 
+
        if(val->ssid_len > sizeof(ssid.ssid)) {
           KDEBUG(ERROR, "EXIT EINVAL");
           return -EINVAL;
        }
- 
+
        memset(&ssid, 0, sizeof(ssid));
        memcpy(ssid.ssid, val->ssid, val->ssid_len);
        ssid.hdr.id = M80211_IE_ID_SSID;
        ssid.hdr.len = val->ssid_len;
-          
+
        WIFI_CHECK(WiFiEngine_roam_del_ssid_filter(ssid));
        break;
     }
-                  
+
     case NRXIOWROAMCONFFILTER: {
        struct nrx_ioc_roam_filter *val =
           (struct nrx_ioc_roam_filter*) ioc;
@@ -820,7 +820,7 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
                                                    val->enable_ssid));
        break;
     }
- 
+
     case NRXIOWROAMCONFRSSITHR: {
        struct nrx_ioc_roam_rssi_thr *val = (struct nrx_ioc_roam_rssi_thr*) ioc;
        WIFI_CHECK(WiFiEngine_roam_configure_rssi_thr(val->enable,
@@ -861,7 +861,7 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
       WIFI_CHECK(WiFiEngine_roam_configure_net_election(val->k1, val->k2));
       break;
    }
-      
+
    case NRXIOWROAMCONFAUTH: {
       struct nrx_ioc_roam_conf_auth *val = (struct nrx_ioc_roam_conf_auth*) ioc;
       WIFI_CHECK(WiFiEngine_roam_conf_auth(val->enable,
@@ -870,7 +870,7 @@ nrx_ioctl2(struct net_device *dev, struct ifreq *ifr, int cmd)
                                            val->enc_mode));
       break;
    }
-      
+
       case NRXIOWTXRATEMONENABLE: {
          struct nrx_ioc_ratemon *val = (struct nrx_ioc_ratemon*) ioc;
          WIFI_CHECK( WiFiEngine_EnableTxRateMon(&val->thr_id, val->sample_len, val->thr_level, WE_TRIG_THR_FALLING, nrx_wxevent_txrate) );
@@ -1012,7 +1012,7 @@ static int nrx_ioctl_ethtool(struct net_device *dev, struct ifreq *ifr)
    switch (cmd) {
       case ETHTOOL_GDRVINFO: {
          struct ethtool_drvinfo info;
-         
+
          memset(&info, 0, sizeof(info));
          info.cmd = ETHTOOL_GDRVINFO;
 
@@ -1035,7 +1035,7 @@ static int nrx_ioctl_ethtool(struct net_device *dev, struct ifreq *ifr)
 int ns_net_ioctl_iw(struct net_device *dev, struct ifreq *ifr, int cmd);
 
 int
-ns_net_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd) 
+ns_net_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 {
    int retval = -EOPNOTSUPP;
    KDEBUG(TRACE, "ENTRY: %s", dev->name);
@@ -1044,7 +1044,7 @@ ns_net_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
       case SIOCNRXIOCTL:
          retval = nrx_ioctl2(dev, ifr, cmd);
          break;
-   
+
       case SIOCNRXRAWTX:
       case SIOCNRXRAWRX:
          retval = ns_net_ioctl_command(dev, ifr, cmd);

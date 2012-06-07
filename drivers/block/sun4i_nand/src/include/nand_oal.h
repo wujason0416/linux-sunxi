@@ -20,7 +20,7 @@
 //define the memory release interface
 #define FREE(x,size)                    	kfree((x))
 //define the message print interface
-#define PRINT(...)							printk(__VA_ARGS__)	
+#define PRINT(...)							printk(__VA_ARGS__)
 
 
 #if 0
@@ -38,7 +38,7 @@
 ////define the memory release interface
 //#define FREE(x,size)                    	esMEMS_Bfree(x,size)
 ////define the message print interface
-//#define PRINT(...)							__inf(__VA_ARGS__)						
+//#define PRINT(...)							__inf(__VA_ARGS__)
 
 
 //define the memory set interface
@@ -53,7 +53,7 @@
 //define the memory release interface
 #define FREE(x,size)                    	kfree(x)
 //define the message print interface
-#define PRINT(...)							printk(__VA_ARGS__)	
+#define PRINT(...)							printk(__VA_ARGS__)
 #else
 #include "enviroment.h"
 //#include "..\\..\\..\\..\\..\\interinc\\efex\\efex_libs.h"
@@ -71,9 +71,9 @@
 #define FREE(x,size)                   		kfree(x)
 //define the message print interface
 #define PRINT(...)								eFG_printf(__VA_ARGS__)
-//#define PRINT(...)								
+//#define PRINT(...)
 #endif
-	
-#endif	
-	
+
+#endif
+
 #endif

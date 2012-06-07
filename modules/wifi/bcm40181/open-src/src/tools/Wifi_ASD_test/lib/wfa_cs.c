@@ -134,10 +134,10 @@
 #define MAX_TOKENS 15
 #define BYTE_0 0
 #define BYTE_1 1
-#define BYTE_2 2 
-#define TID_INDEX 4 
-#define NO_TSINFO 1 
-#define TID_MISMATCH 2 
+#define BYTE_2 2
+#define TID_INDEX 4
+#define NO_TSINFO 1
+#define TID_MISMATCH 2
 
 /* Some device may only support UDP ECHO, activate this line */
 //#define WFA_PING_UDP_ECHO_ONLY 1
@@ -199,7 +199,7 @@ typedef struct bcmSsidObj
 	int acVI;
 	int acVO;
 	/* EAP Types*/
-	bcmEapObj_t eapObj;  
+	bcmEapObj_t eapObj;
 	int eapType;
 } bcmSsidObj_t;
 
@@ -286,7 +286,7 @@ int wfaStaAssociate(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 	sprintf(gCmdStr, "%s disassoc", rwl_client_path);
 	exec_process(gCmdStr);
 
-        asd_sleep(3); 
+        asd_sleep(3);
 	/*Default case will be non-802.1x associations*/
 	switch (bso->eapType) {
 		case BCM_EAP_TYPE_TLS:
@@ -298,49 +298,49 @@ int wfaStaAssociate(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 				strtok_r(identity,".",(char **)&dummy);
 				printf("\n %s\n",identity);
 				S_N_PRINTF(gCmdStr,sizeof(gCmdStr),"%s sh cnClient -A %s -ssid %s -%s -%s -tls "
-				"-usercert %s %s -identity %s -validate %s -timeout %d %s ", rwl_client_path,	
-				bso->eapObj.setEapTLS.intf, bso->eapObj.setEapTLS.ssid, 
-				bso->eapObj.setEapTLS.keyMgmtType, bso->eapObj.setEapTLS.encrptype, 
-				bso->eapObj.setEapTLS.clientCertificate, KEY_FILE, identity, 
-				bso->eapObj.setEapTLS.trustedRootCA, BCM_8021X_ASSOC_TIMEOUT, "%"); 
+				"-usercert %s %s -identity %s -validate %s -timeout %d %s ", rwl_client_path,
+				bso->eapObj.setEapTLS.intf, bso->eapObj.setEapTLS.ssid,
+				bso->eapObj.setEapTLS.keyMgmtType, bso->eapObj.setEapTLS.encrptype,
+				bso->eapObj.setEapTLS.clientCertificate, KEY_FILE, identity,
+				bso->eapObj.setEapTLS.trustedRootCA, BCM_8021X_ASSOC_TIMEOUT, "%");
 				retVal = exec_process_cnclient(gCmdStr, rwl_client_path, rwl_wifi_flag);
 				break;
 		case BCM_EAP_TYPE_TTLS:
 				S_N_PRINTF(gCmdStr,sizeof(gCmdStr),"%s sh cnClient -A %s -ssid %s -%s -%s -ttls-%s "
-				"-user %s -password %s -identity %s -validate %s -timeout %d %s  ", rwl_client_path, 
-				bso->eapObj.setEapTTLS.intf, bso->eapObj.setEapTTLS.ssid, 
-				bso->eapObj.setEapTTLS.keyMgmtType, bso->eapObj.setEapTTLS.encrptype, TTLS_innerEAP, 
-				bso->eapObj.setEapTTLS.username, bso->eapObj.setEapTTLS.passwd, 
-				bso->eapObj.setEapTTLS.username, bso->eapObj.setEapTTLS.trustedRootCA, 
+				"-user %s -password %s -identity %s -validate %s -timeout %d %s  ", rwl_client_path,
+				bso->eapObj.setEapTTLS.intf, bso->eapObj.setEapTTLS.ssid,
+				bso->eapObj.setEapTTLS.keyMgmtType, bso->eapObj.setEapTTLS.encrptype, TTLS_innerEAP,
+				bso->eapObj.setEapTTLS.username, bso->eapObj.setEapTTLS.passwd,
+				bso->eapObj.setEapTTLS.username, bso->eapObj.setEapTTLS.trustedRootCA,
 				BCM_8021X_ASSOC_TIMEOUT, "%");
 				retVal = exec_process_cnclient(gCmdStr, rwl_client_path, rwl_wifi_flag);
 				break;
 		case BCM_EAP_TYPE_SIM:
 				S_N_PRINTF(gCmdStr,sizeof(gCmdStr),"%s sh cnClient -A %s -ssid %s -%s -%s -sim %s "
 				"-scpin %s -timeout %d %s ", rwl_client_path, bso->eapObj.setEapSIM.intf,
-				bso->eapObj.setEapSIM.ssid, bso->eapObj.setEapSIM.keyMgmtType, 
-				bso->eapObj.setEapSIM.encrptype, bso->eapObj.setEapSIM.username, 
+				bso->eapObj.setEapSIM.ssid, bso->eapObj.setEapSIM.keyMgmtType,
+				bso->eapObj.setEapSIM.encrptype, bso->eapObj.setEapSIM.username,
 				bso->eapObj.setEapSIM.passwd, BCM_8021X_ASSOC_TIMEOUT, "%");
 				retVal = exec_process_cnclient(gCmdStr, rwl_client_path, rwl_wifi_flag);
 				break;
 		case BCM_EAP_TYPE_PEAP:
 				S_N_PRINTF(gCmdStr,sizeof(gCmdStr),"%s sh cnClient -A %s -ssid %s -%s -%s -peap-%s "
-				"-user %s -password %s -identity %s -timeout %d %s ", rwl_client_path, 
-				bso->eapObj.setEapPEAP.intf, bso->eapObj.setEapPEAP.ssid, 
-				bso->eapObj.setEapPEAP.keyMgmtType, bso->eapObj.setEapPEAP.encrptype, 
+				"-user %s -password %s -identity %s -timeout %d %s ", rwl_client_path,
+				bso->eapObj.setEapPEAP.intf, bso->eapObj.setEapPEAP.ssid,
+				bso->eapObj.setEapPEAP.keyMgmtType, bso->eapObj.setEapPEAP.encrptype,
 				bso->eapObj.setEapPEAP.innerEAP, bso->eapObj.setEapPEAP.username,
-				bso->eapObj.setEapPEAP.passwd, bso->eapObj.setEapPEAP.username, 
+				bso->eapObj.setEapPEAP.passwd, bso->eapObj.setEapPEAP.username,
 				BCM_8021X_ASSOC_TIMEOUT, "%");
 				retVal = exec_process_cnclient(gCmdStr, rwl_client_path, rwl_wifi_flag);
 				break;
-		default:	
+		default:
 			/* Run the commands in the batching mode in case of wifi transport*/
 			if(rwl_wifi_flag) {
 				asd_sleep(1);
 				sprintf(gCmdStr, "%s seq_start", rwl_client_path);
 				exec_process(gCmdStr);
 			}
-	
+
 
 			asd_sleep(1);
 			if ((!imode) && bso->channel){
@@ -352,14 +352,14 @@ int wfaStaAssociate(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 			exec_process(gCmdStr);
 
 			/*Execute the command wme_apsd_sta only if the driver is down*/
-			sprintf(gCmdStr, "%s wme_apsd_sta %d %d %d %d %d", rwl_client_path, 
+			sprintf(gCmdStr, "%s wme_apsd_sta %d %d %d %d %d", rwl_client_path,
 			bso->maxSPLength, bso->acBE, bso->acBK, bso->acVI, bso->acVO);
 			exec_process(gCmdStr);
 
 			asd_sleep(3);
 			sprintf(gCmdStr, "%s up", rwl_client_path);
 			exec_process(gCmdStr);
-	
+
 			if(rwl_wifi_flag) {
 				sprintf(gCmdStr, "%s seq_stop", rwl_client_path);
 				exec_process(gCmdStr);
@@ -390,13 +390,13 @@ int wfaStaAssociate(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 				sprintf(gCmdStr, "%s set_pmk %s", rwl_client_path, bso->passphrase);
 				exec_process(gCmdStr);
 			}
-	
+
 			if(bso->wpa_auth == BCM_WPA_AUTH_PSK) {
 				sprintf(gCmdStr, "%s sup_wpa 1", rwl_client_path );
-				exec_process(gCmdStr);	
+				exec_process(gCmdStr);
 			} else if(bso->wpa_auth == BCM_WPA2_AUTH_PSK) {
 				sprintf(gCmdStr, "%s sup_wpa 2", rwl_client_path );
-				exec_process(gCmdStr);	
+				exec_process(gCmdStr);
 			}
 
 			sprintf(gCmdStr, "%s auth %d", rwl_client_path, bso->auth);
@@ -424,7 +424,7 @@ exit:
 	if(retVal == TRUE)
 		staAssocResp->status = STATUS_COMPLETE;
 	else
-		staAssocResp->status = STATUS_ERROR;	
+		staAssocResp->status = STATUS_ERROR;
 	wfaEncodeTLV(WFA_STA_ASSOCIATE_RESP_TLV, 4, (BYTE *)staAssocResp, respBuf);
 	*respLen = WFA_TLV_HDR_LEN + 4;
 	return retVal;  /* Modified as per BRCM 1.3 ASD   */
@@ -458,7 +458,7 @@ int wfaStaGetIpConfig(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 	dutCmdResponse_t *ipconfigResp = &gGenericResp;
 	char *ifname = getIpConf->intf;
 	caStaGetIpConfigResp_t *ifinfo = &ipconfigResp->cmdru.getIfconfig;
-#ifndef WIN32 
+#ifndef WIN32
 	FILE *shell_fpt;
 	DPRINT_INFO(WFA_OUT,"Entering staGetIpConfig...\n");
 	/* Start: Modified as per BRCM 1.3 ASD */
@@ -529,15 +529,15 @@ int wfaStaGetIpConfig(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 	/* End: Modified as per BRCM 1.3 ASD */
 
 #else
-	/* The eth1 interface name in WinCE is BCMSDDHD1 and 
+	/* The eth1 interface name in WinCE is BCMSDDHD1 and
 	* the eth0 interface name is VMINI1. The command that comes in from Linux CA
-	* will send the eth0 or eth1 interface, which is then translated to WinCE 
+	* will send the eth0 or eth1 interface, which is then translated to WinCE
 	* specific interface name to get the Adapters information*/
 	if(!strcmp(getIpConf->intf, "eth1")) {
 		strcpy(getIpConf->intf , "BCMSDDHD1");
 	} else if(!strcmp(getIpConf->intf, "eth0"))	{
 		strcpy(getIpConf->intf , "VMINI1");
-	} 
+	}
 	/* Get the network interface information */
 	dwStatus = GetAdaptersInfo(// Call GetAdapterInfo
 		AdapterInfo,// [out] buffer to receive data
@@ -594,7 +594,7 @@ int wfaStaGetIpConfig(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 *   3. default gateway
 *   4. dns nameserver (pri and sec).
 *
-* Set the IP address and the mask value only if the the DHCP(ipconfig->isDhcp) 
+* Set the IP address and the mask value only if the the DHCP(ipconfig->isDhcp)
 * is disabled. Otherwise enable the DHCP for the network interface.
 */
 int wfaStaSetIpConfig(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
@@ -638,7 +638,7 @@ int wfaStaSetIpConfig(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 
 		/* Start: Modified as per BRCM 1.3 ASD */
                 /* if somedata is given as primary-dns then we'll display it
-                   else we'll show it as NOTDEF */ 
+                   else we'll show it as NOTDEF */
 		if(strcmp(ipconfig->pri_dns, "\0"))
 		{
 			/* set dns (linux specific) */
@@ -647,18 +647,18 @@ int wfaStaSetIpConfig(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 			sprintf(gCmdStr, "echo nameserver %s > /etc/resolv.conf", ipconfig->pri_dns);
 			exec_process(gCmdStr);
                         /* if no secondary-dns is given along with primary-dns
-                           then we'll have to show it as NOTDEF */ 
-                        if(strcmp(ipconfig->sec_dns, "\0"))        
+                           then we'll have to show it as NOTDEF */
+                        if(strcmp(ipconfig->sec_dns, "\0"))
 			    sprintf(gCmdStr, "echo nameserver %s >> /etc/resolv.conf", ipconfig->sec_dns);
                         else
 			    sprintf(gCmdStr, "echo nameserver %s >> /etc/resolv.conf", "NOTDEF");
 			exec_process(gCmdStr);
 		}
                 /* In case,no primary or secondary dns is given,it will print them as
-                   NOTDEF */   
+                   NOTDEF */
                 else
                 {
-                                    
+
 			sprintf(gCmdStr, "cp /etc/resolv.conf /tmp/resolv.conf.bk");
 			exec_process(gCmdStr);
 			sprintf(gCmdStr, "echo nameserver %s > /etc/resolv.conf", "NOTDEF");
@@ -720,7 +720,7 @@ int wfaStaVerifyIpConnection(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBu
 #ifndef WFA_PING_UDP_ECHO_ONLY
 
 	DPRINT_INFO(WFA_OUT, "Entering wfaStaVerifyIpConnection ...\n");
-#ifndef WIN32 
+#ifndef WIN32
 	tempip = (char*)malloc(30);
 #endif
 	/* set timeout value in case not set */
@@ -757,7 +757,7 @@ int wfaStaVerifyIpConnection(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBu
 	/* Start: Modified as per BRCM 1.3 ASD */
 	/* execute the ping command  and pipe the result to a tmp file */
 	memset(gCmdStr, 0, sizeof(gCmdStr));
-	sprintf(gCmdStr, "%s -c 3 -q %s >>%s", PING_PATH, verip->cmdsu.verifyIp.dipaddr, PINGOUT_FILE_PATH);	
+	sprintf(gCmdStr, "%s -c 3 -q %s >>%s", PING_PATH, verip->cmdsu.verifyIp.dipaddr, PINGOUT_FILE_PATH);
 	exec_process(gCmdStr);
 
 	asd_sleep(1);
@@ -768,7 +768,7 @@ int wfaStaVerifyIpConnection(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBu
 	if (system(gCmdStr) < 0) {
 		DPRINT_ERR(WFA_ERR, "\n Not able to execute verify ip cmd\n");
 		verifyIpResp->cmdru.connected = 0;
-	} 
+	}
 
 
 	shell_fpt = fopen(TMP_FILE_PATH, "rb");
@@ -1170,14 +1170,14 @@ int wfaStaSetEapTTLS(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 		if (!(bso = bcmWfaSsidObjTblAdd(ssidTarget))) {
 			DPRINT_ERR(WFA_OUT, "bcmWfaSsidObjTblAdd(%s) failed\n", ssidTarget);
 			return FALSE;
-			
+
 		}
 		if (wfa_defined_debug & (WFA_DEBUG_ERR | WFA_DEBUG_INFO)) {
 			bcmWfaSsidObjPrint(bso);
 		}
 
 	}
-		
+
 	memcpy(&(bso->eapObj.setEapTTLS), setTTLS, sizeof(caStaSetEapTTLS_t));
 	bso->eapType = BCM_EAP_TYPE_TTLS;
 
@@ -1218,7 +1218,7 @@ int wfaStaSetEapSIM(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 		}
 
 	}
-	
+
 	memcpy(&(bso->eapObj.setEapSIM), setSIM, sizeof(caStaSetEapSIM_t));
 	bso->eapType = BCM_EAP_TYPE_SIM;
 
@@ -1262,7 +1262,7 @@ int wfaStaSetPEAP(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 		}
 
 	}
-	
+
 	memcpy(&(bso->eapObj.setEapPEAP), setPEAP, sizeof(caStaSetEapPEAP_t));
 	bso->eapType = BCM_EAP_TYPE_PEAP;
 
@@ -1307,14 +1307,14 @@ int wfaStaSetUAPSD(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 			goto exit;
 		}
 	}
-	
+
 	if (rwl_wifi_flag) {
 		/* Use the batching mode */
 		asd_sleep(1);
 		sprintf (gCmdStr,"%s seq_start",rwl_client_path);
 		exec_process (gCmdStr);
 	}
-	
+
 	/* Get the driver down */
 	sprintf (gCmdStr,"%s down",rwl_client_path);
 	exec_process (gCmdStr);
@@ -1323,26 +1323,26 @@ int wfaStaSetUAPSD(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 	bso->acBK = setUAPSD->acBK;
 	bso->acVI = setUAPSD->acVI;
 	bso->acVO = setUAPSD->acVO;
-	
+
 	sprintf(gCmdStr,"%s wme_apsd_sta %d %d %d %d %d",rwl_client_path,
 			bso->maxSPLength,bso->acBE,bso->acBK,bso->acVI,bso->acVO);
 	exec_process(gCmdStr);
 	/* Get the driver up*/
 	sprintf (gCmdStr,"%s up",rwl_client_path);
 	exec_process (gCmdStr);
-	
+
 	sleep (1);
 	/* Setting up ssid */
 	sprintf (gCmdStr,"%s join %s",rwl_client_path,setUAPSD->ssid);
 	exec_process(gCmdStr);
-	
+
 	if (rwl_wifi_flag) {
 		/* End the batching sequence */
 		asd_sleep(1);
 		sprintf (gCmdStr,"%s seq_stop",rwl_client_path);
 		exec_process (gCmdStr);
 	}
-	
+
 exit:
 	/* End: Modified as per BRCM 1.3 ASD */
 	setUAPSDResp->status = STATUS_COMPLETE;
@@ -1657,7 +1657,7 @@ int wfaStaIsConnected(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 	/* Removed as per BRCM 1.3 ASD */
 	FILE *tmpfd;
 	dutCmdResponse_t *staConnectResp = &gGenericResp;
-	
+
 #ifdef WIN32
    unsigned int  position;
 #endif
@@ -1680,7 +1680,7 @@ int wfaStaIsConnected(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 		DPRINT_ERR(WFA_ERR, "isconnected failed\n");
 		return FALSE;
 	}
-	
+
 #ifndef WIN32
 	fgets(gCmdStr, sizeof(gCmdStr), tmpfd);
 	/* Short response means not associated */
@@ -1783,19 +1783,19 @@ int wfaStaGetStats(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 
 		GetStats(fd, L"txframe ", &position," ");
 		castatsResp->txFrames =  position;
-		
+
 		GetStats(fd, L"rxframe ", &position," ");
 		castatsResp->rxFrames =position;
-		
+
 		GetStats(fd, L"d11_txmulti ", &position," ");
 		castatsResp->txMulticast =position;
-		
+
 		GetStats(fd, L"d11_rxmulti ", &position," ");
 		castatsResp->rxMulticast = position;
-		
+
 		GetStats(fd, L"d11_txretrie ", &position," ");
 		castatsResp->txRetries = position;
-		
+
 		GetStats(fd, L"rxbadfcs ", &position," ");
 		castatsResp->fcsErrors= position ;
 	}
@@ -1856,7 +1856,7 @@ int wfaDeviceGetInfo(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 	sprintf(dinfo.vendor, "%.16s", "Broadcom");
 	sprintf(dinfo.version, "%.16s", gCmdStr);
 	sprintf(dinfo.model, "%.16s", "BRCM");
-	
+
 	DPRINT_INFO(WFA_OUT, "Entering wfaDeviceGetInfo ...\n");
 	DPRINT_INFO(WFA_OUT, "status,%i,vendor,%s,model,%s,version %s\n", infoResp->status,
 			dinfo.vendor,dinfo.model, dinfo.version);
@@ -1936,7 +1936,7 @@ int wfaStaGetBSSID(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
  *     This function will call ./wl cac_addts
  */
 int
-exec_addts(caStaSetWMM_t *setwmm) 
+exec_addts(caStaSetWMM_t *setwmm)
 {
 	char pwr_save_str[TSPEC_BUF_SIZE], direction[TSPEC_BUF_SIZE];
 	int stat;
@@ -1980,7 +1980,7 @@ exec_addts(caStaSetWMM_t *setwmm)
 		S_N_PRINTF(direction, sizeof(direction), "downlink");
 	else if (setwmm->actions.addts.tspec.tsinfo.direction == WMMAC_BIDIR)
 		S_N_PRINTF(direction, sizeof(direction), "bi-directional");
-			
+
 	if (setwmm->actions.addts.tspec.tsinfo.PSB == 1)
 		S_N_PRINTF(pwr_save_str, sizeof(pwr_save_str), "U-APSD");
 	else if (setwmm->actions.addts.tspec.tsinfo.PSB == 0)
@@ -2038,7 +2038,7 @@ exec_addts(caStaSetWMM_t *setwmm)
  */
 
 int
-exec_delts(caStaSetWMM_t *setwmm) 
+exec_delts(caStaSetWMM_t *setwmm)
 {
 	char *token_buf = NULL;
 	char temp_buf[WFA_BUFF_128], tsinfo_buf[MAX_TOKENS][TSPEC_BUF_SIZE], temp_resp[WFA_BUFF_128];
@@ -2087,12 +2087,12 @@ exec_delts(caStaSetWMM_t *setwmm)
 			while (token_buf != NULL) {
 				token_buf = (char *)strtok_r(NULL, " ", (char **) temp_buf);
 				if (token_buf != NULL) {
-					S_N_PRINTF(tsinfo_buf[token_count], 
+					S_N_PRINTF(tsinfo_buf[token_count],
 						sizeof(tsinfo_buf[token_count]), "%s", token_buf);
 					token_count++;
 				}
 			}
-			/* if tid of cac_tslist matches with tid of sta_set_wmm then delts is performed */	
+			/* if tid of cac_tslist matches with tid of sta_set_wmm then delts is performed */
 			if (atoi(tsinfo_buf[TID_INDEX]) == setwmm->actions.delts) {
 				S_N_PRINTF(gCmdStr, sizeof(gCmdStr), "%s cac_delts %d %s %s %s", \
 					rwl_client_path, TSPEC_VER, tsinfo_buf[BYTE_0], \
@@ -2107,7 +2107,7 @@ exec_delts(caStaSetWMM_t *setwmm)
    				tsinfo_flag = TID_MISMATCH;
 			}
 		} /* End of while */
-		fclose(output_fp);	
+		fclose(output_fp);
 		if (tsinfo_flag == NO_TSINFO) {
 			DPRINT_ERR(WFA_ERR, "Error. Cannot Execute wl cac_delts \n");
 			return FALSE;
@@ -2138,7 +2138,7 @@ int wfaStaSetWMM(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 	switch(setwmm->group)
 	{
 	case GROUP_WMMAC:
-		/* 
+		/*
 		 * Depending on setwmm->action exec_addts or exec_delts is called, which
 		 * which prepare the commands wl cac_addts and wl cac_delts respectively,
 		 * and populates the arguments.
@@ -2155,7 +2155,7 @@ int wfaStaSetWMM(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 				break;
 			}
 		}
-								
+
 		setwmmResp->status = STATUS_COMPLETE;
 		break;
 	case GROUP_WMMCONF:
@@ -2264,7 +2264,7 @@ bcmSsidObj_t *bcmWfaSsidObjTblAdd(char *ssidStr)
 	strcpy(bso->ssidStr, ssidStr);
 	bso->bssType = BCM_BSS_INFRA; /* init it to infrastructure bss */
 	bso->primary_key = BCM_PRI_KEY_BAD; /* init it to bad one */
-	bso->eapType = BCM_DEFAULT_SEC_MODE; /* init to non-eap mode */ 
+	bso->eapType = BCM_DEFAULT_SEC_MODE; /* init to non-eap mode */
 
 	for (idx = 0; idx < 4; idx++) {
 		S_N_PRINTF (bso->keys[idx], 2, "%s", "\0");
@@ -2353,7 +2353,7 @@ void bcmWfaInit(void)
 	sprintf(gCmdStr, "%s sup_wpa 1", rwl_client_path); /* enable in-driver supplicant */
 	exec_process(gCmdStr);
 
-	/* Driver should not be made up explicitly  
-	 * as we need to execute uapsd command in the beginning. 
+	/* Driver should not be made up explicitly
+	 * as we need to execute uapsd command in the beginning.
 	 */
 }

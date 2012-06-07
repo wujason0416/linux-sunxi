@@ -28,5 +28,3 @@ struct clk {
 #define __clk_put(clk) do { } while (0)
 
 #endif
-
-

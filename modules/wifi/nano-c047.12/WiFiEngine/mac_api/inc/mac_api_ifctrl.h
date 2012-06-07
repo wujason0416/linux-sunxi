@@ -17,7 +17,7 @@ notice.
 
 Nanoradio AB
 Torshamnsgatan 39                       info@nanoradio.se
-164 40 Kista                       http://www.wep.com  
+164 40 Kista                       http://www.wep.com
 SWEDEN
 *******************************************************************************/
 /*----------------------------------------------------------------------------*/
@@ -39,7 +39,7 @@ Thing are coming in and things are coming out, bla bla bla.
 /******************************************************************************/
 /* DRIVER TO MAC MESSAGE ID's                                                 */
 /******************************************************************************/
-#define HIC_CTRL_INTERFACE_DOWN          (0  | MAC_API_PRIMITIVE_TYPE_RSP) 
+#define HIC_CTRL_INTERFACE_DOWN          (0  | MAC_API_PRIMITIVE_TYPE_RSP)
 #define HIC_CTRL_HIC_VERSION_REQ         (1  | MAC_API_PRIMITIVE_TYPE_REQ)
 #define HIC_CTRL_HEARTBEAT_REQ           (2  | MAC_API_PRIMITIVE_TYPE_REQ)
 #define HIC_CTRL_SET_ALIGNMENT_REQ       (3  | MAC_API_PRIMITIVE_TYPE_REQ)
@@ -307,7 +307,7 @@ typedef union
    hic_ctrl_commit_suicide_req_t commit_suicide;
    hic_ctrl_scb_error_req_t      scbErrorReq;
    hic_ctrl_scb_error_cfm_t      scbErrorCfm;
-   hic_ctrl_scb_error_ind_t      scbErrorInd;   
+   hic_ctrl_scb_error_ind_t      scbErrorInd;
    hic_ctrl_sleep_forever_req_t  sleepForeverReq;
    hic_ctrl_sleep_forever_cfm_t  sleepForeverCfm;
 }hic_ctrl_msg_body_t;

@@ -60,7 +60,7 @@ struct nrx_softc {
    /* parent handles */
    struct nanonet_create_param *transport;
    struct device *transport_data;
-    
+
    /* Our /proc dir */
    struct proc_dir_entry *proc_dir;
    struct proc_dir_entry *core_dir;
@@ -91,11 +91,11 @@ struct nrx_softc {
    we_ratemask_t supported_rates;
 
    size_t tx_hlen; /* HIC + DATA header size */
-	
+
    int auth_param[11];
-   
+
    int scan_notif_count;
-   
+
    we_ind_cb_t ind_cbs[WE_IND_LAST_MARK];
 
    uint8_t cwin[4][2];
@@ -120,7 +120,7 @@ static inline void nrx_dev_unlock(struct nrx_softc *sc)
    spin_unlock(&sc->lock);
 }
 
-static inline unsigned int nrx_set_state(struct nrx_softc *sc, 
+static inline unsigned int nrx_set_state(struct nrx_softc *sc,
                                         unsigned int new_state)
 {
    unsigned int old_state = sc->state;

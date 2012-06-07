@@ -1858,4 +1858,3 @@ __aw_ccu_err_e aw_ccu_set_mod_clk(__aw_ccu_clk_t *clk)
 
     return AW_CCU_ERR_PARA_INVALID;
 }
-

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2011, Broadcom Corporation
  * All Rights Reserved.
- * 
+ *
  * This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
  * the contents of this file may not be disclosed to third parties, copied
  * or duplicated in any form, in whole or in part, without the prior
@@ -85,7 +85,7 @@ char *g_rwl_buf_shell = (char*) &shell_wlu.shelldata;
 int rwl_find_remote_wifi_server(void *wl, char *id);
 int wl_ioctl(void *wl, int cmd, void *buf, int len, bool set);
 
-/* 
+/*
  * This function runs a set of commands before running the wi-fi server
  * This is avoids packet drops and improves performance.
  * We run the following wl commands
@@ -116,7 +116,7 @@ void remote_wifi_ser_init_cmds(void *wl)
 		else
 			len = strlen(wifi_cmds[count].data) + 1 + sizeof(int);
 
-		/* If the command length exceeds the buffer length continue 
+		/* If the command length exceeds the buffer length continue
 		 * executing the next command
 		 */
 		if (len > sizeof(bigbuf)) {
@@ -140,7 +140,7 @@ void remote_wifi_ser_init_cmds(void *wl)
 #endif
 
 		if (wifi_cmds[count].cmd == WLC_UP)
-			/* NULL needs to be passed to the driver if WL UP command needs to 
+			/* NULL needs to be passed to the driver if WL UP command needs to
 			 * be executed Otherwise driver hangs
 			 */
 			err = wl_ioctl(wl, wifi_cmds[count].cmd,

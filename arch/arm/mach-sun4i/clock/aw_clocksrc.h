@@ -78,4 +78,3 @@
 
 
 #endif  /* #ifndef __AW_CLOCKSRC_H__ */
-

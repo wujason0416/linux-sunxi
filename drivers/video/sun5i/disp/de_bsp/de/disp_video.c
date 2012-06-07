@@ -8,7 +8,7 @@
 frame_para_t g_video[2][4];
 
 static __inline __s32 Hal_Set_Frame(__u32 sel, __u32 tcon_index, __u32 id)
-{	
+{
     __u32 cur_line = 0, start_delay = 0;
 
     cur_line = LCDC_get_cur_line(sel, tcon_index);
@@ -41,7 +41,7 @@ static __inline __s32 Hal_Set_Frame(__u32 sel, __u32 tcon_index, __u32 id)
         __u32 maf_linestride = 0;
 
         scaler_index = gdisp.screen[sel].layer_manage[id].scaler_index;
-        
+
         scaler = &(gdisp.scaler[scaler_index]);
 
     	if(g_video[sel][id].video_cur.interlace == TRUE)
@@ -104,7 +104,7 @@ static __inline __s32 Hal_Set_Frame(__u32 sel, __u32 tcon_index, __u32 id)
     	    g_video[sel][id].tempdiff_en = FALSE;
     	    g_video[sel][id].diagintp_en = FALSE;
     	}
-        
+
     	in_type.fmt= Scaler_sw_para_to_reg(0,scaler->in_fb.format);
     	in_type.mod= Scaler_sw_para_to_reg(1,scaler->in_fb.mode);
     	in_type.ps= Scaler_sw_para_to_reg(2,scaler->in_fb.seq);
@@ -132,11 +132,11 @@ static __inline __s32 Hal_Set_Frame(__u32 sel, __u32 tcon_index, __u32 id)
     	in_scan.bottom = g_video[sel][id].fetch_bot;
 
     	out_scan.field = (gdisp.screen[sel].de_flicker_status == DE_FLICKER_USED)?0: gdisp.screen[sel].b_out_interlace;
-        
+
     	if(scaler->out_fb.cs_mode > DISP_VXYCC)
     	{
     		scaler->out_fb.cs_mode = DISP_BT601;
-    	}	
+    	}
 
         if(scaler->in_fb.b_trd_src)
         {
@@ -146,7 +146,7 @@ static __inline __s32 Hal_Set_Frame(__u32 sel, __u32 tcon_index, __u32 id)
 
             inmode = Scaler_3d_sw_para_to_reg(0, scaler->in_fb.trd_mode, 0);
             outmode = Scaler_3d_sw_para_to_reg(1, scaler->out_trd_mode, gdisp.screen[sel].b_out_interlace);
-            
+
             DE_SCAL_Get_3D_In_Single_Size(inmode, &in_size, &in_size);
             if(scaler->b_trd_out)
             {
@@ -166,7 +166,7 @@ static __inline __s32 Hal_Set_Frame(__u32 sel, __u32 tcon_index, __u32 id)
     	}
 
         if(g_video[sel][id].dit_enable == TRUE && gdisp.screen[sel].de_flicker_status == DE_FLICKER_USED)
-        {   
+        {
             Disp_de_flicker_enable(sel, FALSE);
         }
     	DE_SCAL_Set_Init_Phase(scaler_index, &in_scan, &in_size, &in_type, &out_scan, &out_size, &out_type, g_video[sel][id].dit_enable);
@@ -198,7 +198,7 @@ static __inline __s32 Hal_Set_Frame(__u32 sel, __u32 tcon_index, __u32 id)
     		Yuv_Channel_Set_framebuffer(sel, &fb, layer_man->para.src_win.x, layer_man->para.src_win.y);
     	}
     	else
-    	{        	    
+    	{
             layer_fb.fb_addr    = (__u32)OSAL_VAtoPA((void*)fb.addr[0]);
             layer_fb.pixseq     = img_sw_para_to_reg(3,0,fb.seq);
             layer_fb.br_swap    = fb.br_swap;
@@ -222,12 +222,12 @@ static __inline __s32 Hal_Set_Frame(__u32 sel, __u32 tcon_index, __u32 id)
 
 
 __s32 Video_Operation_In_Vblanking(__u32 sel, __u32 tcon_index)
-{	
+{
     __u32 id=0;
 
     for(id = 0; id<4; id++)
     {
-        if((g_video[sel][id].enable == TRUE) && (g_video[sel][id].have_got_frame == TRUE)) 
+        if((g_video[sel][id].enable == TRUE) && (g_video[sel][id].have_got_frame == TRUE))
         {
     		Hal_Set_Frame(sel, tcon_index, id);
     	}
@@ -287,7 +287,7 @@ __s32 BSP_disp_video_get_dit_info(__u32 sel, __u32 hid, __disp_dit_info_t * dit_
     {
     	dit_info->maf_enable = FALSE;
     	dit_info->pre_frame_enable = FALSE;
-    	
+
     	if(g_video[sel][hid].dit_enable)
     	{
     		if(g_video[sel][hid].dit_mode == DIT_MODE_MAF)
@@ -295,7 +295,7 @@ __s32 BSP_disp_video_get_dit_info(__u32 sel, __u32 hid, __disp_dit_info_t * dit_
     			dit_info->maf_enable = TRUE;
     		}
     		if(g_video[sel][hid].tempdiff_en)
-    		{	
+    		{
     			dit_info->pre_frame_enable = TRUE;
     		}
     	}
@@ -342,4 +342,3 @@ __s32 BSP_disp_video_stop(__u32 sel, __u32 hid)
         return DIS_FAIL;
     }
 }
-

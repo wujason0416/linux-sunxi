@@ -19,4 +19,3 @@ hic-proxy: obj
 	make -C userspace/hic-proxy \
 	CFLAGS=-I$(addprefix $(HOSTDRIVER_DIR)/, $(NANO_IF_INC)) \
 	OBJ_DIR=$(OBJ_DIR)
-

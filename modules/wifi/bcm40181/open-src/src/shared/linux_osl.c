@@ -2,13 +2,13 @@
  * Linux OS Independent Layer
  *
  * Copyright (C) 1999-2011, Broadcom Corporation
- * 
+ *
  *         Unless you and Broadcom execute a separate written software license
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
  * following added to such license:
- * 
+ *
  *      As a special exception, the copyright holders of this software give you
  * permission to link this software with independent modules, and to copy and
  * distribute the resulting executable under terms of your choice, provided that
@@ -16,7 +16,7 @@
  * the license of that module.  An independent module is a module which is not
  * derived from this software.  The special exception does not apply to any
  * modifications of the software.
- * 
+ *
  *      Notwithstanding the above, under no circumstances may you combine this
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
@@ -148,7 +148,7 @@ static int16 linuxbcmerrormap[] =
 	-EINVAL,		/* BCME_NMODE_DISABLED */
 	-ENODATA,		/* BCME_NONRESIDENT */
 
-/* When an new error code is added to bcmutils.h, add os 
+/* When an new error code is added to bcmutils.h, add os
  * specific error translation here as well
  */
 /* check if BCME_LAST changed since the last time this function was updated */
@@ -244,7 +244,7 @@ osl_attach(void *pdev, uint bustype, bool pkttag)
 		sema_init(&bcm_static_skb->osl_pkt_sem, 1);
 #else
 		init_MUTEX(&bcm_static_skb->osl_pkt_sem);
-#endif		
+#endif
 	}
 #endif /* DHD_USE_STATIC_BUF */
 
@@ -834,7 +834,7 @@ osl_assert(char *exp, char *file, int line)
 	__coverity_panic__();
 #endif
 }
-#endif 
+#endif
 
 void
 osl_delay(uint usec)

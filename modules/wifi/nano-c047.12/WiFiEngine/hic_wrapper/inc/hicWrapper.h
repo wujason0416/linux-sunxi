@@ -20,7 +20,7 @@ typedef void (* hic_wrapper_cb_t)(void* object_p, Blob_t* blob, WrapperAction_t 
 G L O B A L   C O N S T A N T S / V A R I A B L E S
 *****************************************************************************/
 #ifdef DE_ASSERT
-#define HIC_ASSERT(_a)      DE_ASSERT((_a))      
+#define HIC_ASSERT(_a)      DE_ASSERT((_a))
 #else
 #define HIC_ASSERT(_a)
 #endif
@@ -36,7 +36,7 @@ G L O B A L   F U N C T I O N S
 #define HicWrapper_mlme_rssi_dbm_t    HicWrapper_int32_t
 #define HicWrapper_uintptr_t          HicWrapper_uint32_t
 
-#define HicWrapper_m80211_ie_hdr_t                       MacWrapper_m80211_ie_hdr_t         
+#define HicWrapper_m80211_ie_hdr_t                       MacWrapper_m80211_ie_hdr_t
 #define HicWrapper_m80211_remaining_IEs_t                MacWrapper_m80211_remaining_IEs_t
 #define HicWrapper_m80211_ie_vendor_specific_hdr_t       MacWrapper_m80211_ie_vendor_specific_hdr_t
 #define HicWrapper_m80211_ie_supported_rates_t           MacWrapper_m80211_ie_supported_rates_t
@@ -71,7 +71,7 @@ G L O B A L   F U N C T I O N S
 #define HicWrapper_m80211_ie_WMM_information_element_t   MacWrapper_m80211_ie_WMM_information_element_t
 #define HicWrapper_m80211_ie_WMM_parameter_element_t     MacWrapper_m80211_ie_WMM_parameter_element_t
 #define HicWrapper_m80211_ie_qos_capability_t            MacWrapper_m80211_ie_qos_capability_t
-#define HicWrapper_m80211_ie_country_t                   MacWrapper_m80211_ie_country_t   
+#define HicWrapper_m80211_ie_country_t                   MacWrapper_m80211_ie_country_t
 #define HicWrapper_m80211_ie_request_info_t              MacWrapper_m80211_ie_request_info_t
 #define HicWrapper_m80211_ie_erp_t                       MacWrapper_m80211_ie_erp_t
 #define HicWrapper_m80211_mac_addr_t(_o,_b,_a)           HicWrapper_array_t((char *)(_o), sizeof(((m80211_mac_addr_t*)0)->octet), (_b), (_a))
@@ -356,4 +356,3 @@ void HicWrapper_hic_ctrl_hl_sync_req_t(hic_ctrl_hl_sync_req_t* object_p, Blob_t*
 /* END GENERATED PROTOS */
 
 #endif /* HIC_WRAPPER_H */
-

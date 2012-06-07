@@ -88,7 +88,7 @@ void we_dlm_register_adapter(dlm_ops_find cb)
 {
    if(cb == NULL)
       cb = default_find;
-   
+
    dlm_state.find = cb;
    dlm_state.ops = NULL;
 }
@@ -96,11 +96,11 @@ void we_dlm_register_adapter(dlm_ops_find cb)
 static void create_dlm_load_fail_ind(hic_message_context_t *msg_ref)
 {
    Mlme_CreateMessageContext(*msg_ref);
-   
-   msg_ref->msg_type = HIC_MESSAGE_TYPE_DLM;
-   msg_ref->msg_id = HIC_DLM_LOAD_FAILED_IND;  
 
-   (void)HIC_ALLOCATE_RAW_CONTEXT(NULL, msg_ref, hic_dlm_load_failed_ind_t);   
+   msg_ref->msg_type = HIC_MESSAGE_TYPE_DLM;
+   msg_ref->msg_id = HIC_DLM_LOAD_FAILED_IND;
+
+   (void)HIC_ALLOCATE_RAW_CONTEXT(NULL, msg_ref, hic_dlm_load_failed_ind_t);
 }
 
 static void create_dlm_req(
@@ -196,9 +196,9 @@ static void handle_dlm_swap_ind(hic_dlm_swap_ind_t *ind)
    }
    else
    {
-      create_dlm_req_and_update_state( 
+      create_dlm_req_and_update_state(
             &msg_ref,
-            &req, 
+            &req,
             ind->load_memory_address,
             ind->size);
 
@@ -227,9 +227,9 @@ static void handle_dlm_load_cfm(hic_dlm_load_cfm_t *cfm)
       return;
    }
 
-   create_dlm_req_and_update_state( 
+   create_dlm_req_and_update_state(
          &msg_ref,
-         &req, 
+         &req,
          cfm->address,
          cfm->remaining_size);
 
@@ -260,4 +260,3 @@ void wei_handle_dlm_pkt(hic_message_context_t *msg_ref)
          DE_ASSERT(FALSE);
    }
 }
-

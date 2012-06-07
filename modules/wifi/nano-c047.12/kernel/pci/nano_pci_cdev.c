@@ -50,7 +50,7 @@ nanopci_open(struct inode *inode, struct file *filp)
    if(test_and_set_bit(DEVST_OPEN, &card->devst))
       return -EAGAIN;
    filp->private_data = card;
-   
+
    return 0;
 }
 
@@ -62,7 +62,7 @@ nanopci_release(struct inode *inode, struct file *filp)
    clear_bit(DEVST_OPEN, &card->devst);
    return 0;
 }
-   
+
 static ssize_t
 nanopci_read(struct file *filp, char __user *buf, size_t count, loff_t *off)
 {
@@ -78,7 +78,7 @@ nanopci_read(struct file *filp, char __user *buf, size_t count, loff_t *off)
       up(&card->sem);
       if(filp->f_flags & O_NONBLOCK)
 	 return -EAGAIN;
-      if(wait_event_interruptible(card->rx_waitqueue, 
+      if(wait_event_interruptible(card->rx_waitqueue,
 				  !skb_queue_empty(&card->rx_queue)))
 	 return -ERESTARTSYS;
       if(down_interruptible(&card->sem))
@@ -98,7 +98,7 @@ nanopci_read(struct file *filp, char __user *buf, size_t count, loff_t *off)
       skb_unlink(skb, &card->rx_queue);
       dev_kfree_skb(skb);
    }
-   card->status.irq_handled = card->status.irq_count - 
+   card->status.irq_handled = card->status.irq_count -
      skb_queue_len(&card->rx_queue);
 
    up(&card->sem);
@@ -114,7 +114,7 @@ static void nano_pci_tx_wq(
 			   )
 {
     struct nano_pci_card* card;
-    struct sk_buff *skb;	
+    struct sk_buff *skb;
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,20)
     card = (struct nano_pci_card *)device;
@@ -127,9 +127,9 @@ static void nano_pci_tx_wq(
 }
 
 static ssize_t
-nanopci_write(struct file *filp, 
-	      const char __user *buf, 
-	      size_t count, 
+nanopci_write(struct file *filp,
+	      const char __user *buf,
+	      size_t count,
 	      loff_t *off)
 {
    struct nano_pci_card *card = filp->private_data;
@@ -142,7 +142,7 @@ nanopci_write(struct file *filp,
    skb = alloc_skb(count + 32, GFP_KERNEL);
 
    if(skb == NULL) {
-      KDEBUG(ERROR, "failed to allocate %lu bytes", 
+      KDEBUG(ERROR, "failed to allocate %lu bytes",
 	     (unsigned long)count);
       up(&card->sem);
       return -ENOMEM;
@@ -163,7 +163,7 @@ nanopci_write(struct file *filp,
    queue_work (nanopci_wq, &card->tx_ws);
    return count;
 }
-   
+
 
 static void boot_start(struct nano_pci_card* card);
 static void boot_stop(struct nano_pci_card* card);
@@ -182,11 +182,11 @@ static void flush_queues(struct nano_pci_card *card)
 
 static int
 nanopci_ioctl_body(struct nano_pci_card *card,
-                   unsigned int cmd, 
+                   unsigned int cmd,
                    unsigned long arg)
 {
    int retval = 0;
-   
+
    if(down_interruptible(&card->sem))
       return -ERESTARTSYS;
 
@@ -194,7 +194,7 @@ nanopci_ioctl_body(struct nano_pci_card *card,
    case NANOPCI_IOCGSTATUS: {
       card->status.tx_queue = skb_queue_len(&card->tx_queue);
       card->status.booting = card->booting;
-      if(copy_to_user((void __user*)arg, 
+      if(copy_to_user((void __user*)arg,
 		      &card->status, sizeof(card->status))) {
 	 KDEBUG(ERROR, "EFAULT copying out data");
          retval = -EFAULT;
@@ -234,7 +234,7 @@ nanopci_ioctl_body(struct nano_pci_card *card,
       } else {
          retval = -EFAULT;
       }
-      
+
       break;
    }
    case NANOPCI_IOCBOOTDISABLE: {
@@ -279,9 +279,9 @@ nanopci_unlocked_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 }
 #else
 static int
-nanopci_ioctl(struct inode *inode, 
-	      struct file *filp, 
-	      unsigned int cmd, 
+nanopci_ioctl(struct inode *inode,
+	      struct file *filp,
+	      unsigned int cmd,
 	      unsigned long arg)
 {
    return nanopci_ioctl_body(filp->private_data, cmd, arg);
@@ -334,7 +334,7 @@ nanopci_cdev_init(struct nano_pci_card* card)
    skb_queue_head_init(&card->rx_queue);
    skb_queue_head_init(&card->tx_queue);
 
-    INIT_WORK (&card->tx_ws, nano_pci_tx_wq 
+    INIT_WORK (&card->tx_ws, nano_pci_tx_wq
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,20)
 	       ,(void*)card
 #endif
@@ -354,7 +354,7 @@ nanopci_cdev_init(struct nano_pci_card* card)
       card->devno = 0;
       return ret;
    }
-   
+
    card->device_class = class_create(THIS_MODULE, "nanoradio");
    if(card->device_class == NULL) {
       cdev_del(&card->cdev);
@@ -401,4 +401,3 @@ nanonet_destroy(struct net_device *dev)
 {
    nanopci_cdev_release((struct nano_pci_card*)dev);
 }
-

@@ -129,7 +129,7 @@ static void eloop_reschedule(void);
 
 /* Simulate os_get_time with the internal tick counter, this does not
  * provide a correct time stamp, but we really only care about a
- * monotonically increasing time here. 
+ * monotonically increasing time here.
  *
  */
 /* XXX this does not belong here */
@@ -182,7 +182,7 @@ static int eloop_timer(void *data, size_t len)
 static void
 eloop_reschedule(void)
 {
-	if(eloop.timeout != NULL && 
+	if(eloop.timeout != NULL &&
 	   eloop.timeout != eloop.registered_timeout) {
 		struct os_time delay, now;
 		long msec = 0;
@@ -201,7 +201,7 @@ eloop_reschedule(void)
 							FALSE);
 		eloop.registered_timeout = eloop.timeout;
 	}
-							
+
 }
 
 int eloop_register_timeout(unsigned int secs, unsigned int usecs,
@@ -224,7 +224,7 @@ int eloop_register_timeout(unsigned int secs, unsigned int usecs,
 	timeout->user_data = user_data;
 	timeout->handler = handler;
 	timeout->next = NULL;
-	
+
 	prev = &eloop.timeout;
 	tmp = eloop.timeout;
 	while(tmp != NULL) {
@@ -233,7 +233,7 @@ int eloop_register_timeout(unsigned int secs, unsigned int usecs,
 		prev = &tmp->next;
 		tmp = tmp->next;
 	}
-	
+
 	timeout->next = tmp;
 	*prev = timeout;
 

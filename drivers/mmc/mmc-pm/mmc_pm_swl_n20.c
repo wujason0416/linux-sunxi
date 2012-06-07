@@ -18,10 +18,10 @@ static int nano_gpio_ctrl(char* name, int level)
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
     char* gpio_name[4] = {"swl_n20_host_wakeup", "swl_n20_shdn",
                                "swl_n20_vcc_en", "swl_n20_vdd_en"};
-    
+
     int i = 0;
     int ret = 0;
-    
+
     for (i=0; i<4; i++) {
         if (strcmp(name, gpio_name[i])==0)
             break;
@@ -30,7 +30,7 @@ static int nano_gpio_ctrl(char* name, int level)
         nano_msg("No gpio %s for nano-wifi module\n", name);
         return -1;
     }
-    
+
     ret = gpio_write_one_pin_value(ops->pio_hdle, level, name);
     if (ret) {
         nano_msg("Failed to set gpio %s to %d !\n", name, level);
@@ -47,12 +47,12 @@ static int nano_get_io_value(char* name)
 {
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
     char* hostwake = "swl_n20_host_wakeup";
-    
+
     if (strcmp(name, hostwake)) {
         nano_msg("No gpio %s for swl-n20\n", name);
         return -1;
     }
-    
+
     return gpio_read_one_pin_value(ops->pio_hdle, name);
 }
 

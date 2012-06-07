@@ -63,4 +63,3 @@ typedef enum
 #define UCOS_NUM_LARGE_XBUFFERS 1
 
 #endif /* __sys_cfg_common_h__ */
-

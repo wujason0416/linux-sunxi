@@ -4,7 +4,7 @@
 /* This file contains stuff that depends on wireless.h. The reason for
  * keeping it in a separate file is that it pulls in some headers that
  * doesn't work well with other headers, for example net/if.h and
- * linux/if.h clash 
+ * linux/if.h clash
  */
 #include <sys/socket.h>
 #include <linux/types.h>
@@ -30,7 +30,7 @@ nrx_iwioctl(nrx_context ctx,
 
    if(ioctl(ctx->sock, cmd, iwr) < 0)
       return errno;
-   
+
    return 0;
 }
 
@@ -59,7 +59,7 @@ get_range(nrx_context ctx, char *ifname, union my_range *range)
    iwr.u.data.pointer = (caddr_t)range;
    iwr.u.data.length = sizeof(*range);
    iwr.u.data.flags = 0;
-   
+
    return nrx_iwioctl(ctx, ifname, SIOCGIWRANGE, &iwr);
 }
 
@@ -93,7 +93,7 @@ nrx_get_wxconfig(nrx_context ctx)
  * combination of the BSSID and SSID. This means that there may be
  * several entries with the same SSID but different BSSIDs (such as
  * several APs in the same ESS) and several entries with the same
- * BSSID but different SSIDs (such a stealth AP being shown once 
+ * BSSID but different SSIDs (such a stealth AP being shown once
  * as found by a "broadcast" scan job (without a SSID) and once
  * as found by a scan job that probes for the particular SSID of the
  * stealth AP (with the SSID)).
@@ -135,7 +135,7 @@ nrx_get_scan_list(nrx_context ctx,
    ret = nrx_iwioctl(ctx, NULL, SIOCGIWSCAN, &iwr);
    if(ret == 0)
       *len = iwr.u.data.length;
-   else 
+   else
       *len = 0;
    return ret;
 }
@@ -146,20 +146,20 @@ nrx_get_scan_list(nrx_context ctx,
  * @brief <b>Set the TX retry limits</b>
  *
  * Specify the maximum number of transmission retries before discarding a frame.
- * The firmware differentiates between short packets below RTS threshold 
+ * The firmware differentiates between short packets below RTS threshold
  * and long packets above it. Default is 7 retries for short packets
  * and 5 for long packets.
  *
  * The limits specified with this function will only put an upper bound of the
- * the total number of retransmissions performed according to 
+ * the total number of retransmissions performed according to
  * nrx_set_tx_retry_limit_by_rate().
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
- * @param short_limit Total number of retries done for packets shorter than 
+ * @param short_limit Total number of retries done for packets shorter than
  *                    the RTS threshold. Minimum value is 0 and maximum is 126.
- * @param long_limit Total number of retries done for packets longer than 
+ * @param long_limit Total number of retries done for packets longer than
  *                    the RTS threshold. Minimum value is 0 and maximum is 126.
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -195,7 +195,7 @@ nrx_set_tx_retry_limits(nrx_context ctx,
  * @brief <b>Get the currently used frequency</b>
  *
  * @param [in] ctx NRX context that was created by the call to nrx_init_context().
- * @param [out] frequency Will hold activ frequency in kHz. 
+ * @param [out] frequency Will hold activ frequency in kHz.
  *
  * @retval 0 on success.
  * @retval EINVAL
@@ -223,7 +223,7 @@ nrx_get_curr_freq(nrx_context ctx,
 
    m = iwr.u.freq.m;
    e = iwr.u.freq.e;
-   
+
    while(e < 3) {
       m /= 10;
       e++;

@@ -68,11 +68,11 @@ int WiFiEngine_Connect(WiFiEngine_net_t *net)
 
    if((net->bss_p->bssType == M80211_CAPABILITY_IBSS)&&(net->status == weNetworkStatus_Start))
    {
-      wei_sm_queue_sig(INTSIG_NET_START, SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, DUMMY, FALSE); 
+      wei_sm_queue_sig(INTSIG_NET_START, SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, DUMMY, FALSE);
    }
    else
    {
-      wei_sm_queue_sig(INTSIG_NET_CONNECT, SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, DUMMY, FALSE); 
+      wei_sm_queue_sig(INTSIG_NET_CONNECT, SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, DUMMY, FALSE);
    }
    /* Let the driver act upon the new message. */
    wei_sm_execute();
@@ -95,7 +95,7 @@ int WiFiEngine_Join(WiFiEngine_net_t *net)
    DE_ASSERT(wei_netlist_get_current_net() == NULL);
    wei_netlist_make_current_net(net);
 
-   wei_sm_queue_sig(INTSIG_NET_JOIN, SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, DUMMY, FALSE); 
+   wei_sm_queue_sig(INTSIG_NET_JOIN, SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, DUMMY, FALSE);
 
    /* Let the driver act upon the new message. */
    wei_sm_execute();
@@ -114,7 +114,7 @@ int WiFiEngine_Authenticate(void)
 {
    BAIL_IF_UNPLUGGED;
 
-   wei_sm_queue_sig(INTSIG_NET_AUTHENTICATE, SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, DUMMY, FALSE); 
+   wei_sm_queue_sig(INTSIG_NET_AUTHENTICATE, SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, DUMMY, FALSE);
 
    /* Let the driver act upon the new message. */
    wei_sm_execute();
@@ -132,7 +132,7 @@ int WiFiEngine_Associate(void)
 {
    BAIL_IF_UNPLUGGED;
 
-   wei_sm_queue_sig(INTSIG_NET_ASSOCIATE, SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, DUMMY, FALSE); 
+   wei_sm_queue_sig(INTSIG_NET_ASSOCIATE, SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, DUMMY, FALSE);
 
    /* Let the driver act upon the new message. */
    wei_sm_execute();
@@ -143,7 +143,7 @@ int WiFiEngine_Associate(void)
  * @brief Disconnect from the current network.
  *
  * Disconnect from the currently associated SSID (through a Disassociate request).
- * 
+ *
  * @return WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_Disconnect(void)
@@ -151,7 +151,7 @@ int WiFiEngine_Disconnect(void)
    BAIL_IF_UNPLUGGED;
 
    wei_sm_queue_sig(INTSIG_NET_DISASSOCIATE, SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, DUMMY, FALSE);
-   
+
    /* Let the driver act upon the new message. */
    wei_sm_execute();
 
@@ -160,7 +160,7 @@ int WiFiEngine_Disconnect(void)
 
 /*!
  * @brief Leave current IBSS net (turn off beacon transmission and cleanup)
- * 
+ *
  * @return WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_LeaveIbss(void)
@@ -168,7 +168,7 @@ int WiFiEngine_LeaveIbss(void)
    BAIL_IF_UNPLUGGED;
 
    wei_sm_queue_sig(INTSIG_NET_LEAVE_IBSS, SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, DUMMY, FALSE);
-   
+
    /* Let the driver act upon the new message. */
    wei_sm_execute();
 
@@ -177,8 +177,8 @@ int WiFiEngine_LeaveIbss(void)
 
 
 /*!
- * @brief Disassociate from the current SSID and turn off the radio. 
- * 
+ * @brief Disassociate from the current SSID and turn off the radio.
+ *
  * @return WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_Disassociate(void)
@@ -186,7 +186,7 @@ int WiFiEngine_Disassociate(void)
    BAIL_IF_UNPLUGGED;
 
    wei_sm_queue_sig(INTSIG_NET_DISASSOCIATE, SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, DUMMY, FALSE);
-   
+
    /* Let the driver act upon the new message. */
    wei_sm_execute();
 
@@ -196,8 +196,8 @@ int WiFiEngine_Disassociate(void)
 
 
 /*!
- * @brief Deauthenticate from the current SSID and turn off the radio. 
- * 
+ * @brief Deauthenticate from the current SSID and turn off the radio.
+ *
  * @return WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_Deauthenticate(void)
@@ -205,7 +205,7 @@ int WiFiEngine_Deauthenticate(void)
    BAIL_IF_UNPLUGGED;
 
    wei_sm_queue_sig(INTSIG_NET_DEAUTHENTICATE, SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, DUMMY, FALSE);
-   
+
    /* Let the driver act upon the new message. */
    wei_sm_execute();
 
@@ -217,9 +217,9 @@ int WiFiEngine_Deauthenticate(void)
  * @brief Reconnect to the currently selected SSID
  *
  * Attempts to reconnect to the SSID previously set through WiFiEngine_SetSSID().
- * 
+ *
  * @return WIFI_ENGINE_SUCCESS
- * 
+ *
  */
 int WiFiEngine_Reconnect(void)
 {
@@ -242,9 +242,9 @@ int WiFiEngine_Reconnect(void)
  * Use WiFiEngine_GetScanList() (in we_scan.c) instead.
  *
  * @param list Pointer to a allocated reply buffer. Can be null, in
- *             which case entries will be filled in with the required 
+ *             which case entries will be filled in with the required
  *             number of entries needed.
- * @param entries IN: Number of entries available in list. 
+ * @param entries IN: Number of entries available in list.
  *               OUT: Number of entries used or needed in list.
  *               Note that the number of entries needed may change
  *               from call to call as stations/access points come and go.
@@ -282,7 +282,7 @@ int WiFiEngine_GetBSSIDList(WiFiEngine_net_t *list, int *entries)
          {
             pnet = net;
             net = WEI_GET_NEXT_LIST_ENTRY_NAMED(net, WiFiEngine_net_t, active_list);
-            if (wei_netlist_expire_net(pnet, 
+            if (wei_netlist_expire_net(pnet,
 #ifdef USE_NEW_AGE
                                        wifiEngineState.scan_count,
                                        cp->scanResultLifetime
@@ -343,5 +343,3 @@ WiFiEngine_net_t *WiFiEngine_GetNetBySSID(m80211_ie_ssid_t ssid)
 }
 
 /** @} */ /* End of we_assoc group */
-
-

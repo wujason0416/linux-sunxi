@@ -11,7 +11,7 @@
 /* Module Description :                                                   */
 /* ==================                                                     */
 /*                                                                        */
-/* This module bla, bla bla                                               */ 
+/* This module bla, bla bla                                               */
  /*                                                                        */
 /* Restrictions/special remarks:                                          */
 /* ============================                                           */
@@ -105,4 +105,3 @@ ucos_msg_queue_t      ucos_msg_queue[SYSCFG_UCOS_OBJECT_PRIO_NUM_LEVELS];
 /*****************************************************/
 
 /******************************** END OF FILE *********************************/
-

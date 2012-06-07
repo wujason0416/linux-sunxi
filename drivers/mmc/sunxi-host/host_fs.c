@@ -3,7 +3,7 @@
  * (C) Copyright 2007-2011
  * Allwinner Technology Co., Ltd. <www.allwinnertech.com>
  * Aaron.Maoye <leafy.myeh@allwinnertech.com>
- * 
+ *
  * description for this code
  *
  * This program is free software; you can redistribute it and/or
@@ -99,13 +99,13 @@ static int sunximmc_proc_read_regs(char *page, char **start, off_t off, int coun
         p += sprintf(p, "%08x ", readl(smc_host->smc_base + i));
     }
     p += sprintf(p, "\n");
-    
+
     p += sprintf(p, "Dump ccmu regs:\n");
     for (i=0; i<0x200; i+=4)
     {
         if (!(i&0xf))
             p += sprintf(p, "\n0x%08x : ", i);
-        p += sprintf(p, "%08x ", readl(SW_VA_CCM_IO_BASE + i)); 
+        p += sprintf(p, "%08x ", readl(SW_VA_CCM_IO_BASE + i));
     }
     p += sprintf(p, "\n");
 
@@ -139,7 +139,7 @@ static int sunximmc_proc_write_dbglevel(struct file *file, const char __user *bu
 
 static int sunximmc_proc_read_insert_status(char *page, char **start, off_t off, int coutn, int *eof, void *data)
 {
-	char *p = page; 
+	char *p = page;
     struct sunxi_mmc_host *smc_host = (struct sunxi_mmc_host *)data;
 
 	p += sprintf(p, "Usage: \"echo 1 > insert\" to scan card and \"echo 0 > insert\" to remove card\n");
@@ -240,5 +240,3 @@ void sunximmc_procfs_attach(struct sunxi_mmc_host *smc_host) { }
 void sunximmc_procfs_remove(struct sunxi_mmc_host *smc_host) { }
 
 #endif
-
-

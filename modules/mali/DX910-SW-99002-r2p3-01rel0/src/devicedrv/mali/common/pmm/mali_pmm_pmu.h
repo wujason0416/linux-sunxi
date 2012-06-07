@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -25,9 +25,9 @@
 #include "mali_pmm.h"
 
 /** @brief Platform specific setup and initialisation of MALI
- * 
+ *
  * This is called from the entrypoint of the driver to initialize the platform
- * When using PMM, it is also called from the PMM start up to initialise the 
+ * When using PMM, it is also called from the PMM start up to initialise the
  * system PMU
  *
  * @param resource This is NULL when called on first driver start up, else it will
@@ -37,7 +37,7 @@
 _mali_osk_errcode_t mali_pmm_pmu_init(_mali_osk_resource_t *resource);
 
 /** @brief Platform specific deinitialisation of MALI
- * 
+ *
  * This is called on the exit of the driver to terminate the platform
  * When using PMM, it is also called from the PMM termination code to clean up the
  * system PMU
@@ -49,7 +49,7 @@ _mali_osk_errcode_t mali_pmm_pmu_init(_mali_osk_resource_t *resource);
 _mali_osk_errcode_t mali_pmm_pmu_deinit(_mali_osk_resource_type_t *type);
 
 /** @brief Platform specific powerdown sequence of MALI
- * 
+ *
  * Called as part of platform init if there is no PMM support, else the
  * PMM will call it.
  *
@@ -60,7 +60,7 @@ _mali_osk_errcode_t mali_pmm_pmu_deinit(_mali_osk_resource_type_t *type);
 _mali_osk_errcode_t mali_pmm_pmu_powerdown(u32 cores);
 
 /** @brief Platform specific powerup sequence of MALI
- * 
+ *
  * Called as part of platform deinit if there is no PMM support, else the
  * PMM will call it.
  *

@@ -17,26 +17,26 @@
   * @brief Configure Contention window.
   *
  5A * Custom contention window settings can override the settings decided by the
-  * AP. This function must be called while associated to have an effect. 
+  * AP. This function must be called while associated to have an effect.
   * This function can be called several times to configure the contention
   * window for different access categories.
   *
-  * The old window values that will be restored when the "override" parameter is set 
-  * to FALSE are those that were in effect when nrx_conf_cwin() was last called with 
-  * the "override" parameter set to TRUE. This means that the restored values may 
-  * be incorrect for the current association if the association switched APs 
+  * The old window values that will be restored when the "override" parameter is set
+  * to FALSE are those that were in effect when nrx_conf_cwin() was last called with
+  * the "override" parameter set to TRUE. This means that the restored values may
+  * be incorrect for the current association if the association switched APs
   * between the two calls.
   *
   * A time slot is 20us for the long slot time and 9us for the short slot time.
-  * 
+  *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param ac Bitmask of WMM access categories which the configuration should
   *           apply to. Note that this parameter also is used when "override"
   *           is FALSE. 0 is an invalid value. When the associated AP is not
   *           supporting WMM the contention window for AC_BE will be used.
-  * @param min CWmin. Range 0-15. The window min will be 2^CWmin-1 time slots. 
+  * @param min CWmin. Range 0-15. The window min will be 2^CWmin-1 time slots.
   *            Default value is 4(BG), 4(BE), 3(VI), 2(VO).
-  * @param max CWmax. Range 0-15. The window max will be 2^CWmax-1  time slots. 
+  * @param max CWmax. Range 0-15. The window max will be 2^CWmax-1  time slots.
   *            Must be larger than CWmin.
   *            Default value is 10(BG), 10(BE), 4V(I), 3(VO).
   * @param override Boolean value that decides whether the configured cwin
@@ -44,7 +44,7 @@
   *                 the previous settings will be restored. Only those access
   *                 categories previously changed will be restored.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -58,7 +58,7 @@ nrx_conf_cwin (nrx_context ctx,
 /*!
   * @ingroup IA
   * @brief Configure interference avoidance mode.
-  * 
+  *
   * If interference avoidance is disabled entirely when this function
   * is called, it will we set in communication mode.
   *
@@ -76,8 +76,8 @@ nrx_conf_cwin (nrx_context ctx,
   * used when the device is in interference avoidance mode. The energy
   * detect threshold for normal mode is not configurable. Minimum
   * value is -90 and maximum -30 dBm.
-  * 
-  * @return 
+  *
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -95,7 +95,7 @@ nrx_conf_iav (nrx_context ctx,
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -111,7 +111,7 @@ nrx_enable_ia_mode (nrx_context ctx);
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -147,19 +147,19 @@ nrx_disable_ia_mode (nrx_context ctx);
   * @param per_thr Packet error rate threshold (in percent).
   *
   * @param chk_period The interference error rate threshold check period in ms.
-  *        The minimum value is 100 and maximum supported time is 35 minutes 
+  *        The minimum value is 100 and maximum supported time is 35 minutes
   *        (2100000 ms). The IER threshold will be compared with the
   *        interference error rate with this interval. Should several
   *        IER triggers be registered the shortest interval used will
   *        be used for all triggers. Furthermore, IER triggers are
   *        dependent of PER triggers and the interval will be the same
   *        for IER and PER triggers. It will be chosen as the shortest
-  *        interval over all registered IER and PER triggers. 
+  *        interval over all registered IER and PER triggers.
   * @param dir Bitmask defining the trigger directions. The callback can be
   *            triggered when the value rises above or sinks below the
   *            IER threshold, or both.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -184,9 +184,9 @@ nrx_enable_ier_threshold (nrx_context ctx,
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param thr_id The threshold id identifying the threshold trigger
-  *        that should be disabled. 
+  *        that should be disabled.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -197,27 +197,27 @@ nrx_disable_ier_threshold (nrx_context ctx,
 /*!
   * @ingroup IA
   * @brief Register interference error rate callback.
-  * 
+  *
   * This will register a callback for IER triggers, see
   * nrx_enable_ier_threshold for further details.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param thr_id The threshold id. This identifies the threshold
-  *              so that several thresholds can be defined. 
+  *              so that several thresholds can be defined.
   *              The id value is obtained from nrx_enable_ier_threshold
   * @param cb Callback that is invoked to notify the caller that
   *           the threshold trigger has been triggered.
-  *           The callback is invoked with operation NRX_CB_TRIGGER on a 
-  *           successful notification whereupon event_data will be a pointer 
-  *           to a nrx_event_mibtrigger structure which contains further 
-  *           information. When the threshold is cancelled cb is called 
+  *           The callback is invoked with operation NRX_CB_TRIGGER on a
+  *           successful notification whereupon event_data will be a pointer
+  *           to a nrx_event_mibtrigger structure which contains further
+  *           information. When the threshold is cancelled cb is called
   *           with operation NRX_CB_CANCEL and event_data set to NULL.
   *
   * @param cb_ctx Pointer to a user-defined callback context that will
   *               be passed to the callback on invocation. This is for
   *               caller use only, it will not be parsed or modified in
   *               any way by this library. This parameter can be NULL.
-  * 
+  *
   * @return A handle to a callback (an unsigned integer type). The only
   * use for this is to pass it to nrx_cancel_ier_threshold_callback
   * to cancel the callback.
@@ -233,12 +233,12 @@ nrx_register_ier_threshold_callback (nrx_context ctx,
 /*!
   * @ingroup IA
   * @brief Cancel IER threshold callback
-  * 
+  *
   * This will cancel a callback for IER trigger.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param handle Callback handle obtained from nrx_register_ier_threshold_callback.
-  * 
+  *
   * @return Always return zero.
   */
 int

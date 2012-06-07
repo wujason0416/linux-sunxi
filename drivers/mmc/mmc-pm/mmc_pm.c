@@ -12,7 +12,7 @@
 
 struct mmc_pm_ops mmc_card_pm_ops;
 static char* wifi_para = "sdio_wifi_para";
-static char* wifi_mod[] = {" ", 
+static char* wifi_mod[] = {" ",
 							"swl-n20", 	 /* 1 - SWL-N20(Nanoradio NRX600)*/
 							"usi-bm01a", /* 2 - USI-BM01A(BCM4329)*/
 							"ar6302qfn", /* 3 - AR6302(Atheros 6xxx) */
@@ -84,7 +84,7 @@ static int mmc_pm_power_stat(char *page, char **start, off_t off, int count, int
     struct mmc_pm_ops *ops = (struct mmc_pm_ops *)data;
     char *p = page;
     int power = 0;
-    
+
     if (ops->power)
         ops->power(0, &power);
     p += sprintf(p, "%s : power state %s\n", ops->mod_name, power ? "on" : "off");
@@ -95,7 +95,7 @@ static int mmc_pm_power_ctrl(struct file *file, const char __user *buffer, unsig
 {
     struct mmc_pm_ops *ops = (struct mmc_pm_ops *)data;
     int power = simple_strtoul(buffer, NULL, 10);
-    
+
     power = power ? 1 : 0;
     if (ops->power)
         ops->power(1, &power);
@@ -129,7 +129,7 @@ static inline void awsmc_procfs_remove(void)
 {
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
     char proc_rootname[] = "driver/mmc-pm";
-    
+
     remove_proc_entry("power", ops->proc_root);
     remove_proc_entry(proc_rootname, NULL);
 }
@@ -142,8 +142,8 @@ static int mmc_pm_get_res(void)
 {
     int ret = 0;
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
-    
-    ret = script_parser_fetch(wifi_para, "sdio_wifi_used", &ops->sdio_card_used, sizeof(unsigned)); 
+
+    ret = script_parser_fetch(wifi_para, "sdio_wifi_used", &ops->sdio_card_used, sizeof(unsigned));
     if (ret) {
         mmc_pm_msg("failed to fetch sdio card configuration!\n");
         return -1;
@@ -152,7 +152,7 @@ static int mmc_pm_get_res(void)
         mmc_pm_msg("no sdio card used in configuration\n");
         return -1;
     }
-    
+
     ret = script_parser_fetch(wifi_para, "sdio_wifi_sdc_id", &ops->sdio_cardid, sizeof(unsigned));
     if (ret) {
         mmc_pm_msg("failed to fetch sdio card's sdcid\n");
@@ -166,20 +166,20 @@ static int mmc_pm_get_res(void)
     }
     ops->mod_name = wifi_mod[ops->module_sel];
     printk("[wifi]: Select sdio wifi: %s !!\n", wifi_mod[ops->module_sel]);
-    
+
     ops->pio_hdle = gpio_request_ex(wifi_para, NULL);
     if (!ops->pio_hdle) {
         mmc_pm_msg("failed to fetch sdio card's io handler, please check it !!\n");
         return -1;
     }
-    
+
     return 0;
 }
 
 static int __devinit mmc_pm_probe(struct platform_device *pdev)
 {
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
-    
+
     switch (ops->module_sel) {
         case 1: /* nano wifi */
             nano_wifi_gpio_init();
@@ -205,7 +205,7 @@ static int __devinit mmc_pm_probe(struct platform_device *pdev)
         default:
             mmc_pm_msg("Wrong sdio module select %d !!\n", ops->module_sel);
     }
-    
+
     awsmc_procfs_attach();
     mmc_pm_msg("SDIO card gpio init is OK !!\n");
     return 0;
@@ -214,7 +214,7 @@ static int __devinit mmc_pm_probe(struct platform_device *pdev)
 static int __devexit mmc_pm_remove(struct platform_device *pdev)
 {
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
-    
+
     switch (ops->module_sel) {
         case 1: /* nano wifi */
             nano_wifi_gpio_init();
@@ -240,7 +240,7 @@ static int __devexit mmc_pm_remove(struct platform_device *pdev)
         default:
             mmc_pm_msg("Wrong sdio module select %d !!\n", ops->module_sel);
     }
-    
+
     awsmc_procfs_remove();
     mmc_pm_msg("SDIO card gpio is released !!\n");
     return 0;
@@ -250,7 +250,7 @@ static int __devexit mmc_pm_remove(struct platform_device *pdev)
 static int mmc_pm_suspend(struct device *dev)
 {
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
-    
+
     if (ops->standby)
         ops->standby(1);
     return 0;
@@ -258,7 +258,7 @@ static int mmc_pm_suspend(struct device *dev)
 static int mmc_pm_resume(struct device *dev)
 {
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
-    
+
     if (ops->standby)
         ops->standby(0);
     return 0;
@@ -287,12 +287,12 @@ static struct platform_driver mmc_pm_driver = {
 static int __init mmc_pm_init(void)
 {
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
-    
+
     memset(ops, 0, sizeof(struct mmc_pm_ops));
     mmc_pm_get_res();
     if (!ops->sdio_card_used)
         return 0;
-        
+
     platform_device_register(&mmc_pm_dev);
     return platform_driver_register(&mmc_pm_driver);
 }
@@ -302,14 +302,13 @@ static void __exit mmc_pm_exit(void)
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
     if (!ops->sdio_card_used)
         return;
-        
+
     if (ops->pio_hdle)
         gpio_release(ops->pio_hdle, 2);
-    
+
     memset(ops, 0, sizeof(struct mmc_pm_ops));
     platform_driver_unregister(&mmc_pm_driver);
 }
 
 module_init(mmc_pm_init);
 module_exit(mmc_pm_exit);
-

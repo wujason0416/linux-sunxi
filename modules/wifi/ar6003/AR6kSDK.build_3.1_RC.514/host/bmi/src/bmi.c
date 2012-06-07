@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // <copyright file="bmi.c" company="Atheros">
 //    Copyright (c) 2004-2010 Atheros Corporation.  All rights reserved.
-// 
+//
 //
 // Permission to use, copy, modify, and/or distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -246,7 +246,7 @@ BMIWriteMemory(HIF_DEVICE *device,
                 remaining = remaining + (4 - (remaining & 3));
                 memcpy(alignedBuffer, src, remaining);
                 src = alignedBuffer;
-            } 
+            }
             txlen = remaining;
         } else {
             txlen = (BMI_DATASZ_MAX - header);
@@ -770,5 +770,3 @@ BMIRawRead(HIF_DEVICE *device, A_UCHAR *buffer, A_UINT32 length, A_BOOL want_tim
 }
 
 #endif
-
-

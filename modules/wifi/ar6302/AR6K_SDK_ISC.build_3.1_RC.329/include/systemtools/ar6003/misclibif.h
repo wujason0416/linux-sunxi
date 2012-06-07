@@ -39,7 +39,7 @@ void m_writeProdData
 	A_UINT32 devNum,
 	A_UCHAR wlan0Mac[6],
 	A_UCHAR wlan1Mac[6],
-	A_UCHAR enet0Mac[6], 
+	A_UCHAR enet0Mac[6],
 	A_UCHAR enet1Mac[6]
 );
 
@@ -53,9 +53,8 @@ A_INT32 m_ftpDownloadFile
 );
 
 A_INT32 m_runScreeningTest
-(	
+(
 	A_UINT32 testId
 );
 
 #endif
-

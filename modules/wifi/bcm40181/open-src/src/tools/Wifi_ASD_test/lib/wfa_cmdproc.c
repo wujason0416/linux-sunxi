@@ -415,8 +415,8 @@ int xcCmdProcAgentConfig(char *pcmdStr, BYTE *aBuf, int *aLen)
 
               if(str==NULL)
                   break;
-           } 
-           
+           }
+
        } /* for */
     } /* while */
 
@@ -786,8 +786,8 @@ int xcCmdProcStaSetIpConfig(char *pcmdStr, BYTE *aBuf, int *aLen)
 {
     dutCommand_t staSetIpConfig;
     char *str;
-    caStaSetIpConfig_t *setip; 
-    memset(&staSetIpConfig, 0, sizeof(staSetIpConfig)); 
+    caStaSetIpConfig_t *setip;
+    memset(&staSetIpConfig, 0, sizeof(staSetIpConfig));
     setip = (caStaSetIpConfig_t *)&staSetIpConfig.cmdsu.ipconfig;
 
     if(aBuf == NULL)
@@ -1321,7 +1321,7 @@ int xcCmdProcStaSetEapSIM(char *pcmdStr, BYTE *aBuf, int *aLen)
         else if(strcasecmp(str, "encpType") == 0)
         {
             str = strtok_r(NULL, ",", &pcmdStr);
-            strncpy(setsec->encrptype, str, 8); 
+            strncpy(setsec->encrptype, str, 8);
 	}
     }
 
@@ -1376,7 +1376,7 @@ int xcCmdProcStaSetPEAP(char *pcmdStr, BYTE *aBuf, int *aLen)
         else if(strcasecmp(str, "encpType") == 0)
         {
             str = strtok_r(NULL, ",", &pcmdStr);
-            strncpy(setsec->encrptype, str, 8); 
+            strncpy(setsec->encrptype, str, 8);
 	}
         else if(strcasecmp(str, "innerEAP") == 0)
         {
@@ -1867,12 +1867,12 @@ int xcCmdProcStaSetWMM(char *pcmdStr, BYTE *aBuf, int *aLen)
 
         if(strcasecmp(str, "interface") == 0)
         {
-            str = strtok_r(NULL, ",", &pcmdStr);  
+            str = strtok_r(NULL, ",", &pcmdStr);
             strncpy(setwmm->intf, str, 15);
         }
         else if(strcasecmp(str, "GROUP") == 0)
         {
-            str = strtok_r(NULL, ",", &pcmdStr);  
+            str = strtok_r(NULL, ",", &pcmdStr);
 	    if(strcasecmp(str,"WMMAC") == 0)
               setwmm->group = GROUP_WMMAC;
 	    else if(strcasecmp(str,"WMM-CONFIG") == 0)
@@ -1885,7 +1885,7 @@ int xcCmdProcStaSetWMM(char *pcmdStr, BYTE *aBuf, int *aLen)
         }
         else if(strcasecmp(str, "ACTION") == 0)
         {
-            str = strtok_r(NULL, ",", &pcmdStr);  
+            str = strtok_r(NULL, ",", &pcmdStr);
 	    if(strcasecmp(str,"addts") == 0)
             {
                 /* Put default values for the tspec element */
@@ -1924,7 +1924,7 @@ int xcCmdProcStaSetWMM(char *pcmdStr, BYTE *aBuf, int *aLen)
         else if(strcasecmp(str, "TID") == 0)
         {
             str = strtok_r(NULL, ",", &pcmdStr);
-            if(setwmm->action == WMMAC_ADDTS) 
+            if(setwmm->action == WMMAC_ADDTS)
                setwmm->actions.addts.tspec.tsinfo.TID  = atoi(str);
             else
                setwmm->actions.delts = atoi(str);
@@ -2091,7 +2091,7 @@ int xcCmdProcStaSetWMM(char *pcmdStr, BYTE *aBuf, int *aLen)
     else
         DPRINT_INFO(WFA_OUT, "DELTS AC PARAMS: TID:  %d\n", setwmm->actions.delts);
 
-    hdr->tag =  WFA_STA_SET_WMM_TLV;   
+    hdr->tag =  WFA_STA_SET_WMM_TLV;
     hdr->len = sizeof(caStaSetWMM_t);
 
     memcpy(aBuf+4, setwmm, sizeof(caStaSetWMM_t));

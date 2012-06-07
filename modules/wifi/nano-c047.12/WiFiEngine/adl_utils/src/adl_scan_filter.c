@@ -30,7 +30,7 @@ void adl_scan_filter_add(char* ssid, int ssid_len)
    struct scan_filter_entry_t* filter;
 
    /*
-   DE_ASSERT(ssid_len > 0 && 
+   DE_ASSERT(ssid_len > 0 &&
              ssid_len <= M80211_IE_MAX_LENGTH_SSID);
     */
 
@@ -39,7 +39,7 @@ void adl_scan_filter_add(char* ssid, int ssid_len)
 
    if(ssid_len > M80211_IE_MAX_LENGTH_SSID)
       return;
-   
+
    filter = (struct scan_filter_entry_t*)
       DriverEnvironment_Malloc(sizeof(struct scan_filter_entry_t));
 
@@ -78,7 +78,7 @@ void adl_scan_filter_clear(void)
    struct scan_filter_entry_t *filter = NULL;
    while( (filter = WEI_TQ_FIRST(&scan_filter_head)) != NULL)
    {
-      WEI_TQ_REMOVE(&scan_filter_head, filter, next); 
+      WEI_TQ_REMOVE(&scan_filter_head, filter, next);
       DriverEnvironment_Free(filter);
    }
 }

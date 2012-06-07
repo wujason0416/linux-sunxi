@@ -89,21 +89,21 @@ void logger_get_file_header(struct log_file_s *h) {
 }
 
 /* Write log buffer to *fwrite(buf,size,...);
- * 
+ *
  * Write the buffer to a file api, copy to pre allocated memory or
  * allocate mem in fwrite function
  *
- * The log lock will be taken during call to *fp and will thereby 
+ * The log lock will be taken during call to *fp and will thereby
  * prevent messages to be written to the log during this time.
  *
- * @param *fp function pointer to write the buffer to. May be called 
+ * @param *fp function pointer to write the buffer to. May be called
  * several times.
  * @param *ctx context to be passed to *fp.
  *
  * - return number of bytes successfully reported as written by *fp
  *              (negative on: driver lock taken, invalid params, ...)
  */
-int logger_write_to_fp( struct log_t *lg, 
+int logger_write_to_fp( struct log_t *lg,
                 int (*fp)(const void* ptr, size_t size, void *ctx),
                 void *ctx) {
 
@@ -125,7 +125,7 @@ int logger_write_to_fp( struct log_t *lg,
         if (DriverEnvironment_acquire_trylock(&lg->rwlock) == LOCK_LOCKED)
                 return -2;
 
-        DE_ASSERT(lg->fifo.in <= lg->fifo.size && 
+        DE_ASSERT(lg->fifo.in <= lg->fifo.size &&
                   lg->fifo.out <= lg->fifo.size);
 
         f_header.size = logger_len(lg);
@@ -153,4 +153,3 @@ int logger_write_to_fp( struct log_t *lg,
 
         return written;
 }
-

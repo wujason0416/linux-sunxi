@@ -1,7 +1,7 @@
 #! /bin/bash
 #
 # Create the epivers.h file from epivers.h.in
-# 
+#
 # Epivers.h generation mechanism supports both cvs and svn based checkouts
 #
 # $Id: epivers.sh,v 13.30.4.3 2011/01/21 01:02:47 Exp $
@@ -33,11 +33,11 @@ else # epivers.h doesn't exist
 	# 1. Check if in SVN workspace via svn info or HeadURL keyword
 	#    or existance of .svn subdir
 	# 2. If not, if CVS subdir exists or none exist it is CVS workspace
-	
+
 	if [ -z "$VCTOOL" ]; then VCTOOL=CVS; fi
-	
+
 	svn info epivers.sh > $NULL 2>&1
-	
+
 	if [ "$?" == "0" ]; then
 		VCTOOL=SVN
 		SVNURL=$(svn info epivers.sh | egrep "^URL:" 2> $NULL)
@@ -45,7 +45,7 @@ else # epivers.h doesn't exist
 		if [ -d "CVS" ];  then VCTOOL=CVS; fi
 		if [ -d ".svn" ]; then VCTOOL=SVN; fi
 		# HeadURL is a SVN keyword property that is expanded if
-		# property svn:keywords is set. Keyword is needed when 
+		# property svn:keywords is set. Keyword is needed when
 		# epivers.* are copied to intermediate build directories
 		# and loose their svn identities
 		# NOTE: Temporarily display attached svn properties
@@ -58,13 +58,13 @@ else # epivers.h doesn't exist
 			VCTOOL=SVN
 		fi
 	fi
-	
+
 	if echo "${TAG}" | grep -q "BRANCH\|TWIG"; then
 		branchtag=$TAG
 	else
 		branchtag=""
 	fi
-	
+
 	# If this is a tagged build, use the tag to supply the numbers
 	# Tag should be in the form
 	#    <NAME>_REL_<MAJ>_<MINOR>
@@ -104,7 +104,7 @@ else # epivers.h doesn't exist
 	fi
 
 	# TAG env var is supplied by calling makefile or build process
-	#    
+	#
 	# If the checkout is from a branch tag, cvs checkout or export does
 	# not replace rcs keywords. In such instances TAG env variable can
 	# be used (by uncommenting following line). TAG env variable format
@@ -127,7 +127,7 @@ else # epivers.h doesn't exist
 	if [ ${#tag[*]} -eq 0 ]; then
 	   tag=(`date '+TOT REL %Y %m %d 0 %y'`);
 	   # reconstruct a TAG from the date
-	   TAG=${tag[0]}_${tag[1]}_${tag[2]}_${tag[3]}_${tag[4]}_${tag[5]}	   
+	   TAG=${tag[0]}_${tag[1]}_${tag[2]}_${tag[3]}_${tag[4]}_${tag[5]}
 	   tagged=0
 	fi
 
@@ -151,7 +151,7 @@ else # epivers.h doesn't exist
 
 	# Strip 'RC' from front of rcnum if present
 	rcnum=${rcnum/#RC/}
-	
+
 	# strip leading zero off the number (otherwise they look like octal)
 	maj=${maj/#0/}
 	min=${min/#0/}
@@ -172,16 +172,16 @@ else # epivers.h doesn't exist
 	if [ ${tagged} -eq 1 ]; then
 	    # vernum is 32chars max
 	    vernum=`printf "0x%02x%02x%02x%02x" ${maj} ${min} ${rcnum} ${origincr}`
-	else 
+	else
 	    vernum=`printf "0x00%02x%02x%02x" ${tag[7]} ${min} ${rcnum}`
 	fi
 
-	# make sure the size of vernum is under 32 bits. 
+	# make sure the size of vernum is under 32 bits.
 	# Otherwise, truncate. The string will keep full information.
 	vernum=${vernum:0:10}
 
 	# build the string directly from the tag, irrespective of its length
-	# remove the name , the tag type, then replace all _ by . 
+	# remove the name , the tag type, then replace all _ by .
 	tag_ver_str=${TAG/${tag[0]}_}
 	tag_ver_str=${tag_ver_str/${tag[1]}_}
 	tag_ver_str=${tag_ver_str//_/.}

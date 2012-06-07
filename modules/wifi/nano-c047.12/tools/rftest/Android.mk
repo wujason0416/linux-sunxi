@@ -4,7 +4,7 @@ include $(CLEAR_VARS)
 LOCAL_SRC_FILES:= \
     nrxtest.c \
     wlandutlib.c \
-    
+
 
 LOCAL_SHARED_LIBRARIES := \
 	libcutils \

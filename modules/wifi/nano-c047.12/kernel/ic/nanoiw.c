@@ -86,14 +86,14 @@ DECLARE(get_name, char, name)
 
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
-   
+
    status = WiFiEngine_GetNetworkStatus(&net_status);
    ASSERT(status == WIFI_ENGINE_SUCCESS);
    if(net_status == 0) {
       strcpy(name, "not connected");
       return 0;
    } else {
-        
+
       strcpy(name, "IEEE 802.11"); /* XXX this should probably
                                       depend on what state we're
                                       in, such as radio-off,
@@ -101,7 +101,7 @@ DECLARE(get_name, char, name)
    }
 
    KDEBUG(TRACE, "EXIT [%s]", name);
-    
+
    return 0;
 }
 
@@ -111,7 +111,7 @@ convert_iw_freq2channel(const struct iw_freq *freq, uint8_t *channel)
 {
    int32_t mantissa = freq->m;
    int16_t exponent = freq->e;
-   
+
    if(mantissa < 0)
       /* this sometimes mean "auto" */
       return FALSE;
@@ -130,7 +130,7 @@ convert_iw_freq2channel(const struct iw_freq *freq, uint8_t *channel)
       mantissa *= 10;
       exponent--;
    }
-      
+
    if(WiFiEngine_Frequency2Channel(mantissa, channel) != WIFI_ENGINE_SUCCESS)
       return FALSE;
 
@@ -145,7 +145,7 @@ DECLARE_IW(set_freq, freq, freq)
    int status;
    uint8_t channel;
    WiFiEngine_bss_type_t bssType;
-   
+
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
 
@@ -159,7 +159,7 @@ DECLARE_IW(set_freq, freq, freq)
       KDEBUG(ERROR, "EXIT EIO");
       return -EIO;
    }
-   
+
    switch(bssType) {
       case  M80211_CAPABILITY_ESS:
          WiFiEngine_SetActiveChannel(channel);
@@ -191,7 +191,7 @@ DECLARE_IW(get_freq, freq, f)
       KDEBUG(ERROR, "EXIT EIO");
       return -EIO;
    }
-   
+
    switch(bssType) {
       case  M80211_CAPABILITY_ESS:
          status = WiFiEngine_GetActiveChannel(&channel);
@@ -202,7 +202,7 @@ DECLARE_IW(get_freq, freq, f)
       default:
          KDEBUG(ERROR, "EXIT EIO");
          return -EIO;
-   }         
+   }
    if(status != WIFI_ENGINE_SUCCESS) {
       KDEBUG(ERROR, "EXIT EIO");
       return -EIO; /* XXX better code */
@@ -212,7 +212,7 @@ DECLARE_IW(get_freq, freq, f)
       KDEBUG(ERROR, "EXIT EIO");
       return -EIO; /* XXX better code */
    }
-   
+
    f->m = freq;
    f->e = 3; /* kHz */
 
@@ -246,7 +246,7 @@ DECLARE(set_mode, __u32, mode)
       KDEBUG(ERROR, "EXIT EIO");
       return -EIO;
    }
-    
+
    KDEBUG(TRACE, "EXIT");
    return 0;
 }
@@ -267,7 +267,7 @@ DECLARE(get_mode, __u32, mode)
       KDEBUG(ERROR, "EXIT EIO");
       return -EIO;
    }
-    
+
    switch(bssType) {
       case M80211_CAPABILITY_ESS:
          *mode = IW_MODE_INFRA;
@@ -279,7 +279,7 @@ DECLARE(get_mode, __u32, mode)
          KDEBUG(ERROR, "Unexpected BSS_Type returned from WiFiEngine_GetBSSType()");
          return -EIO;
    }
-    
+
    KDEBUG(TRACE, "EXIT");
    return 0;
 }
@@ -297,7 +297,7 @@ channel_to_frequency(uint8_t channel, struct iw_freq *freq)
       freq->i = 0;
       return;
    }
-    
+
    freq->m = khz;
    freq->e = 3;
    freq->i = channel;
@@ -380,7 +380,7 @@ DECLARE(get_range, void, dummy)
 
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
-   
+
    memset(iwr, 0, sizeof(*iwr));
 
    iwr->we_version_compiled = WIRELESS_EXT;
@@ -404,7 +404,7 @@ DECLARE(get_range, void, dummy)
    {
       we_ratemask_t rates;
       int i;
-        
+
       rates = get_operational_rates(dev);
 
       WE_RATEMASK_FOREACH(i, rates) {
@@ -419,7 +419,7 @@ DECLARE(get_range, void, dummy)
    {
       uint32_t ratemask;
       unsigned int mcs_rate;
-      const int mcs_rates[] = { 
+      const int mcs_rates[] = {
          6500000,
          13000000,
          19500000,
@@ -429,7 +429,7 @@ DECLARE(get_range, void, dummy)
          58500000,
          65000000
       };
-         
+
       unsigned int bitpos;
 
       WiFiEngine_GetEnabledHTRates(&ratemask);
@@ -449,7 +449,7 @@ DECLARE(get_range, void, dummy)
          iwr->bitrate[iwr->num_bitrates++] = mcs_rates[mcs_rate];
       }
    }
-#endif   
+#endif
    setqual(&iwr->max_qual, -104, 30);
    setqual(&iwr->avg_qual, -52, 15);
 
@@ -469,7 +469,7 @@ DECLARE(get_range, void, dummy)
    iwr->encoding_size[1] = 13;
    iwr->num_encoding_sizes = 2;
    iwr->max_encoding_tokens = WIFI_ENGINE_MAX_WEP_KEYS;
-   
+
 #if WIRELESS_EXT >= 17
    iwr->encoding_login_index = get_key_index(dev);
 #endif
@@ -540,12 +540,12 @@ DECLARE_IW(get_essid, point, essid)
    memcpy(extra, ssid.ssid, ssid.hdr.len);
    essid->flags = 1; /* active */
    essid->length = ssid.hdr.len;
-    
+
    return 0;
 }
 
 
-static int 
+static int
 zero_bssid(const m80211_mac_addr_t *bssid)
 {
    char all_zero[ETH_ALEN] = { 0, 0, 0, 0, 0, 0 };
@@ -598,7 +598,7 @@ DECLARE(get_ap, struct sockaddr, ap_addr)
    CHECK_UNPLUG(dev);
 
    ap_addr->sa_family = ARPHRD_ETHER;
-   
+
    status = WiFiEngine_GetBSSID(&bssid);
    if(status == WIFI_ENGINE_SUCCESS)
       memcpy(ap_addr->sa_data, bssid.octet, sizeof(bssid.octet));
@@ -626,9 +626,9 @@ static struct semaphore scan_sem;
 static void scan_data_release(struct kref *kref)
 {
    struct net_device *dev = WiFiEngine_GetAdapter();
-#ifdef CONFIG_HAS_WAKELOCK	   
+#ifdef CONFIG_HAS_WAKELOCK
    struct nrx_softc *sc = netdev_priv(dev);
-#endif   
+#endif
    struct scan_data *sd = container_of(kref, struct scan_data, kref);
    if(sd->sj_id != ~0)
       WiFiEngine_RemoveScanJob(sd->sj_id, NULL);
@@ -639,18 +639,18 @@ static void scan_data_release(struct kref *kref)
 #ifdef CONFIG_HAS_WAKELOCK
    wake_unlock(&sc->nrx_scan_wake_lock);
    KDEBUG(TRACE, "Released nrx_scan_wake_lock");
-#endif   
+#endif
 }
 
 static void scan_req_complete(wi_msg_param_t param, void *priv)
 {
-   m80211_nrp_mlme_scannotification_ind_t *ind = param;   
+   m80211_nrp_mlme_scannotification_ind_t *ind = param;
    struct scan_data *sd = priv;
 
    /* scan job has completed, remove job */
 
    if(ind != NULL) {
-      KDEBUG(TRACE, "SIOCSIWSCAN ind->job_id = %u, sj_id = %u", 
+      KDEBUG(TRACE, "SIOCSIWSCAN ind->job_id = %u, sj_id = %u",
              ind->job_id, sd->sj_id);
    } else {
       KDEBUG(TRACE, "SIOCSIWSCAN ind = NULL");
@@ -682,12 +682,12 @@ static int scan_req_added(we_cb_container_t *cbc)
    KDEBUG(TRACE, "SIOCSIWSCAN status = %d", cbc->status);
    if(cbc->status == 0) {
       /* scan job is added, so now we trigger it */
-      sd->ih = we_ind_register(WE_IND_SCAN_COMPLETE, "SIOCSIWSCAN", 
+      sd->ih = we_ind_register(WE_IND_SCAN_COMPLETE, "SIOCSIWSCAN",
                                scan_req_complete, NULL, 0, sd);
-      status = WiFiEngine_TriggerScanJobEx(sd->sj_id, 
-                                           sd->channel_interval, 
-                                           sd->probe_delay, 
-                                           sd->min_channel_time, 
+      status = WiFiEngine_TriggerScanJobEx(sd->sj_id,
+                                           sd->channel_interval,
+                                           sd->probe_delay,
+                                           sd->min_channel_time,
                                            sd->max_channel_time);
       if(status != WIFI_ENGINE_SUCCESS) {
          KDEBUG(TRACE, "failed triggering scan job %d", status);
@@ -713,7 +713,7 @@ static int scan_req(__u16 flags, struct iw_scan_req *req)
    uint8_t scan_type = ACTIVE_SCAN;
    channel_list_t channels;
    we_cb_container_t *cbc;
-#ifdef CONFIG_HAS_WAKELOCK   
+#ifdef CONFIG_HAS_WAKELOCK
    struct net_device *dev = WiFiEngine_GetAdapter();
    struct nrx_softc *sc = netdev_priv(dev);
 #endif
@@ -727,9 +727,9 @@ static int scan_req(__u16 flags, struct iw_scan_req *req)
 #ifdef CONFIG_HAS_WAKELOCK
 		 wake_unlock(&sc->nrx_scan_wake_lock);
 		 KDEBUG(TRACE, "Released nrx_scan_wake_lock");
-#endif        	 
+#endif
          return -EINVAL;
-      }   
+      }
       DE_MEMCPY(ssid.ssid, req->essid, req->essid_len);
       ssid.hdr.len = req->essid_len;
       ssid.hdr.id = M80211_IE_ID_SSID;
@@ -746,13 +746,13 @@ static int scan_req(__u16 flags, struct iw_scan_req *req)
    if((flags & IW_SCAN_THIS_FREQ) != 0 && req->num_channels > 0) {
       channels.no_channels = 0;
       for(i = 0; i < req->num_channels; i++) {
-         if(!convert_iw_freq2channel(&req->channel_list[i], 
+         if(!convert_iw_freq2channel(&req->channel_list[i],
                                      &channels.channelList[channels.no_channels])) {
             up(&scan_sem);
 #ifdef CONFIG_HAS_WAKELOCK
 			wake_unlock(&sc->nrx_scan_wake_lock);
 			KDEBUG(TRACE, "Released nrx_scan_wake_lock");
-#endif              
+#endif
             return -EINVAL;
          }
          channels.no_channels++;
@@ -764,7 +764,7 @@ static int scan_req(__u16 flags, struct iw_scan_req *req)
 #ifdef CONFIG_HAS_WAKELOCK
 		 wake_unlock(&sc->nrx_scan_wake_lock);
 		 KDEBUG(TRACE, "Released nrx_scan_wake_lock");
-#endif           
+#endif
          return -EIO; /* shouldn't happen */
       }
    }
@@ -795,8 +795,8 @@ static int scan_req(__u16 flags, struct iw_scan_req *req)
    else
       sd->min_channel_time = 0;
 
-   if(req != NULL 
-      && req->max_channel_time != 0 
+   if(req != NULL
+      && req->max_channel_time != 0
       && req->max_channel_time > req->min_channel_time)
       /* not correct for min_channel_time == 0 */
       sd->max_channel_time = req->max_channel_time - req->min_channel_time;
@@ -841,12 +841,12 @@ static int scan_req(__u16 flags, struct iw_scan_req *req)
 DECLARE_IW(set_scan, point, dummy)
 {
    int status;
-    
+
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
 
-#ifdef CONFIG_HAS_WAKELOCK   
-   struct nrx_softc *sc = netdev_priv(dev); 
+#ifdef CONFIG_HAS_WAKELOCK
+   struct nrx_softc *sc = netdev_priv(dev);
 #endif
    if(dummy->length != 0 && dummy->length != sizeof(struct iw_scan_req)) {
       KDEBUG(TRACE, "EXIT EINVAL");
@@ -896,11 +896,11 @@ DECLARE_IW(set_scan, point, dummy)
 #endif
 
 static inline char*
-add_rates(struct iw_request_info *iw_info, 
-	  char *start, 
-	  char *foo, 
-	  char *stop, 
-	  uint8_t *rates, 
+add_rates(struct iw_request_info *iw_info,
+	  char *start,
+	  char *foo,
+	  char *stop,
+	  uint8_t *rates,
 	  size_t len)
 {
    char *foo2;
@@ -922,7 +922,7 @@ add_rates(struct iw_request_info *iw_info,
    return foo;
 }
 
-DECLARE_IW(get_scan, point, data) 
+DECLARE_IW(get_scan, point, data)
 {
    int status;
    WiFiEngine_net_t **netlist;
@@ -934,7 +934,7 @@ DECLARE_IW(get_scan, point, data)
    char *start;
    char *stop;
    char *foo;
-   
+
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
 
@@ -992,7 +992,7 @@ DECLARE_IW(get_scan, point, data)
       iwe.u.data.flags = 1;
       iwe.u.data.length = bss_p->bss_description_p->ie.ssid.hdr.len;
       CHECK(STREAM_ADD(point, start, stop, &iwe, bss_p->bss_description_p->ie.ssid.ssid));
-        
+
       /* mode */
       if(M80211_IS_ESS(bss_p->bss_description_p->capability_info)) {
          iwe.cmd = SIOCGIWMODE;
@@ -1003,7 +1003,7 @@ DECLARE_IW(get_scan, point, data)
          iwe.u.mode = IW_MODE_ADHOC;
          CHECK(STREAM_ADD(event, start, stop, &iwe, IW_EV_UINT_LEN));
       }
-            
+
       /* Add encryption capability */
       iwe.cmd = SIOCGIWENCODE;
       if (bss_p->bss_description_p->capability_info & M80211_CAPABILITY_PRIVACY)
@@ -1018,7 +1018,7 @@ DECLARE_IW(get_scan, point, data)
          char buf[256];
          size_t len;
          int status;
-   
+
          len = sizeof(buf);
          status = WiFiEngine_PackRSNIE(&bss_p->bss_description_p->ie.rsn_parameter_set, buf, &len);
          if(status == WIFI_ENGINE_SUCCESS && len > 0 && len <= sizeof(buf)) {
@@ -1052,7 +1052,7 @@ DECLARE_IW(get_scan, point, data)
             iwe.u.data.length = len;
             CHECK(STREAM_ADD(point, start, stop, &iwe, buf));
          }
-         
+
          len = sizeof(buf);
          status = WiFiEngine_PackWMMPE(&bss_p->bss_description_p->ie.wmm_parameter_element, buf, &len);
          if(status == WIFI_ENGINE_SUCCESS && len > 0 && len <= sizeof(buf)) {
@@ -1073,14 +1073,14 @@ DECLARE_IW(get_scan, point, data)
       iwe.cmd = SIOCGIWFREQ;
       channel_to_frequency(bss_p->bss_description_p->ie.ds_parameter_set.channel, &iwe.u.freq);
       CHECK(STREAM_ADD(event, start, stop, &iwe, IW_EV_FREQ_LEN));
-        
+
       /* SIOCGIWRATE */
       foo = start + IW_EV_LCP_LEN;
       iwe.cmd = SIOCGIWRATE;
       iwe.u.bitrate.fixed = 0;
       iwe.u.bitrate.disabled = 0;
       if(bss_p->bss_description_p->ie.supported_rate_set.hdr.id == M80211_IE_ID_SUPPORTED_RATES) {
-         foo = add_rates(iw_info, start, foo, stop, 
+         foo = add_rates(iw_info, start, foo, stop,
                          bss_p->bss_description_p->ie.supported_rate_set.rates,
                          bss_p->bss_description_p->ie.supported_rate_set.hdr.len);
          if(foo == start) {
@@ -1090,7 +1090,7 @@ DECLARE_IW(get_scan, point, data)
          }
       }
       if(bss_p->bss_description_p->ie.ext_supported_rate_set.hdr.id == M80211_IE_ID_EXTENDED_SUPPORTED_RATES) {
-         foo = add_rates(iw_info, start, foo, stop, 
+         foo = add_rates(iw_info, start, foo, stop,
                          bss_p->bss_description_p->ie.ext_supported_rate_set.rates,
                          bss_p->bss_description_p->ie.ext_supported_rate_set.hdr.len);
          if(foo == start) {
@@ -1104,11 +1104,11 @@ DECLARE_IW(get_scan, point, data)
 
       if(bss_p->snr_info != SNR_UNKNOWN) {
         /* Extra parameter output */
-        /* SNR */       
-        
+        /* SNR */
+
         char buf[256];
         size_t len;
-        
+
         /* Extra field */
         iwe.cmd = IWEVCUSTOM;
         len = snprintf(buf, sizeof(buf),
@@ -1121,11 +1121,11 @@ DECLARE_IW(get_scan, point, data)
 
       {
         /* Extra parameter output */
-        /* Beacon period */     
-        
+        /* Beacon period */
+
         char buf[256];
         size_t len;
-        
+
         /* Extra field */
         iwe.cmd = IWEVCUSTOM;
         len = snprintf(buf, sizeof(buf),
@@ -1139,11 +1139,11 @@ DECLARE_IW(get_scan, point, data)
       if (bss_p->dtim_period)     /* Skip when we don't have dtim info */
       {
         /* Extra parameter output */
-        /* DTIM period */       
-        
+        /* DTIM period */
+
         char buf[256];
         size_t len;
-        
+
         /* Extra field */
         iwe.cmd = IWEVCUSTOM;
         len = snprintf(buf, sizeof(buf),
@@ -1187,7 +1187,7 @@ DECLARE_IW(set_rate, param, bitrate)
    int num_rates;
    int b;
 
-   KDEBUG(TRACE, "ENTRY value = %d, fixed = %d", 
+   KDEBUG(TRACE, "ENTRY value = %d, fixed = %d",
           bitrate->value, bitrate->fixed);
    CHECK_UNPLUG(dev);
 
@@ -1211,9 +1211,9 @@ DECLARE_IW(set_rate, param, bitrate)
       else
          WE_RATEMASK_SETRATE(rate_mask, rate);
    }
-      
+
    WE_RATEMASK_AND(supported_rates, rate_mask);
-   
+
    memset(rates, 0, sizeof(rates));
 
    num_rates = 0;
@@ -1224,7 +1224,7 @@ DECLARE_IW(set_rate, param, bitrate)
       KDEBUG(ERROR, "no common bitrate");
       return -EINVAL;
    }
-    
+
    status = WiFiEngine_SetSupportedRates(rates, num_rates);
 
    status = mib_set(MIB_dot11OperationalRatesSet, NULL, rates, num_rates);
@@ -1236,7 +1236,7 @@ DECLARE_IW(set_rate, param, bitrate)
    return 0;
 }
 
-/*! return current bitrate 
+/*! return current bitrate
  * In practice we return the max supported rate of the BSS
  */
 DECLARE_IW(get_rate, param, bitrate)
@@ -1259,12 +1259,12 @@ DECLARE_IW(get_rate, param, bitrate)
       bitrate->fixed = 1;
       return 0;
    }
-   
+
    bss_mask = get_bss_rates(dev);
    op_mask = get_supported_rates(dev);
    WE_RATEMASK_AND(bss_mask, op_mask);
 
-   for(i = WE_XMIT_RATE_MAX_RATE; i >= 0; i--) 
+   for(i = WE_XMIT_RATE_MAX_RATE; i >= 0; i--)
       if(WE_RATEMASK_TESTRATE(bss_mask, i))
          break;
 
@@ -1315,7 +1315,7 @@ DECLARE_IW(set_rts, param, rts)
 {
    int status;
    int value;
-    
+
    TRACEPARAM(rts);
    CHECK_UNPLUG(dev);
 
@@ -1324,9 +1324,9 @@ DECLARE_IW(set_rts, param, rts)
       KDEBUG(ERROR, "EXIT EINVAL");
       return value;
    }
-   
+
    status = WiFiEngine_SetRTSThreshold(value);
-        
+
    if(status != WIFI_ENGINE_SUCCESS) {
       KDEBUG(ERROR, "EXIT EIO");
       return -EIO;
@@ -1338,17 +1338,17 @@ DECLARE_IW(get_rts, param, rts)
 {
    int status;
    int value;
-   
+
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
 
-      
+
 #if 0
    {
       uint16_t tmp_val;
       size_t len = sizeof(tmp_val);
       status = nrx_get_mib(dev, MIB_dot11RTSThreshold, &tmp_val, &len);
-      
+
       if(status != 0) {
          return status;
       }
@@ -1366,7 +1366,7 @@ DECLARE_IW(get_rts, param, rts)
    }
 #endif
 
-      
+
    get_param(rts, value, RTS_OFF);
 
    return 0;
@@ -1378,7 +1378,7 @@ DECLARE_IW(set_frag, param, frag)
 {
    int status;
    int value;
-    
+
    TRACEPARAM(frag);
    CHECK_UNPLUG(dev);
 
@@ -1387,9 +1387,9 @@ DECLARE_IW(set_frag, param, frag)
       KDEBUG(ERROR, "EXIT EINVAL");
       return value;
    }
-   
+
    status = WiFiEngine_SetFragmentationThreshold(value);
-        
+
    if(status != WIFI_ENGINE_SUCCESS) {
       KDEBUG(ERROR, "EXIT EIO");
       return -EIO;
@@ -1401,7 +1401,7 @@ DECLARE_IW(get_frag, param, frag)
 {
    int status;
    int value;
-    
+
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
 
@@ -1430,7 +1430,7 @@ DECLARE_IW(set_txpow, param, txpower)
 
    TRACEPARAM(txpower);
    CHECK_UNPLUG(dev);
-    
+
    if(txpower->disabled == 1) {
       KDEBUG(ERROR, "EXIT EINVAL");
       return -EINVAL;
@@ -1586,7 +1586,7 @@ DECLARE_IW(get_retry, param, retry)
       default:
          return -EINVAL;
    }
-   
+
    if(status != 0) {
       KDEBUG(ERROR, "EXIT EIO");
       return status;
@@ -1600,21 +1600,21 @@ DECLARE_IW(get_retry, param, retry)
 }
 
 static inline void
-copy_key(struct nrx_softc *sc, 
-         unsigned int index, 
-         struct iw_point *encoding, 
+copy_key(struct nrx_softc *sc,
+         unsigned int index,
+         struct iw_point *encoding,
          void *extra)
 {
    int status;
    size_t key_len = IW_ENCODING_TOKEN_MAX;
    status = WiFiEngine_GetKey(index, extra, &key_len);
-   
-   
+
+
    if(status != WIFI_ENGINE_SUCCESS) {
       encoding->flags |= IW_ENCODE_DISABLED;
       return;
    }
-   
+
    encoding->length = key_len;
 }
 
@@ -1634,19 +1634,19 @@ DECLARE_IW(get_encode, point, encoding)
       key_index = get_key_index(dev);
    else
       index_present = 1;
-   
+
    key_index--;
 
    encoding->flags = key_index + 1;
    copy_key(sc, key_index, encoding, extra);
-   
+
    status = WiFiEngine_GetAuthenticationMode(&amode);
    if(status == WIFI_ENGINE_SUCCESS) {
       KDEBUG(TRACE, "amode = %d", amode);
       if(amode == Authentication_Open)
          encoding->flags |= IW_ENCODE_OPEN;
    }
-    
+
    if(amode == Authentication_Shared)
       encoding->flags |= IW_ENCODE_RESTRICTED;
 
@@ -1659,7 +1659,7 @@ DECLARE_IW(set_genie, point, ie)
    KDEBUG(TRACE, "ENTRY flags = %x", ie->flags);
 
    KDEBUG_BUF(TRACE, extra, ie->length, "genie");
-   
+
    /* Returning an error here is correct, but sadly the supplicant
     * gets confused by this. The actual association IEs will be
     * returned in an event later on. */
@@ -1678,7 +1678,7 @@ DECLARE_IW(set_mlme, point, point)
 {
    struct iw_mlme *mlme = extra;
    int status;
-   
+
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
 
@@ -1701,7 +1701,7 @@ DECLARE_IW(set_mlme, point, point)
          status = WiFiEngine_sac_stop();
          break;
       default:
-         KDEBUG(TRACE, "unknown mlme command %d, reason = %d", 
+         KDEBUG(TRACE, "unknown mlme command %d, reason = %d",
                 mlme->cmd, mlme->reason_code);
          return -EINVAL;
    }
@@ -1718,10 +1718,10 @@ DECLARE_IW(set_mlme, point, point)
 #endif
 
 static void
-set_auth_mode(struct nrx_softc *sc) 
+set_auth_mode(struct nrx_softc *sc)
 {
    WiFiEngine_Auth_t amode = Authentication_Open;
-   
+
    switch(sc->auth_param[IW_AUTH_80211_AUTH_ALG]) {
       case IW_AUTH_ALG_OPEN_SYSTEM | IW_AUTH_ALG_SHARED_KEY:
          amode = Authentication_Autoselect;
@@ -1752,7 +1752,7 @@ set_auth_mode(struct nrx_softc *sc)
          } else if(sc->auth_param[IW_AUTH_KEY_MGMT] & IW_AUTH_KEY_MGMT_PSK) {
             amode = Authentication_WPA_2_PSK;
          } else {
-            KDEBUG(ERROR, "unknown key management mode: %x", 
+            KDEBUG(ERROR, "unknown key management mode: %x",
                    sc->auth_param[IW_AUTH_KEY_MGMT]);
          }
       } else if(sc->auth_param[IW_AUTH_WPA_VERSION] & IW_AUTH_WPA_VERSION_WPA) {
@@ -1761,11 +1761,11 @@ set_auth_mode(struct nrx_softc *sc)
          } else if(sc->auth_param[IW_AUTH_KEY_MGMT] & IW_AUTH_KEY_MGMT_PSK) {
             amode = Authentication_WPA_PSK;
          } else {
-            KDEBUG(ERROR, "unknown key management mode: %x", 
+            KDEBUG(ERROR, "unknown key management mode: %x",
                    sc->auth_param[IW_AUTH_KEY_MGMT]);
          }
       } else {
-         KDEBUG(ERROR, "unknown WPA version: %x", 
+         KDEBUG(ERROR, "unknown WPA version: %x",
                 sc->auth_param[IW_AUTH_WPA_VERSION]);
       }
    }
@@ -1791,7 +1791,7 @@ set_auth_mode(struct nrx_softc *sc)
    WiFiEngine_SetAuthenticationMode(amode);
 
    WiFiEngine_SetExcludeUnencryptedFlag(sc->auth_param[IW_AUTH_DROP_UNENCRYPTED]);
-}   
+}
 
 DECLARE_IW(set_auth, param, auth)
 {
@@ -1832,7 +1832,7 @@ DECLARE_IW(set_auth, param, auth)
    sc->auth_param[index] = auth->value;
 
    set_auth_mode(sc);
-   
+
    return 0;
 }
 
@@ -1848,7 +1848,7 @@ DECLARE_IW(get_auth, param, auth)
       return -EINVAL;
 
    auth->value = sc->auth_param[index];
-   
+
    return 0;
 }
 
@@ -1864,7 +1864,7 @@ DECLARE_IW(get_auth, param, auth)
  temporary: set TEMP flag
  [n]: set index to n
  <key>: set key
- 
+
 
  */
 DECLARE_IW(set_encodeext, point, encoding)
@@ -1890,37 +1890,37 @@ DECLARE_IW(set_encodeext, point, encoding)
 #if (DE_CCX == CFG_INCLUDED)
           // Use the PMK interface to get the CCKM key.
 	  if (ext != NULL && ext->alg == 4) { // IW_ENCODE_ALG_PMK
-		  
+
 		printk(KERN_INFO"CCKM_key(%d, %02x:%02x:%02x:%02x, %02x:%02x:%02x:%02x:%02x:%02x) \n",
                 ext->key_len,
 				ext->key[0],
 				ext->key[1],
 				ext->key[2],
 				ext->key[3],
-                (unsigned char)ext->addr.sa_data[0], 
-                (unsigned char)ext->addr.sa_data[1], 
-                (unsigned char)ext->addr.sa_data[2], 
-                (unsigned char)ext->addr.sa_data[3], 
-                (unsigned char)ext->addr.sa_data[4], 
+                (unsigned char)ext->addr.sa_data[0],
+                (unsigned char)ext->addr.sa_data[1],
+                (unsigned char)ext->addr.sa_data[2],
+                (unsigned char)ext->addr.sa_data[3],
+                (unsigned char)ext->addr.sa_data[4],
                 (unsigned char)ext->addr.sa_data[0]);
 		WiFiEngine_Set_CCKM_Key(ext->key, ext->key_len);
-	}	
+	}
 #endif
 	}
 #endif
-   
+
    key_index = encoding->flags & IW_ENCODE_INDEX;
 
    KDEBUG(TRACE, "key_index = %d", key_index);
-      
+
    if(key_index == 0)
       key_index = get_key_index(dev);
    else
       index_present = 1;
 
    key_index--;
-   
-   
+
+
 
    if((encoding->flags & IW_ENCODE_NOKEY) == 0) {
       m80211_protect_type_t ptype;
@@ -1976,18 +1976,18 @@ DECLARE_IW(set_encodeext, point, encoding)
       keydata = extra;
 #endif
 
-      
+
       if(keylen == 0) {
          KDEBUG(TRACE, "del_key(%d, %d, %02x:%02x:%02x:%02x:%02x:%02x)",
                 key_index,
                 keytype,
-                (unsigned char)addr.octet[0], 
-                (unsigned char)addr.octet[1], 
-                (unsigned char)addr.octet[2], 
-                (unsigned char)addr.octet[3], 
-                (unsigned char)addr.octet[4], 
+                (unsigned char)addr.octet[0],
+                (unsigned char)addr.octet[1],
+                (unsigned char)addr.octet[2],
+                (unsigned char)addr.octet[3],
+                (unsigned char)addr.octet[4],
                 (unsigned char)addr.octet[5]);
-         status = WiFiEngine_DeleteKey(key_index, 
+         status = WiFiEngine_DeleteKey(key_index,
                                        keytype,
                                        &addr);
          if(status != WIFI_ENGINE_SUCCESS)
@@ -2001,28 +2001,28 @@ DECLARE_IW(set_encodeext, point, encoding)
                 keytype,
                 ptype,
                 auth_conf,
-                (unsigned char)addr.octet[0], 
-                (unsigned char)addr.octet[1], 
-                (unsigned char)addr.octet[2], 
-                (unsigned char)addr.octet[3], 
-                (unsigned char)addr.octet[4], 
-                (unsigned char)addr.octet[5], 
+                (unsigned char)addr.octet[0],
+                (unsigned char)addr.octet[1],
+                (unsigned char)addr.octet[2],
+                (unsigned char)addr.octet[3],
+                (unsigned char)addr.octet[4],
+                (unsigned char)addr.octet[5],
                 rscp,
                 set_tx);
 
-         status = WiFiEngine_AddKey(key_index, 
-                                    keylen, 
-                                    keydata, 
+         status = WiFiEngine_AddKey(key_index,
+                                    keylen,
+                                    keydata,
                                     keytype,
                                     ptype,
-                                    auth_conf, 
-                                    &addr, 
-                                    rscp, 
+                                    auth_conf,
+                                    &addr,
+                                    rscp,
                                     set_tx);
          if(status != WIFI_ENGINE_SUCCESS)
             KDEBUG(ERROR, "WiFiEngine_AddKey = %d", status);
       }
-      
+
 
    } else if(index_present) {
       status = WiFiEngine_SetDefaultKeyIndex(key_index);
@@ -2033,7 +2033,7 @@ DECLARE_IW(set_encodeext, point, encoding)
    if(encoding->flags & IW_ENCODE_RESTRICTED) {
       sc->auth_param[IW_AUTH_80211_AUTH_ALG] = IW_AUTH_ALG_SHARED_KEY;
       sc->auth_param[IW_AUTH_PRIVACY_INVOKED] = 1;
-      sc->auth_param[IW_AUTH_DROP_UNENCRYPTED] = 1; 
+      sc->auth_param[IW_AUTH_DROP_UNENCRYPTED] = 1;
    } else if(encoding->flags & IW_ENCODE_OPEN) {
       sc->auth_param[IW_AUTH_80211_AUTH_ALG] = IW_AUTH_ALG_OPEN_SYSTEM;
       sc->auth_param[IW_AUTH_PRIVACY_INVOKED] = 0;
@@ -2041,7 +2041,7 @@ DECLARE_IW(set_encodeext, point, encoding)
    }
 
    set_auth_mode(sc);
-   
+
    if(encoding->flags & IW_ENCODE_DISABLED) {
       WiFiEngine_DeleteAllKeys();
       status = WiFiEngine_SetProtectedFrameBit(0);
@@ -2059,7 +2059,7 @@ DECLARE_IW(set_encodeext, point, encoding)
          status = WiFiEngine_SetProtectedFrameBit(1);
        }
      } else
-       status = WiFiEngine_SetProtectedFrameBit(1);     
+       status = WiFiEngine_SetProtectedFrameBit(1);
 #else
       status = WiFiEngine_SetProtectedFrameBit(1);
 #endif
@@ -2109,7 +2109,7 @@ DECLARE_IW(get_encodeext, point, enc)
       if(amode == Authentication_Open)
          enc->flags |= IW_ENCODE_OPEN;
    }
-    
+
    if(amode == Authentication_Shared)
       enc->flags |= IW_ENCODE_RESTRICTED;
 
@@ -2183,7 +2183,7 @@ DECLARE_IW(set_pmksa, point, point)
 }
 #endif /* HAVE_WPA */
 
-/* 
+/*
  power.disabled         1 == no power management
  power.flags            modifiers: MIN/MAX/RELATIVE
                         type: PERIOD/TIMEOUT
@@ -2200,7 +2200,7 @@ DECLARE_IW(set_power, param, power)
 
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
-    
+
    if(power->disabled == 1) {
       /* work-around for broken iwconfig -> it doesn't initialise the
        * struct when disabled is set */
@@ -2213,7 +2213,7 @@ DECLARE_IW(set_power, param, power)
       KDEBUG(TRACE, "EXIT EINVAL");
       return -EINVAL;
    }
-   
+
    if(type == IW_POWER_PERIOD) {
       if(power->value > 1000000) {
          /* iwconfig treats this as usecs, but we want beacon periods,
@@ -2282,7 +2282,7 @@ DECLARE_IW(get_power, param, power)
       KDEBUG(TRACE, "EXIT EINVAL");
       return -EINVAL;
    }
-    
+
    status = WiFiEngine_GetPowerMode(&wifi_power_mode);
    if (status != WIFI_ENGINE_SUCCESS) {
       KDEBUG(TRACE, "EXIT EIO");
@@ -2322,10 +2322,10 @@ nrx_get_wireless_stats(struct net_device *dev)
       status = nrx_get_mib(dev, MIB_dot11snrBeacon, &snr, &len);
       if(status != 0)
          goto out;
-      
+
       setqual(&sc->wstats.qual, rssi, snr);
    }
-   
+
  out:
    KDEBUG(TRACE, "EXIT");
    return &sc->wstats;
@@ -2333,9 +2333,9 @@ nrx_get_wireless_stats(struct net_device *dev)
 }
 
 static int
-nrx_iw_handler(struct net_device *dev, 
+nrx_iw_handler(struct net_device *dev,
                struct iw_request_info *info,
-               union iwreq_data *wrqu, 
+               union iwreq_data *wrqu,
                char *extra)
 {
    int retval = -EOPNOTSUPP;
@@ -2474,8 +2474,8 @@ static struct nrx_iw_handler_info {
    { SIOCGIWAUTH, NS_NET(get_auth), 0, 0 },
    { SIOCSIWGENIE, NS_NET(set_genie), 0, IW_GENERIC_IE_MAX },
    { SIOCGIWGENIE, NS_NET(get_genie), 0, IW_GENERIC_IE_MAX },
-   { SIOCSIWPMKSA, NS_NET(set_pmksa), 
-     sizeof(struct iw_pmksa), 
+   { SIOCSIWPMKSA, NS_NET(set_pmksa),
+     sizeof(struct iw_pmksa),
      sizeof(struct iw_pmksa)
    },
    { SIOCSIWENCODEEXT, NS_NET(set_encodeext),
@@ -2494,8 +2494,8 @@ find_handler(int cmd)
 {
    struct nrx_iw_handler_info *iwh;
 
-   for(iwh = nrx_iw_handler_info; 
-       iwh < &nrx_iw_handler_info[ARRAY_SIZE(nrx_iw_handler_info)]; 
+   for(iwh = nrx_iw_handler_info;
+       iwh < &nrx_iw_handler_info[ARRAY_SIZE(nrx_iw_handler_info)];
        iwh++) {
       if(iwh->cmd == cmd)
          return iwh;
@@ -2529,18 +2529,18 @@ ns_net_ioctl_iw(struct net_device *dev, struct ifreq *ifr, int cmd)
       if(IW_IS_SET(cmd)) {
          if(iwr->u.data.length != 0 && iwr->u.data.pointer == NULL)
             return -EFAULT;
-   
+
          if(iwr->u.data.length < iwh->min_size)
             return -EINVAL;
-   
+
          if(iwr->u.data.length > iwh->max_size)
             return -E2BIG;
 
          extra = kmalloc(iwr->u.data.length, GFP_KERNEL);
          if(extra == NULL)
             return -ENOMEM;
-   
-         ret = copy_from_user(extra, 
+
+         ret = copy_from_user(extra,
                               iwr->u.data.pointer,
                               iwr->u.data.length);
          if (ret) {
@@ -2552,7 +2552,7 @@ ns_net_ioctl_iw(struct net_device *dev, struct ifreq *ifr, int cmd)
             return -EINVAL;
          if(iwr->u.data.pointer == NULL)
             return -EINVAL;
-         
+
          extra = kmalloc(iwh->max_size, GFP_KERNEL);
          if(extra == NULL)
             return -ENOMEM;
@@ -2567,7 +2567,7 @@ ns_net_ioctl_iw(struct net_device *dev, struct ifreq *ifr, int cmd)
             kfree(extra);
             return -E2BIG;
          }
-         ret = copy_to_user(iwr->u.data.pointer, 
+         ret = copy_to_user(iwr->u.data.pointer,
                             extra,
                             iwr->u.data.length);
          if (ret) {

@@ -24,5 +24,3 @@
 #define __io_address(n)         __io(IO_ADDRESS(n))
 
 #endif
-
-

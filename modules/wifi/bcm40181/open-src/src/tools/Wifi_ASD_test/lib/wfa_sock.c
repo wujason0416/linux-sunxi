@@ -382,7 +382,7 @@ int wfaCtrlSend(int sock, unsigned char *buf, int bufLen)
         return FALSE;
     if(buf == NULL)
 	DPRINT_INFO(WFA_OUT, "wfaCtrlSend: Buffer null\r\n");
-	
+
     bytesSent = send(sock, buf, bufLen, 0);
 
     if(bytesSent == -1)

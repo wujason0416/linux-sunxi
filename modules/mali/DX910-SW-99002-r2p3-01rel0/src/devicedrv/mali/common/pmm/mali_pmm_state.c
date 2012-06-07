@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -173,8 +173,8 @@ mali_pmm_core_mask pmm_cores_to_power_down( _mali_pmm_internal_state_t *pmm, mal
 
 				MALI_PMM_UNLOCK(pmm);
 				/* Signal the core to power down
-				 * If it is busy (not idle) it will set a pending power down flag 
-				 * (as long as we don't want to only immediately power down). 
+				 * If it is busy (not idle) it will set a pending power down flag
+				 * (as long as we don't want to only immediately power down).
 				 * If it isn't busy it will move out of the idle queue right
 				 * away
 				 */
@@ -184,7 +184,7 @@ mali_pmm_core_mask pmm_cores_to_power_down( _mali_pmm_internal_state_t *pmm, mal
 #if MALI_STATE_TRACKING
                 pmm->mali_pmm_lock_acquired = 1;
 #endif /* MALI_STATE_TRACKING */
-			
+
 
 				/* Re-read cores_subset in case it has changed */
 				cores_subset = (*ppowered & cores);
@@ -192,7 +192,7 @@ mali_pmm_core_mask pmm_cores_to_power_down( _mali_pmm_internal_state_t *pmm, mal
 				if( err == _MALI_OSK_ERR_OK )
 				{
 					/* We moved an idle core to the power down queue
-					 * which means it is now acknowledged (if it is still 
+					 * which means it is now acknowledged (if it is still
 					 * registered)
 					 */
 					pmm->cores_ack_down |= (cores_list[n] & cores_subset);
@@ -259,7 +259,7 @@ void pmm_power_down_cancel( _mali_pmm_internal_state_t *pmm )
 #endif /* MALI_STATE_TRACKING */
 
 			MALI_PMM_UNLOCK(pmm);
-			/* As we are cancelling - only move the cores back to the queue - 
+			/* As we are cancelling - only move the cores back to the queue -
 			 * no reset needed
 			 */
 			err = mali_core_signal_power_up( cores_list[n], MALI_TRUE );
@@ -273,11 +273,11 @@ void pmm_power_down_cancel( _mali_pmm_internal_state_t *pmm )
 
 			if( err != _MALI_OSK_ERR_OK )
 			{
-				MALI_DEBUG_ASSERT( (err == _MALI_OSK_ERR_BUSY && 
+				MALI_DEBUG_ASSERT( (err == _MALI_OSK_ERR_BUSY &&
 										((cores_list[n] & ad) == 0))  ||
 										(err == _MALI_OSK_ERR_FAULT &&
 										(*pregistered & cores_list[n]) == 0) );
-				/* If we didn't power up a core - it must be active and 
+				/* If we didn't power up a core - it must be active and
 				 * hasn't actually tried to power down - this is expected
 				 * for cores that haven't acknowledged
 				 * Alternatively we are shutting down and the core has
@@ -310,7 +310,7 @@ mali_bool pmm_invoke_power_down( _mali_pmm_internal_state_t *pmm, mali_power_mod
 
 	if( !pmm_power_down_okay( pmm ) )
 	{
-		MALIPMM_DEBUG_PRINT( ("PMM: Waiting for cores to go idle for power off - 0x%08x / 0x%08x\n", 
+		MALIPMM_DEBUG_PRINT( ("PMM: Waiting for cores to go idle for power off - 0x%08x / 0x%08x\n",
 				pmm->cores_pend_down, pmm->cores_ack_down) );
 		return MALI_FALSE;
 	}
@@ -322,7 +322,7 @@ mali_bool pmm_invoke_power_down( _mali_pmm_internal_state_t *pmm, mali_power_mod
 #else
 		err = _MALI_OSK_ERR_OK;
 #endif
-		
+
 		if( err == _MALI_OSK_ERR_OK )
 		{
 #if MALI_PMM_TRACE
@@ -340,7 +340,7 @@ mali_bool pmm_invoke_power_down( _mali_pmm_internal_state_t *pmm, mali_power_mod
 		else
 		{
 			pmm->cores_powered |= pmm->cores_pend_down;
-			MALI_PRINT_ERROR( ("PMM: Failed to get PMU to power down cores - (0x%x) %s", 
+			MALI_PRINT_ERROR( ("PMM: Failed to get PMU to power down cores - (0x%x) %s",
 					pmm->cores_pend_down, pmm_trace_get_core_name(pmm->cores_pend_down)) );
 			pmm->fatal_power_err = MALI_TRUE;
 		}
@@ -372,7 +372,7 @@ mali_bool pmm_invoke_power_up( _mali_pmm_internal_state_t *pmm )
 	if( pmm_power_up_okay( pmm ) )
 	{
 		/* Power up has completed - sort out subsystem core status */
-		
+
 		int n;
 		/* Use volatile to access, so that it is updated if any cores are unregistered */
 		volatile mali_pmm_core_mask *ppendup = &(pmm->cores_pend_up);
@@ -410,7 +410,7 @@ mali_bool pmm_invoke_power_up( _mali_pmm_internal_state_t *pmm )
 					MALI_DEBUG_PRINT(1,("In pmm_invoke_power_up:: The error and pending cores to be powered up are...%x...%x",err,*ppendup));
 					MALI_DEBUG_ASSERT( (err == _MALI_OSK_ERR_FAULT &&
 										(*ppendup & cores_list[n]) == 0) );
-					/* We only expect this to fail when we are shutting down 
+					/* We only expect this to fail when we are shutting down
 					 * and the core has been unregistered
 					 */
 				}
@@ -438,7 +438,7 @@ mali_bool pmm_invoke_power_up( _mali_pmm_internal_state_t *pmm )
 #endif
 		if( err != _MALI_OSK_ERR_OK )
 		{
-			MALI_PRINT_ERROR( ("PMM: Failed to get PMU to power up cores - (0x%x) %s", 
+			MALI_PRINT_ERROR( ("PMM: Failed to get PMU to power up cores - (0x%x) %s",
 					pmm->cores_pend_up, pmm_trace_get_core_name(pmm->cores_pend_up)) );
 			pmm->fatal_power_err = MALI_TRUE;
 		}
@@ -501,7 +501,7 @@ void pmm_fatal_reset( _mali_pmm_internal_state_t *pmm )
 	_mali_osk_notification_t *msg = NULL;
 	mali_pmm_status status;
 	MALI_DEBUG_ASSERT_POINTER(pmm);
-	MALIPMM_DEBUG_PRINT( ("PMM: Fatal Reset called") ); 
+	MALIPMM_DEBUG_PRINT( ("PMM: Fatal Reset called") );
 
 	MALI_DEBUG_ASSERT( pmm->status != MALI_PMM_STATUS_OFF );
 
@@ -515,7 +515,7 @@ void pmm_fatal_reset( _mali_pmm_internal_state_t *pmm )
 	pmm->cores_pend_up = 0;
 	pmm->cores_ack_down = 0;
 	pmm->cores_ack_up = 0;
-	pmm->is_dvfs_active = 0; 
+	pmm->is_dvfs_active = 0;
 #if MALI_PMM_TRACE
 	pmm->messages_sent = 0;
 	pmm->messages_received = 0;
@@ -533,7 +533,7 @@ void pmm_fatal_reset( _mali_pmm_internal_state_t *pmm )
 	pmm->cores_powered = pmm->cores_registered;
 	/* The cores may not be idle, but this state will be rectified later */
 	pmm->cores_idle = pmm->cores_registered;
-	
+
 	/* So power on any cores that are registered */
 	if( pmm->cores_registered != 0 )
 	{
@@ -544,7 +544,7 @@ void pmm_fatal_reset( _mali_pmm_internal_state_t *pmm )
 #endif
 		if( err != _MALI_OSK_ERR_OK )
 		{
-			/* This is very bad as we can't even be certain the cores are now 
+			/* This is very bad as we can't even be certain the cores are now
 			 * powered up
 			 */
 			MALI_PRINT_ERROR( ("PMM: Failed to perform PMM reset!\n") );
@@ -568,11 +568,11 @@ void pmm_fatal_reset( _mali_pmm_internal_state_t *pmm )
 #endif /* MALI_STATE_TRACKING */
 
 				/* We either succeeded, or we were not off anyway, or we have
-				 * just be deregistered 
+				 * just be deregistered
 				 */
 				MALI_DEBUG_ASSERT( (err == _MALI_OSK_ERR_OK) ||
 									(err == _MALI_OSK_ERR_BUSY) ||
-									(err == _MALI_OSK_ERR_FAULT && 
+									(err == _MALI_OSK_ERR_FAULT &&
 									(*pregistered & cores_list[n]) == 0) );
 			}
 		}
@@ -586,15 +586,15 @@ void pmm_fatal_reset( _mali_pmm_internal_state_t *pmm )
 	}
 	if( status == MALI_PMM_STATUS_OS_POWER_DOWN )
 	{
-		/* Get the OS data and respond to the power down 
+		/* Get the OS data and respond to the power down
 		 * NOTE: We are not powered down at this point due to power problems,
-		 * so we are lying to the system, but something bad has already 
+		 * so we are lying to the system, but something bad has already
 		 * happened and we are trying unstick things
 		 * TBD - Add busy loop to power down cores?
 		 */
 		_mali_osk_pmm_power_down_done( pmm_retrieve_os_event_data( pmm ) );
 	}
-		
+
 	/* Purge the event queues */
 	do
 	{
@@ -683,7 +683,7 @@ static pmm_trace_corelist_t pmm_trace_cores[] = {
 	{ (MALI_PMM_CORE_GP | MALI_PMM_CORE_L2 | MALI_PMM_CORE_PP0),
 		"GP+L2+PP0" },
 	{ (MALI_PMM_CORE_GP | MALI_PMM_CORE_PP0),
-		"GP+PP0" },	
+		"GP+PP0" },
 	{ (MALI_PMM_CORE_GP | MALI_PMM_CORE_L2 | MALI_PMM_CORE_PP0 | MALI_PMM_CORE_PP1),
 		"GP+L2+PP0+PP1" },
 	{ (MALI_PMM_CORE_GP | MALI_PMM_CORE_PP0 | MALI_PMM_CORE_PP1),
@@ -695,7 +695,7 @@ const char *pmm_trace_get_core_name( mali_pmm_core_mask cores )
 {
 	const char *dname = NULL;
 	int cl;
-	
+
 	/* Look up name in corelist */
 	cl = 0;
 	while( pmm_trace_cores[cl].name != NULL )
@@ -707,7 +707,7 @@ const char *pmm_trace_get_core_name( mali_pmm_core_mask cores )
 		}
 		cl++;
 	}
-	
+
 	if( dname == NULL )
 	{
 		/* We don't know a good short-hand for the configuration */
@@ -718,4 +718,3 @@ const char *pmm_trace_get_core_name( mali_pmm_core_mask cores )
 }
 
 #endif /* USING_MALI_PMM */
-

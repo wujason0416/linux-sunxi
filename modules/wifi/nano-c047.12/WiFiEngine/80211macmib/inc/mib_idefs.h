@@ -1,6 +1,6 @@
 /******************************************************************************
 
-            Copyright (c) 2004 by Nanoradio AB 
+            Copyright (c) 2004 by Nanoradio AB
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
 All rights, title, ownership, or other interests in the software remain the
@@ -13,7 +13,7 @@ consent of Nanoradio AB.
 
 Nanoradio AB reserves the right to modify this software without notice.
 
-Nanoradio AB 
+Nanoradio AB
 Torshamnsgatan 39                       info@nanoradio.se
 164 40 Kista                            http://www.nanoradio.se
 SWEDEN
@@ -168,7 +168,7 @@ M A C R O S   &   D E F I N E S
         (MIB_OBJECT_SIZE_DESCRIPTION_FIXED_SIZE << MIB_OBJECT_SIZE_DESCRIPTION_OFFSET) |\
         (1 << MIB_EV_FUNC_FLAG_OFFSET) |\
         (1 << MIB_ACCESS_READ_OFFSET)  |\
-        (1 << MIB_ACCESS_WRITE_OFFSET) | 1) 
+        (1 << MIB_ACCESS_WRITE_OFFSET) | 1)
 
 #endif
 
@@ -243,7 +243,7 @@ M A C R O S   &   D E F I N E S
 
 
 
-        
+
 /******************************************************************************
 C O N S T A N T S
 ******************************************************************************/
@@ -256,13 +256,13 @@ T Y P E D E F ' S
 /*
    Object reference descriptor bit encoding
 
-                i rrr aaaaaaaaaaaaaaaaaaaa      
+                i rrr aaaaaaaaaaaaaaaaaaaa
                 ^ ^   ^
                 | |   |
                 | |    ------------- address reference     (bit 0-19)
                 |  ----------------- reference type        (bit 20-22)
                  ------------------- indexed reference     (bit 23)
- 
+
 
 
    Object storage descriptor bit encoding
@@ -270,8 +270,8 @@ T Y P E D E F ' S
     type "unspecified"
 
           tttuuuuuuuuuuuuuuuuuuuuuuuuuuuuu
-          ^  ^      
-          |  |      
+          ^  ^
+          |  |
           |   ---------------------- unspecifed      (bit 0-28)
            ------------------------- type            (bit 29-31)
 
@@ -328,4 +328,3 @@ typedef enum
 
 #endif /* #ifndef MAC_MIB_IDEFS_H */
 /* E N D  O F  F I L E *******************************************************/
-

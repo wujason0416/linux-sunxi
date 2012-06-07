@@ -77,4 +77,3 @@ int wei_netlist_get_size_of_ies(WiFiEngine_net_t *net);
 void wei_limit_netlist(int size);
 
 #endif /* WEI_NETLIST_H */
-

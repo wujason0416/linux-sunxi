@@ -21,10 +21,10 @@
 #define ST_OPENED     (1<<1)
 
 struct sun5i_dma_params {
-	struct sw_dma_client *client;	
-	int channel;				
+	struct sw_dma_client *client;
+	int channel;
 	dma_addr_t dma_addr;
-	int dma_size;			
+	int dma_size;
 };
 
 #define SUN5I_DAI_I2S			1

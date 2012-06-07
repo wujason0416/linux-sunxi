@@ -35,7 +35,7 @@ static void print_event(struct log_event_t *event,const unsigned char *data) {
                                   PROCFS_MAX_SIZE-procfs_buffer_len,
                                   "%lu.%06lu ", event->ts.tv_sec, event->ts.tv_usec);
 #endif
-   
+
    procfs_buffer_len += scnprintf(procfs_buffer + procfs_buffer_len,
                                   PROCFS_MAX_SIZE-procfs_buffer_len,
                                   "%s:%d %s ", SHORT_FORM_OF_FILE(event->file), event->line,
@@ -203,4 +203,3 @@ int nrx_log_cleanup(void)
 }
 
 /*------------------------------------------------------------*/
-

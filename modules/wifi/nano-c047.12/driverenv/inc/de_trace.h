@@ -75,8 +75,8 @@ extern uint32_t trace_mask;
 #define TR_ROAM_HIGH_RES         TR_HIGH_RES
 #define TR_AMP_HIGH_RES          TR_HIGH_RES
 
-/* don't use TR_ALL for potentially harmful event. 
- * And don't cry wolf! 
+/* don't use TR_ALL for potentially harmful event.
+ * And don't cry wolf!
  * use DE_BUG_ON on fatal */
 #define TR_WARN         TR_ALWAYS // Potentially harmfyl
 #define TR_SEVERE       TR_ALWAYS // Severe but hopefully recoverable
@@ -112,7 +112,7 @@ extern struct log_t logger;
 #define DE_TRACE_PTR2(_tr, m, a,b)         ({if(trace_mask & (_tr)) LOG_PTR(&logger,    #_tr ": " m,a,b); })
 #define DE_TRACE_PTR3(_tr, m, a,b,c)       ({if(trace_mask & (_tr)) LOG_PTR(&logger,    #_tr ": " m,a,b,c); })
 #define DE_TRACE_INT(_tr, m, a)            ({if(trace_mask & (_tr)) LOG_INT(&logger,    #_tr ": " m,1,a,0,0,0,0,0); })
-#define DE_TRACE_INT2(_tr, m, a,b)         ({if(trace_mask & (_tr)) LOG_INT(&logger,    #_tr ": " m,2,a,b,0,0,0,0); }) 
+#define DE_TRACE_INT2(_tr, m, a,b)         ({if(trace_mask & (_tr)) LOG_INT(&logger,    #_tr ": " m,2,a,b,0,0,0,0); })
 #define DE_TRACE_INT3(_tr, m, a,b,c)       ({if(trace_mask & (_tr)) LOG_INT(&logger,    #_tr ": " m,3,a,b,c,0,0,0); })
 #define DE_TRACE_INT4(_tr, m, a,b,c,d)     ({if(trace_mask & (_tr)) LOG_INT(&logger,    #_tr ": " m,4,a,b,c,d,0,0); })
 #define DE_TRACE_INT5(_tr, m, a,b,c,d,e)   ({if(trace_mask & (_tr)) LOG_INT(&logger,    #_tr ": " m,4,a,b,c,d,e,0); })
@@ -198,8 +198,8 @@ void de_trace_stack_usage(void);
 #endif
 #define  DE_STRTOUL(a,b,c) simple_strtoul((a), (b), (c))
 /*!
- * \brief Assert macro. 
- * 
+ * \brief Assert macro.
+ *
  * Assert macro to add diagnostics to the program .
  * If expression evaluates to 0 (false), then the expression, sourcecode filename,
  * and line number are sent to the standard error, and then calls the abort function.
@@ -207,7 +207,7 @@ void de_trace_stack_usage(void);
  * assert does nothing.
  *
  * @param _exp Pointer to buffer.
- * 
+ *
  * @return void.
  */
 #define  DE_ASSERT(_exp) do { if(!(_exp)) { printk(KERN_ERR "%s:%s:%d: assert failed", __FILE__, __func__, __LINE__); BUG(); } } while(0)

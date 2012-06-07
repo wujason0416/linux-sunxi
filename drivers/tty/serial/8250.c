@@ -968,7 +968,7 @@ static int broken_efr(struct uart_8250_port *up)
 	/*
 	 * Exar ST16C2550 "A2" devices incorrectly detect as
 	 * having an EFR, and report an ID of 0x0201.  See
-	 * http://linux.derkeiler.com/Mailing-Lists/Kernel/2004-11/4812.html 
+	 * http://linux.derkeiler.com/Mailing-Lists/Kernel/2004-11/4812.html
 	 */
 	if (autoconfig_read_divisor_id(up) == 0x0201 && size_fifo(up) == 16)
 		return 1;
@@ -1967,7 +1967,7 @@ static unsigned int serial8250_get_mctrl(struct uart_port *port)
 		ret |= TIOCM_DSR;
 	if (status & UART_MSR_CTS)
 		ret |= TIOCM_CTS;
-    
+
 	return ret;
 }
 
@@ -1995,7 +1995,7 @@ static void serial8250_set_mctrl(struct uart_port *port, unsigned int mctrl)
 
 	serial_out(up, UART_MCR, mcr);
 	DEBUG_SERIAL(&up->port, "serial8250_set_mctrl over mctrl %02x up->mcr %02x: lcr %02x mcr %02x fcr %02x ier %02x\n",
-                            mctrl, up->mcr, serial_inp(up, UART_LCR), serial_inp(up, UART_MCR), 
+                            mctrl, up->mcr, serial_inp(up, UART_LCR), serial_inp(up, UART_MCR),
                             serial_inp(up, UART_FCR), serial_inp(up, UART_IER));
 }
 
@@ -2342,7 +2342,7 @@ dont_test_tx_en:
 	}
 
 	DEBUG_SERIAL(&up->port, "serial8250_startup over: lcr %02x mcr %02x fcr %02x ier %02x\n",
-                            serial_inp(up, UART_LCR), serial_inp(up, UART_MCR), 
+                            serial_inp(up, UART_LCR), serial_inp(up, UART_MCR),
                             serial_inp(up, UART_FCR), serial_inp(up, UART_IER));
 	return 0;
 }
@@ -2426,7 +2426,7 @@ serial8250_do_set_termios(struct uart_port *port, struct ktermios *termios,
 	unsigned char cval, fcr = 0;
 	unsigned long flags;
 	unsigned int baud, quot;
-	
+
 	DEBUG_SERIAL(&up->port, "serial8250_do_set_termios\n");
 
 	switch (termios->c_cflag & CSIZE) {
@@ -2611,9 +2611,9 @@ serial8250_do_set_termios(struct uart_port *port, struct ktermios *termios,
 	/* Don't rewrite B0 */
 	if (tty_termios_baud_rate(termios))
 		tty_termios_encode_baud_rate(termios, baud, baud);
-	
+
 	DEBUG_SERIAL(&up->port, "serial8250_do_set_termios over: lcr %02x mcr %02x fcr %02x ier %02x\n",
-                            serial_inp(up, UART_LCR), serial_inp(up, UART_MCR), 
+                            serial_inp(up, UART_LCR), serial_inp(up, UART_MCR),
                             serial_inp(up, UART_FCR), serial_inp(up, UART_IER));
 }
 EXPORT_SYMBOL(serial8250_do_set_termios);

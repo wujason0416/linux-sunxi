@@ -191,9 +191,9 @@ int wfaTGSetPrio(int sockfd, int tgClass)
 #ifdef WFA_WMM_EXT
 #ifdef WFA_WMM_PS_EXT
 /*
- * sender(): This is a generic function to send a packed for the given dsc 
+ * sender(): This is a generic function to send a packed for the given dsc
  *               (ac:VI/VO/BE/BK), before sending the packet the function
- *               puts the station into the PS mode indicated by psave and 
+ *               puts the station into the PS mode indicated by psave and
  *               sends the packet after sleeping for sllep_period
  */
 int sender(char psave,int sleep_period,int dsc)

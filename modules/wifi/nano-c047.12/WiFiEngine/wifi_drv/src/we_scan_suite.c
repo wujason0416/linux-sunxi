@@ -44,8 +44,8 @@ int WiFiEngine_CreateScanSuite(struct scan_suite_t **suite)
 
 
 int WiFiEngine_ActivateScanSuite(
-      scan_suite_s *ss, 
-      i_func_t scan_ind_cb, 
+      scan_suite_s *ss,
+      i_func_t scan_ind_cb,
       i_func_t scan_complete_cb)
 {
    int s;
@@ -55,8 +55,8 @@ int WiFiEngine_ActivateScanSuite(
       ss->scan_ind_h = we_ind_register(
             WE_IND_SCAN_INDICATION,
             "scan_suite",
-            scan_ind_cb, 
-            NULL, 
+            scan_ind_cb,
+            NULL,
             RELEASE_IND_ON_UNPLUG,
             ss);
 
@@ -83,7 +83,7 @@ int WiFiEngine_ActivateScanSuite(
       }
    }
 
-   s = WiFiEngine_AddScanJob(&ss->scan_job.id, 
+   s = WiFiEngine_AddScanJob(&ss->scan_job.id,
          ss->scan_job.ssid ,
          ss->scan_job.bssid ,
          ss->scan_job.type ,
@@ -91,7 +91,7 @@ int WiFiEngine_ActivateScanSuite(
          ss->scan_job.flags ,
          ss->scan_job.prio ,
          ss->scan_job.ap_exclude,
-         ss->scan_job.filter_id, 
+         ss->scan_job.filter_id,
          ss->scan_job.run_every_nth_period,
          NULL);
 
@@ -107,8 +107,8 @@ int WiFiEngine_ActivateScanSuite(
       return WIFI_ENGINE_SUCCESS;
    }
 
-   s = WiFiEngine_AddScanFilter( 
-         &ss->scan_filter.id, 
+   s = WiFiEngine_AddScanFilter(
+         &ss->scan_filter.id,
          ss->scan_filter.bss_type,
          ss->scan_filter.rssi_thr,
          ss->scan_filter.snr_thr,
@@ -137,5 +137,3 @@ void WiFiEngine_DeactivateScanSuite(scan_suite_s *ss)
       WiFiEngine_RemoveScanFilter(ss->scan_filter.id,NULL);
    }
 }
-
-

@@ -21,8 +21,8 @@ C O N S T A N T S / M A C R O S
 #define MacWrapper_common_IEs_t                    HicWrapper_common_IEs_t
 #define MacWrapper_m80211_country_string_t         HicWrapper_m80211_country_string_t
 #define MacWrapper_mac_mmpdu_probe_req_t           HicWrapper_common_IEs_t
-#define MacWrapper_mac_mmpdu_beacon_ind_t          HicWrapper_mac_mmpdu_beacon_ind_t 
-#define MacWrapper_mac_mmpdu_probe_rsp_t           HicWrapper_mac_mmpdu_beacon_ind_t 
+#define MacWrapper_mac_mmpdu_beacon_ind_t          HicWrapper_mac_mmpdu_beacon_ind_t
+#define MacWrapper_mac_mmpdu_probe_rsp_t           HicWrapper_mac_mmpdu_beacon_ind_t
 #define MacWrapper_m80211_measurement_types_t      MacWrapper_uint8_t
 
 typedef enum         /* Actions on blobs. */
@@ -41,7 +41,7 @@ typedef struct
    uint16_t index;
    uint16_t ie_first_index;
    uint16_t ie_current_index;
-   uint32_t ie_map;   
+   uint32_t ie_map;
    bool_t   status;
    char*    buffer;
    void*    structure;
@@ -73,7 +73,7 @@ void    INIT_BLOB(Blob_t * _blob, char * _ptr, uint16_t _len);
 
 struct wrapper_alloc_buf
 {
-   void* next_in_chain;   
+   void* next_in_chain;
 #ifdef SUPPORT_STRUCTURE_COPY
    size_t   this_buf_size;
 #endif /*  SUPPORT_STRUCTURE_COPY */
@@ -115,18 +115,18 @@ void WrapperCopy_m80211_ie_rsn_parameter_set_t(void* context_p, m80211_ie_rsn_pa
 void WrapperCopy_m80211_ie_wapi_parameter_set_t(void* context_p, m80211_ie_wapi_parameter_set_t* dest, m80211_ie_wapi_parameter_set_t* source);
 void WrapperCopy_m80211_remaining_IEs_t(void* context_p, m80211_remaining_IEs_t* dest_p, m80211_remaining_IEs_t* source_p);
 
-void MacWrapper_m80211_ie_ht_capabilities_t(m80211_ie_ht_capabilities_t*, 
-                                            Blob_t*, 
+void MacWrapper_m80211_ie_ht_capabilities_t(m80211_ie_ht_capabilities_t*,
+                                            Blob_t*,
                                             WrapperAction_t);
-void MacWrapper_m80211_ie_ht_operation_t(m80211_ie_ht_operation_t*, 
-                                         Blob_t*, 
+void MacWrapper_m80211_ie_ht_operation_t(m80211_ie_ht_operation_t*,
+                                         Blob_t*,
                                          WrapperAction_t);
 
 ie_ref_t MacWrapper_m80211_remaining_IEs_t_Insert(void* context_p, m80211_remaining_IEs_t* dest_p, ie_ref_t ie_p);
 ie_ref_t MacWrapper_m80211_remaining_IEs_t_Locate(m80211_remaining_IEs_t* remaining_ies, m80211_ie_id_t id, int vendor_specific_oui, int oui_sub_type);
 ie_ref_t MacWrapper_m80211_remaining_IEs_t_LocateNext(ie_ref_t ie_ref, bool_t skip_current, m80211_ie_id_t id, int vendor_specific_oui, int oui_sub_type);
 void     MacWrapper_m80211_remaining_IEs_t_Remove(m80211_remaining_IEs_t* remaining_ies, m80211_ie_id_t id);
-ie_ref_t MacWrapper_m80211_remaining_IEs_t_InsertNew(void* context_p, m80211_remaining_IEs_t* dest_p, m80211_ie_id_t id, int ie_length);      
+ie_ref_t MacWrapper_m80211_remaining_IEs_t_InsertNew(void* context_p, m80211_remaining_IEs_t* dest_p, m80211_ie_id_t id, int ie_length);
 
 
 /*****************************************************************************
@@ -138,7 +138,7 @@ O P T I M I Z E D   M A C R O S
 #define IE_LENGTH(ie_p) (ie_p)[1]
 
 #define SET_SINGLE_REMAINING_IE(_remaining_p, _ie_p) (_remaining_p)->count = 1;(_remaining_p)->buffer_ref = (ie_ref_t)(_ie_p)
-     
+
 #define IE_COUNTRY_LENGTH(count)       (IE_HDR_LENGTH + sizeof(m80211_country_string_t) + count*M80211_IE_CHANNEL_INFO_TRIPLET_SIZE)
 #define IE_COUNTRY_STRING(ie_p)        &(ie_p)[2]
 #define IE_COUNTRY_CHANNEL_INFO(ie_p)  &(ie_p)[2+M80211_IE_LEN_COUNTRY_STRING]
@@ -269,4 +269,3 @@ void MacWrapper_mac_mgmt_body_t(mac_mgmt_body_t* object_p, Blob_t* blob, Wrapper
 #endif /* MAC_WRAPPER_H */
 
 /* E N D  O F  F I L E *******************************************************/
-

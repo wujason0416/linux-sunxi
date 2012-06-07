@@ -13,7 +13,7 @@
  * Basically, the device configuration data is a collection of MIB settings.
  * These settings can be evaluated and stored using 'hic-proxy' together with
  * the nanoloader application or any other application using the ProdTest API.
- * 
+ *
  * In practice, the persistant storage will be some kind of flash memory.
  *
  * @{
@@ -32,7 +32,7 @@
 /*!
  * @brief Open persistent storage area.
  *
- * This function will be called prior to any call to host_flash_write(), 
+ * This function will be called prior to any call to host_flash_write(),
  * host_flash_read() and host_flash_close().
  *
  * This function should, if necessary, prepare the persistent storage area for
@@ -49,7 +49,7 @@
  * @param flags Bitmask that specifies if the persistent storage area should be
  *              prepared for read or write access.
  *
- * @return 
+ * @return
  * - A handle to the opened persistent storage area on success
  * - NULL on failure
  *
@@ -60,7 +60,7 @@ void * host_flash_open(char * filename, uint32_t flags);
 /*!
  * @brief Write to persistent storage area.
  *
- * This function will be called when data should be written to a previously 
+ * This function will be called when data should be written to a previously
  * opened (host_flash_open()) persistent storage area.
  *
  * This function should write the data availble in buf to the current offset
@@ -77,7 +77,7 @@ void * host_flash_open(char * filename, uint32_t flags);
  * @param size Size of the data the write.
  * @param handle Persistent Storage area identifier.
  *
- * @return 
+ * @return
  * - HOST_FLASH_STATUS_OK on success
  * - HOST_FLASH_STATUS_ERROR on failure
  *
@@ -88,10 +88,10 @@ int host_flash_write(void * buf, size_t size, void * handle);
 /*!
  * @brief Read from persistent storage area.
  *
- * This function will be called when data should be read from a previously 
+ * This function will be called when data should be read from a previously
  * opened (host_flash_open()) persistent storage area.
  *
- * This function should read 'size' bytes of from the persistent storage area 
+ * This function should read 'size' bytes of from the persistent storage area
  * identified by handle. The data should be available in buf after the call.
  *
  * host_flash_read() can be called multiple times for each open persistent
@@ -104,7 +104,7 @@ int host_flash_write(void * buf, size_t size, void * handle);
  * @param size Number of bytes to read.
  * @param handle Persistent Storage area identifier.
  *
- * @return 
+ * @return
  * - HOST_FLASH_STATUS_OK on success
  * - HOST_FLASH_STATUS_ERROR on failure
  *
@@ -116,8 +116,8 @@ int host_flash_read(void * buf, size_t size, void * handle);
 /*!
  * @brief Close a persistent storage area.
  *
- * This function will be called when a persistent storage area should be 
- * closed. All pending data should be flushed to the persistent 
+ * This function will be called when a persistent storage area should be
+ * closed. All pending data should be flushed to the persistent
  * storage area when this call returns.
  *
  * If the persistent storage area is accessed through the file system,
@@ -125,7 +125,7 @@ int host_flash_read(void * buf, size_t size, void * handle);
  *
  * @param handle The persistent storage area identifier.
  *
- * @return 
+ * @return
  * - HOST_FLASH_STATUS_OK on success
  * - HOST_FLASH_STATUS_ERROR on failure
  *

@@ -48,17 +48,17 @@ const rRegistry DefaultRegistry = {
             E(max_disconnectedScanInterval) 16000,
             E(periodicScanRepetition) 2,
          },
-         E(supportedRateSet) { 12, { 0x02,0x04,0x0b,0x0c,0x12,0x16,0x18,0x24,0x30,0x48,0x60,0x6c } },  
-         E(ht_capabilities) 0 
+         E(supportedRateSet) { 12, { 0x02,0x04,0x0b,0x0c,0x12,0x16,0x18,0x24,0x30,0x48,0x60,0x6c } },
+         E(ht_capabilities) 0
            | M80211_HT_CAPABILITY_HT_GREENFIELD
            | M80211_HT_CAPABILITY_RX_STBC_ONE_STREAM
-           | M80211_HT_CAPABILITY_SHORT_GI_20MHZ 
+           | M80211_HT_CAPABILITY_SHORT_GI_20MHZ
 //         | M80211_HT_CAPABILITY_LSIG_TXOP_PROTECT_SUPPORT
          ,
          E(ht_rates) 0xff, /* MCS rate mask */
          E(multiDomainCapabilityEnabled) FALSE,
          E(multiDomainCapabilityEnforced) FALSE,
-         E(regionalChannels) { 
+         E(regionalChannels) {
             13, { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 }, 0
          },
          E(maxPower) 17,

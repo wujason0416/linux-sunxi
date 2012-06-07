@@ -1,4 +1,4 @@
-/* Vibrator driver for sun4i platform 
+/* Vibrator driver for sun4i platform
  * ported from msm pmic vibrator driver
  *  by tom cubie <tangliang@allwinnertech.com>
  *
@@ -104,7 +104,7 @@ static int __init sun4i_vibrator_init(void)
 	int err = -1;
 
 	pr_info("hello, sun4i_vibrator init\n");
-	err = script_parser_fetch("motor_para", "motor_used", 
+	err = script_parser_fetch("motor_para", "motor_used",
 					&vibe_used, sizeof(vibe_used)/sizeof(int));
 	if(err) {
 		pr_err("%s script_parser_fetch \"motor_para\" \"motor_used\" error = %d\n",
@@ -155,11 +155,10 @@ static void __exit sun4i_vibrator_exit(void)
 {
 	pr_info("bye, sun4i_vibrator_exit\n");
 	timed_output_dev_unregister(&sun4i_vibrator);
-	gpio_release(vibe_gpio_handler, 0);	
+	gpio_release(vibe_gpio_handler, 0);
 }
 module_init(sun4i_vibrator_init);
 module_exit(sun4i_vibrator_exit);
 
 MODULE_DESCRIPTION("timed output vibrator device for sun4i");
 MODULE_LICENSE("GPL");
-

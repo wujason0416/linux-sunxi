@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -94,16 +94,16 @@ void _rtw_scan_timeout_handler (void *FunctionContext)
 void _dynamic_check_timer_handlder (void *FunctionContext)
 {
 	_adapter *adapter = (_adapter *)FunctionContext;
-		 
+
 	rtw_dynamic_check_timer_handlder(adapter);
-	
+
 	_set_timer(&adapter->mlmepriv.dynamic_chk_timer, 2000);
 }
 
 #ifdef CONFIG_SET_SCAN_DENY_TIMER
 void _rtw_set_scan_deny_timer_hdl(void *FunctionContext)
 {
-	_adapter *adapter = (_adapter *)FunctionContext;	 
+	_adapter *adapter = (_adapter *)FunctionContext;
 	rtw_set_scan_deny_timer_hdl(adapter);
 }
 #endif
@@ -136,7 +136,7 @@ extern void rtw_indicate_wx_disassoc_event(_adapter *padapter);
 void rtw_os_indicate_connect(_adapter *adapter)
 {
 
-_func_enter_;	
+_func_enter_;
 
 	rtw_indicate_wx_assoc_event(adapter);
 	netif_carrier_on(adapter->pnetdev);
@@ -148,7 +148,7 @@ _func_enter_;
 	_set_workitem(&adapter->mlmepriv.Linkup_workitem);
 #endif
 
-_func_exit_;	
+_func_exit_;
 
 }
 
@@ -160,7 +160,7 @@ void rtw_reset_securitypriv( _adapter *adapter )
 	u32	backupTKIPcountermeasure_time = 0;
 
 	if(adapter->securitypriv.dot11AuthAlgrthm == dot11AuthAlgrthm_8021X)//802.1x
-	{		 
+	{
 		// Added by Albert 2009/02/18
 		// We have to backup the PMK information for WiFi PMK Caching test item.
 		//
@@ -188,7 +188,7 @@ void rtw_reset_securitypriv( _adapter *adapter )
 		adapter->securitypriv.ndisencryptstatus = Ndis802_11WEPDisabled;
 
 	}
-	else //reset values in securitypriv 
+	else //reset values in securitypriv
 	{
 		//if(adapter->mlmepriv.fw_state & WIFI_STATION_STATE)
 		//{
@@ -211,10 +211,10 @@ void rtw_reset_securitypriv( _adapter *adapter )
 void rtw_os_indicate_disconnect( _adapter *adapter )
 {
    //RT_PMKID_LIST   backupPMKIDList[ NUM_PMKID_CACHE ];
-  
+
 _func_enter_;
 
-	rtw_indicate_wx_disassoc_event(adapter);	
+	rtw_indicate_wx_disassoc_event(adapter);
 	netif_carrier_off(adapter->pnetdev);
 
 #ifdef RTK_DMP_PLATFORM
@@ -240,35 +240,35 @@ _func_enter_;
 	if(authmode==_WPA_IE_ID_)
 	{
 		RT_TRACE(_module_mlme_osdep_c_,_drv_info_,("rtw_report_sec_ie, authmode=%d\n", authmode));
-		
+
 		buff = rtw_malloc(IW_CUSTOM_MAX);
-		
+
 		_rtw_memset(buff,0,IW_CUSTOM_MAX);
-		
+
 		p=buff;
-		
+
 		p+=sprintf(p,"ASSOCINFO(ReqIEs=");
 
 		len = sec_ie[1]+2;
 		len =  (len < IW_CUSTOM_MAX) ? len:IW_CUSTOM_MAX;
-			
+
 		for(i=0;i<len;i++){
 			p+=sprintf(p,"%02x",sec_ie[i]);
 		}
 
 		p+=sprintf(p,")");
-		
+
 		_rtw_memset(&wrqu,0,sizeof(wrqu));
-		
+
 		wrqu.data.length=p-buff;
-		
+
 		wrqu.data.length = (wrqu.data.length<IW_CUSTOM_MAX) ? wrqu.data.length:IW_CUSTOM_MAX;
-		
+
 		wireless_send_event(adapter->pnetdev,IWEVCUSTOM,&wrqu,buff);
 
 		if(buff)
 		    rtw_mfree(buff, IW_CUSTOM_MAX);
-		
+
 	}
 
 _func_exit_;
@@ -278,7 +278,7 @@ _func_exit_;
 void _survey_timer_hdl (void *FunctionContext)
 {
 	_adapter *padapter = (_adapter *)FunctionContext;
-	
+
 	survey_timer_hdl(padapter);
 }
 
@@ -306,7 +306,7 @@ void TDLS_restore_workitem_callback(struct work_struct *work)
 	struct mlme_ext_priv*pmlmeext = container_of(work, struct mlme_ext_priv, TDLS_restore_workitem);
 	_adapter *padapter = pmlmeext->padapter;
 	u32 bit_6=1<<6;
-	
+
 	rtw_write32(padapter, 0x0608, rtw_read32(padapter, 0x0608)|(bit_6));
 	DBG_8192C("wirte 0x0608, set bit6 on\n");
 }
@@ -323,7 +323,7 @@ void _TPK_timer_hdl(void *FunctionContext)
 		ptdls_sta->TPK_count=0;
 		issue_tdls_setup_req(ptdls_sta->padapter, ptdls_sta->hwaddr);
 	}
-	
+
 	_set_timer(&ptdls_sta->TPK_timer, ptdls_sta->TDLS_PeerKey_Lifetime/TPK_RESEND_COUNT);
 }
 
@@ -349,7 +349,7 @@ void TDLS_option_workitem_callback(struct work_struct *work)
 	struct mlme_ext_info *pmlmeinfo = &pmlmeext->mlmext_info;
 	u32 bit_6=1<<6, bit_7=1<<7, bit_4=1<<4;
 	u8 survey_channel, i, min;
-	
+
 	switch(ptdls_sta->option){
 		case 1:
 			//As long as TDLS handshake success, we should set RCR_CBSSID_DATA bit to 0
@@ -364,8 +364,8 @@ void TDLS_option_workitem_callback(struct work_struct *work)
 			_cancel_timer_ex(&ptdls_sta->base_ch_timer);
 			_cancel_timer_ex(&ptdls_sta->off_ch_timer);
 			SelectChannel(padapter, pmlmeext->cur_channel);
-			ptdls_sta->state &= ~(TDLS_CH_SWITCH_ON_STATE | 
-								TDLS_PEER_AT_OFF_STATE | 
+			ptdls_sta->state &= ~(TDLS_CH_SWITCH_ON_STATE |
+								TDLS_PEER_AT_OFF_STATE |
 								TDLS_AT_OFF_CH_STATE);
 			DBG_8192C("go back to base channel\n ");
 			issue_nulldata(padapter, 0);
@@ -439,15 +439,15 @@ void TDLS_option_workitem_callback(struct work_struct *work)
 			_cancel_timer_ex(&ptdls_sta->base_ch_timer);
 			_cancel_timer_ex(&ptdls_sta->off_ch_timer);
 			SelectChannel(padapter, pmlmeext->cur_channel);
-			ptdls_sta->state &= ~(TDLS_CH_SWITCH_ON_STATE | 
-								TDLS_PEER_AT_OFF_STATE | 
+			ptdls_sta->state &= ~(TDLS_CH_SWITCH_ON_STATE |
+								TDLS_PEER_AT_OFF_STATE |
 								TDLS_AT_OFF_CH_STATE);
 			DBG_8192C("go back to base channel\n ");
 			issue_nulldata(padapter, 0);
 			_set_timer(&ptdls_sta->option_timer, (u32)ptdls_sta->ch_switch_time);
-			break;			
+			break;
 	}
-	
+
 }
 
 // 5: channel sensing and report candidate channel
@@ -479,7 +479,7 @@ void base_channel_workitem_callback(struct work_struct *work)
 	struct sta_info *ptdls_sta = container_of(work, struct sta_info, base_ch_workitem);
 	_adapter *padapter = ptdls_sta->padapter;
 	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
-	
+
 	SelectChannel(ptdls_sta->padapter, pmlmeext->cur_channel);
 	issue_nulldata(ptdls_sta->padapter, 0);
 
@@ -487,7 +487,7 @@ void base_channel_workitem_callback(struct work_struct *work)
 
 	ptdls_sta->state &= ~(TDLS_PEER_AT_OFF_STATE| TDLS_AT_OFF_CH_STATE);
 
-	_set_timer(&ptdls_sta->off_ch_timer, 500);	
+	_set_timer(&ptdls_sta->off_ch_timer, 500);
 
 }
 
@@ -509,7 +509,7 @@ void off_channel_workitem_callback(struct work_struct *work)
 	struct sta_info *ptdls_sta = container_of(work, struct sta_info, off_ch_workitem);
 	_adapter *padapter = ptdls_sta->padapter;
 	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
-	
+
 	issue_nulldata(ptdls_sta->padapter, 1);
 
 	SelectChannel(ptdls_sta->padapter, ptdls_sta->off_ch);
@@ -521,7 +521,7 @@ void off_channel_workitem_callback(struct work_struct *work)
 		issue_nulldata_to_TDLS_peer_STA(ptdls_sta->padapter, ptdls_sta, 0);
 	}
 
-	_set_timer(&ptdls_sta->base_ch_timer, 500);	
+	_set_timer(&ptdls_sta->base_ch_timer, 500);
 }
 
 void _off_ch_timer_hdl(void *FunctionContext)
@@ -552,7 +552,7 @@ void _reassoc_timer_hdl(void *FunctionContext)
 */
 
 void init_mlme_ext_timer(_adapter *padapter)
-{	
+{
 	struct	mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
 
 	_init_timer(&pmlmeext->survey_timer, padapter->pnetdev, _survey_timer_hdl, padapter);
@@ -578,14 +578,14 @@ void rtw_indicate_sta_assoc_event(_adapter *padapter, struct sta_info *psta)
 
 	if(pstapriv->sta_aid[psta->aid - 1] != psta)
 		return;
-	
-	
-	wrqu.addr.sa_family = ARPHRD_ETHER;	
-	
+
+
+	wrqu.addr.sa_family = ARPHRD_ETHER;
+
 	_rtw_memcpy(wrqu.addr.sa_data, psta->hwaddr, ETH_ALEN);
 
 	DBG_871X("+rtw_indicate_sta_assoc_event\n");
-	
+
 	wireless_send_event(padapter->pnetdev, IWEVREGISTERED, &wrqu, NULL);
 
 }
@@ -603,16 +603,16 @@ void rtw_indicate_sta_disassoc_event(_adapter *padapter, struct sta_info *psta)
 
 	if(pstapriv->sta_aid[psta->aid - 1] != psta)
 		return;
-	
-	
-	wrqu.addr.sa_family = ARPHRD_ETHER;	
-	
+
+
+	wrqu.addr.sa_family = ARPHRD_ETHER;
+
 	_rtw_memcpy(wrqu.addr.sa_data, psta->hwaddr, ETH_ALEN);
 
 	DBG_871X("+rtw_indicate_sta_disassoc_event\n");
-	
+
 	wireless_send_event(padapter->pnetdev, IWEVEXPIRED, &wrqu, NULL);
-	
+
 }
 
 
@@ -636,7 +636,7 @@ static int mgnt_netdev_open(struct net_device *pnetdev)
 
 
 	init_usb_anchor(&phostapdpriv->anchored);
-	
+
  	if(!netif_queue_stopped(pnetdev))
       		netif_start_queue(pnetdev);
 	else
@@ -644,10 +644,10 @@ static int mgnt_netdev_open(struct net_device *pnetdev)
 
 
 	netif_carrier_on(pnetdev);
-		
-	//rtw_write16(phostapdpriv->padapter, 0x0116, 0x0100);//only excluding beacon 
-		
-	return 0;	
+
+	//rtw_write16(phostapdpriv->padapter, 0x0116, 0x0100);//only excluding beacon
+
+	return 0;
 }
 static int mgnt_netdev_close(struct net_device *pnetdev)
 {
@@ -661,10 +661,10 @@ static int mgnt_netdev_close(struct net_device *pnetdev)
 
 	if (!netif_queue_stopped(pnetdev))
 		netif_stop_queue(pnetdev);
-	
+
 	//rtw_write16(phostapdpriv->padapter, 0x0116, 0x3f3f);
-	
-	return 0;	
+
+	return 0;
 }
 
 #if (LINUX_VERSION_CODE>=KERNEL_VERSION(2,6,29))
@@ -683,8 +683,8 @@ int hostapd_mode_init(_adapter *padapter)
 	unsigned char mac[ETH_ALEN];
 	struct hostapd_priv *phostapdpriv;
 	struct net_device *pnetdev;
-	
-	pnetdev = rtw_alloc_etherdev(sizeof(struct hostapd_priv));	
+
+	pnetdev = rtw_alloc_etherdev(sizeof(struct hostapd_priv));
 	if (!pnetdev)
 	   return -ENOMEM;
 
@@ -692,49 +692,49 @@ int hostapd_mode_init(_adapter *padapter)
        ether_setup(pnetdev);
 
 	//pnetdev->type = ARPHRD_IEEE80211;
-	
+
 	phostapdpriv = rtw_netdev_priv(pnetdev);
 	phostapdpriv->pmgnt_netdev = pnetdev;
 	phostapdpriv->padapter= padapter;
 	padapter->phostapdpriv = phostapdpriv;
-	
+
 	//pnetdev->init = NULL;
-	
+
 #if (LINUX_VERSION_CODE>=KERNEL_VERSION(2,6,29))
 
 	DBG_8192C("register rtl871x_mgnt_netdev_ops to netdev_ops\n");
 
 	pnetdev->netdev_ops = &rtl871x_mgnt_netdev_ops;
-	
+
 #else
 
 	pnetdev->open = mgnt_netdev_open;
 
-	pnetdev->stop = mgnt_netdev_close;	
-	
+	pnetdev->stop = mgnt_netdev_close;
+
 	pnetdev->hard_start_xmit = mgnt_xmit_entry;
-	
+
 	//pnetdev->set_mac_address = r871x_net_set_mac_address;
-	
+
 	//pnetdev->get_stats = r871x_net_get_stats;
 
 	//pnetdev->do_ioctl = r871x_mp_ioctl;
-	
+
 #endif
 
-	pnetdev->watchdog_timeo = HZ; /* 1 second timeout */	
+	pnetdev->watchdog_timeo = HZ; /* 1 second timeout */
 
 	//pnetdev->wireless_handlers = NULL;
 
 #ifdef CONFIG_TCP_CSUM_OFFLOAD_TX
 	pnetdev->features |= NETIF_F_IP_CSUM;
-#endif	
+#endif
 
-	
-	
+
+
 	if(dev_alloc_name(pnetdev,"mgnt.wlan%d") < 0)
 	{
-		DBG_8192C("hostapd_mode_init(): dev_alloc_name, fail! \n");		
+		DBG_8192C("hostapd_mode_init(): dev_alloc_name, fail! \n");
 	}
 
 
@@ -747,9 +747,9 @@ int hostapd_mode_init(_adapter *padapter)
 	mac[3]=0x87;
 	mac[4]=0x11;
 	mac[5]=0x12;
-				
+
 	_rtw_memcpy(pnetdev->dev_addr, mac, ETH_ALEN);
-	
+
 
 	netif_carrier_off(pnetdev);
 
@@ -758,15 +758,15 @@ int hostapd_mode_init(_adapter *padapter)
 	if (register_netdev(pnetdev) != 0)
 	{
 		DBG_8192C("hostapd_mode_init(): register_netdev fail!\n");
-		
+
 		if(pnetdev)
-      		{	 
+      		{
 			rtw_free_netdev(pnetdev);
       		}
 	}
-	
+
 	return 0;
-	
+
 }
 
 void hostapd_mode_unload(_adapter *padapter)
@@ -776,9 +776,8 @@ void hostapd_mode_unload(_adapter *padapter)
 
 	unregister_netdev(pnetdev);
 	rtw_free_netdev(pnetdev);
-	
+
 }
 
 #endif
 #endif
-

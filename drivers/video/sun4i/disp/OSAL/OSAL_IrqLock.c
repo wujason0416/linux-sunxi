@@ -10,7 +10,7 @@
 *
 * Author 		: javen
 *
-* Description 	: ÁÙ½çÇø²Ù×÷
+* Description 	: ä¸´ç•ŒåŒºæ“ä½œ
 *
 * History 		:
 *      <author>    		<time>       	<version >    		<desc>
@@ -34,6 +34,3 @@ void OSAL_IrqUnLock(__u32 cpu_sr)
     //unsigned long flags = cpu_sr;
     //local_irq_restore(flags);
 }
-
-
-

@@ -91,7 +91,7 @@ struct nrx_we_custom_data {
    char *val[8];
    size_t nvar;
 };
-   
+
 struct nrx_event_helper_data {
    nrx_callback_t cb;
    void *helper_data;
@@ -109,10 +109,10 @@ struct nrx_debug_event {
   * @internal
   * @ingroup RADIO
   * @brief <b>Get the current transmitted fragment count</b>
-  * 
+  *
   * This counter is incremented for each acknowledged
-  * transmitted fragment. A frame that is not fragmented will 
-  * be considered as a single "fragment" and increases the 
+  * transmitted fragment. A frame that is not fragmented will
+  * be considered as a single "fragment" and increases the
   * counter with 1.
   *
   * The maximum value is 2^32-1, then it will wrap around
@@ -136,7 +136,7 @@ nrx_get_tx_fragment_count (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Get the current transmitted multicast frame count</b>
-  * 
+  *
   * This counter is incremented for each successfully
   * transmitted multicast frame. Note that multicast in this case refers to
   * the 802.11 destination address, not to the ultimate destination
@@ -163,7 +163,7 @@ nrx_get_tx_mcast_frame_count (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Get the current failed transmitted frame count</b>
-  * 
+  *
   * This counter is incremented when the transmit retry count
   * exceeds the retry limit.
   *
@@ -188,7 +188,7 @@ nrx_get_tx_failed_count (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Get the current transmit retry count</b>
-  * 
+  *
   * This counter is incremented for each frame successfully
   * transmitted after one or more retransmissions.
   *
@@ -213,7 +213,7 @@ nrx_get_tx_retry_count (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Get the current multiple transmit retry count</b>
-  * 
+  *
   * This counter is incremented for each frame successfully
   * transmitted after more than one retransmission.
   *
@@ -238,7 +238,7 @@ nrx_get_tx_multiple_retry_count (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Get the current received duplicate frame count</b>
-  * 
+  *
   * This counter is incremented for received frame duplicates.
   *
   * The maximum value is 2^32-1, then it will wrap around
@@ -262,7 +262,7 @@ nrx_get_rx_frame_duplicates_count (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Get the current successful RTS/CTS count</b>
-  * 
+  *
   * This counter is incremented when a CTS is received in
   * response to an RTS.
   *
@@ -287,7 +287,7 @@ nrx_get_rts_success_count (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Get the current failed RTS/CTS count</b>
-  * 
+  *
   * This counter is incremented when a CTS is not received in
   * response to an RTS.
   *
@@ -312,7 +312,7 @@ nrx_get_rts_failure_count (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Get the current ACK failure count</b>
-  * 
+  *
   * This counter is incremented when an ACK is not received when
   * expected.
   *
@@ -337,9 +337,9 @@ nrx_get_ack_failure_count (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Get the current received fragment count</b>
-  * 
+  *
   * This counter is incremented for each successfully received
-  * fragment. A frame that is not fragmented will be considered 
+  * fragment. A frame that is not fragmented will be considered
   * as a single "fragment" and increases the counter with 1.
   *
   * The maximum value is 2^32-1, then it will wrap around
@@ -363,7 +363,7 @@ nrx_get_rx_fragment_count (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Get the current received multicast frame count</b>
-  * 
+  *
   * This counter is incremented for each successfully received
   * multicast frame (even though the frame is not intended for this STA).
   *
@@ -390,9 +390,9 @@ nrx_get_rx_mcast_frame_count (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Get the current received FCS error count</b>
-  * 
+  *
   * This counter is incremented when an FCS error is detected in
-  * a received fragment. 
+  * a received fragment.
   *
   * The maximum value is 2^32-1, then it will wrap around
   * (i.e. restart from 0).
@@ -415,7 +415,7 @@ nrx_get_rx_fcs_error_count (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Get the current transmitted frame count</b>
-  * 
+  *
   * This counter is incremented for each successfully
   * transmitted frame.
   *
@@ -440,7 +440,7 @@ nrx_get_tx_frame_count (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Get the current received undecryptable frame count</b>
-  * 
+  *
   * This counter is incremented when a received frame could not
   * be decrypted.
   *
@@ -461,7 +461,7 @@ int
 nrx_get_rx_undecryptable_count (nrx_context ctx,
                                 uint32_t *count);
 
-/*! 
+/*!
   * @internal
   * @brief Convert a channel number to a frequency
   *
@@ -476,7 +476,7 @@ nrx_convert_channel_to_frequency (nrx_context ctx,
                                   nrx_channel_t channel,
                                   uint32_t *frequency);
 
-/*! 
+/*!
   * @internal
   * @brief Convert a frequency to a channel number
   *
@@ -529,13 +529,13 @@ nrx_cancel_we_event_handler (nrx_context ctx,
   * @brief <b>Registers a handler for Netlink messages</b>
   *
   * @param ctx       The context.
-  * @param type      Matches the type field of the netlink message. 
+  * @param type      Matches the type field of the netlink message.
   *                  Zero matches any type.
   * @param pid       Matches the pid field of the netlink message.
   *                  Zero matches any pid.
   * @param seq       Matches the seq field of the netlink message.
   *                  Zero matches any seq.
-  * @param handler   The callback function to call when a matching 
+  * @param handler   The callback function to call when a matching
   *                  message is received.
   * @param user_data Pointer to additional data passed to the callback
   *
@@ -582,9 +582,9 @@ _nrx_netlink_free (nrx_context ctx);
 int
 _nrx_create_netlink_socket (void);
 
-/*!  
+/*!
   * @internal
-  * @brief Convert hex string in str into buffer in buf. 
+  * @brief Convert hex string in str into buffer in buf.
   */
 ssize_t
 nrx_string_to_binary (const char *str,
@@ -670,11 +670,11 @@ nrx_find_ifname (nrx_context ctx,
   * @ingroup MISC
   * @brief <b>Set function to receive debug info</b>
   *
-  * A callback can be registered by this function. It will be called 
-  * by nrx_log_printf() each time debug macros are used, e.g. LOG() 
+  * A callback can be registered by this function. It will be called
+  * by nrx_log_printf() each time debug macros are used, e.g. LOG()
   * and ERROR().
   *
-  * @param cb Callback function where debug information is to be sent. 
+  * @param cb Callback function where debug information is to be sent.
   *           When set to NULL all debugging is skipped.
   *
   * <!-- NRX_API_EXCLUDE -->
@@ -688,7 +688,7 @@ nrx_set_log_cb (nrx_debug_callback_t cb);
   * @brief <b>Handle debug info</b>
   *
   * This function should only be used by macros such as LOG() and ERROR().
-  * Input should have printf() formating. This is converted to a string, which 
+  * Input should have printf() formating. This is converted to a string, which
   * is sent to a callback function.
   *
   * @param prio Priority of debug info. Low values are more important (e.g. fatal errors)
@@ -801,7 +801,7 @@ nrx_get_join_timeout (nrx_context ctx,
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -820,17 +820,17 @@ nrx_disable_heartbeat (nrx_context ctx);
   * a view of exactly what happened in the chip just before the system failure.
   * The core dump can be used for troubleshooting and analysis.
   *
-  * Any core files will be put in /proc/drivers/\<interface name\>/core/ 
+  * Any core files will be put in /proc/drivers/\<interface name\>/core/
   * and will be named 0, 1 etc.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
   * @param hb_period Heartbeat period in ms. Current implementation
-  * will round up to a multiple of 1000 (i.e. resolution in seconds). Minimum 
-  * value is 1 ms (i.e. 1 second) and maximum is 35 minutes (2100000 ms). 0 will 
+  * will round up to a multiple of 1000 (i.e. resolution in seconds). Minimum
+  * value is 1 ms (i.e. 1 second) and maximum is 35 minutes (2100000 ms). 0 will
   * reset to default value (60 sec).
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -931,7 +931,7 @@ nrx_conf_arp_filter (nrx_context ctx,
   *                  -  1: use antenna #1.
   *                  -  2: use antenna #2.
   *                  -  3: use antenna diversity, i.e. both antenna #1 and #2.
-  * @param rssi_thr RSSI threshold used by the antenna selection 
+  * @param rssi_thr RSSI threshold used by the antenna selection
   *                algorithm. This is only used in mode 3. Minimum value is -120 dBm
   *                and maximum is 0 dBm.
   *
@@ -948,8 +948,8 @@ nrx_antenna_diversity (nrx_context ctx,
   * @ingroup MISC
   * @brief <b>Set the driver activity timeout value</b>
   *
-  * This configures the time of inactivity to elapse before the driver 
-  * will consider itself inactive. 
+  * This configures the time of inactivity to elapse before the driver
+  * will consider itself inactive.
   * The inact_check_interval parameter defines how exact the timeout
   * will be. If the inact_check_interval is very short then the timeout
   * will be very accurate but the host CPU load will be high since the
@@ -964,8 +964,8 @@ nrx_antenna_diversity (nrx_context ctx,
   *        inactive if no rx/tx activity has occurred within the timeout period.
   *        A 0 value disabled the inactivity indications. Maximum value is 2^30-1.
   * @param inact_check_interval The activity timeout check interval. Range 1 to 2^30-1.
-  * 
-  * @return 
+  *
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -983,8 +983,8 @@ nrx_set_activity_timeout (nrx_context ctx,
   * for debugging purposes.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
-  * 
-  * @return 
+  *
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -1002,7 +1002,7 @@ nrx_fw_suicide (nrx_context ctx);
   * @param ps_enabled Where the result is stored. This is 1 when power
   *        save is enabled and 0 when it's disabled.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -1019,9 +1019,9 @@ nrx_get_ps_mode (nrx_context ctx,
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
-  * @param listen_every_beacon Choose 1 to listen on every single beacon 
-  *        sent by the AP or 0 to use the beacon interval agreed with the AP (default). 
-  * @return 
+  * @param listen_every_beacon Choose 1 to listen on every single beacon
+  *        sent by the AP or 0 to use the beacon interval agreed with the AP (default).
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -1029,7 +1029,7 @@ int
 nrx_set_dev_listen_interval (nrx_context ctx,
                              nrx_bool listen_every_beacon);
 
-/*! 
+/*!
   * @internal
   * @brief Formats a buffer on stdout.
   *
@@ -1068,7 +1068,7 @@ nrx_printbuf (const void *data,
   * @param ofdm_attenuation_db Tx attenuation in dB from the maximum allowed
   *        value. Valid values are 0-19 dB. This will limit OFDM transmission
   *        power to the hardware maximum (18dBm) minus this attenuation value.
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid attenuation values.
   */
@@ -1083,9 +1083,9 @@ nrx_set_max_tx_power (nrx_context ctx,
   * @brief <b>Get the currently used channel</b>
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
-  * @param channel Where the currently used channel is stored. 
+  * @param channel Where the currently used channel is stored.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL when not associated.
   */
@@ -1107,7 +1107,7 @@ _nrx_is_supp_rate (nrx_rate_t rate);
   * @internal
   * @ingroup RADIO
   * @brief <b>Set the adaptive TX rate mode</b>
-  * 
+  *
   * The adaptive TX rate mode defines if and how the transmission rate
   * will change to adapt to local radio conditions. The initial rate
   * is the preferred rate. Tx power will be restricted by the value set by
@@ -1115,22 +1115,22 @@ _nrx_is_supp_rate (nrx_rate_t rate);
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param modes Bitmask that defines the adaptive TX rate modes to be used.
-  *              The mode defines the transmission rate adaptation strategy. 
+  *              The mode defines the transmission rate adaptation strategy.
   *              Several modes can be enabled by OR-ing them together.
   * @param initial_rate The initial rate for the rate adaptation strategy.
   *              A change to the initial_rate parameter will only be effected
   *              upon reassociation.
   * @param penalty_rates The rates that should be used by the tx rate adaption
   *                      algorithm. The initial rate must be included in this list.
-  *                      If this parameter is null then all the rates may 
+  *                      If this parameter is null then all the rates may
   *                      be used. Only the penalty rates that matches
   *                      the supported rates for the current association will
-  *                      be used. Should no match exist, this list will be 
-  *                      ignored. For older hardware, the highest supported 
-  *                      rate for the current association will be used although not  
-  *                      included in this list (affects baseband NRX701A, NRX701B, 
+  *                      be used. Should no match exist, this list will be
+  *                      ignored. For older hardware, the highest supported
+  *                      rate for the current association will be used although not
+  *                      included in this list (affects baseband NRX701A, NRX701B,
   *                      and radio NRX702, NRX510A).
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -1159,22 +1159,22 @@ nrx_set_adaptive_tx_rate_mode (nrx_context ctx,
   * 5.5M.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
-  * @param original_rate_retries The number of retries performed at a certain 
-  *                              original rate. Each position in this list is 
-  *                              matched with the corresponding position in the 
-  *                              "rates" parameter. Hence, both lists must have the 
+  * @param original_rate_retries The number of retries performed at a certain
+  *                              original rate. Each position in this list is
+  *                              matched with the corresponding position in the
+  *                              "rates" parameter. Hence, both lists must have the
   *                              same length. Maximum value for each rate is
   *                              255. NULL will avoid setting this value.
-  * @param subsequent_rate_retries After original rate retries, the rate is stepped 
-  *                                down and the list of subsequent retries is used. 
-  *                                Each position in this list is matched with the 
-  *                                corresponding position in the "rates" parameter. 
+  * @param subsequent_rate_retries After original rate retries, the rate is stepped
+  *                                down and the list of subsequent retries is used.
+  *                                Each position in this list is matched with the
+  *                                corresponding position in the "rates" parameter.
   *                                Hence, both lists must have the same length.
-  *                                Maximum value for each rate is 255. NULL 
+  *                                Maximum value for each rate is 255. NULL
   *                                will avoid setting this value.
   * @param rates The rates for which rate limits will be set. The retry limit
-  *              will only be updated for the rates included in the list. 
-  * @return 
+  *              will only be updated for the rates included in the list.
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -1194,11 +1194,11 @@ nrx_set_tx_retry_limit_by_rate (nrx_context ctx,
   * also be forced to use this rate only. Note that a succesful locking
   * of a rate requires a valid rate value supported by the AP. Locking of
   * unsupported rates results in undefined behaviour.
-  * 
+  *
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param rate The rate that will be used by the device.
-  * @return 
+  * @return
   * - 0 on success.
   * - EOPNOTSUPP if the rate is not present in the AP supported rates list.
   * - EINVAL on invalid arguments.
@@ -1220,7 +1220,7 @@ nrx_lock_rate (nrx_context ctx,
   * be enabled when nrx_unlock_rate() is called.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -1236,12 +1236,12 @@ nrx_unlock_rate (nrx_context ctx);
   * support. The default is to support all 802.11b and 802.11g rates.
   * This overrides the registry setting.
   *
-  * The rates set will affect association in two ways. 
+  * The rates set will affect association in two ways.
   *
   * The rates specified in this call will be added to the basic rates
   * advertised by the AP and used as operational rates in the
   * association request with the AP.
-  * 
+  *
   * Rates specified as basic (high bit set), will guard against
   * association with an AP (BSS) or STA (IBSS) which does not support
   * that rate.
@@ -1265,7 +1265,7 @@ nrx_set_op_rates (nrx_context ctx,
   * @ingroup MISC
   * @brief <b>Reassociate with the current AP</b>
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -1287,7 +1287,7 @@ nrx_reassociate (nrx_context ctx);
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param ch The list of allowed channels.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -1300,9 +1300,9 @@ nrx_set_channel_list (nrx_context ctx,
   * @ingroup RADIO
   * @brief <b>Reset traffic filter discard counters</b>
   *
-  * Reset the statistic counters for filtered frames. 
+  * Reset the statistic counters for filtered frames.
   * @param ctx NRX context that was created by the call to nrx_init_context().
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -1323,7 +1323,7 @@ nrx_reset_traffic_filter_counters (nrx_context ctx);
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param cntr Pointer to the output buffer that will hold the requested
   *             counter value (in host byteorder).
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -1335,7 +1335,7 @@ nrx_get_traffic_filter_counters (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Enable link monitoring</b>
-  * 
+  *
   * The device monitors received beacon frames when link monitoring is
   * enabled.  When the specified percentage of beacon frames within a
   * monitoring interval has been missed (the link has failed), a
@@ -1351,15 +1351,15 @@ nrx_get_traffic_filter_counters (nrx_context ctx,
   *
   * Link monitoring is only enabled when the device is associated
   * and it only monitors beacons for the associated access point.
-  * 
+  *
   * At handover to another AP, an automatic adjustment of internal timers
-  * to the new AP will be done such that the number of missed beacons 
+  * to the new AP will be done such that the number of missed beacons
   * always will be constant.
   *
-  * There exists a default link monitoring in the firmware that may terminate a poor link, 
-  * which will conflict with this command, see parameters for more details. The internal 
-  * termination of the link can be enabled/disabled. When disabled the user himself has 
-  * the responsibility of terminating a poor link as it will no longer be done automatically by 
+  * There exists a default link monitoring in the firmware that may terminate a poor link,
+  * which will conflict with this command, see parameters for more details. The internal
+  * termination of the link can be enabled/disabled. When disabled the user himself has
+  * the responsibility of terminating a poor link as it will no longer be done automatically by
   * drivers/firmware. To disable the internal default link monitoring, write
   * \code
   * echo 0 > /proc/driver/ifname/config/link-monitoring
@@ -1368,38 +1368,38 @@ nrx_get_traffic_filter_counters (nrx_context ctx,
   * \code
   * echo 1 > /proc/driver/ifname/config/link-monitoring
   * \endcode
-  * 
+  *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param thr_id The threshold id output buffer. This identifies the threshold
-  *               so that several thresholds can be defined. 
+  *               so that several thresholds can be defined.
   *               The id value is filled in by the function call.
   * @param interval The link monitoring interval in number of beacons.  Should several
   *                 link monitoring triggers with different intervals be registered the
-  *                 shortest interval will be choosen (necessary due to firmware 
+  *                 shortest interval will be choosen (necessary due to firmware
   *                 limitations).
   *                 Minimum value is 1 beacon. Maximum value is 2^32-1, but will most
   *                 likely result in undefined behavior. Only values up to 10 will work
   *                 under all circumstances.  Consider the following firmware limits
   *                 that affect this parameter
-  *                 - When enabled, the internal firmware link monitoring has a fix limit of 20 consecutive 
-  *                   missed beacons thereafter the link will be considered terminated. 
-  *                   As link monitoring is done only when associated, it will be halted at this 
-  *                   point. To be guaranteed that link monitoring reaches 100% before it is halted, 
-  *                   this parameter must be set to half the firmware limit or less, i.e. max 10. 
+  *                 - When enabled, the internal firmware link monitoring has a fix limit of 20 consecutive
+  *                   missed beacons thereafter the link will be considered terminated.
+  *                   As link monitoring is done only when associated, it will be halted at this
+  *                   point. To be guaranteed that link monitoring reaches 100% before it is halted,
+  *                   this parameter must be set to half the firmware limit or less, i.e. max 10.
   *                   Alternatively, the internal termination of the link can be disabled with the
-  *                   implications mentioned above. 
+  *                   implications mentioned above.
   *                 - Firmware has a max-timeout limitation of roughly 35 minutes. Although unlikely,
   *                   the 802.11 protocol allows an AP to have an interval between beacons of
-  *                   maximally 65 seconds (2^16-1 ms). Hence, maximum 32 beacons can be 
+  *                   maximally 65 seconds (2^16-1 ms). Hence, maximum 32 beacons can be
   *                   guaranteed not to overflow the internal timer. Should an overflow occur, the
   *                   behavior is undefined.
-  *                   
+  *
   * @param miss_thres The miss threshold in percent. Range 1-99.
-  * 
-  * @return 
+  *
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
-  * - EBUSY when previous link monitoring have not been disabled first. 
+  * - EBUSY when previous link monitoring have not been disabled first.
   */
 int
 nrx_enable_link_monitoring (nrx_context ctx,
@@ -1420,9 +1420,9 @@ nrx_enable_link_monitoring (nrx_context ctx,
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param thr_id The threshold id identifying the threshold trigger that should
-  *               be disabled. 
-  * 
-  * @return 
+  *               be disabled.
+  *
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments or non-existing thr_id.
   */
@@ -1434,25 +1434,25 @@ nrx_disable_link_monitoring (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Register link monitoring callback</b>
-  * 
+  *
   * This will register a callback for the link monitoring triggers, see
   * nrx_enable_link_monitoring for further details.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param thr_id The threshold id. This identifies the threshold
-  *              so that several thresholds can be defined. 
+  *              so that several thresholds can be defined.
   *              The id value is obtained from nrx_enable_link_monitoring.
   * @param cb The callback function that is to be invoked by threshold notifications.
-  *           The callback is invoked with operation NRX_CB_TRIGGER on a 
-  *           successful notification whereupon event_data will be a pointer 
-  *           to a nrx_event_mibtrigger structure which contains further 
-  *           information. When the threshold is cancelled cb is called 
+  *           The callback is invoked with operation NRX_CB_TRIGGER on a
+  *           successful notification whereupon event_data will be a pointer
+  *           to a nrx_event_mibtrigger structure which contains further
+  *           information. When the threshold is cancelled cb is called
   *           with operation NRX_CB_CANCEL and event_data set to NULL.
   * @param cb_ctx Pointer to a user-defined callback context that will
   *               be passed to the callback on invocation. This is for
   *               caller use only, it will not be parsed or modified in
   *               any way by this library. This parameter can be NULL.
-  * 
+  *
   * @return A handle to a callback (an unsigned integer type). The only
   * use for this is to pass it to nrx_cancel_link_monitoring_callback
   * to cancel the callback.
@@ -1469,7 +1469,7 @@ nrx_register_link_monitoring_callback (nrx_context ctx,
   * @internal
   * @ingroup RADIO
   * @brief <b>Cancel link monitoring callback</b>
-  * 
+  *
   * This will cancel a callback for the link monitoring triggers.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
@@ -1488,7 +1488,7 @@ nrx_cancel_link_monitoring_callback (nrx_context ctx,
   * @internal
   * @brief <b>Disable all link supervision features in the NIC</b>
   *
-  * This will stop firmware from doing supervison of the link. 
+  * This will stop firmware from doing supervison of the link.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
@@ -1519,9 +1519,9 @@ nrx_disable_link_supervision (nrx_context ctx);
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
   * @param roundtrip_fail_limit Should no reply have been received
-  *        after this number of transmitted messages, the link is 
+  *        after this number of transmitted messages, the link is
   *        determined faulty. 0 will disable the roundtrip feature.
-  * 
+  *
   * @param silent_intervals Number of intervals to wait before this
   *        feature inject its own packets to the recently connected
   *        AP. Each interval is at least 100 ms and could be
@@ -1551,7 +1551,7 @@ nrx_conf_link_supervision_roundtrip (nrx_context ctx,
   * disassociations. The callback will be invoked every time (until disabled)
   * the condition is met.
   *
-  * This function can be called several times, e.g. with different notification policies for 
+  * This function can be called several times, e.g. with different notification policies for
   * different callbacks.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
@@ -1561,8 +1561,8 @@ nrx_conf_link_supervision_roundtrip (nrx_context ctx,
   *           The callback is invoked with operation NRX_CB_TRIGGER on
   *           a successful notification. It will be passed a pointer to
   *           struct nrx_conn_lost_data, which identifies the reason
-  *           and type of the disconnect event, for event_data. 
-  *           nrx_conn_lost_data also contains the BSSID of the 
+  *           and type of the disconnect event, for event_data.
+  *           nrx_conn_lost_data also contains the BSSID of the
   *           disconnecting entity. If the disconnect decision was made
   *           by the driver or firmware then the BSSID field will contain
   *           the MAC address of the device.
@@ -1572,7 +1572,7 @@ nrx_conf_link_supervision_roundtrip (nrx_context ctx,
   *               be passed to the callback on invocation. This is for
   *               caller use only, it will not be parsed or modified in
   *               any way by this library. This parameter can be NULL.
-  * @return 
+  * @return
   * - Zero on memory allocation failure
   * - Non-zero a valid callback handle.
   */
@@ -1594,7 +1594,7 @@ nrx_register_conn_lost_notification (nrx_context ctx,
   * @param handle A handle previously obtained from
   *        nrx_register_conn_lost_notification.
   *        The handle will no longer be valid after this call.
-  * 
+  *
   * @return
   * - 0 on success.
   * - EINVAL on invalid parameters, e.g the handle is not registered.
@@ -1628,7 +1628,7 @@ nrx_cancel_conn_lost_notification (nrx_context ctx,
   *               be passed to the callback on invocation. This is for
   *               caller use only, it will not be parsed or modified in
   *               any way by this library. This parameter can be NULL.
-  * @return 
+  * @return
   * - Zero on memory allocation failure
   * - Non-zero a valid callback handle.
   */
@@ -1664,28 +1664,28 @@ nrx_cancel_conn_incompatible_notification (nrx_context ctx,
   *
   * The callback is invoked every time (until disable) the Signal to noise
   * ratio passes the defined threshold in the direction specified.
-  * Several thresholds can be defined. They are identified by the 
+  * Several thresholds can be defined. They are identified by the
   * thr_id parameter. There is a dynamic limit to the number of
   * triggers that can exist in the system so this call may fail if the
   * limit would be passed. The limit depends on the available memory on the host.
-  * 
+  *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param thr_id The threshold id output buffer. This identifies the threshold
-  *              so that several thresholds can be defined. 
+  *              so that several thresholds can be defined.
   *              The id value is filled in by the function call.
-  *              
-  * @param snr_thr The SNR threshold in dB. Minimum value is 0 and maximum is 
+  *
+  * @param snr_thr The SNR threshold in dB. Minimum value is 0 and maximum is
   *        40, which should be sufficient on current hardware.
-  * @param chk_period The SNR threshold check period in milliseconds. The minimum value is 
-  *        100 and maximum supported time is 35 minutes (2100000 ms). The SNR threshold 
+  * @param chk_period The SNR threshold check period in milliseconds. The minimum value is
+  *        100 and maximum supported time is 35 minutes (2100000 ms). The SNR threshold
   *        will be compared with the current SNR using this period.
   * @param dir Bitmask defining the trigger directions. The callback can be
   *            triggered when the value rises above or falls below the
   *            threshold, or both.
   * @param type Bitmask that defines if the threshold trigger should apply to the SNR
   *             of beacon or data frames.
-  *                    
-  * @return 
+  *
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   * - TODO if no more triggers can be created.
@@ -1713,8 +1713,8 @@ nrx_enable_snr_threshold (nrx_context ctx,
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param thr_id The threshold id identifying the threshold trigger that should
   *               be disabled.
-  * 
-  * @return 
+  *
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments or non-existing thr_id.
   */
@@ -1733,19 +1733,19 @@ nrx_disable_snr_threshold (nrx_context ctx,
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param thr_id The threshold id. This identifies the threshold
-  *              so that several thresholds can be defined. 
+  *              so that several thresholds can be defined.
   *              The thr_id value is obtained from nrx_enable_snr_threshold.
   * @param cb The callback function that is to be invoked by threshold notifications.
-  *           The callback is invoked with operation NRX_CB_TRIGGER on a 
-  *           successful notification whereupon event_data will be a pointer 
-  *           to a nrx_event_mibtrigger structure which contains further 
-  *           information. When the threshold is cancelled cb is called 
+  *           The callback is invoked with operation NRX_CB_TRIGGER on a
+  *           successful notification whereupon event_data will be a pointer
+  *           to a nrx_event_mibtrigger structure which contains further
+  *           information. When the threshold is cancelled cb is called
   *           with operation NRX_CB_CANCEL and event_data set to NULL.
   * @param cb_ctx Pointer to a user-defined callback context that will
   *               be passed to the callback on invocation. This is for
   *               caller use only, it will not be parsed or modified in
   *               any way by this library. This parameter can be NULL.
-  * 
+  *
   * @return A handle to a callback (an unsigned integer type). The only
   * use for this is to pass it to nrx_cancel_snr_threshold_callback
   * to cancel the callback.
@@ -1790,21 +1790,21 @@ nrx_cancel_snr_threshold_callback (nrx_context ctx,
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param thr_id The threshold id output buffer. This identifies the threshold
-  *              so that several thresholds can be defined.  
+  *              so that several thresholds can be defined.
   *              The id value is filled in by the function call.
-  *              
+  *
   * @param rssi_thr The RSSI threshold in dBm (signed). Useful RSSI thresholds lie
   *                 between 0 and -120.
-  * @param chk_period The RSSI check period in milliseconds. The minimum value is 100 ms and 
-  *        maximum supported time is 35 minutes (2100000 ms). The RSSI threshold will be compared with 
+  * @param chk_period The RSSI check period in milliseconds. The minimum value is 100 ms and
+  *        maximum supported time is 35 minutes (2100000 ms). The RSSI threshold will be compared with
   *        the current RSSI value using this period.
   *
   * @param dir Bitmask defining the trigger directions. The callback can be triggered
   *            when the value rises above or falls below the threshold, or both.
   * @param type Defines if the threshold trigger should apply to the RSSI
   *             of beacon or data frames.
-  *                    
-  * @return 
+  *
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   * - ENOMEM if no more triggers can be created.
@@ -1832,8 +1832,8 @@ nrx_enable_rssi_threshold (nrx_context ctx,
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param thr_id The threshold id identifying the threshold trigger that should
   *               be disabled.
-  * 
-  * @return 
+  *
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments or non-existing thr_id.
   */
@@ -1852,19 +1852,19 @@ nrx_disable_rssi_threshold (nrx_context ctx,
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param thr_id The threshold id. This identifies the threshold
-  *               so that several thresholds can be defined. 
+  *               so that several thresholds can be defined.
   *               The thr_id value is obtained from nrx_enable_rssi_threshold.
   * @param cb The callback function that is to be invoked by threshold notifications.
-  *           The callback is invoked with operation NRX_CB_TRIGGER on a 
-  *           successful notification whereupon event_data will be a pointer 
-  *           to a nrx_event_mibtrigger structure which contains further 
-  *           information. When the threshold is cancelled cb is called 
+  *           The callback is invoked with operation NRX_CB_TRIGGER on a
+  *           successful notification whereupon event_data will be a pointer
+  *           to a nrx_event_mibtrigger structure which contains further
+  *           information. When the threshold is cancelled cb is called
   *           with operation NRX_CB_CANCEL and event_data set to NULL.
   * @param cb_ctx Pointer to a user-defined callback context that will
   *               be passed to the callback on invocation. This is for
   *               caller use only, it will not be parsed or modified in
   *               any way by this library. This parameter can be NULL.
-  * 
+  *
   * @return A handle to a callback (an unsigned integer type). The only
   * use for this is to pass it to nrx_cancel_rssi_threshold_callback
   * to cancel the callback.
@@ -1912,7 +1912,7 @@ nrx_cancel_rssi_threshold_callback (nrx_context ctx,
   *        The window size is a power of two, the actual window used
   *        will be 2^win_size_data_order. Allowed values are  0, 1, 2, 3 and 4.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
  */
@@ -1939,7 +1939,7 @@ nrx_conf_rssi (nrx_context ctx,
   *        The window size is a power of two, the actual window used
   *        will be 2^win_size_data_order. Allowed values are 0, 1, 2, 3 and 4.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   * - TODO if no more triggers can be created.
@@ -1965,7 +1965,7 @@ nrx_conf_snr (nrx_context ctx,
   *                       a positive integer value. 0 is invalid.
   *                       Maximum value is 1000.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   * - TODO if no more triggers can be created.
@@ -2001,8 +2001,8 @@ nrx_set_per_cutoff_thr (nrx_context ctx,
   * @param dir        The trigger directions. The callback can either
   *                   be triggered when the value rises above or
   *                   falls below the threshold, but not both.
-  *                    
-  * @return 
+  *
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   * - TODO if no more triggers can be created.
@@ -2029,8 +2029,8 @@ nrx_enable_per_threshold (nrx_context ctx,
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param thr_id The threshold id identifying the threshold trigger that should
   *               be disabled.
-  * 
-  * @return 
+  *
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments or non-existing thr_id.
   */
@@ -2049,19 +2049,19 @@ nrx_disable_per_threshold (nrx_context ctx,
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param thr_id The threshold id. This identifies the threshold
-  *              so that several thresholds can be defined. 
+  *              so that several thresholds can be defined.
   *              The thr_id value is obtained from nrx_enable_per_threshold.
   * @param cb The callback function that is to be invoked by threshold notifications.
-  *           The callback is invoked with operation NRX_CB_TRIGGER on a 
-  *           successful notification whereupon event_data will be a pointer 
-  *           to a nrx_event_mibtrigger structure which contains further 
-  *           information. When the threshold is cancelled cb is called 
+  *           The callback is invoked with operation NRX_CB_TRIGGER on a
+  *           successful notification whereupon event_data will be a pointer
+  *           to a nrx_event_mibtrigger structure which contains further
+  *           information. When the threshold is cancelled cb is called
   *           with operation NRX_CB_CANCEL and event_data set to NULL.
   * @param cb_ctx Pointer to a user-defined callback context that will
   *               be passed to the callback on invocation. This is for
   *               caller use only, it will not be parsed or modified in
   *               any way by this library. This parameter can be NULL.
-  * 
+  *
   * @return A handle to a callback (an unsigned integer type). The only
   * use for this is to pass it to nrx_cancel_per_threshold_callback
   * to cancel the callback.
@@ -2110,8 +2110,8 @@ nrx_cancel_per_threshold_callback (nrx_context ctx,
   * @param [in]  ctx         context created by nrx_init_context().
   * @param [out] error_rate  Will hold current PER (in percent).
   *
-  * @note Before this function is used, PER measurement must be configured 
-  * with nrx_set_per_cutoff_thr(). When the total number of packets during 
+  * @note Before this function is used, PER measurement must be configured
+  * with nrx_set_per_cutoff_thr(). When the total number of packets during
   * an interval is less than configured, this function will report zero.
   *
   * @retval 0 on success
@@ -2208,19 +2208,19 @@ nrx_get_registry (nrx_context ctx,
                   char *registry,
                   size_t *len);
 
-/*! 
+/*!
   * @internal
   * @brief <b>Check existence of trigger</b>
-  * 
+  *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param trig_id Virtual trigger id.
-  * @param mib_id Zero-terminated string specifying mib trigger is related to. If this is NULL, 
-  *        no check on mib_id will be performed, i.e. only trig_id is 
+  * @param mib_id Zero-terminated string specifying mib trigger is related to. If this is NULL,
+  *        no check on mib_id will be performed, i.e. only trig_id is
   *        verified.
   *
   * @return
   *  - 0 on success
-  *  - an error code on failure 
+  *  - an error code on failure
   */
 int
 nrx_check_trigger_existence (nrx_context ctx,
@@ -2245,7 +2245,7 @@ nrx_check_trigger_existence (nrx_context ctx,
   *        The id value is filled in by the function call.
   * @param sample_len Number of transmitted messages over which the
   *        median value is calculated.
-  * @param thr_limit Threshold level specified as a native 802.11 rate, 
+  * @param thr_limit Threshold level specified as a native 802.11 rate,
   *        i.e. in steps of 500kbps.
   * @param dir Must be NRX_THR_FALLING.
   *
@@ -2308,7 +2308,7 @@ nrx_disable_tx_rate_threshold (nrx_context ctx,
   *        be passed to the callback on invocation. This is for
   *        caller use only, it will not be parsed or modified in
   *        any way by this library. This parameter can be NULL.
-  * @return 
+  * @return
   * - Zero on memory allocation failure
   * - Non-zero a valid callback handle.
   */
@@ -2330,7 +2330,7 @@ nrx_register_tx_rate_threshold_callback (nrx_context ctx,
   * @param handle A handle previously obtained from
   *        nrx_register_tx_rate_threshold_callback(). The handle will no longer be
   *        valid after this call.
-  * 
+  *
   * @return
   * - 0 on success.
   * - EINVAL on invalid parameters, e.g the handle is not registered.
@@ -2419,7 +2419,7 @@ nrx_disable_rx_rate_threshold (nrx_context ctx,
   *        be passed to the callback on invocation. This is for
   *        caller use only, it will not be parsed or modified in
   *        any way by this library. This parameter can be NULL.
-  * @return 
+  * @return
   * - Zero on memory allocation failure
   * - Non-zero a valid callback handle.
   */
@@ -2441,7 +2441,7 @@ nrx_register_rx_rate_threshold_callback (nrx_context ctx,
   * @param handle A handle previously obtained from
   *        nrx_register_rx_rate_threshold_callback(). The handle will no
   *        longer be valid after this call.
-  * 
+  *
   * @return
   * - 0 on success.
   * - EINVAL on invalid parameters, e.g the handle is not registered.
@@ -2514,7 +2514,7 @@ nrx_disable_tx_fail_notification (nrx_context ctx);
   *        be passed to the callback on invocation. This is for
   *        caller use only, it will not be parsed or modified in
   *        any way by this library. This parameter can be NULL.
-  * @return 
+  * @return
   * - Zero on memory allocation failure
   * - Non-zero a valid callback handle.
   */
@@ -2535,7 +2535,7 @@ nrx_register_tx_fail_notification (nrx_context ctx,
   * @param handle A handle previously obtained from
   *        nrx_register_tx_fail_notification(). The handle will no
   *        longer be valid after this call.
-  * 
+  *
   * @return
   * - 0 on success.
   * - EINVAL on invalid parameters, e.g the handle is not registered.
@@ -2608,7 +2608,7 @@ nrx_disable_missed_beacon_notification (nrx_context ctx);
   *        be passed to the callback on invocation. This is for
   *        caller use only, it will not be parsed or modified in
   *        any way by this library. This parameter can be NULL.
-  * @return 
+  * @return
   * - Zero on memory allocation failure
   * - Non-zero a valid callback handle.
   */
@@ -2629,7 +2629,7 @@ nrx_register_missed_beacon_notification (nrx_context ctx,
   * @param handle A handle previously obtained from
   *        nrx_register_missed_beacon_notification(). The handle will no
   *        longer be valid after this call.
-  * 
+  *
   * @return
   * - 0 on success.
   * - EINVAL on invalid parameters, e.g the handle is not registered.
@@ -2717,8 +2717,8 @@ nrx_conf_delay_spread (nrx_context ctx,
   * @param action Defines if ssid should be added (NRX_SSID_ADD)
   *        or removed (NRX_SSID_REMOVE) to/from the pool.
   * @param ssid  String containing ssid octets, the string "any" will be passed as a NULL ssid.
-  * @return always return EOPNOTSUPP 
-  * 
+  * @return always return EOPNOTSUPP
+  *
   */
 int
 nrx_scan_adm_ssid_pool (nrx_context ctx,
@@ -2737,8 +2737,8 @@ nrx_scan_adm_ssid_pool (nrx_context ctx,
   *        removed (NRX_SSID_REMOVE) to/from the scan job.
   * @param job_id Defines to which scan job the ssid shuold be Added/Removed to/from
   * @param ssid  String containing ssid octets, the string "any" will be passed as a NULL ssid.
-  * @return always return EOPNOTSUPP 
-  * 
+  * @return always return EOPNOTSUPP
+  *
   */
 int
 nrx_scan_adm_job_ssid (nrx_context ctx,
@@ -2772,20 +2772,20 @@ nrx_get_wxconfig (nrx_context ctx);
   * @brief <b>Set the TX retry limits</b>
   *
   * Specify the maximum number of transmission retries before discarding a frame.
-  * The firmware differentiates between short packets below RTS threshold 
+  * The firmware differentiates between short packets below RTS threshold
   * and long packets above it. Default is 7 retries for short packets
   * and 5 for long packets.
   *
   * The limits specified with this function will only put an upper bound of the
-  * the total number of retransmissions performed according to 
+  * the total number of retransmissions performed according to
   * nrx_set_tx_retry_limit_by_rate().
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
-  * @param short_limit Total number of retries done for packets shorter than 
+  * @param short_limit Total number of retries done for packets shorter than
   *                    the RTS threshold. Minimum value is 0 and maximum is 126.
-  * @param long_limit Total number of retries done for packets longer than 
+  * @param long_limit Total number of retries done for packets longer than
   *                    the RTS threshold. Minimum value is 0 and maximum is 126.
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -2800,7 +2800,7 @@ nrx_set_tx_retry_limits (nrx_context ctx,
   * @brief <b>Get the currently used frequency</b>
   *
   * @param [in] ctx NRX context that was created by the call to nrx_init_context().
-  * @param [out] frequency Will hold activ frequency in kHz. 
+  * @param [out] frequency Will hold activ frequency in kHz.
   *
   * @retval 0 on success.
   * @retval EINVAL

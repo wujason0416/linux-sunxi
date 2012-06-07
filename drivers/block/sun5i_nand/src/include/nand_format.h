@@ -121,7 +121,7 @@ typedef struct _blk_for_boot1_t
 
 //define the return value of format error when we should try format again
 #define RET_FORMAT_TRY_AGAIN        (-2)
-	
+
 /*
 ************************************************************************************************************************
 *                                   FORMAT NAND FLASH DISK MODULE INIT
@@ -177,5 +177,3 @@ __s32 FMT_FormatNand(void);
 void clear_NAND_ZI( void );
 
 #endif  //ifndef __NAND_FORMAT_H__
-
-

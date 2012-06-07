@@ -706,8 +706,8 @@ static inline void wpa_drv_notify_state_change(struct wpa_supplicant *wpa_s,
                                                wpa_states old_state)
 {
 	if (wpa_s->driver->notify_state_change)
-		wpa_s->driver->notify_state_change(wpa_s->drv_priv, 
-						   new_state, 
+		wpa_s->driver->notify_state_change(wpa_s->drv_priv,
+						   new_state,
 						   old_state);
 }
 /**Nanoradio end**/

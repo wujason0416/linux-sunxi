@@ -27,7 +27,7 @@ ADL-tools contains functions for simplify the use of WiFi-Engine.
 
 If you modify any code the following rules apply:
 -WiFi-Engine must never depend on any ADL-tool
--All code should be platform independent (do not include ndis or any other 
+-All code should be platform independent (do not include ndis or any other
  platform specific module).
 -This is not a place for dumping functions that will be used only by one driver.
 

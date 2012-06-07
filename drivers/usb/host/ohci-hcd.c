@@ -1327,4 +1327,3 @@ static void __exit ohci_hcd_mod_exit(void)
 	clear_bit(USB_OHCI_LOADED, &usb_hcds_loaded);
 }
 module_exit(ohci_hcd_mod_exit);
-

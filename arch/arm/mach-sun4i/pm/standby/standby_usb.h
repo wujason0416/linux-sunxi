@@ -26,4 +26,3 @@ extern __s32 standby_usb_exit(void);
 extern __s32 standby_query_usb_event(void);
 
 #endif  /* __STANDBY_USB_H__ */
-

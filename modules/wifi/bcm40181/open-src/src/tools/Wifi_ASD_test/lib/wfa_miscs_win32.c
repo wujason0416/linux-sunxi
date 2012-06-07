@@ -38,7 +38,7 @@ extern tgStream_t *theStreams;
 extern char PingStr[];
 tgStream_t *findStreamProfile(int id);
 HANDLE processHandle = NULL;
-HANDLE processThread = NULL; 
+HANDLE processThread = NULL;
 
 void
 asd_sleep(int SleepTime)
@@ -56,7 +56,7 @@ uapsd_sleep(int SleepTime)
 
 }
 
-void 
+void
 asd_closeSocket(int sockfd)
 {
 	closesocket(sockfd);
@@ -70,13 +70,13 @@ asd_shutDown(int Sockfd)
 	shutdown(Sockfd, SD_SEND);
 }
 
-void 
+void
 wfaGetSockOpt(int sockfd, int* tosval, socklen_t* size)
 {
 	getsockopt(sockfd, IPPROTO_IP, IP_TOS, (char FAR*)tosval, size);
 }
 
-int 
+int
 wfaSetSockOpt(int sockfd, int* tosval, int size)
 {
 	int sockOpt;
@@ -96,13 +96,13 @@ exec_process_cnclient (char *buf, char *rwl_client_path, int rwl_wifi_flag)
 	char Args[WFA_BUFF_512];
 	TCHAR pDefaultCMD[WFA_BUFF_512];
 	STARTUPINFO StartupInfo;
-	
+
 	if (rwl_wifi_flag){
 		/*The server can be in different channel after association
 		 *Hence we issue a findserver and then find out if it has
 		 *been associated to return the right status
-		 */	
-	
+		 */
+
 		memset(Args, 0, WFA_BUFF_512);
 		sprintf(Args, "%s", (const char *)buf);
 		memset(&ProcessInfo, 0, sizeof(ProcessInfo));
@@ -114,7 +114,7 @@ exec_process_cnclient (char *buf, char *rwl_client_path, int rwl_wifi_flag)
 		if(!CreateProcess(NULL,(LPTSTR)pDefaultCMD, NULL,NULL,FALSE,FALSE,NULL,NULL,
 			&StartupInfo,&ProcessInfo)){
 				processHandle = ProcessInfo.hProcess;
-				processThread = ProcessInfo.hThread; 
+				processThread = ProcessInfo.hThread;
 				return FALSE;
 		}
 		asd_sleep(3);
@@ -124,12 +124,12 @@ exec_process_cnclient (char *buf, char *rwl_client_path, int rwl_wifi_flag)
 	else {
 		exec_process(buf);
 	}
-	
-	/* while cnClient associates in the child, parent looks 
+
+	/* while cnClient associates in the child, parent looks
 	 * for association if it has happened
 	 * If it has not associated within a loop of 30, it comes out
 	 * as not associated
-	 */ 
+	 */
 	while(timeout_count > 0){
 		strcpy(gCmdStr, rwl_client_path);
 		strcat(gCmdStr, " assoc >");
@@ -203,7 +203,7 @@ char * strtok_r(char *s1, const char *s2, char **lasts)
 	*lasts = s1;
 
 	return ret;
-} 
+}
 
 int strcasecmp(const char *s1, const char *s2)
 {
@@ -261,9 +261,9 @@ __inline wchar_t *wmemset(wchar_t *_S, wchar_t _C, size_t _N)
                 *_Su = _C;
         return (_S); }
 
-int GetPingStat(FILE* pFile, const wchar_t* lpszSearchString , unsigned int *recv,unsigned int *sent, const char* delim) 
-{ 
-	unsigned long ulFileSize, ulBufferSize; 
+int GetPingStat(FILE* pFile, const wchar_t* lpszSearchString , unsigned int *recv,unsigned int *sent, const char* delim)
+{
+	unsigned long ulFileSize, ulBufferSize;
 	wchar_t lpBuffer[WFA_BUFF_512];
 	char mbsbuffer[WFA_BUFF_512], str[WFA_BUFF_128];
 	unsigned int *ulCurrentPosition, *ulReceived, *ulsent;
@@ -271,74 +271,74 @@ int GetPingStat(FILE* pFile, const wchar_t* lpszSearchString , unsigned int *rec
 
 	ulCurrentPosition=recv;
 	ulReceived= recv;
-	ulsent = sent; 
+	ulsent = sent;
 
-	//make sure we were passed a valid, if it isn't return -1 
-	if ((!pFile)||(!lpszSearchString)) { 
-		return -1; 
-	} 
+	//make sure we were passed a valid, if it isn't return -1
+	if ((!pFile)||(!lpszSearchString)) {
+		return -1;
+	}
 
-	//get the size of the file 
-	fseek(pFile,0,SEEK_END); 
+	//get the size of the file
+	fseek(pFile,0,SEEK_END);
 
-	ulFileSize=ftell(pFile); 
+	ulFileSize=ftell(pFile);
 
-	fseek(pFile,0,SEEK_SET); 
+	fseek(pFile,0,SEEK_SET);
 
-	//if the file is empty return -1 
-	if (!ulFileSize) { 
-		return -1; 
-	} 
+	//if the file is empty return -1
+	if (!ulFileSize) {
+		return -1;
+	}
 
-	//get the length of the string we're looking for, this is 
-	//the size the buffer will need to be 
-	ulBufferSize=wcslen(lpszSearchString); 
+	//get the length of the string we're looking for, this is
+	//the size the buffer will need to be
+	ulBufferSize=wcslen(lpszSearchString);
 
-	if (ulBufferSize>ulFileSize) { 
-		return -1; 
-	} 
+	if (ulBufferSize>ulFileSize) {
+		return -1;
+	}
 
-	*ulCurrentPosition=0; 
+	*ulCurrentPosition=0;
 
-	//this is where the actual searching will happen, what happens 
-	//here is we set the file pointer to the current position 
-	//is incrimented by one each pass, then we read the size of 
-	//the buffer into the buffer and compare it with the string 
-	//we're searching for, if the string is found we return the 
-	//position at which it is found 
-	while (*ulCurrentPosition<ulFileSize-ulBufferSize) { 
-		fseek(pFile,*ulCurrentPosition,SEEK_SET); 
+	//this is where the actual searching will happen, what happens
+	//here is we set the file pointer to the current position
+	//is incrimented by one each pass, then we read the size of
+	//the buffer into the buffer and compare it with the string
+	//we're searching for, if the string is found we return the
+	//position at which it is found
+	while (*ulCurrentPosition<ulFileSize-ulBufferSize) {
+		fseek(pFile,*ulCurrentPosition,SEEK_SET);
 		wmemset(lpBuffer, 0, WFA_BUFF_512);
-		//read ulBufferSize bytes from the file 
-		fread(mbsbuffer,1,ulBufferSize,pFile); 
+		//read ulBufferSize bytes from the file
+		fread(mbsbuffer,1,ulBufferSize,pFile);
 
-		retval = mbstowcs(lpBuffer, mbsbuffer, strlen(mbsbuffer)); 
+		retval = mbstowcs(lpBuffer, mbsbuffer, strlen(mbsbuffer));
 
 		//if the data read matches the string we're looking for
-		//read from the offset where recieve data starts 
-		if (!wmemcmp(lpBuffer, lpszSearchString, ulBufferSize)) { 
+		//read from the offset where recieve data starts
+		if (!wmemcmp(lpBuffer, lpszSearchString, ulBufferSize)) {
 			fread(str, 1, RECV_OFFSET, pFile);
 			*ulReceived = atoi(str);
 			strtok(str, (const char*)ulReceived);
 			//fread(str,1,ulBufferSize,pFile);
 			//strtok(str, delim);
 			*ulsent= atoi(str);
-			//return the position the string was found at 
-			return *ulCurrentPosition; 
-		} 
+			//return the position the string was found at
+			return *ulCurrentPosition;
+		}
 
-		++*ulCurrentPosition; 
-	} 
+		++*ulCurrentPosition;
+	}
 	return -1;
-} 
+}
 
-int GetStats(FILE* pFile, const wchar_t* lpszSearchString , unsigned int *pos, const char* delim) 
-{ 
+int GetStats(FILE* pFile, const wchar_t* lpszSearchString , unsigned int *pos, const char* delim)
+{
 
 	char* lpBuffer;
 	char* str;
     char mbsString[128];
-	unsigned long ulFileSize, ulBufferSize; 	
+	unsigned long ulFileSize, ulBufferSize;
 	unsigned int *ulCurrentPosition;
 	ulCurrentPosition = pos;
 
@@ -346,82 +346,82 @@ int GetStats(FILE* pFile, const wchar_t* lpszSearchString , unsigned int *pos, c
 	/* convert the wide character search string to multibyte */
 	wcstombs(mbsString,lpszSearchString, wcslen(lpszSearchString) );
 	/* make sure we were passed a valid, if it isn't return -1 */
-	if ((!pFile)||(!lpszSearchString)) { 
-		return -1; 
-	} 
+	if ((!pFile)||(!lpszSearchString)) {
+		return -1;
+	}
 
 	/* get the size of the file */
-	fseek(pFile,0,SEEK_END); 
+	fseek(pFile,0,SEEK_END);
 
-	ulFileSize=ftell(pFile); 
+	ulFileSize=ftell(pFile);
 
-	fseek(pFile,0,SEEK_SET); 
+	fseek(pFile,0,SEEK_SET);
 
 	/* if the file is empty return -1 */
-	if (!ulFileSize) { 
-		return -1; 
-	} 
+	if (!ulFileSize) {
+		return -1;
+	}
 
-	/* get the length of the string we're looking for, this is 
+	/* get the length of the string we're looking for, this is
 	 * the size the buffer will need to be */
-	ulBufferSize=wcslen(lpszSearchString); 
+	ulBufferSize=wcslen(lpszSearchString);
 
-	if (ulBufferSize>ulFileSize) { 
-		return -1; 
-	} 
+	if (ulBufferSize>ulFileSize) {
+		return -1;
+	}
     /* allocate the memory for the buffer */
-     lpBuffer=(char*)malloc(strlen(mbsString)); 
+     lpBuffer=(char*)malloc(strlen(mbsString));
 	 str = (char*)malloc(strlen(mbsString));
-	/* if malloc() returned a null pointer (which probably means 
+	/* if malloc() returned a null pointer (which probably means
      * there is not enough memory) then return -1  */
-	 if (!lpBuffer ) 
-    { 
-        return -1; 
-    } 
+	 if (!lpBuffer )
+    {
+        return -1;
+    }
 
-	*ulCurrentPosition=0; 
+	*ulCurrentPosition=0;
 
-	/* this is where the actual searching will happen, what happens 
-	 * here is we set the file pointer to the current position 
-	 * is incrimented by one each pass, then we read the size of 
-	 * the buffer into the buffer and compare it with the string 
-	 * we're searching for, if the string is found we return the 
+	/* this is where the actual searching will happen, what happens
+	 * here is we set the file pointer to the current position
+	 * is incrimented by one each pass, then we read the size of
+	 * the buffer into the buffer and compare it with the string
+	 * we're searching for, if the string is found we return the
 	 * position at which it is found */
 
-	while (*ulCurrentPosition<ulFileSize-ulBufferSize) { 
-		fseek(pFile,*ulCurrentPosition,SEEK_SET); 
+	while (*ulCurrentPosition<ulFileSize-ulBufferSize) {
+		fseek(pFile,*ulCurrentPosition,SEEK_SET);
 		/* if the data read matches the string we're looking for */
-		fread(lpBuffer,1,ulBufferSize,pFile); 
-		if (!memcmp(lpBuffer,mbsString,ulBufferSize)) 
-        { 
+		fread(lpBuffer,1,ulBufferSize,pFile);
+		if (!memcmp(lpBuffer,mbsString,ulBufferSize))
+        {
 			fread(str,1,ulBufferSize,pFile);
 			strtok(str, delim);
 			*ulCurrentPosition = atoi(str);
 
 			/* free the buffer */
 			if(lpBuffer != NULL || str != NULL){
-				free(lpBuffer); 
+				free(lpBuffer);
 				free(str);
 			}
 			/* return the position the string was found at */
-			return *ulCurrentPosition; 
-		} 
+			return *ulCurrentPosition;
+		}
         /* incriment the current position by one */
-		++*ulCurrentPosition; 
-    } 
+		++*ulCurrentPosition;
+    }
 
-    /* if we made it this far the string was not found in the file 
+    /* if we made it this far the string was not found in the file
      * so we free the buffer */
     if(lpBuffer != NULL || str != NULL){
 			free(str);
-            free(lpBuffer); 
-	} 
+            free(lpBuffer);
+	}
 	return -1;
-} 
+}
 
-int FileSearch(FILE* pFile, const wchar_t* lpszSearchString , unsigned int *pos) 
-{ 
-	
+int FileSearch(FILE* pFile, const wchar_t* lpszSearchString , unsigned int *pos)
+{
+
 	char* lpBuffer;
 	 char mbsString[128];
 	unsigned long ulFileSize = 0, ulBufferSize;
@@ -431,70 +431,70 @@ int FileSearch(FILE* pFile, const wchar_t* lpszSearchString , unsigned int *pos)
 	/* convert the wide character search string to multibyte */
 	wcstombs(mbsString,lpszSearchString, wcslen(lpszSearchString) );
 	/* make sure we were passed a valid, if it isn't return -1 */
-	if ((!pFile)||(!lpszSearchString)) { 
-		return -1; 
-	} 
+	if ((!pFile)||(!lpszSearchString)) {
+		return -1;
+	}
 
 	/* get the size of the file */
-	fseek(pFile,0,SEEK_END); 
+	fseek(pFile,0,SEEK_END);
 
-	ulFileSize=ftell(pFile); 
+	ulFileSize=ftell(pFile);
 
-	fseek(pFile,0,SEEK_SET); 
+	fseek(pFile,0,SEEK_SET);
 
 	/* if the file is empty return -1 */
-	if (!ulFileSize) { 
-		return -1; 
-	} 
+	if (!ulFileSize) {
+		return -1;
+	}
 
-	/* get the length of the string we're looking for, this is 
+	/* get the length of the string we're looking for, this is
 	 * the size the buffer will need to be */
-	ulBufferSize=wcslen(lpszSearchString); 
+	ulBufferSize=wcslen(lpszSearchString);
 
-	if (ulBufferSize > ulFileSize) { 
-		return -1; 
-	} 
+	if (ulBufferSize > ulFileSize) {
+		return -1;
+	}
 
     /* allocate the memory for the buffer */
-     lpBuffer=(char*)malloc(strlen(mbsString)); 
-	/* if malloc() returned a null pointer (which probably means 
+     lpBuffer=(char*)malloc(strlen(mbsString));
+	/* if malloc() returned a null pointer (which probably means
      * there is not enough memory) then return -1 */
 
-	 if (!lpBuffer ) 
-    { 
-        return -1; 
-    } 
+	 if (!lpBuffer )
+    {
+        return -1;
+    }
 
-	*ulCurrentPosition=0; 
+	*ulCurrentPosition=0;
 
-	/* this is where the actual searching will happen, what happens 
-	 * here is we set the file pointer to the current position 
-	 * is incrimented by one each pass, then we read the size of 
-	 * the buffer into the buffer and compare it with the string 
-	 * we're searching for, if the string is found we return the 
+	/* this is where the actual searching will happen, what happens
+	 * here is we set the file pointer to the current position
+	 * is incrimented by one each pass, then we read the size of
+	 * the buffer into the buffer and compare it with the string
+	 * we're searching for, if the string is found we return the
 	 * position at which it is found */
-	while (*ulCurrentPosition<ulFileSize-ulBufferSize) { 
-		fseek(pFile,*ulCurrentPosition,SEEK_SET); 
+	while (*ulCurrentPosition<ulFileSize-ulBufferSize) {
+		fseek(pFile,*ulCurrentPosition,SEEK_SET);
 		/* if the data read matches the string we're looking for */
-		  fread(lpBuffer,1,ulBufferSize,pFile); 
-		if (!memcmp(lpBuffer,mbsString,ulBufferSize)) 
-		{ 
+		  fread(lpBuffer,1,ulBufferSize,pFile);
+		if (!memcmp(lpBuffer,mbsString,ulBufferSize))
+		{
 			/* free the buffer */
 			if(lpBuffer != NULL)
-            free(lpBuffer); 
+            free(lpBuffer);
 			/* return the position the string was found at */
-			return *ulCurrentPosition; 
-		} 
+			return *ulCurrentPosition;
+		}
 
 		/* incriment the current position by one */
-		++*ulCurrentPosition; 
-	} 
+		++*ulCurrentPosition;
+	}
     /* if we made it this far the string was not
      * found in the file so we free the buffer */
     if(lpBuffer != NULL)
-            free(lpBuffer); 
+            free(lpBuffer);
 	return -1;
-} 
+}
 
 unsigned int uGetLocalIP()
 {
@@ -509,7 +509,7 @@ unsigned int uGetLocalIP()
 	return *((unsigned int*)HostData->h_addr);
 }
 
-char* GetHostName(char* buf, int len) 
+char* GetHostName(char* buf, int len)
 {
 	if (gethostname(buf, len) == SOCKET_ERROR)
 		return NULL;
@@ -541,7 +541,7 @@ int wfa_Win_estimate_timer_latency()
 	GetSystemTime(&t1);
 	usleep(sleep);
 
-	GetSystemTime(&t2); 
+	GetSystemTime(&t2);
 
 	tp2.wMilliseconds = t1.wMilliseconds  +20;
 	if( tp2.wMilliseconds >= 1000) {
@@ -551,7 +551,7 @@ int wfa_Win_estimate_timer_latency()
 	else
 		tp2.wSecond = t1.wSecond;
 
-	return latency = (t2.wSecond - tp2.wSecond)  + (t2.wMilliseconds - tp2.wMilliseconds); 
+	return latency = (t2.wSecond - tp2.wSecond)  + (t2.wMilliseconds - tp2.wMilliseconds);
 }
 
 
@@ -577,7 +577,7 @@ FILE* asd_Config(char *strFunct, char *strstrParams)
 	if(!CreateProcess(NULL,(LPTSTR)pDefaultCMD, NULL,NULL,FALSE,FALSE,NULL,NULL,&StartupInfo,&ProcessInfo))
 	{
 		processHandle = ProcessInfo.hProcess;
-		processThread = ProcessInfo.hThread; 
+		processThread = ProcessInfo.hThread;
 		printf("CreateProcess function failed\n");
 		return NULL;
 	}

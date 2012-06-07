@@ -34,7 +34,7 @@
  * transfers.
  *
  * KSDIO_BLOCK_SIZE - Defines the length of the block mode transfer in bytes.
- * It is effective if SDIO block mode is used. 
+ * It is effective if SDIO block mode is used.
  * If zero, the length of the block mode transfer is set by the kernel driver.
  *
  * KSDIO_NO_4_BIT_MODE - Defined to inhibit the use of 4-bit SDIO mode.
@@ -101,7 +101,7 @@
 #include <nanoutil.h>
 
 #include <linux/freezer.h>
-#include <linux/completion.h> 
+#include <linux/completion.h>
 #include <linux/sched.h>
 
 
@@ -237,7 +237,7 @@ struct nrxdev {
    struct work_struct  rx_work;
    struct work_struct  rx_to_net_work;
 #endif
-   
+
 #ifdef USE_THREAD_TX
    long tx_thread_pid;
    struct semaphore tx_thread_sem;
@@ -245,10 +245,10 @@ struct nrxdev {
 #else
    struct work_struct  tx_work;
 #endif
-   
+
    struct sk_buff_head rx;
    struct sk_buff_head tx;
-   
+
    spinlock_t          tx_lock;
 #ifdef KSDIO_SEPARATE_WORKQUEUE
    struct workqueue_struct *workqueue;
@@ -405,7 +405,7 @@ static int nano_sdio_ctrl(uint32_t command, uint32_t arg, void *data)
       case NANONET_BOOT:
          ret = 0;
          break;
-          
+
       case NANONET_INIT_SDIO:
          KDEBUG(TRANSPORT, "INIT SDIO");
          ret = 0;
@@ -495,7 +495,7 @@ ssize_t proc_write(struct file *file, const char __user *buf, size_t count, loff
    struct nrxdev *nrxdev = nrxdev_from_file(file);
    int ret;
    void *kbuf;
-  
+
    KDEBUG(TRANSPORT, "write %d bytes", count);
    kbuf = kmalloc(count, GFP_KERNEL | GFP_DMA);
    if (copy_from_user(kbuf, buf, count)) {
@@ -601,7 +601,7 @@ do_rx(struct nrxdev *nrxdev)
                nrxdev->rx_hic_start[6], nrxdev->rx_hic_start[7]);
       goto exit;
    }
-   else if(nrxdev->rx_hic_start[0] == nrxdev->rx_hic_start[1] && 
+   else if(nrxdev->rx_hic_start[0] == nrxdev->rx_hic_start[1] &&
            nrxdev->rx_hic_start[0] == nrxdev->rx_hic_start[2] &&
            nrxdev->rx_hic_start[0] == nrxdev->rx_hic_start[3])
    {
@@ -627,7 +627,7 @@ do_rx(struct nrxdev *nrxdev)
          if (err != 0) {
             KDEBUG(ERROR, "readsb() failed, err %d", err);
             printk("readsb() failed, err %d\n", err);
-            dev_kfree_skb(skb); 
+            dev_kfree_skb(skb);
             skb = NULL;
          }
       }
@@ -717,13 +717,13 @@ do_tx(struct nrxdev *nrxdev)
 irqreturn_t nrx_gpio_isr(int irq_no, void* data)
 {
    struct nrxdev *nrxdev = data;
-   
+
 #ifdef USE_THREAD_RX
    up(&nrxdev->rx_thread_sem);
 #else
    QUEUE_WORK(&nrxdev->rx_work);
 #endif
-   
+
    return IRQ_HANDLED;
 }
 
@@ -775,7 +775,7 @@ static int nrx_enable_irq(struct nrxdev *nrxdev)
       KDEBUG(ERROR, "request_irq failed, err %d", err);
       return err;
    }
-     
+
    err = set_irq_type(KSDIO_HOST_GPIO_IRQ, IRQ_TYPE_EDGE_BOTH);
    if (err) {
       KDEBUG(ERROR, "set_irq_type failed, err %d", err);
@@ -880,7 +880,7 @@ static int mmc_io_rw_direct(struct mmc_card *card, unsigned int arg)
 }
 
 static int
-nrx_init(struct sdio_func *func) 
+nrx_init(struct sdio_func *func)
 {
    unsigned rca = 0;
    int err;
@@ -914,7 +914,7 @@ nrx_init(struct sdio_func *func)
    sdio_f0_writeb(func, 0x01, CCCR_HISPEED_EN, &err);
    KDEBUG(TRACE, "CCCR_HISPEED_EN, err %d", err);
    if (err) printk ("CCCR_HISPEED_EN, err %d\n", err);
-   mmc_card_set_highspeed(func->card);           
+   mmc_card_set_highspeed(func->card);
    func->card->host->ios.timing = MMC_TIMING_SD_HS;
    func->card->host->ops->set_ios(func->card->host, &func->card->host->ios);
 #endif
@@ -940,7 +940,7 @@ nrx_init(struct sdio_func *func)
 #define mmc_card_clear_highspeed(c) ((c)->state &= ~MMC_STATE_HIGHSPEED)
 
 static int
-nrx_reset(struct sdio_func *func) 
+nrx_reset(struct sdio_func *func)
 {
    int err;
    struct nrxdev *nrxdev = dev_get_drvdata(&func->dev);
@@ -957,13 +957,13 @@ nrx_reset(struct sdio_func *func)
 #else /* !defined(KSDIO_HOST_RESET_PIN) */
    {
       unsigned char cccr_reset_val = 0;
-      
+
       /* Reset bits in CCCR_RESET are active high for NRX600
        * and they are active low for NRX700
        */
       switch (nrxdev->chip_type) {
          case CHIP_TYPE_NRX700:
-            cccr_reset_val = 0x00; break; 
+            cccr_reset_val = 0x00; break;
          case CHIP_TYPE_NRX600:
             cccr_reset_val = 0x03; break;
          default:
@@ -974,7 +974,7 @@ nrx_reset(struct sdio_func *func)
 
       /* Wait until the chip exits the reset state.
        * The necessary time has been measured to approx 8 ms for NRX600.
-       */  
+       */
       mdelay(10);
    }
 #endif /* KSDIO_HOST_RESET_PIN */
@@ -1065,20 +1065,20 @@ nano_download(const void *buf, size_t size, void *_nrxdev)
    mmc_set_clock(func->card->host, prev_clk);
    KDEBUG(TRACE, "SDIO clock back to %u", prev_clk);
 #endif
-   
+
    if (err == 0) {
       KDEBUG(TRACE, "FW Download success");
       /* Give fw time to restart. Measured req time for NRX700
        * (orfr 090415) was 3.5 ms with some margin
        */
-      mdelay(15); 
-      
+      mdelay(15);
+
       sdio_f0_writeb(nrxdev->func, 0x02, CCCR_INTACK, &err);
       if (err != 0) {
          KDEBUG(ERROR, "Ack irq failed, err %d", err);
          printk("[nano] Ack irq failed, err %d\n", err);
       }
-      	
+
       err = nrx_enable_irq(nrxdev);
       if (err) {
          KDEBUG(ERROR, "Failed to enable IRQs, err = %d", err);
@@ -1140,7 +1140,7 @@ static int nrx_soft_shutdown(struct sdio_func *func)
       0x00, 0x00, 0x00, 0x00,
       0x01, 0x00,
       0x19, 0x00, 0xfc, 0xff,
-      0x07, 
+      0x07,
       0x01, 0x00,
       0x00, 0x00, 0xfc, 0xff,
       0x01
@@ -1263,7 +1263,7 @@ static int sdio_nrx_probe(struct sdio_func *func, const struct sdio_device_id *i
 
    printk("%s: sdio_nrx_probe (class %u, vendor %04x, device %04x), target is %s\n",
           sdio_func_id(func), func->class, func->vendor, func->device, chip_name);
-          
+
 #ifdef KSDIO_CHIP_TYPE
    if (chip_type != KSDIO_CHIP_TYPE) {
       printk("%s: sdio_nrx_probe failed, unsupported device\n", sdio_func_id(func));
@@ -1299,7 +1299,7 @@ static int sdio_nrx_probe(struct sdio_func *func, const struct sdio_device_id *i
    dev_set_drvdata(&func->dev, nrxdev);
    nrxdev->func = func;
    spin_lock_init(&nrxdev->tx_lock);
-   
+
    /* Set up the bottom half handler */
 #ifdef USE_THREAD_RX
    sema_init(&nrxdev->rx_thread_sem, 0);
@@ -1312,7 +1312,7 @@ static int sdio_nrx_probe(struct sdio_func *func, const struct sdio_device_id *i
    INIT_WORK(&nrxdev->rx_work, do_rx_work);
    INIT_WORK(&nrxdev->rx_to_net_work, do_rx_to_net_work);
 #endif
-   
+
 #ifdef USE_THREAD_TX
    sema_init(&nrxdev->tx_thread_sem, 0);
    init_completion(&nrxdev->tx_thread_exited);
@@ -1320,7 +1320,7 @@ static int sdio_nrx_probe(struct sdio_func *func, const struct sdio_device_id *i
 #else
    INIT_WORK(&nrxdev->tx_work, do_tx_work);
 #endif
-   
+
    init_waitqueue_head(&nrxdev->readq);
    skb_queue_head_init(&nrxdev->rx);
    skb_queue_head_init(&nrxdev->tx);
@@ -1335,7 +1335,7 @@ static int sdio_nrx_probe(struct sdio_func *func, const struct sdio_device_id *i
 #ifdef KSDIO_SEPARATE_WORKQUEUE
    nrxdev->workqueue = create_workqueue("nano_wq");
    if (nrxdev->workqueue == NULL) {
-     KDEBUG(ERROR, "nano workqueue creation failed\n");     
+     KDEBUG(ERROR, "nano workqueue creation failed\n");
      return -ENOMEM;
    }
 #endif /* KSDIO_SEPARATE_WORKQUEUE */
@@ -1376,7 +1376,7 @@ static int sdio_nrx_probe(struct sdio_func *func, const struct sdio_device_id *i
       sdio_release_host(func);
       return err;
    }
-   
+
    err = nrx_soft_shutdown(func);
    if (err) {
       KDEBUG(ERROR, "nano_ksdio: nrx_soft_shutdown failed, err %d", err);
@@ -1455,7 +1455,7 @@ static void sdio_nrx_remove(struct sdio_func *func)
    }
 
 #if defined(USE_THREAD_TX) || defined(USE_THREAD_RX)
-   
+
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 27))
 #define KILL_PROC(pid, sig) \
    { \
@@ -1468,30 +1468,30 @@ static void sdio_nrx_remove(struct sdio_func *func)
    { \
        kill_proc(pid, sig, 1); \
    }
-#endif 
-   
+#endif
+
    /* Remove threads */
-   #ifdef USE_THREAD_TX 
+   #ifdef USE_THREAD_TX
    KILL_PROC(nrxdev->tx_thread_pid, SIGTERM);
    #endif
-   
-   #ifdef USE_THREAD_RX 
+
+   #ifdef USE_THREAD_RX
    KILL_PROC(nrxdev->rx_thread_pid, SIGTERM);
    KILL_PROC(nrxdev->rx_to_net_thread_pid, SIGTERM);
    #endif
-   
-   #ifdef USE_THREAD_TX 
+
+   #ifdef USE_THREAD_TX
    wait_for_completion(&nrxdev->tx_thread_exited);
    #endif
-   
+
    #ifdef USE_THREAD_RX
    wait_for_completion(&nrxdev->rx_thread_exited);
    wait_for_completion(&nrxdev->rx_to_net_thread_exited);
    #endif
-   
+
 #undef KILL_PROC
 #endif
-   
+
 /*
    remove_proc_entry("hic", NULL);
 */
@@ -1536,7 +1536,7 @@ static int __init sdio_nrx_init(void)
     * tell the MMC/SD/SDIO driver to look for a new "card"....
     */
 #endif
-    
+
 #if defined WINNER_POWER_ONOFF_CTRL && defined CONFIG_MMC_SUNXI_POWER_CONTROL
     nano_sdio_powerup();
     sunximmc_rescan_card(SDIOID, 1);
@@ -1564,7 +1564,7 @@ static void __exit sdio_nrx_exit(void)
 #endif
 
     sdio_unregister_driver(&sdio_nrx_driver);
-    
+
 #if defined WINNER_POWER_ONOFF_CTRL && defined CONFIG_MMC_SUNXI_POWER_CONTROL
     nano_sdio_poweroff();
     sunximmc_rescan_card(SDIOID, 0);
@@ -1639,7 +1639,7 @@ static int nano_hard_shutdown(struct nrxdev *nrxdev, uint32_t arg)
 
 #endif /* !USE_WIFI */
 
-//////////////////////////////////////////////////////////// Packet Hundling part 
+//////////////////////////////////////////////////////////// Packet Hundling part
 
 #if defined(USE_THREAD_RX) || defined(USE_THREAD_TX)
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 0))
@@ -1655,15 +1655,15 @@ cpu_raise_softirq(smp_processor_id(), NET_RX_SOFTIRQ)
     } while (0);
 #endif /* LINUX_VERSION_CODE  */
 #endif /* USE_THREAD_RX || USE_THREAD_TX */
-    
+
 #ifdef USE_THREAD_RX
 //////////////////////////////////////////////////////////////////////////////////////////////// Thread RX
 static int
 do_rx_thread(void *data)
 {
     struct nrxdev *nrxdev = (struct nrxdev *) data;
-    
-    
+
+
     /* This thread doesn't need any user-level access,
      * so get rid of all our resources
      */
@@ -1673,11 +1673,11 @@ do_rx_thread(void *data)
         param.sched_priority = (thread_prio < MAX_RT_PRIO)?thread_prio:(MAX_RT_PRIO-1);
         sched_setscheduler(current, SCHED_FIFO, &param);
     }
-    
+
     set_freezable();
-    
+
     DAEMONIZE("do_thread_rx");
-    
+
     /* Run until signal received */
     while (1) {
         if (down_interruptible(&nrxdev->rx_thread_sem) == 0) {
@@ -1686,7 +1686,7 @@ do_rx_thread(void *data)
         else
             break;
     }
-    
+
     complete_and_exit(&nrxdev->rx_thread_exited, 0);
 }
 
@@ -1694,8 +1694,8 @@ static int
     do_rx_to_net_thread(void *data)
 {
     struct nrxdev *nrxdev = (struct nrxdev *) data;
-    struct sk_buff *skb;   
-    
+    struct sk_buff *skb;
+
     /* This thread doesn't need any user-level access,
     * so get rid of all our resources
     */
@@ -1705,11 +1705,11 @@ static int
         param.sched_priority = (thread_prio < MAX_RT_PRIO)?thread_prio:(MAX_RT_PRIO-1);
         sched_setscheduler(current, SCHED_FIFO, &param);
     }
-    
+
     set_freezable();
-    
+
     DAEMONIZE("do_thread_rx_to_net");
-    
+
     /* Run until signal received */
     while (1) {
         if (down_interruptible(&nrxdev->rx_to_net_thread_sem) == 0) {
@@ -1733,9 +1733,9 @@ static int
 static void
     do_rx_to_net_work(struct work_struct *work)
 {
-    struct sk_buff *skb;    
+    struct sk_buff *skb;
     struct nrxdev *nrxdev = container_of(work, struct nrxdev, rx_to_net_work);
-    
+
     while ((skb = skb_dequeue(&nrxdev->rx)) != NULL) {
 #ifdef USE_WIFI
          ns_net_rx(skb, nrxdev->netdev);
@@ -1750,7 +1750,7 @@ static void
     do_rx_work(struct work_struct *work)
 {
     struct nrxdev *nrxdev = container_of(work, struct nrxdev, rx_work);
-    
+
     do_rx(nrxdev);
 }
 #endif
@@ -1761,8 +1761,8 @@ static int
 do_tx_thread(void *data)
 {
     struct nrxdev *nrxdev = (struct nrxdev *) data;
-    
-    
+
+
     /* This thread doesn't need any user-level access,
      * so get rid of all our resources
      */
@@ -1796,7 +1796,7 @@ static void
 do_tx_work(struct work_struct *work)
 {
     struct nrxdev *nrxdev = container_of(work, struct nrxdev, tx_work);
-    
+
     do_tx(nrxdev);
 }
 #endif

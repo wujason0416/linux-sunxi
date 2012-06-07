@@ -8,4 +8,3 @@ obj-$(CONFIG_MMC)		+= core/
 obj-$(CONFIG_MMC)		+= card/
 obj-$(CONFIG_MMC)		+= mmc-pm/
 obj-$(CONFIG_MMC)		+= sunxi-host/
-

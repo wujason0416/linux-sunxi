@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -91,7 +91,7 @@ typedef enum _HW_VARIABLES{
 	HW_VAR_INITIAL_GAIN,
 	HW_VAR_TRIGGER_GPIO_0,
 	HW_VAR_BT_SET_COEXIST,
-	HW_VAR_BT_ISSUE_DELBA,	
+	HW_VAR_BT_ISSUE_DELBA,
 	HW_VAR_CURRENT_ANTENNA,
 	HW_VAR_ANTENNA_DIVERSITY_LINK,
 	HW_VAR_ANTENNA_DIVERSITY_SELECT,
@@ -171,7 +171,7 @@ struct hal_ops {
 	void	(*SwAntDivCompareHandler)(PADAPTER Adapter, WLAN_BSSID_EX *dst, WLAN_BSSID_EX *src);
 #endif
 	u8	(*interface_ps_func)(PADAPTER Adapter,HAL_INTF_PS_FUNC efunc_id, u8* val);
-	
+
 	s32	(*hal_xmit)(PADAPTER Adapter, struct xmit_frame *pxmitframe);
 	void	(*mgnt_xmit)(PADAPTER Adapter, struct xmit_frame *pmgntframe);
 
@@ -190,10 +190,10 @@ struct hal_ops {
 	int 	(*Efuse_PgPacketRead)(PADAPTER pAdapter, u8 offset, u8 *data, BOOLEAN bPseudoTest);
 	int 	(*Efuse_PgPacketWrite)(PADAPTER pAdapter, u8 offset, u8 word_en, u8 *data, BOOLEAN bPseudoTest);
 	u8	(*Efuse_WordEnableDataWrite)(PADAPTER pAdapter, u16 efuse_addr, u8 word_en, u8 *data, BOOLEAN bPseudoTest);
-	
+
 #ifdef DBG_CONFIG_ERROR_DETECT
 	void (*sreset_init_value)(_adapter *padapter);
-	void (*sreset_reset_value)(_adapter *padapter);		
+	void (*sreset_reset_value)(_adapter *padapter);
 	void (*silentreset)(_adapter *padapter);
 	void (*sreset_xmit_status_check)(_adapter *padapter);
 	void (*sreset_linked_status_check) (_adapter *padapter);
@@ -277,4 +277,3 @@ void	rtw_sreset_init(_adapter *padapter);
 #endif
 
 #endif //__HAL_INIT_H__
-

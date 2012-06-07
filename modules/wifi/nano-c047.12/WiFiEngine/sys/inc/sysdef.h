@@ -32,7 +32,7 @@
 /*                                                                        */
 /* --------------------------------------------------------------------   */
 /**************************************************************************/
-#ifndef SYSDEF_H           
+#ifndef SYSDEF_H
 #define SYSDEF_H
 #include "env_config_all.h"
 #include "systypes.h"
@@ -43,7 +43,7 @@
 /*! \brief        MACRO that controls generation of wrapper functions.       */
 /*! \description  Define the top node definition as a struct to please the   */
 /*                compiler. The definition will be used by the registry      */
-/*                compiler to identify the top node.                         */ 
+/*                compiler to identify the top node.                         */
 /*---------------------------------------------------------------------------*/
 #define GENERATE_WRAPPER_FUNCTIONS(coding)
 
@@ -169,7 +169,7 @@ Use these macros where far functions are needed in the CR16 world. */
        *(uint8_t *)((_address)+1) = (uint8_t)((_tmpVal)>>8);\
     }\
  }
- 
+
  #define PACKED_READ_4BYTE(_address)\
     ( (_address) & 0x03 == 0 ? *(uint32_t *)(_address) : *(uint8_t *)(_address) + (*(uint8_t *)(_address+1) << 8) + (*(uint8_t *)(_address+2) << 16) + (*(uint8_t *)(_address+3) << 24 ) )
 
@@ -188,8 +188,8 @@ Use these macros where far functions are needed in the CR16 world. */
       *(uint8_t *)((_address)+2) = (uint8_t)(_tmpVal>>16);\
       *(uint8_t *)((_address)+3) = (uint8_t)(_tmpVal>>24);\
    }\
- }                                                        
-                                                        
+ }
+
 #else
  #define PACKED_READ_2BYTE(_address) (*(uint16_t *)(_address))
  #define PACKED_READ_4BYTE(_address) (*(uint32_t *)(_address))
@@ -222,8 +222,8 @@ typedef struct
 extern ROM_STORAGE(char) product_version[];
 extern uint32_t system_capabilities;
 extern uint8_t hpi_ctrl_shadow;
-           
-           
+
+
 
 
 

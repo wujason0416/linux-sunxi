@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
  *
  *
- 
+
 ******************************************************************************/
 #ifndef __SDIO_OPS_H_
 #define __SDIO_OPS_H_
@@ -68,7 +68,7 @@ extern void sdio_intf_hdl_open(u8 *priv);
 extern void sdio_intf_hdl_close(u8 *priv);
 
 extern void sdio_set_intf_ops(struct _io_ops *pops);
-	
+
 //extern void sdio_set_intf_callbacks(struct _io_callbacks *pcallbacks);
 extern void sdio_func1cmd52_read(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *rmem);
 extern void sdio_func1cmd52_write(struct intf_hdl *pintfhdl, u32 addr, u32 cnt, u8 *wmem);
@@ -77,4 +77,3 @@ extern	uint __inline _cvrt2ftaddr(const u32 addr, u32 *pftaddr)  ;
 
 
 #endif
-

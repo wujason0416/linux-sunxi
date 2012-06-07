@@ -364,7 +364,7 @@ setup_interrupt(struct nano_pci_card *card)
    {
       /* SIP */
       set_interrupt_mode(card, HOST_ATTENTION_GPIO1);
-      create_param.host_attention = 
+      create_param.host_attention =
     HIC_CTRL_ALIGN_HATTN_VAL_POLICY_GPIO |
     HIC_CTRL_ALIGN_HATTN_VAL_OVERRIDE_DEFAULT_PARAM |
     HIC_CTRL_ALIGN_HATTN_VAL_GPIOPARAMS_GPIO_TYPE_EXT |
@@ -598,7 +598,7 @@ static irqreturn_t nano_pci_irq (int irq, void* dev_id
     if (!(test&2))
         return IRQ_NONE;
 
-    if (!card->active) 
+    if (!card->active)
         return IRQ_HANDLED;
 
     if (status & SDIO_OUTPUT_INT) {
@@ -695,7 +695,7 @@ static void nano_pci_rx_wq(struct work_struct *work)
 #endif
 {
     struct nano_pci_card* card;
-    struct sk_buff *skb;   
+    struct sk_buff *skb;
     unsigned short len;
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,20)
@@ -767,11 +767,11 @@ static int nano_tx (struct sk_buff *skb, void *data)
 #ifdef USE_PADDING
     if(skb->len % XMAC_ALIGNMENT)
         pad_len = XMAC_ALIGNMENT - (skb->len % XMAC_ALIGNMENT);
-    else 
+    else
         pad_len = 0;
     skb_put(skb, pad_len);
     HIC_MESSAGE_PADDING_SET(skb->data, pad_len);
-    HIC_MESSAGE_LENGTH_SET(skb->data, 
+    HIC_MESSAGE_LENGTH_SET(skb->data,
             HIC_MESSAGE_LENGTH_GET(skb->data) + pad_len);
 #endif
     // Get hardware address and flush cache
@@ -846,7 +846,7 @@ static int nano_tx (struct sk_buff *skb, void *data)
  *
  */
 static ssize_t pci_send_blocking (struct nano_pci_card* card,
-                                  dma_addr_t data, 
+                                  dma_addr_t data,
                                   uint32_t size)
 {
     uint32_t currentOffset;
@@ -986,7 +986,7 @@ static int nano_pci_fw_download (const void *fw_buf, size_t fw_len, void *data)
  */
 static void reset_device (struct nano_pci_card* card)
 {
-    struct sk_buff *skb;   
+    struct sk_buff *skb;
     int i;
 
     KDEBUG (TRACE, "ENTER");
@@ -1139,7 +1139,7 @@ static int sdio_control (uint32_t command, uint32_t mode, void *data)
             panic("hej");
          }
          return 0;
-          
+
       case NANONET_INIT_SDIO:
          init_sdio(card);
          return 0;
@@ -1155,7 +1155,7 @@ static int sdio_control (uint32_t command, uint32_t mode, void *data)
 
          /* Disable global interrupts */
          nano_ctrl_write32 (card, REG_INT_OFFSET, INT_DISABLE);
-         
+
          reset_fpga(card);
          break;
       }

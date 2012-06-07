@@ -237,7 +237,7 @@ extern void rtl871x_cedbg(const char *fmt, ...);
 
 		#ifdef PLATFORM_OS_XP
 		#define _dbgdump	DbgPrint
-		
+
 		#elif defined PLATFORM_OS_CE
 		#define _dbgdump	rtl871x_cedbg
 
@@ -371,4 +371,3 @@ extern void rtl871x_cedbg(const char *fmt, ...);
 #endif //CONFIG_PROC_DEBUG
 
 #endif	//__RTW_DEBUG_H__
-

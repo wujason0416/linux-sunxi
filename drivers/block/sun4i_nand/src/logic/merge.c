@@ -143,7 +143,7 @@ __s32  _free2log_move_merge(__u32 nlogical)
     struct __PhysicOpPara_t SrcParam,DstParam;
 	struct __NandUserData_t UserData[2];
 
-		
+
     /*init info of log block , and get one free block */
     BMM_GetLogBlk(nlogical, &LogBlk);
     if (NAND_OP_TRUE != BMM_GetFreeBlk(LOWEST_EC_TYPE, &FreeBlk))
@@ -178,14 +178,14 @@ __s32  _free2log_move_merge(__u32 nlogical)
                         }
                     }
                     else
-                    {                    
+                    {
                         if (NAND_OP_TRUE != PHY_PageCopyback(&SrcParam,&DstParam))
                         {
                             LOGICCTL_ERR("move merge : copy back err\n");
                             return NAND_OP_FALSE;
                         }
                     }
-    
+
                     if (NAND_OP_TRUE !=  PHY_SynchBank(DstParam.BankNum, SYNC_BANK_MODE))
                     {
                         struct __SuperPhyBlkType_t SubBlk;
@@ -197,12 +197,12 @@ __s32  _free2log_move_merge(__u32 nlogical)
                         FreeBlk = SubBlk;
                         goto redo;
                     }
-    
+
                     PMM_SetCurMapPage(SuperPage,DstPage);
                     DstPage += INTERLEAVE_BANK_CNT;
                 }
             }
-    
+
             /*if bank 0 is empty, need write mange info in page 0*/
             if ((bank == 0) && (DstPage == 0))
             {
@@ -224,14 +224,14 @@ __s32  _free2log_move_merge(__u32 nlogical)
                     goto redo;
                 }
             }
-    
+
             /*reset LastUsedPage*/
             if ((DstPage - INTERLEAVE_BANK_CNT) > LastUsedPage)
             {
                 LastUsedPage = DstPage - INTERLEAVE_BANK_CNT;
             }
         }
-    }	
+    }
     else
     {
     	/*copy data page by page*/
@@ -263,7 +263,7 @@ __s32  _free2log_move_merge(__u32 nlogical)
            				 LOGICCTL_ERR("move merge : read main data err\n");
             			 return NAND_OP_FALSE;
         			}
-        			
+
        				if (NAND_OP_TRUE != LML_VirtualPageWrite(&DstParam)){
             			LOGICCTL_ERR("move merge : write err\n");
             			return NAND_OP_FALSE;
@@ -282,10 +282,10 @@ __s32  _free2log_move_merge(__u32 nlogical)
     			}
     			PMM_SetCurMapPage(SuperPage,DstPage);
     			LastUsedPage = DstPage;
-    			DstPage++;				
+    			DstPage++;
     		}
     	}
-    	
+
     }
 
     /*erase log block*/
@@ -351,7 +351,7 @@ __s32  _free2data_simple_merge(__u32 nlogical)
         SrcPage = InData?SuperPage:SrcPage;
 		LML_CalculatePhyOpPar(&SrcParam, CUR_MAP_ZONE,SrcBlk, SrcPage);
 		LML_CalculatePhyOpPar(&DstParam, CUR_MAP_ZONE,DstBlk, DstPage);
-			
+
         if (DstPage == 0)
         {
             __u8 SeqPlus;
@@ -415,7 +415,7 @@ __s32  _free2data_simple_merge(__u32 nlogical)
     MEMSET(&LogBlk, 0xff, sizeof(struct __LogBlkType_t));
     BMM_SetLogBlk(nlogical, &LogBlk);
 
-    
+
 
     /*clear page map table*/
     PMM_ClearCurMapTbl();
@@ -481,5 +481,3 @@ __s32 LML_MergeLogBlk(__u32 nMode, __u32 nlogical)
     }
 
 }
-
-

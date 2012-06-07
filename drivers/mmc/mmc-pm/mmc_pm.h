@@ -14,7 +14,7 @@ struct mmc_pm_ops {
     int     (*get_io_val)(char* name);
     void    (*standby)(int in);
     void    (*power)(int mode, int *updown);
-    
+
 #ifdef CONFIG_PROC_FS
 	struct proc_dir_entry		*proc_root;
 	struct proc_dir_entry		*proc_power;

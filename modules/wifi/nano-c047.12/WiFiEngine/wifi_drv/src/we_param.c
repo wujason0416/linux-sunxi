@@ -48,7 +48,7 @@ mib_set_foo(void *user_data, const void *data, size_t data_len)
       return;
    }
    DE_MEMCPY(m.octets, data, sizeof(m.octets));
-   status = wei_send_mib_set_binary(m, NULL, 
+   status = wei_send_mib_set_binary(m, NULL,
                                     (const unsigned char*)data + sizeof(m.octets),
                                     data_len - sizeof(m.octets),
                                     NULL);
@@ -58,8 +58,8 @@ mib_set_foo(void *user_data, const void *data, size_t data_len)
 }
 
 int
-wei_add_startup_mib_set(const mib_id_t *mib_id, 
-                        const void *data, 
+wei_add_startup_mib_set(const mib_id_t *mib_id,
+                        const void *data,
                         size_t data_len)
 {
    struct sconf *ss;
@@ -67,8 +67,8 @@ wei_add_startup_mib_set(const mib_id_t *mib_id,
    /* remove existing mib sets */
    wei_remove_startup_mib_set(mib_id);
 
-   ss = (struct sconf *)DriverEnvironment_Malloc(sizeof(*ss) - 1 + 
-                                                 sizeof(mib_id->octets) + 
+   ss = (struct sconf *)DriverEnvironment_Malloc(sizeof(*ss) - 1 +
+                                                 sizeof(mib_id->octets) +
                                                  data_len);
    if(ss == NULL) {
       DE_TRACE_STATIC(TR_WLP, "failed to allocate memory for MIB\n");
@@ -81,7 +81,7 @@ wei_add_startup_mib_set(const mib_id_t *mib_id,
    DE_MEMCPY(ss->data + sizeof(mib_id->octets), data, data_len);
 
    WEI_TQ_INSERT_TAIL(&sconf_head, ss, next);
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -92,8 +92,8 @@ wei_remove_startup_mib_set(const mib_id_t *mib_id)
 
    ss = WEI_TQ_FIRST(&sconf_head);
    while(ss != NULL) {
-      if(ss->conf_func == mib_set_foo 
-         && ss->data_len >= sizeof(mib_id->octets) 
+      if(ss->conf_func == mib_set_foo
+         && ss->data_len >= sizeof(mib_id->octets)
          && DE_MEMCMP(ss->data, mib_id->octets, sizeof(mib_id->octets)) == 0) {
          tmp = WEI_TQ_NEXT(ss, next);
          WEI_TQ_REMOVE(&sconf_head, ss, next);
@@ -103,7 +103,7 @@ wei_remove_startup_mib_set(const mib_id_t *mib_id)
          ss = WEI_TQ_NEXT(ss, next);
       }
    }
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -227,9 +227,9 @@ parse_wlp_v1_format(const unsigned char *pp, size_t param_len)
       unsigned int tag;
       unsigned int len;
       unsigned int cont;
-    
+
       /* the tag is either contained in the first byte along with the
-         length, allowing for tags 0-15, and lengths 0-7 */ 
+         length, allowing for tags 0-15, and lengths 0-7 */
       if((*pp & WE_WLP_CONTINUATION_BIT) == 0) {
          /* 0 | TAG[4] | LEN[3] */
          tag = *pp >> 3; /* 0 - 15 */
@@ -300,8 +300,8 @@ parse_wlp_v1_format(const unsigned char *pp, size_t param_len)
             DE_TRACE_STATIC(TR_WLP, "WE_WLP_MIB\n");
             if(len >= sizeof(mib_id.octets)) {
                DE_MEMCPY(mib_id.octets, pp, sizeof(mib_id.octets));
-               wei_add_startup_mib_set(&mib_id, 
-                                       pp + sizeof(mib_id.octets), 
+               wei_add_startup_mib_set(&mib_id,
+                                       pp + sizeof(mib_id.octets),
                                        len - sizeof(mib_id.octets));
             } else {
                DE_TRACE_INT(TR_WLP, "MIB parameter too short: %u\n", len);
@@ -356,7 +356,7 @@ we_wlp_configure_device(void)
 /*!
  * @brief Loads WLAN parameters from a memory area.
  *
- * @param [in] param Pointer to the memory are to load from 
+ * @param [in] param Pointer to the memory are to load from
  * @param [in] size  Size of param
  *
  * @retval WIFI_ENGINE_SUCCESS on success
@@ -372,19 +372,19 @@ WiFiEngine_LoadWLANParameters(const void *param, size_t size)
     * six bytes, does not have the multicast bit set, and is not all
     * zeros as a valid MAC address. Note that both the NVMEM magic and
     * the WLP magic have the multicast bit set. */
-   if(size == M802_ADDRESS_SIZE 
+   if(size == M802_ADDRESS_SIZE
       && (pp[0] & M80211_MAC_MULTICAST) == 0
       && (pp[0] | pp[1] | pp[2] | pp[3] | pp[4] | pp[5]) != 0) {
       /* treat this as a mac address */
-      static const mib_id_t macaddress_mibid = { 
+      static const mib_id_t macaddress_mibid = {
          { 2, 1, 1, 1, 0, 0, 0, 0 } /* MIB_dot11MACAddress */
       };
       wei_add_startup_mib_set(&macaddress_mibid, param, size);
       return WIFI_ENGINE_SUCCESS;
    }
    /* check magic */
-   if(size < 2 
-      || (pp[0] == 0 && pp[1] == 0) 
+   if(size < 2
+      || (pp[0] == 0 && pp[1] == 0)
       || (pp[0] == 0xff && pp[1] == 0xff)) {
       /* uninitialised area, silently treat this as success */
       return WIFI_ENGINE_SUCCESS;
@@ -394,7 +394,7 @@ WiFiEngine_LoadWLANParameters(const void *param, size_t size)
    } else if(pp[0] == WE_WLP_TAG && pp[1] == WE_WLP_VERSION_1) {
       parse_wlp_v1_format((const unsigned char *)param, size);
    } else {
-      DE_TRACE_INT2(TR_WLP, "unexpected magic in wlan parameters (0x%02x%02x)\n", 
+      DE_TRACE_INT2(TR_WLP, "unexpected magic in wlan parameters (0x%02x%02x)\n",
                     pp[0], pp[1]);
       return WIFI_ENGINE_FAILURE;
    }
@@ -403,13 +403,13 @@ WiFiEngine_LoadWLANParameters(const void *param, size_t size)
 }
 
 /*!
- * @brief Parse one or several consequtive Nvmem (MIB flash data) 
+ * @brief Parse one or several consequtive Nvmem (MIB flash data)
  * structure(s) and generate all corresponding MIBSet calls.
  *
  * @param inbuf Input buffer
  * @param len Length of the input buffer
   *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success
  * - WIFI_ENGINE_FAILURE on failure
  */
@@ -418,9 +418,8 @@ WiFiEngine_SendMIBSetFromNvmem(const void *inbuf, size_t len)
 {
    WiFiEngine_LoadWLANParameters(inbuf, len);
 
-   if (WES_TEST_FLAG(WES_FLAG_HW_PRESENT)) 
+   if (WES_TEST_FLAG(WES_FLAG_HW_PRESENT))
       wei_apply_wlan_parameters();
 
    return WIFI_ENGINE_SUCCESS;
 }
-

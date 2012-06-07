@@ -41,14 +41,14 @@
 #define RWLOCK_RTRYLOCK(X) spin_trylock(X)
 #define RWLOCK_WTRYLOCK(X) spin_trylock(X)
 #else
-#define RWLOCK struct semaphore 
+#define RWLOCK struct semaphore
 #define RWLOCK_INIT(X) sema_init(X,1)
 #define RWLOCK_RLOCK(X) down(X)
 #define RWLOCK_WLOCK(X) down(X)
-#define RWLOCK_RUNLOCK(X) up(X) 
+#define RWLOCK_RUNLOCK(X) up(X)
 #define RWLOCK_WUNLOCK(X) up(X)
 #define RWLOCK_RTRYLOCK(X) !down_trylock(X)
-#define RWLOCK_WTRYLOCK(X) !down_trylock(X) 
+#define RWLOCK_WTRYLOCK(X) !down_trylock(X)
 #endif
 
 struct nrx_px_softc {
@@ -59,7 +59,7 @@ struct nrx_px_softc {
    struct proc_dir_entry *px_pde;
    struct proc_dir_entry *px_parent;
    void *px_priv;
-   
+
    unsigned char *px_buf;
    unsigned char px_static[32];
    size_t px_buf_size; /* size of allocated memory */
@@ -131,7 +131,7 @@ nrx_px_remove_locked(struct nrx_px_softc *sc)
    struct proc_dir_entry *parent = sc->px_parent;
    struct proc_dir_entry *pde = sc->px_pde;
    struct nrx_px_entry *pe = sc->px_pe;
-   
+
    if(pe->list != NULL) {
       WEI_TQ_REMOVE(pe->list, pe, next);
       pe->list = NULL;
@@ -158,7 +158,7 @@ NRX_PX_SETSIZE(struct nrx_px_softc *sc, size_t size)
    sc->px_buf_end = size;
    if(sc->px_pde != NULL)
       sc->px_pde->size = size;
-   if(sc->px_ino != NULL) 
+   if(sc->px_ino != NULL)
       i_size_write(sc->px_ino, size);
 }
 
@@ -171,7 +171,7 @@ nrx_px_allocate(struct nrx_px_softc *sc, size_t len)
 
    if(sc->px_buf_size >= len)
       return 0;
-   
+
    if(len <= sizeof(sc->px_static)) {
       new = sc->px_static;
       len = sizeof(sc->px_static);
@@ -188,7 +188,7 @@ nrx_px_allocate(struct nrx_px_softc *sc, size_t len)
    }
 
    if(sc->px_buf != NULL && new != sc->px_buf) {
-      memcpy(new, sc->px_buf, nrx_px_size(sc)); 
+      memcpy(new, sc->px_buf, nrx_px_size(sc));
       if(sc->px_buf != sc->px_static)
          vfree(sc->px_buf);
    }
@@ -199,9 +199,9 @@ nrx_px_allocate(struct nrx_px_softc *sc, size_t len)
 
 
 static ssize_t
-nrx_px_fop_write(struct file *file, 
-                 const char *buf, 
-                 size_t nbytes, 
+nrx_px_fop_write(struct file *file,
+                 const char *buf,
+                 size_t nbytes,
                  loff_t *ppos)
 {
    struct nrx_px_softc *sc = file->private_data;
@@ -219,18 +219,18 @@ nrx_px_fop_write(struct file *file,
    if(*ppos > nrx_px_size(sc)) {
       /* XXX this extra variable is a fix for
          missing __cmpdi2 on arm with gcc 2.95.3 */
-      size_t l = *ppos - nrx_px_size(sc);      
+      size_t l = *ppos - nrx_px_size(sc);
       memset(sc->px_buf + nrx_px_size(sc), 0, l);
    }
 
-   
+
    copied = copy_from_user(sc->px_buf + *ppos, buf, nbytes);
    if(copied != 0) {
       nrx_px_wunlock(sc);
       return -EFAULT;
    }
    set_bit(PX_DIRTY, &sc->px_flags);
-   
+
    if(nrx_px_size(sc) < *ppos + nbytes)
       NRX_PX_SETSIZE(sc, *ppos + nbytes);
    *ppos += nbytes;
@@ -281,7 +281,7 @@ nrx_px_fop_open(struct inode *ino, struct file *file)
    KDEBUG(TRACE, "ENTRY");
    if(!capable(CAP_SYS_RAWIO))
       return  -EACCES;
-   
+
    sc = PDE(ino)->data;
 
    nrx_px_wlock(sc);
@@ -347,7 +347,7 @@ nrx_px_fop_release(struct inode *inode, struct file *file)
 #define current_fsuid() (current->fsuid)
 #endif
 
-/* this is basically just generic_permission, 
+/* this is basically just generic_permission,
    but w/o the extra capability checks */
 static int
 nrx_px_iop_permission(struct inode *inode, int mask
@@ -411,7 +411,7 @@ nrx_px_iop_setattr(struct dentry *dentry, struct iattr *iattr)
    if (error)
       goto out;
 #endif
-	
+
    de->uid = inode->i_uid;
    de->gid = inode->i_gid;
    de->mode = inode->i_mode;
@@ -434,8 +434,8 @@ static struct file_operations nrx_px_ops = {
 };
 
 int
-nrx_px_create(struct nrx_px_entry *pe, 
-              void *priv, 
+nrx_px_create(struct nrx_px_entry *pe,
+              void *priv,
               struct proc_dir_entry *parent)
 {
    struct nrx_px_softc *sc;
@@ -460,13 +460,13 @@ nrx_px_create(struct nrx_px_entry *pe,
    sc->px_buf_size = 0;
 
    sc->px_parent = parent;
-   
-   sc->px_pde = create_proc_entry(pe->name, 
+
+   sc->px_pde = create_proc_entry(pe->name,
                                   S_IFREG | pe->mode,
                                   sc->px_parent);
    sc->px_pde->data = sc;
-   sc->px_pde->proc_fops = &nrx_px_ops; 
-   sc->px_pde->proc_iops = &nrx_px_iops; 
+   sc->px_pde->proc_fops = &nrx_px_ops;
+   sc->px_pde->proc_iops = &nrx_px_iops;
 
    NRX_PX_SETSIZE(sc, 0);
 
@@ -480,26 +480,26 @@ nrx_px_create(struct nrx_px_entry *pe,
 
 struct nrx_px_entry *
 nrx_px_create_dynamic(struct net_device *dev,
-                      const char *name, 
-                      const void *priv, 
+                      const char *name,
+                      const void *priv,
                       size_t priv_size,
                       int flags,
                       int (*init)(struct nrx_px_softc*),
-                      int (*open)(struct nrx_px_softc*, 
-                                  struct inode*, 
+                      int (*open)(struct nrx_px_softc*,
+                                  struct inode*,
                                   struct file*),
-                      int (*release)(struct nrx_px_softc*, 
-                                     struct inode*, 
+                      int (*release)(struct nrx_px_softc*,
+                                     struct inode*,
                                      struct file*),
                       struct proc_dir_entry *parent)
 {
    struct nrx_px_entry *e;
    size_t size = sizeof(*e);
-   
+
    if(priv_size > sizeof(e->private))
       size += priv_size;
    e = kmalloc(size, GFP_KERNEL);
-      
+
    if(e == NULL)
       return NULL;
    memset(e, 0, sizeof(*e));
@@ -516,12 +516,12 @@ nrx_px_create_dynamic(struct net_device *dev,
    e->init = init;
    e->open = open;
    e->release = release;
-   
+
    e->list = NULL;
-   
+
    if(nrx_px_create(e, dev, parent) == 0)
       return e;
-   
+
    kfree(e);
    return NULL;
 }
@@ -531,7 +531,7 @@ nrx_px_find(const char *name, struct proc_dir_entry *parent)
 {
    struct proc_dir_entry **pde;
    size_t len = strlen(name);
-   
+
    for(pde = &parent->subdir; *pde != NULL; pde = &(*pde)->next) {
       if ((*pde)->namelen != len)
          continue;
@@ -546,7 +546,7 @@ struct proc_dir_entry *
 nrx_px_find_by_inum(unsigned long inum)
 {
    struct nrx_px_softc *sc;
-   
+
    WEI_TQ_FOREACH(sc, &nrx_px_head, px_all) {
       if(sc->px_pde->low_ino == inum)
          return sc->px_pde;
@@ -561,7 +561,7 @@ nrx_px_lookup(struct nrx_px_entry *pe, struct proc_dir_entry *parent)
 
    if(parent == NULL)
       return NULL;
-   
+
    pde = nrx_px_find(pe->name, parent);
    if(pde == NULL)
       return NULL;
@@ -575,7 +575,7 @@ nrx_px_remove(struct nrx_px_entry *pe, struct proc_dir_entry *parent)
 {
    struct proc_dir_entry *pde;
    struct nrx_px_softc *sc;
-   
+
    if(parent == NULL)
       return;
 
@@ -616,7 +616,7 @@ int nrx_px_setsize(struct nrx_px_softc *sc, size_t size)
    }
 
    NRX_PX_SETSIZE(sc, size);
-   
+
    return 0;
 }
 
@@ -624,8 +624,8 @@ int nrx_px_setsize(struct nrx_px_softc *sc, size_t size)
 /*
  * Assume that sc is already locked.
  */
-int nrx_px_pwrite(struct nrx_px_softc *sc, 
-               const void *data, 
+int nrx_px_pwrite(struct nrx_px_softc *sc,
+               const void *data,
                size_t len,
                loff_t offset)
 {
@@ -657,7 +657,7 @@ int nrx_px_zeroterminate(struct nrx_px_softc *sc)
 
    size = nrx_px_size(sc);
    buf = nrx_px_data(sc);
-   
+
    if(size > 0 && buf[size - 1] == '\0') {
       ret = 0;
    } else {
@@ -680,8 +680,8 @@ int nrx_px_printf(struct nrx_px_softc *sc, const char *fmt, ...)
    if(sc->px_buf == NULL)
       len = vsnprintf(tmp, sizeof(tmp), fmt, ap);
    else
-      len = vsnprintf(sc->px_buf + sc->px_buf_end, 
-                      sc->px_buf_size - sc->px_buf_end, 
+      len = vsnprintf(sc->px_buf + sc->px_buf_end,
+                      sc->px_buf_size - sc->px_buf_end,
                       fmt, ap);
    va_end(ap);
    DE_ASSERT(len >= 0); /* kernel vsnprintf always succeeds */
@@ -690,8 +690,8 @@ int nrx_px_printf(struct nrx_px_softc *sc, const char *fmt, ...)
       if(ret < 0)
          return ret;
       va_start(ap, fmt);
-      len = vsnprintf(sc->px_buf + sc->px_buf_end, 
-                      sc->px_buf_size - sc->px_buf_end, 
+      len = vsnprintf(sc->px_buf + sc->px_buf_end,
+                      sc->px_buf_size - sc->px_buf_end,
                       fmt, ap);
       va_end(ap);
    }
@@ -707,12 +707,12 @@ static int nrx_px_iop_unlink(struct inode *inode, struct dentry *dentry)
    struct nrx_px_softc *sc;
 
    KDEBUG(TRACE, "dinode = %ld, dentry = %ld",
-          inode->i_ino, 
+          inode->i_ino,
           dentry->d_inode->i_ino);
 
    pde = nrx_px_find_by_inum(dentry->d_inode->i_ino);
    if(pde == NULL) {
-      KDEBUG(TRACE, "entry not found"); 
+      KDEBUG(TRACE, "entry not found");
       return -EIO;
    }
    sc = pde->data;
@@ -722,7 +722,7 @@ static int nrx_px_iop_unlink(struct inode *inode, struct dentry *dentry)
 
    KDEBUG(TRACE, "parent->low_ino = %u", sc->px_parent->low_ino);
    nrx_px_remove(sc->px_pe, sc->px_parent);
-   
+
    return 0;
 }
 
@@ -732,7 +732,7 @@ struct proc_dir_entry*
 nrx_px_mkdir(const char *dirname, struct proc_dir_entry *parent)
 {
    struct proc_dir_entry *pde;
-   pde = create_proc_entry(dirname, 
+   pde = create_proc_entry(dirname,
                            S_IFDIR | S_IRUGO | S_IXUGO,
                            parent);
    pde->uid = 0;
@@ -741,7 +741,7 @@ nrx_px_mkdir(const char *dirname, struct proc_dir_entry *parent)
       nrx_px_dir_iops = *pde->proc_iops;
       nrx_px_dir_iops.unlink = nrx_px_iop_unlink;
    }
-   pde->proc_iops = &nrx_px_dir_iops; 
+   pde->proc_iops = &nrx_px_dir_iops;
    return pde;
 }
 
@@ -755,7 +755,7 @@ static int callout_open(struct nrx_px_softc *sc, void *val)
 
    nrx_px_setsize(sc, 0);
    nrx_px_printf(sc, "unknown\n");
-   
+
    return retcode;
 }
 
@@ -767,7 +767,7 @@ int nrx_px_uint_open(struct nrx_px_softc *sc,
    struct net_device *dev = nrx_px_priv(sc);
 
    CHECK_UNPLUG(dev);
-   
+
    if(callout_open(sc, &val) == 0) {
       nrx_px_setsize(sc, 0);
       nrx_px_printf(sc, "%u\n", val);
@@ -785,7 +785,7 @@ int nrx_px_uint_release(struct nrx_px_softc *sc,
    struct net_device *dev = nrx_px_priv(sc);
 
    CHECK_UNPLUG(dev);
-   
+
    if(!nrx_px_dirty(sc))
       return 0;
 
@@ -809,10 +809,10 @@ int nrx_px_macaddr_open(struct nrx_px_softc *sc,
    struct net_device *dev = nrx_px_priv(sc);
 
    CHECK_UNPLUG(dev);
-   
+
    if(callout_open(sc, &val) == 0) {
       nrx_px_setsize(sc, 0);
-      nrx_px_printf(sc, "%02x:%02x:%02x:%02x:%02x:%02x\n", 
+      nrx_px_printf(sc, "%02x:%02x:%02x:%02x:%02x:%02x\n",
                     (unsigned char)val.addr[0],
                     (unsigned char)val.addr[1],
                     (unsigned char)val.addr[2],
@@ -834,7 +834,7 @@ int nrx_px_macaddr_release(struct nrx_px_softc *sc,
    size_t i;
    struct net_device *dev = nrx_px_priv(sc);
 
-   
+
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
 
@@ -844,12 +844,12 @@ int nrx_px_macaddr_release(struct nrx_px_softc *sc,
    nrx_px_zeroterminate(sc);
    buf = nrx_px_data(sc);
 
-   if(sscanf(buf, "%02x:%02x:%02x:%02x:%02x:%02x", 
+   if(sscanf(buf, "%02x:%02x:%02x:%02x:%02x:%02x",
              &t[0], &t[1], &t[2], &t[3], &t[4], &t[5]) != 6) {
       KDEBUG(TRACE, "bad value %s", buf);
       return 0;
    }
-   
+
    for(i = 0; i < sizeof(val.addr); i++) {
       if(t[i] > 255) {
          KDEBUG(TRACE, "bad value %s", buf);
@@ -857,15 +857,15 @@ int nrx_px_macaddr_release(struct nrx_px_softc *sc,
       }
       val.addr[i] = t[i];
    }
-   
+
    (*callout)(sc, 1, &val);
-   
+
    return 0;
 }
 
 int
-nrx_px_uintvec_open(struct nrx_px_softc *sc, 
-                    struct inode *inode, 
+nrx_px_uintvec_open(struct nrx_px_softc *sc,
+                    struct inode *inode,
                     struct file *file)
 {
    struct nrx_px_uintvec val;
@@ -877,7 +877,7 @@ nrx_px_uintvec_open(struct nrx_px_softc *sc,
 
    if(callout_open(sc, &val) == 0) {
       nrx_px_setsize(sc, 0);
-   
+
       for(i = 0; i < val.size; i++) {
          if(i > 0)
             nrx_px_printf(sc, " ");
@@ -889,8 +889,8 @@ nrx_px_uintvec_open(struct nrx_px_softc *sc,
 }
 
 int
-nrx_px_uintvec_release(struct nrx_px_softc *sc, 
-                       struct inode *inode, 
+nrx_px_uintvec_release(struct nrx_px_softc *sc,
+                       struct inode *inode,
                        struct file *file)
 {
    nrx_px_callout callout = (nrx_px_callout)nrx_px_private(sc);
@@ -898,21 +898,21 @@ nrx_px_uintvec_release(struct nrx_px_softc *sc,
    char *buf, *p;
    struct nrx_px_uintvec val;
    struct net_device *dev = nrx_px_priv(sc);
-   
+
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
 
    if(!nrx_px_dirty(sc))
       return 0;
-   
+
    nrx_px_zeroterminate(sc);
-   
+
    buf = nrx_px_data(sc);
    p = buf;
    val.size = 0;
    while(1) {
       int v, pos;
-      
+
       if(sscanf(p, " %u%n", &v, &pos) != 1)
          break;
       p += pos;
@@ -921,26 +921,26 @@ nrx_px_uintvec_release(struct nrx_px_softc *sc,
    }
 
    (*callout)(sc, 1, &val);
-   
+
    return 0;
 }
 
 int
-nrx_px_rates_open(struct nrx_px_softc *sc, 
-                  struct inode *inode, 
+nrx_px_rates_open(struct nrx_px_softc *sc,
+                  struct inode *inode,
                   struct file *file)
 {
    we_ratemask_t val;
    int i;
    int f = 0;
    struct net_device *dev = nrx_px_priv(sc);
-   
+
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
 
    if(callout_open(sc, &val) == 0) {
       nrx_px_setsize(sc, 0);
-   
+
       WE_RATEMASK_FOREACH(i, val) {
          unsigned int rate, a, b;
          rate = WiFiEngine_rate_native2bps(i);
@@ -965,7 +965,7 @@ nrx_px_rates_open(struct nrx_px_softc *sc,
       }
       nrx_px_printf(sc, "\n");
    }
-   
+
    return 0;
 }
 
@@ -974,7 +974,7 @@ string2rate(char *s, char **end)
 {
    unsigned int a, b;
    int n;
-   
+
    if(sscanf(s, "%u.%u%n", &a, &b, &n) == 2) {
    } else if(sscanf(s, "%u%n", &a, &n) == 1) {
       b = 0;
@@ -1025,8 +1025,8 @@ string2rate(char *s, char **end)
 }
 
 int
-nrx_px_rates_release(struct nrx_px_softc *sc, 
-                       struct inode *inode, 
+nrx_px_rates_release(struct nrx_px_softc *sc,
+                       struct inode *inode,
                        struct file *file)
 {
    nrx_px_callout callout = (nrx_px_callout)nrx_px_private(sc);
@@ -1035,15 +1035,15 @@ nrx_px_rates_release(struct nrx_px_softc *sc,
    we_ratemask_t val;
    we_xmit_rate_t r;
    struct net_device *dev = nrx_px_priv(sc);
-   
+
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
-   
+
    if(!nrx_px_dirty(sc))
       return 0;
 
    nrx_px_zeroterminate(sc);
-   
+
    buf = nrx_px_data(sc);
    WE_RATEMASK_CLEAR(val);
    while(1) {
@@ -1053,9 +1053,9 @@ nrx_px_rates_release(struct nrx_px_softc *sc,
       WE_RATEMASK_SETRATE(val, r);
       buf = end;
    }
-   
+
    (*callout)(sc, 1, &val);
-   
+
    return 0;
 }
 
@@ -1064,7 +1064,7 @@ int nrx_px_string_open(struct nrx_px_softc *sc,
                        struct file *file)
 {
    struct net_device *dev = nrx_px_priv(sc);
-   
+
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
 
@@ -1079,22 +1079,22 @@ int nrx_px_string_release(struct nrx_px_softc *sc,
 {
    nrx_px_callout callout = (nrx_px_callout)nrx_px_private(sc);
    struct net_device *dev = nrx_px_priv(sc);
-   
+
    KDEBUG(TRACE, "ENTRY");
    CHECK_UNPLUG(dev);
-   
+
    if(!nrx_px_dirty(sc))
       return 0;
 
    nrx_px_zeroterminate(sc);
 
    (*callout)(sc, 1, NULL);
-   
+
    return 0;
 }
 
 int
-nrx_px_read_file(struct nrx_px_softc *sc, 
+nrx_px_read_file(struct nrx_px_softc *sc,
 		 const char *filename)
 {
    struct nrx_stream *fd;
@@ -1121,7 +1121,7 @@ nrx_px_read_file(struct nrx_px_softc *sc,
       nrx_stream_close(fd);
       return off;
    }
-   
+
    off = 0;
    n = 0;
    while(off < sc->px_buf_size) {

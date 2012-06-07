@@ -28,7 +28,7 @@ iobject_new(void)
 }
 
 
-static void 
+static void
 iobject_cleanup(struct de_kref *obj)
 {
    struct iobject *iobj = NULL;
@@ -87,9 +87,9 @@ we_ind_register(
 
 int
 we_ind_cond_register(
-            struct iobject **hhandler, 
-            wi_msg_id_t id, 
-            wi_msg_string_t msg, 
+            struct iobject **hhandler,
+            wi_msg_id_t id,
+            wi_msg_string_t msg,
             i_func_t func,
             i_release_t release,
             int release_on_mask,
@@ -112,10 +112,10 @@ we_ind_cond_register(
 
    ic = WE_IND_CTX;
 
-   DriverEnvironment_acquire_lock(&ic->lock); 
+   DriverEnvironment_acquire_lock(&ic->lock);
    WEI_TQ_FOREACH(elm, &ic->head, entry) {
       if(elm == *hhandler) {
-         DriverEnvironment_release_lock(&ic->lock); 
+         DriverEnvironment_release_lock(&ic->lock);
          return WIFI_ENGINE_SUCCESS;
       }
    }
@@ -124,7 +124,7 @@ we_ind_cond_register(
 
    elm = iobject_new();
    if(elm==NULL) {
-      DriverEnvironment_release_lock(&ic->lock); 
+      DriverEnvironment_release_lock(&ic->lock);
       return WIFI_ENGINE_FAILURE;
    }
 
@@ -137,7 +137,7 @@ we_ind_cond_register(
 
    WEI_TQ_INSERT_TAIL(&ic->head, elm, entry);
    *hhandler = elm;
-   DriverEnvironment_release_lock(&ic->lock); 
+   DriverEnvironment_release_lock(&ic->lock);
 
    return WIFI_ENGINE_SUCCESS;
 }
@@ -151,7 +151,7 @@ __we_ind_deregister(struct iobject **h, int nullify)
    int num = 0;
    int found = 0;
 
-   if(h == NULL) 
+   if(h == NULL)
      return WIFI_ENGINE_FAILURE;
 
    handler = *h;
@@ -277,7 +277,7 @@ wei_ind_unplug(void)
       elm = next;
    }
    DriverEnvironment_release_lock(&ic->lock);
-   
+
    /* free removed entries */
    while((elm = WEI_TQ_FIRST(&tmp_list)) != NULL) {
       WEI_TQ_REMOVE(&tmp_list, elm, entry);
@@ -344,4 +344,3 @@ int we_ind_count_all(void)
    DriverEnvironment_release_lock(&ic->lock);
    return num;
 }
-

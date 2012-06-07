@@ -1,6 +1,6 @@
 /*
  *  mma7660.c - Linux kernel modules for 3-Axis Orientation/Motion
- *  Detection Sensor 
+ *  Detection Sensor
  *
  *  Copyright (C) 2009-2010 Freescale Semiconductor Ltd.
  *
@@ -103,7 +103,7 @@ static void mma7660_late_resume(struct early_suspend *h);
 
 /**
  * gsensor_fetch_sysconfig_para - get config info from sysconfig.fex file.
- * return value:  
+ * return value:
  *                    = 0; success;
  *                    < 0; err
  */
@@ -114,9 +114,9 @@ static int gsensor_fetch_sysconfig_para(void)
 	__u32 twi_addr = 0;
 	char name[I2C_NAME_SIZE];
 	script_parser_value_type_t type = SCIRPT_PARSER_VALUE_TYPE_STRING;
-		
+
 	printk("========%s===================\n", __func__);
-	 
+
 	if(SCRIPT_PARSER_OK != (ret = script_parser_fetch("gsensor_para", "gsensor_used", &device_used, 1))){
 	                pr_err("%s: script_parser_fetch err.ret = %d. \n", __func__, ret);
 	                goto script_parser_fetch_err;
@@ -148,7 +148,7 @@ static int gsensor_fetch_sysconfig_para(void)
 		printk("%s: twi_id is %d. \n", __func__, twi_id);
 
 		ret = 0;
-		
+
 	}else{
 		pr_err("%s: gsensor_unused. \n",  __func__);
 		ret = -1;
@@ -164,14 +164,14 @@ script_parser_fetch_err:
 
 /**
  * gsensor_detect - Device detection callback for automatic device creation
- * return value:  
+ * return value:
  *                    = 0; success;
  *                    < 0; err
  */
 int gsensor_detect(struct i2c_client *client, struct i2c_board_info *info)
 {
 	struct i2c_adapter *adapter = client->adapter;
-	
+
 	if(twi_id == adapter->nr){
 		pr_info("%s: Detected chip %s at adapter %d, address 0x%02x\n",
 			 __func__, SENSOR_NAME, i2c_adapter_id(adapter), client->addr);
@@ -200,7 +200,7 @@ static ssize_t mma7660_value_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
 	int i;
-	s8 xyz[3]; 
+	s8 xyz[3];
 	s16 x, y, z;
 
 	for(i=0; i<3; i++)
@@ -223,7 +223,7 @@ static ssize_t mma7660_enable_store(struct device *dev,
 	int error;
 
 	error = strict_strtoul(buf, 10, &data);
-	
+
 	if(error) {
 		pr_err("%s strict_strtoul error\n", __FUNCTION__);
 		goto exit;
@@ -283,7 +283,7 @@ static int mma7660_init_client(struct i2c_client *client)
 
 		result = i2c_smbus_write_byte_data(client, MMA7660_XOUT, 0x2a);
 		assert(result==0);
-		
+
 		result = i2c_smbus_write_byte_data(client, MMA7660_YOUT, 0x15);
 		assert(result==0);
 
@@ -298,24 +298,24 @@ static int mma7660_init_client(struct i2c_client *client)
 		assert(result=0x3f);
 	}
 	// Enable Orientation Detection Logic
-	result = i2c_smbus_write_byte_data(client, 
+	result = i2c_smbus_write_byte_data(client,
 		MMA7660_MODE, MK_MMA7660_MODE(0, 0, 0, 0, 0, 0, 0)); //enter standby
 	assert(result==0);
 
-	result = i2c_smbus_write_byte_data(client, 
-		MMA7660_SR, MK_MMA7660_SR(2, 2, 1)); 
+	result = i2c_smbus_write_byte_data(client,
+		MMA7660_SR, MK_MMA7660_SR(2, 2, 1));
 	assert(result==0);
 
-	result = i2c_smbus_write_byte_data(client, 
-		MMA7660_INTSU, MK_MMA7660_INTSU(0, 0, 0, 0, 1, 0, 1, 1)); 
+	result = i2c_smbus_write_byte_data(client,
+		MMA7660_INTSU, MK_MMA7660_INTSU(0, 0, 0, 0, 1, 0, 1, 1));
 	assert(result==0);
 
-	result = i2c_smbus_write_byte_data(client, 
-		MMA7660_SPCNT, 0xA0); 
+	result = i2c_smbus_write_byte_data(client,
+		MMA7660_SPCNT, 0xA0);
 	assert(result==0);
 
-	result = i2c_smbus_write_byte_data(client, 
-		MMA7660_MODE, MK_MMA7660_MODE(0, 1, 0, 0, 0, 0, 1)); 
+	result = i2c_smbus_write_byte_data(client,
+		MMA7660_MODE, MK_MMA7660_MODE(0, 1, 0, 0, 0, 0, 1));
 	assert(result==0);
 
 	mdelay(MODE_CHANGE_DELAY_MS);
@@ -328,7 +328,7 @@ static struct input_polled_dev *mma7660_idev;
 static void report_abs(void)
 {
 	int i;
-	s8 xyz[3]; 
+	s8 xyz[3];
 	s16 x, y, z;
 
 	for(i=0; i<3; i++)
@@ -340,7 +340,7 @@ static void report_abs(void)
 	z = (((short)xyz[2]) << 8) >> 8;
 	//pr_info("xyz[0] = 0x%hx, xyz[1] = 0x%hx, xyz[2] = 0x%hx. \n", xyz[0], xyz[1], xyz[2]);
 	//pr_info("x[0] = 0x%hx, y[1] = 0x%hx, z[2] = 0x%hx. \n", x, y, z);
-	
+
 	input_report_abs(mma7660_idev->input, ABS_X, x);
 	input_report_abs(mma7660_idev->input, ABS_Y, y);
 	input_report_abs(mma7660_idev->input, ABS_Z, z);
@@ -357,7 +357,7 @@ static void mma7660_dev_poll(struct input_polled_dev *dev)
 #else
 	report_abs();
 #endif
-} 
+}
 
 /*
  * I2C init/probing/exit functions
@@ -369,7 +369,7 @@ static int __devinit mma7660_probe(struct i2c_client *client,
 	int result;
 	struct input_dev *idev;
 	struct i2c_adapter *adapter;
- 
+
 	printk(KERN_INFO "mma7660 probe\n");
 	mma7660_i2c_client = client;
 	adapter = to_i2c_adapter(client->dev.parent);
@@ -386,7 +386,7 @@ static int __devinit mma7660_probe(struct i2c_client *client,
 	assert(!(IS_ERR(hwmon_dev)));
 
 	dev_info(&client->dev, "build time %s %s\n", __DATE__, __TIME__);
-  
+
 	/*input poll device register */
 	mma7660_idev = input_allocate_polled_device();
 	if (!mma7660_idev) {
@@ -405,7 +405,7 @@ static int __devinit mma7660_probe(struct i2c_client *client,
 	input_set_abs_params(idev, ABS_X, -512, 512, INPUT_FUZZ, INPUT_FLAT);
 	input_set_abs_params(idev, ABS_Y, -512, 512, INPUT_FUZZ, INPUT_FLAT);
 	input_set_abs_params(idev, ABS_Z, -512, 512, INPUT_FUZZ, INPUT_FLAT);
-	
+
 	result = input_register_polled_device(mma7660_idev);
 	if (result) {
 		dev_err(&client->dev, "register poll device failed!\n");
@@ -448,7 +448,7 @@ static void mma7660_early_suspend(struct early_suspend *h)
 	int result;
 	printk(KERN_INFO "mma7660 early suspend\n");
 	mma7660_data.suspend_indator = 1;
-	result = i2c_smbus_write_byte_data(mma7660_i2c_client, 
+	result = i2c_smbus_write_byte_data(mma7660_i2c_client,
 		MMA7660_MODE, MK_MMA7660_MODE(0, 0, 0, 0, 0, 0, 0));
 	assert(result==0);
 	return;
@@ -459,7 +459,7 @@ static void mma7660_late_resume(struct early_suspend *h)
 	int result;
 	printk(KERN_INFO "mma7660 late resume\n");
 	mma7660_data.suspend_indator = 0;
-	result = i2c_smbus_write_byte_data(mma7660_i2c_client, 
+	result = i2c_smbus_write_byte_data(mma7660_i2c_client,
 		MMA7660_MODE, MK_MMA7660_MODE(0, 1, 0, 0, 0, 0, 1));
 	assert(result==0);
 	return;
@@ -490,7 +490,7 @@ static int __init mma7660_init(void)
 {
 	int ret = -1;
 	printk("======%s=========. \n", __func__);
-	
+
 	if(gsensor_fetch_sysconfig_para()){
 		printk("%s: err.\n", __func__);
 		return -1;
@@ -525,4 +525,3 @@ MODULE_VERSION("1.1");
 
 module_init(mma7660_init);
 module_exit(mma7660_exit);
-

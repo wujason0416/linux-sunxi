@@ -49,9 +49,9 @@ int nrx_wxevent_device_reset(struct net_device *dev);
 int nrx_wxevent_connection_lost(struct net_device *dev, we_conn_lost_ind_t *data);
 int nrx_wxevent_incompatible(struct net_device *dev, we_conn_incompatible_ind_t *data);
 int
-nrx_wxevent_scan(struct net_device *dev, 
+nrx_wxevent_scan(struct net_device *dev,
                  m80211_nrp_mlme_scannotification_ind_t *ind);
-int nrx_wxevent_mibtrig(void *data, 
+int nrx_wxevent_mibtrig(void *data,
                         size_t len);
 int nrx_wxevent_txrate(void *data, size_t len);
 int nrx_wxevent_rxrate(void *data, size_t len);
@@ -69,9 +69,9 @@ int nano_fw_download(struct net_device *dev);
 
 int nrx_enter_shutdown(struct net_device *dev);
 int nrx_exit_shutdown(struct net_device *dev);
-int nrx_get_mib(struct net_device *dev, 
-                const char *id, 
-                void *data, 
+int nrx_get_mib(struct net_device *dev,
+                const char *id,
+                void *data,
                 size_t *len);
 int synchronous_ConfigureScan(struct net_device *dev,
                               preamble_t preamble,
@@ -112,7 +112,7 @@ int synchronous_AddScanJob(struct net_device *dev,
 int synchronous_RemoveScanJob(struct net_device *dev,
                               int32_t sj_id);
 int synchronous_SetScanJobState(struct net_device *dev,
-                                int32_t sj_id, 
+                                int32_t sj_id,
                                 uint8_t state);
 uint32_t nrx_get_corecount(struct net_device*);
 

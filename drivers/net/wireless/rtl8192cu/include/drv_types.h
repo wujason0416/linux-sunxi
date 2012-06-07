@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -18,7 +18,7 @@
  *
  ******************************************************************************/
 /*-------------------------------------------------------------------------------
-	
+
 	For type defines and data structure defines
 
 --------------------------------------------------------------------------------*/
@@ -45,17 +45,17 @@
 #endif
 
 enum _NIC_VERSION {
-	
+
 	RTL8711_NIC,
 	RTL8712_NIC,
 	RTL8713_NIC,
 	RTL8716_NIC
-		
+
 };
 
 enum{
 	UP_LINK,
-	DOWN_LINK,	
+	DOWN_LINK,
 };
 typedef struct _ADAPTER _adapter, ADAPTER,*PADAPTER;
 
@@ -102,23 +102,23 @@ typedef struct _ADAPTER _adapter, ADAPTER,*PADAPTER;
 #define SPEC_DEV_ID_ASSIGN_IFNAME BIT(5)
 
 struct specific_device_id{
-	
+
 	u32		flags;
-	
+
 	u16		idVendor;
 	u16		idProduct;
 
 };
 
 struct registry_priv
-{    
+{
 	u8	chip_version;
 	u8	rfintfs;
 	u8	lbkmode;
 	u8	hci;
 	NDIS_802_11_SSID	ssid;
-	u8	network_mode;	//infra, ad-hoc, auto	  
-	u8	channel;//ad-hoc support requirement 
+	u8	network_mode;	//infra, ad-hoc, auto
+	u8	channel;//ad-hoc support requirement
 	u8	wireless_mode;//A, B, G, auto
 	u8 	scan_mode;//active, passive
 	u8	radio_enable;
@@ -126,7 +126,7 @@ struct registry_priv
 	u8	vrtl_carrier_sense;//Enable, Disable, Auto
 	u8	vcs_type;//RTS/CTS, CTS-to-self
 	u16	rts_thresh;
-	u16  frag_thresh;	
+	u16  frag_thresh;
 	u8	adhoc_tx_pwr;
 	u8	soft_ap;
 	u8	power_mgnt;
@@ -142,12 +142,12 @@ struct registry_priv
 
 	  //UAPSD
 	u8	wmm_enable;
-	u8	uapsd_enable;	  
+	u8	uapsd_enable;
 	u8	uapsd_max_sp;
 	u8	uapsd_acbk_en;
 	u8	uapsd_acbe_en;
 	u8	uapsd_acvi_en;
-	u8	uapsd_acvo_en;	  
+	u8	uapsd_acvo_en;
 
 	WLAN_BSSID_EX    dev_network;
 
@@ -159,19 +159,19 @@ struct registry_priv
 	u8	ampdu_amsdu;//A-MPDU Supports A-MSDU is permitted
 #endif
 	u8	lowrate_two_xmit;
-	
+
 	u8	rf_config ;
 	u8	low_power ;
 
-	u8	wifi_spec;// !turbo_mode	  
-	  
+	u8	wifi_spec;// !turbo_mode
+
 	u8	channel_plan;
 #ifdef CONFIG_BT_COEXIST
 	u8	bt_iso;
 	u8	bt_sco;
 	u8	bt_ampdu;
 #endif
-	BOOLEAN	bAcceptAddbaReq;	
+	BOOLEAN	bAcceptAddbaReq;
 
 	u8	antdiv_cfg;
 
@@ -220,7 +220,7 @@ struct dvobj_priv {
 #endif//PLATFORM_OS_XP
 
 #ifdef PLATFORM_OS_CE
-	SD_DEVICE_HANDLE hDevice;     
+	SD_DEVICE_HANDLE hDevice;
 	SD_CARD_RCA                 sd_rca;
 	SD_CARD_INTERFACE           card_intf;
 	BOOLEAN                     enableIsarWithStatus;
@@ -229,7 +229,7 @@ struct dvobj_priv {
 #endif//PLATFORM_OS_CE
 
 #ifdef PLATFORM_LINUX
-	struct sdio_func	*func;	
+	struct sdio_func	*func;
 #endif//PLATFORM_LINUX
 
 	u8	func_number;//unsigned char			FunctionNumber;
@@ -238,17 +238,17 @@ struct dvobj_priv {
 	u16	driver_version;
 	u16	rxblknum;
 	u16	rxblknum_rd;
-	u16	c2hblknum; 
+	u16	c2hblknum;
 	u8  tx_block_mode;
 	u8  rx_block_mode;
 	u8 cmdfifo_cnt;
 	u8 rxfifo_cnt;
 	u16	sdio_hisr;
-	u16	sdio_himr;	
+	u16	sdio_himr;
 #endif//	CONFIG_SDIO_HCI
 
 /*-------- below is for USB INTERFACE --------*/
- 
+
 #ifdef CONFIG_USB_HCI
 
 	u8	nr_endpoint;
@@ -258,17 +258,17 @@ struct dvobj_priv {
 	int	ep_num[5]; //endpoint number
 
 	int	RegUsbSS;
-	
+
 	_sema	usb_suspend_sema;
 
 #ifdef CONFIG_USB_VENDOR_REQ_MUTEX
 	_mutex  usb_vendor_req_mutex;
 #endif
-	
+
 #ifdef CONFIG_USB_VENDOR_REQ_BUFFER_PREALLOC
 	u8 * usb_alloc_vendor_req_buf;
 	u8 * usb_vendor_req_buf;
-#endif	
+#endif
 
 #ifdef PLATFORM_WINDOWS
 	//related device objects
@@ -276,7 +276,7 @@ struct dvobj_priv {
 	PDEVICE_OBJECT	pfuncdevobj;//pFuncDevObj;
 	PDEVICE_OBJECT	pnextdevobj;//pNextDevObj;
 
-	u8	nextdevstacksz;//unsigned char NextDeviceStackSize;	//= (CHAR)CEdevice->pUsbDevObj->StackSize + 1; 
+	u8	nextdevstacksz;//unsigned char NextDeviceStackSize;	//= (CHAR)CEdevice->pUsbDevObj->StackSize + 1;
 
 	//urb for control diescriptor request
 
@@ -292,7 +292,7 @@ struct dvobj_priv {
 	_nic_hdl		pipehdls_r8192c[0x10];
 #endif
 
-	u32	config_descriptor_len;//ULONG UsbConfigurationDescriptorLength;	
+	u32	config_descriptor_len;//ULONG UsbConfigurationDescriptorLength;
 #endif//PLATFORM_WINDOWS
 
 #ifdef PLATFORM_LINUX
@@ -304,7 +304,7 @@ struct dvobj_priv {
 #endif//CONFIG_USB_HCI
 
 /*-------- below is for PCIE INTERFACE --------*/
- 
+
 #ifdef CONFIG_PCI_HCI
 
 #ifdef PLATFORM_LINUX
@@ -313,7 +313,7 @@ struct dvobj_priv {
 	//PCI MEM map
 	unsigned long	pci_mem_end;	/* shared mem end	*/
 	unsigned long	pci_mem_start;	/* shared mem start	*/
-	
+
 	//PCI IO map
 	unsigned long	pci_base_addr;	/* device I/O address	*/
 
@@ -335,7 +335,7 @@ struct dvobj_priv {
 	u8 	const_hostpci_aspm_setting;
 	// pci-e device */
 	u8 	const_devicepci_aspm_setting;
-	u8 	b_support_aspm; // If it supports ASPM, Offset[560h] = 0x40, otherwise Offset[560h] = 0x00. 
+	u8 	b_support_aspm; // If it supports ASPM, Offset[560h] = 0x40, otherwise Offset[560h] = 0x00.
 	u8	b_support_backdoor;
 #endif//PLATFORM_LINUX
 
@@ -348,14 +348,14 @@ typedef enum _DRIVER_STATE{
 	DRIVER_REPLACE_DONGLE = 2,
 }DRIVER_STATE;
 
-struct _ADAPTER{	
+struct _ADAPTER{
 	int	DriverState;// for disable driver using module, use dongle to replace module.
 	int	pid[3];//process id from UI, 0:wps, 1:hostapd, 2:dhcpcd
 	int	bDongle;//build-in module or external dongle
 	u16 	chip_type;
 	u16	HardwareType;
 	u16	interface_type;//USB,SDIO,PCI
- 
+
 	struct 	dvobj_priv dvobjpriv;
 	struct	mlme_priv mlmepriv;
 	struct	mlme_ext_priv mlmeextpriv;
@@ -366,13 +366,13 @@ struct _ADAPTER{
 	struct	xmit_priv	xmitpriv;
 	struct	recv_priv	recvpriv;
 	struct	sta_priv	stapriv;
-	struct	security_priv	securitypriv;	
+	struct	security_priv	securitypriv;
 	struct	registry_priv	registrypriv;
 	struct	wlan_acl_pool	acl_list;
 	struct	pwrctrl_priv	pwrctrlpriv;
 	struct 	eeprom_priv eeprompriv;
 	struct	led_priv	ledpriv;
-	
+
 #ifdef CONFIG_MP_INCLUDED
        struct	mp_priv	mppriv;
 #endif
@@ -380,9 +380,9 @@ struct _ADAPTER{
 #ifdef CONFIG_DRVEXT_MODULE
 	struct	drvext_priv	drvextpriv;
 #endif
-	
+
 #ifdef CONFIG_AP_MODE
-	struct	hostapd_priv	*phostapdpriv;		
+	struct	hostapd_priv	*phostapdpriv;
 #endif
 
 #ifdef CONFIG_P2P
@@ -396,19 +396,19 @@ struct _ADAPTER{
 #ifdef CONFIG_BT_COEXIST
 	//struct	btcoexist_priv	bt_coexist;
 #endif
-	s32	bDriverStopped; 
+	s32	bDriverStopped;
 	s32	bSurpriseRemoved;
 	s32  bCardDisableWOHSM;
 
 	u32	IsrContent;
-	u32	ImrContent;	
+	u32	ImrContent;
 
 	u8	EepromAddressSize;
 	u8	hw_init_completed;
 	u8	init_adpt_in_progress;
 	u8	bfirst_init;
 	u8	bHaltInProgress;
-	
+
 	_thread_hdl_	cmdThread;
 	_thread_hdl_	evtThread;
 	_thread_hdl_	xmitThread;
@@ -426,13 +426,13 @@ struct _ADAPTER{
 	_nic_hdl		hndis_config;//hNdisConfiguration;
 	NDIS_STRING fw_img;
 
-	u32	NdisPacketFilter;	
+	u32	NdisPacketFilter;
 	u8	MCList[MAX_MCAST_LIST_NUM][6];
-	u32	MCAddrCount;	
+	u32	MCAddrCount;
 #endif //end of PLATFORM_WINDOWS
 
 
-#ifdef PLATFORM_LINUX	
+#ifdef PLATFORM_LINUX
 	_nic_hdl pnetdev;
 
 	// used by rtw_rereg_nd_name related function
@@ -442,7 +442,7 @@ struct _ADAPTER{
 		u8 old_ips_mode;
 		u8 old_bRegUseLed;
 	} rereg_nd_name_priv;
-	
+
 	int bup;
 	struct net_device_stats stats;
 	struct iw_statistics iwstats;
@@ -469,12 +469,12 @@ struct _ADAPTER{
 	struct nat25_network_db_entry	*scdb_entry;
 	unsigned char			br_mac[MACADDRLEN];
 	unsigned char			br_ip[4];
-	
+
 	struct br_ext_info		ethBrExtInfo;
 #endif	// CONFIG_BR_EXT
 
-};	
-  
+};
+
 __inline static u8 *myid(struct eeprom_priv *peepriv)
 {
 	return (peepriv->mac_addr);
@@ -482,4 +482,3 @@ __inline static u8 *myid(struct eeprom_priv *peepriv)
 
 
 #endif //__DRV_TYPES_H__
-

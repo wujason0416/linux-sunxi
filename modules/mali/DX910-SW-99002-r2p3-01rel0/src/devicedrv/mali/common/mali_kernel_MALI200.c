@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -643,7 +643,7 @@ static _mali_osk_errcode_t subsystem_mali200_start_job(mali_core_job * job, mali
 	_mali_osk_write_mem_barrier();
 
 #if MALI_TIMELINE_PROFILING_ENABLED
-	_mali_profiling_add_event(MALI_PROFILING_EVENT_TYPE_SINGLE | MALI_PROFILING_MAKE_EVENT_CHANNEL_PP(core->core_number) | MALI_PROFILING_EVENT_REASON_SINGLE_HW_FLUSH, job200->user_input.frame_builder_id, job200->user_input.flush_id, 0, 0, 0); 
+	_mali_profiling_add_event(MALI_PROFILING_EVENT_TYPE_SINGLE | MALI_PROFILING_MAKE_EVENT_CHANNEL_PP(core->core_number) | MALI_PROFILING_EVENT_REASON_SINGLE_HW_FLUSH, job200->user_input.frame_builder_id, job200->user_input.flush_id, 0, 0, 0);
 	_mali_profiling_add_event(MALI_PROFILING_EVENT_TYPE_START|MALI_PROFILING_MAKE_EVENT_CHANNEL_PP(core->core_number), job200->pid, job200->tid, 0, 0, 0);
 #endif
 
@@ -1212,7 +1212,7 @@ _mali_osk_errcode_t malipp_signal_power_up( u32 core_num, mali_bool queue_only )
 
 	return( mali_core_subsystem_signal_power_up( &subsystem_mali200, core_num, queue_only ) );
 }
-	
+
 _mali_osk_errcode_t malipp_signal_power_down( u32 core_num, mali_bool immediate_only )
 {
 	MALI_DEBUG_PRINT(4, ("Mali PP: signal power down core: %d - immediate_only: %d\n", core_num, immediate_only ));

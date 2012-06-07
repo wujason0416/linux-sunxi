@@ -204,15 +204,15 @@ struct wpa_ssid {
 	 */
 	int scan_ssid;
 #ifdef EAP_WSC
-        /**                                                                                                                              
-        * use_wps - Whether Wi-Fi Protected Setup (WPS) will be used to                                                                       
-        *           connect to the AP or not. Also indicates which WPS                                                                        
-        *           method will be used.                                                                                                      
-        *                                                                                                                                     
-        * 0: WPS will not be used                                                                                                             
-        * 1: WPS PBC method will be used                                                                                                      
-        * 2: WPS PIN Config method will be used                                                                                               
-        *                                                                                                                                
+        /**
+        * use_wps - Whether Wi-Fi Protected Setup (WPS) will be used to
+        *           connect to the AP or not. Also indicates which WPS
+        *           method will be used.
+        *
+        * 0: WPS will not be used
+        * 1: WPS PBC method will be used
+        * 2: WPS PIN Config method will be used
+        *
         */
        int use_wps;
 #endif

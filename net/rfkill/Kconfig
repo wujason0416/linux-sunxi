@@ -55,4 +55,3 @@ config SUNXI_RFKILL
     depends on ARCH_SUN4I || ARCH_SUN5I
     default y if ARCH_SUN4I
     default y if ARCH_SUN5I
-

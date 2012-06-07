@@ -31,7 +31,7 @@ we_dispatch(nrx_context ctx, uint16_t cmd, void *buf, size_t len)
    xx.cmd = cmd;
    xx.data = buf;
    xx.len = len;
-   
+
    TAILQ_FOREACH(ev, &ctx->we_handlers, next) {
       if(ev->cmd == 0 || ev->cmd == cmd)
          (*ev->handler)(ctx, NRX_CB_TRIGGER, &xx, sizeof(xx), ev->user_data);
@@ -42,7 +42,7 @@ static struct nrx_we_event*
 find_we_by_userdata(nrx_context ctx, void *user_data)
 {
    struct nrx_we_event *ev;
-   
+
    TAILQ_FOREACH(ev, &ctx->we_handlers, next) {
       if(ev->user_data == user_data)
          return ev;
@@ -63,7 +63,7 @@ find_we_by_userdata(nrx_context ctx, void *user_data)
  * @retval Non-zero integer representing the event handler.
  */
 nrx_callback_handle
-nrx_register_we_event_handler(nrx_context ctx, 
+nrx_register_we_event_handler(nrx_context ctx,
                               uint16_t cmd,
                               nrx_callback_t handler,
                               void *user_data)
@@ -72,7 +72,7 @@ nrx_register_we_event_handler(nrx_context ctx,
 
    nrx_event_connection_number(ctx); /* XXX create socket to receive
                                         netlink packets */
-   
+
    ev = malloc(sizeof(*ev));
    if(ev != NULL) {
       ev->cmd = cmd;
@@ -95,7 +95,7 @@ nrx_register_we_event_handler(nrx_context ctx,
  * @retval EINVAL if a callback matching handle was not found.
  */
 int
-nrx_cancel_we_event_handler(nrx_context ctx, 
+nrx_cancel_we_event_handler(nrx_context ctx,
                             nrx_callback_handle handle)
 {
    struct nrx_we_event *ev;
@@ -113,8 +113,8 @@ nrx_cancel_we_event_handler(nrx_context ctx,
 }
 
 static int
-rtnetlink_event(nrx_context ctx, 
-                int operation, 
+rtnetlink_event(nrx_context ctx,
+                int operation,
                 void *event_data,
                 size_t event_data_size,
                 void *user_data)
@@ -137,12 +137,12 @@ rtnetlink_event(nrx_context ctx,
 #if 0
       char ifname[IFNAMSIZ];
       if_indextoname(ifi->ifi_index, ifname);
-      printf("rtype = %d, fa = %d, t = %d, i = %d (%s), fl = %x, ch = %x\n", 
+      printf("rtype = %d, fa = %d, t = %d, i = %d (%s), fl = %x, ch = %x\n",
              rta->rta_type,
-             ifi->ifi_family, 
-             ifi->ifi_type, 
-             ifi->ifi_index, ifname, 
-             ifi->ifi_flags, 
+             ifi->ifi_family,
+             ifi->ifi_type,
+             ifi->ifi_index, ifname,
+             ifi->ifi_flags,
              ifi->ifi_change);
 #endif
       /* Check if the Wireless kind */
@@ -163,22 +163,22 @@ rtnetlink_event(nrx_context ctx,
  * @brief <b>Registers a handler for Netlink messages</b>
  *
  * @param ctx       The context.
- * @param type      Matches the type field of the netlink message. 
+ * @param type      Matches the type field of the netlink message.
  *                  Zero matches any type.
  * @param pid       Matches the pid field of the netlink message.
  *                  Zero matches any pid.
  * @param seq       Matches the seq field of the netlink message.
  *                  Zero matches any seq.
- * @param handler   The callback function to call when a matching 
+ * @param handler   The callback function to call when a matching
  *                  message is received.
  * @param user_data Pointer to additional data passed to the callback
  *
  * @return An integer representing the message handler.
  */
 nrx_callback_handle
-nrx_register_netlink_handler(nrx_context ctx, 
-                             uint16_t type, 
-                             uint32_t pid, 
+nrx_register_netlink_handler(nrx_context ctx,
+                             uint16_t type,
+                             uint32_t pid,
                              uint32_t seq,
                              nrx_callback_t handler,
                              void *user_data)
@@ -206,7 +206,7 @@ nrx_register_netlink_handler(nrx_context ctx,
  * @return Nothing.
  */
 void
-nrx_cancel_netlink_handler(nrx_context ctx, 
+nrx_cancel_netlink_handler(nrx_context ctx,
                            nrx_callback_handle handler)
 {
    struct nrx_netlink_event *ev;
@@ -224,19 +224,19 @@ nrx_cancel_netlink_handler(nrx_context ctx,
 
 
 static int
-netlink_dispatch(nrx_context ctx, 
+netlink_dispatch(nrx_context ctx,
                  struct nlmsghdr *nh)
 {
    struct nrx_netlink_event *ev;
    int handled = 0;
-   for(ev = TAILQ_FIRST(&ctx->netlink_handlers); 
-       ev != NULL; 
+   for(ev = TAILQ_FIRST(&ctx->netlink_handlers);
+       ev != NULL;
        ev = TAILQ_NEXT(ev, next)) {
 #define MATCH(EV, NH, F) ((EV)->F == 0 || (EV)->F == (NH)->nlmsg_##F)
       if(MATCH(ev, nh, type) && MATCH(ev, nh, pid) && MATCH(ev, nh, seq)) {
 #undef MATCH
-         if((*ev->handler)(ctx, NRX_CB_TRIGGER, 
-                           nh, sizeof(*nh), 
+         if((*ev->handler)(ctx, NRX_CB_TRIGGER,
+                           nh, sizeof(*nh),
                            ev->user_data) == 0)
             handled = 1;
       }
@@ -253,9 +253,9 @@ _nrx_netlink_init(nrx_context ctx)
    TAILQ_INIT(&ctx->netlink_handlers);
    TAILQ_INIT(&ctx->we_handlers);
 
-   nrx_register_netlink_handler(ctx, RTM_NEWLINK, 0, 0, 
+   nrx_register_netlink_handler(ctx, RTM_NEWLINK, 0, 0,
                                 rtnetlink_event, NULL);
-   nrx_register_netlink_handler(ctx, RTM_DELLINK, 0, 0, 
+   nrx_register_netlink_handler(ctx, RTM_DELLINK, 0, 0,
                                 rtnetlink_event, NULL);
 }
 
@@ -283,10 +283,10 @@ netlink_event(nrx_context ctx, void *buf, size_t len)
 
    for(nh = buf; NLMSG_OK(nh, len); nh = NLMSG_NEXT(nh, len)) {
 #if 0
-      printf("%s: type = %d, pid = %d, seq = %d\n", 
+      printf("%s: type = %d, pid = %d, seq = %d\n",
              __func__,
-             nh->nlmsg_type, 
-             nh->nlmsg_pid, 
+             nh->nlmsg_type,
+             nh->nlmsg_pid,
              nh->nlmsg_seq);
 #endif
       netlink_dispatch(ctx, nh);
@@ -335,7 +335,7 @@ _nrx_create_netlink_socket(void)
  *
  * @return The connection number, or a negative number on error.
  *
- * @note This functions does not follow the convention of 
+ * @note This functions does not follow the convention of
  * returning zero or errno number.
  */
 int
@@ -367,7 +367,7 @@ nrx_event_connection_number(nrx_context ctx)
  * @retval EWOULDBLOCK  Indicates that the wait timeout was exceeded.
  * @retval EPIPE        Poll indicates an abnormal condition. This happens
  *                      for instance if the context is destroyed.
- * @retval other        May return error numbers from socket(2), 
+ * @retval other        May return error numbers from socket(2),
  *                      bind(2), or poll(2).
  */
 int
@@ -375,23 +375,23 @@ nrx_wait_event(nrx_context ctx, int timeout)
 {
    struct pollfd pfd[2];
    NRX_ASSERT(ctx);
-   
+
    if((pfd[0].fd = nrx_event_connection_number(ctx)) < 0)
       return -pfd[0].fd; /* see nrx_event_connection_number */
-   
+
    if((pfd[1].fd = ctx->sock) < 0)
       return EPIPE; /* see nrx_event_connection_number */
-   
+
    pfd[0].events = POLLIN;
    pfd[1].events = 0;
-   
+
   again:
    if(poll(pfd, 2, timeout) < 0) {
       if (errno == EINTR)       /* Ctrl-Z + fg */
          goto again;
       return errno;
    }
-   
+
    if(pfd[0].revents & POLLIN)
       return 0;
 
@@ -411,7 +411,7 @@ nrx_wait_event(nrx_context ctx, int timeout)
  * @param ctx The context.
  *
  * @retval Zero         On success.
- * @retval other        May return error numbers from socket(2), 
+ * @retval other        May return error numbers from socket(2),
  *                      bind(2) or recvfrom(2).
  */
 int
@@ -424,7 +424,7 @@ nrx_next_event(nrx_context ctx)
 
    if((sock = nrx_event_connection_number(ctx)) < 0)
       return errno;
-   
+
    n = recvfrom(sock, buf, sizeof(buf), 0, NULL, 0);
    if(n < 0)
       return errno;
@@ -454,19 +454,19 @@ static int CHAR2HEX(char x)
    int ret = -1;
    if (x>='0' && x<='9')
       ret = x-'0';
-   else if (x>='A' && x<='F') 
-      ret = x-'A'+10; 
-   else if (x>='a' && x<='f') 
-      ret = x-'a'+10; 
+   else if (x>='A' && x<='F')
+      ret = x-'A'+10;
+   else if (x>='a' && x<='f')
+      ret = x-'a'+10;
 
    return ret;
 }
 
 #define hexlen(x) strspn((x), "0123456789abcdefABCDEF")
 
-/*!  
+/*!
  * @internal
- * @brief Convert hex string in str into buffer in buf. 
+ * @brief Convert hex string in str into buffer in buf.
  */
 ssize_t nrx_string_to_binary(const char *str, void *buf, size_t size)
 {
@@ -483,7 +483,7 @@ ssize_t nrx_string_to_binary(const char *str, void *buf, size_t size)
       vect[i] += CHAR2HEX(*str++);
       i++;
    }
-   
+
    return i;
 }
 
@@ -495,7 +495,7 @@ split_token(char **buf, const char *separator, int skip_whitespace)
 
    /* skip leading whitespace */
    if(skip_whitespace) {
-      while(isspace(*s)) 
+      while(isspace(*s))
 	 s++;
    }
    /* end-of-string -> return NULL */
@@ -508,7 +508,7 @@ split_token(char **buf, const char *separator, int skip_whitespace)
    else
       /* found new token, skip separator */
       *buf = q + 1;
-   
+
    if(skip_whitespace) {
       while(q > s && isspace(q[-1]))
 	 q--;
@@ -519,9 +519,9 @@ split_token(char **buf, const char *separator, int skip_whitespace)
 }
 
 static int
-nrx_handle_custom_event(nrx_context ctx, 
+nrx_handle_custom_event(nrx_context ctx,
                         int operation,
-                        void *event_data, 
+                        void *event_data,
                         size_t event_data_size,
                         void *user_data)
 {
@@ -537,14 +537,14 @@ nrx_handle_custom_event(nrx_context ctx,
    struct nrx_we_custom_data cdata;
    int hlen;
    int cancel = 0;
-   
+
    if(operation == NRX_CB_CANCEL) {
       (*priv->handler)(ctx, NRX_CB_CANCEL, NULL, 0, priv->user_data);
       free(priv);
       return 0;
    }
    p = d->data;
-   
+
    if(nrx_check_wx_version(ctx, 19) < 0)
       p += sizeof(void*); /* includes a pointer also */
    /* Parse length & flags */
@@ -581,15 +581,15 @@ nrx_handle_custom_event(nrx_context ctx,
    if(*priv->type != '\0' &&
       strcmp(priv->type, token) != 0)
       return 0;
-   
+
    cdata.nvar = 0;
    while((token = split_token(&ntoken, ",()", 1)) != NULL) {
       char *var, *val;
       var = split_token(&token, "=", 1);
       val = split_token(&token, "=", 1);
       if(strcmp(var, "id") == 0) {
-         if(priv->id != 0 && 
-            val != NULL && 
+         if(priv->id != 0 &&
+            val != NULL &&
             strtoul(val, NULL, 0) != priv->id)
             return 0;
       }
@@ -606,8 +606,8 @@ nrx_handle_custom_event(nrx_context ctx,
 
    /* Do da call */
    if (priv->handler) /* Who would register NULL? */
-      if ((*priv->handler)(ctx, NRX_CB_TRIGGER, 
-                              &cdata, sizeof(cdata), 
+      if ((*priv->handler)(ctx, NRX_CB_TRIGGER,
+                              &cdata, sizeof(cdata),
                               priv->user_data) != 0)
          return ENOENT;
 
@@ -616,8 +616,8 @@ nrx_handle_custom_event(nrx_context ctx,
 
 
 nrx_callback_handle
-nrx_register_custom_event(nrx_context ctx, 
-                          const char *type, 
+nrx_register_custom_event(nrx_context ctx,
+                          const char *type,
                           uint32_t id,
                           nrx_callback_t handler,
                           void *user_data)
@@ -647,7 +647,7 @@ nrx_register_custom_event(nrx_context ctx,
 }
 
 int
-nrx_cancel_custom_event(nrx_context ctx, 
+nrx_cancel_custom_event(nrx_context ctx,
                         nrx_callback_handle handle)
 {
    int ret;
@@ -665,7 +665,7 @@ nrx_cancel_custom_event(nrx_context ctx,
 /* Can identify event with id alone, or - when id is 0 - together with type */
 /* this should probably go away in the future */
 int
-nrx_cancel_custom_event_by_id(nrx_context ctx, 
+nrx_cancel_custom_event_by_id(nrx_context ctx,
                               const char *type,
                               int32_t id)
 {
@@ -748,14 +748,14 @@ nrx_register_mib_trigger_event_handler(nrx_context ctx,
    hd->cb = handler;
    hd->helper_data = NULL;
    hd->user_data = user_data;
-   return nrx_register_custom_event(ctx, "MIBTRIG", id, 
+   return nrx_register_custom_event(ctx, "MIBTRIG", id,
                                     mibtrigger_helper, hd);
 }
 
 int
-nrx_register_mib_trigger(nrx_context ctx, 
+nrx_register_mib_trigger(nrx_context ctx,
                          int32_t           *trig_id,
-                         char              *mib_id, 
+                         char              *mib_id,
                          int32_t           gating_trig_id,
                          uint32_t          supv_interval, /* timeout depends on mib, may be microseconds / beacons */
                          int32_t           level,
@@ -775,7 +775,7 @@ nrx_register_mib_trigger(nrx_context ctx,
    param.event_count = event_count;
    param.trigmode = trigmode;
    ret = nrx_nrxioctl(ctx, NRXIOWREGMIBTRIG, &param.ioc);    /* Register mib trigger */
-   if (ret != 0) 
+   if (ret != 0)
       return ret;
    *trig_id = param.trig_id;
 

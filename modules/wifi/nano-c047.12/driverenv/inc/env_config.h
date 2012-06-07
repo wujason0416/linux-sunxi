@@ -95,4 +95,3 @@ nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
 #define DE_AGGREGATE_HI_DATA           CFG_AGGR_ALL
 
 #endif   /* ENV_CONFIG_H */
-

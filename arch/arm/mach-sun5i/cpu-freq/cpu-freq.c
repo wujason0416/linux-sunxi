@@ -771,4 +771,3 @@ static int __init sun4i_cpufreq_initcall(void)
 	return ret;
 }
 late_initcall(sun4i_cpufreq_initcall);
-

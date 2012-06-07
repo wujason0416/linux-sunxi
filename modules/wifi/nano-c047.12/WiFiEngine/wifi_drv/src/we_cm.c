@@ -7,7 +7,7 @@
  * The main state maching uses WE_IND_80211_... indications to signal events. When using this connection
  * handler (and the romaing agent) the _80211_ signals should be ignored and replaced by their WE_IND_CM_...
  * equivalense.
- * 
+ *
  * approx size build with debugging
  * 5k connection manager
  * 16k roaming agent
@@ -24,8 +24,8 @@
 #include "wifi_engine_internal.h"
 
 #if (DE_CCX_ROAMING == CFG_INCLUDED)
-extern WiFiEngine_net_t * ccxnet; //change for reassociation	
-#endif 
+extern WiFiEngine_net_t * ccxnet; //change for reassociation
+#endif
 
 void wei_roam_notify_user_disconnect(void);
 
@@ -117,7 +117,7 @@ static void list_all(cm_ctx_s *ctx)
    cm_session_s *elm=NULL;
 
    WEI_TQ_FOREACH(elm, &ctx->head, session) {
-      DE_TRACE_INT2(TR_CM, "session [%d] %p\n", i, (uintptr_t)elm); 
+      DE_TRACE_INT2(TR_CM, "session [%d] %p\n", i, (uintptr_t)elm);
       i++;
    }
    if(i==0) {
@@ -129,7 +129,7 @@ static void list_all(cm_ctx_s *ctx)
 
 /* only do this once before using anything in this file */
 void wei_cm_initialize(void **priv) {
-   
+
    cm_ctx_s *ctx = (cm_ctx_s *)DriverEnvironment_Malloc(sizeof(cm_ctx_s));
 
 #if 1
@@ -146,19 +146,19 @@ void wei_cm_initialize(void **priv) {
    *priv = ctx;
 
    we_ind_cond_register(&ctx->connect_failed,
-         WE_IND_80211_CONNECT_FAILED, "WE_IND_80211_CONNECT_FAILED", 
+         WE_IND_80211_CONNECT_FAILED, "WE_IND_80211_CONNECT_FAILED",
          notify_cm_connect_failed, NULL,0,ctx);
 
    we_ind_cond_register(&ctx->connected,
-         WE_IND_80211_CONNECTED, "WE_IND_80211_CONNECTED", 
+         WE_IND_80211_CONNECTED, "WE_IND_80211_CONNECTED",
          notify_cm_connected, NULL,0,ctx);
 
    we_ind_cond_register(&ctx->disconnecting,
-         WE_IND_80211_DISCONNECTING, "WE_IND_80211_DISCONNECTING", 
+         WE_IND_80211_DISCONNECTING, "WE_IND_80211_DISCONNECTING",
          notify_cm_disconnecting, NULL,0,ctx);
 
    we_ind_cond_register(&ctx->disconnected,
-         WE_IND_80211_DISCONNECTED, "WE_IND_80211_DISCONNECTED", 
+         WE_IND_80211_DISCONNECTED, "WE_IND_80211_DISCONNECTED",
          notify_cm_disconnected, NULL,0,ctx);
 
    we_ind_cond_register(&ctx->roam_bail,
@@ -172,13 +172,13 @@ void wei_cm_initialize(void **priv) {
          notify_cm_connected, NULL,0,ctx);
 
    we_ind_cond_register(&ctx->disconnected,
-         WE_IND_80211_IBSS_DISCONNECTED, "WE_IND_80211_IBSS_DISCONNECTED", 
+         WE_IND_80211_IBSS_DISCONNECTED, "WE_IND_80211_IBSS_DISCONNECTED",
          notify_cm_disconnected, NULL,0,ctx);
 
 #endif
-   
 
-   DE_TRACE_STATIC(TR_CM, "CM init complete\n"); 
+
+   DE_TRACE_STATIC(TR_CM, "CM init complete\n");
 }
 
 void wei_cm_wpa_connect_wait(int enable)
@@ -191,11 +191,11 @@ void wei_cm_wpa_connect_wait(int enable)
    if(enable)
    {
       we_ind_cond_register(&ctx->connected,
-            WE_IND_WPA_CONNECTED, "WE_IND_WPA_CONNECTED", 
+            WE_IND_WPA_CONNECTED, "WE_IND_WPA_CONNECTED",
             notify_cm_connected, NULL,0,ctx);
    } else {
       we_ind_cond_register(&ctx->connected,
-            WE_IND_80211_CONNECTED, "WE_IND_80211_CONNECTED", 
+            WE_IND_80211_CONNECTED, "WE_IND_80211_CONNECTED",
             notify_cm_connected, NULL,0,ctx);
    }
 }
@@ -213,8 +213,8 @@ void wei_cm_plug(void *priv)
 
    if(!s) return;
 
-   DE_TRACE_STATIC(TR_CM, "CM pluged: will signal disconnected to terminate/reconnect prev session\n"); 
-   
+   DE_TRACE_STATIC(TR_CM, "CM pluged: will signal disconnected to terminate/reconnect prev session\n");
+
    /* this will trigger reconnect after coredump */
    notify_cm_disconnected(NULL, ctx);
    #endif
@@ -222,26 +222,26 @@ void wei_cm_plug(void *priv)
 
 void wei_cm_unplug(void *priv)
 {
-   
+
    cm_ctx_s *ctx = (cm_ctx_s*)priv;
    cm_session_s *s = NULL;
 
-   DE_TRACE_STATIC(TR_CM, "CM unpluged\n"); 
+   DE_TRACE_STATIC(TR_CM, "CM unpluged\n");
    if(!ctx) return;
 
    /* Remove all sessions, if there is an active connection
       indicate disconnect */
-   
+
    DriverEnvironment_acquire_lock(&ctx->lock);
-   while(!WEI_TQ_EMPTY(&ctx->head)) 
+   while(!WEI_TQ_EMPTY(&ctx->head))
    {
       s = WEI_TQ_FIRST(&ctx->head);
-      WEI_TQ_REMOVE(&ctx->head, s, session); 
+      WEI_TQ_REMOVE(&ctx->head, s, session);
       DriverEnvironment_release_lock(&ctx->lock);
-      if(s->pending == 0) 
+      if(s->pending == 0)
       {
          DriverEnvironment_indicate(WE_IND_CM_DISCONNECTED, s, sizeof(s));
-      } 
+      }
       /* still first? */
       cm_destroy(s);
       DriverEnvironment_acquire_lock(&ctx->lock);
@@ -271,7 +271,7 @@ void wei_cm_shutdown(void *priv)
    DriverEnvironment_acquire_lock(&ctx->lock);
    while(!WEI_TQ_EMPTY(&ctx->head)) {
       s = WEI_TQ_FIRST(&ctx->head);
-      WEI_TQ_REMOVE(&ctx->head, s, session); 
+      WEI_TQ_REMOVE(&ctx->head, s, session);
       DriverEnvironment_release_lock(&ctx->lock);
       DriverEnvironment_indicate(WE_IND_CM_DISCONNECTED, s, sizeof(s));
       cm_destroy(s);
@@ -281,7 +281,7 @@ void wei_cm_shutdown(void *priv)
 
    DriverEnvironment_Free(ctx);
 
-   DE_TRACE_STATIC(TR_CM, "CM shutdown complete\n"); 
+   DE_TRACE_STATIC(TR_CM, "CM shutdown complete\n");
 }
 
 /* private initializer */
@@ -304,7 +304,7 @@ cm_session_init(WiFiEngine_net_t* net)
 
 static void cm_destroy(cm_session_s *s)
 {
-   DE_TRACE_PTR(TR_CM, "terminating session %p\n", s); 
+   DE_TRACE_PTR(TR_CM, "terminating session %p\n", s);
 
    s->net->ref_cnt--;
    wei_netlist_free_net_safe(s->net);
@@ -346,7 +346,7 @@ we_cm_connect(WiFiEngine_net_t* net)
    s = cm_session_init(net);
    if(!s) return NULL;
 
-   DE_TRACE_PTR(TR_CM, "New session %p\n", s); 
+   DE_TRACE_PTR(TR_CM, "New session %p\n", s);
 
    DriverEnvironment_acquire_lock(&ctx->lock);
    WEI_TQ_INSERT_TAIL(&ctx->head, s, session);
@@ -370,10 +370,10 @@ we_cm_disconnect(void* session_p)
    if(!s)
       return WIFI_ENGINE_FAILURE;
 
-   DE_TRACE_PTR(TR_CM, "user disconnect on session %p\n", s); 
-   
+   DE_TRACE_PTR(TR_CM, "user disconnect on session %p\n", s);
+
    ctx = GET_CTX;
-   
+
    DriverEnvironment_acquire_lock(&ctx->lock);
    WEI_TQ_FOREACH(elm, &ctx->head, session) {
       if (elm==s) found = 1;
@@ -383,13 +383,13 @@ we_cm_disconnect(void* session_p)
       DE_TRACE_PTR(TR_WARN, "session %p not in list\n", s);
       return WIFI_ENGINE_FAILURE;
    }
-   if(s->pending) { 
-      WEI_TQ_REMOVE(&ctx->head, s, session); 
+   if(s->pending) {
+      WEI_TQ_REMOVE(&ctx->head, s, session);
    }
    s->disconnect_req = 1;
    DriverEnvironment_release_lock(&ctx->lock);
    if(s->pending) {
-      DE_TRACE_PTR(TR_CM, "session %p was pending\n", s); 
+      DE_TRACE_PTR(TR_CM, "session %p was pending\n", s);
       DriverEnvironment_indicate(WE_IND_CM_CONNECTING, s, sizeof(s));
       DriverEnvironment_indicate(WE_IND_CM_CONNECT_FAILED, s, sizeof(s));
       DriverEnvironment_indicate(WE_IND_CM_DISCONNECTED, s, sizeof(s));
@@ -408,12 +408,12 @@ we_cm_disconnect(void* session_p)
 
 static void do_connect(cm_session_s *s)
 {
-   DE_TRACE_PTR(TR_CM, "Connecting to %p\n", s); 
+   DE_TRACE_PTR(TR_CM, "Connecting to %p\n", s);
 
    DriverEnvironment_indicate(WE_IND_CM_CONNECTING, s, sizeof(s));
 #if (DE_CCX_ROAMING == CFG_INCLUDED)
-    ccxnet = NULL;    //change for reassociation	
-#endif  
+    ccxnet = NULL;    //change for reassociation
+#endif
    WiFiEngine_Connect(s->net);
 }
 
@@ -428,7 +428,7 @@ static void notify_cm_connected(wi_msg_param_t param, void* priv)
 
    if(!s) return;
 
-   DE_TRACE_PTR(TR_CM, "connected to %p\n", s); 
+   DE_TRACE_PTR(TR_CM, "connected to %p\n", s);
 
    if(!wei_roam_notify_connected()) {
       DriverEnvironment_indicate(WE_IND_CM_CONNECTED, s, sizeof(s));
@@ -447,7 +447,7 @@ static void notify_cm_connect_failed(wi_msg_param_t param, void* priv)
    if(!s) return;
 
    if(!wei_roam_notify_connect_failed()) {
-      DE_TRACE_PTR(TR_CM, "connect failed with %p\n", s); 
+      DE_TRACE_PTR(TR_CM, "connect failed with %p\n", s);
       DriverEnvironment_indicate(WE_IND_CM_CONNECT_FAILED, s, sizeof(s));
    }
 }
@@ -464,7 +464,7 @@ static void notify_cm_disconnecting(wi_msg_param_t param, void* priv)
    if(!s) return;
 
    if(s->disconnect_req) {
-      DE_TRACE_PTR(TR_CM, "%p is disconnecting (user req)\n", s); 
+      DE_TRACE_PTR(TR_CM, "%p is disconnecting (user req)\n", s);
       wei_roam_notify_user_disconnect();
       DriverEnvironment_indicate(WE_IND_CM_DISCONNECTING, s, sizeof(s));
       return;
@@ -474,7 +474,7 @@ static void notify_cm_disconnecting(wi_msg_param_t param, void* priv)
    {
       if(!wei_roam_notify_disconnecting())
       {
-         DE_TRACE_PTR(TR_CM, "%p is disconnecting\n", s); 
+         DE_TRACE_PTR(TR_CM, "%p is disconnecting\n", s);
          DriverEnvironment_indicate(WE_IND_CM_DISCONNECTING, s, sizeof(s));
       }
       return;
@@ -485,13 +485,13 @@ static void notify_cm_disconnecting(wi_msg_param_t param, void* priv)
    {
       if(!wei_roam_notify_disconnecting())
       {
-         DE_TRACE_PTR(TR_CM, "%p is disconnecting\n", s); 
+         DE_TRACE_PTR(TR_CM, "%p is disconnecting\n", s);
          DriverEnvironment_indicate(WE_IND_CM_DISCONNECTING, s, sizeof(s));
       }
    } else {
       if(!wei_roam_notify_connect_failed())
       {
-         DE_TRACE_PTR(TR_CM, "connect (wpa) failed with %p\n", s); 
+         DE_TRACE_PTR(TR_CM, "connect (wpa) failed with %p\n", s);
          DriverEnvironment_indicate(WE_IND_CM_CONNECT_FAILED, s, sizeof(s));
       }
    }
@@ -509,18 +509,18 @@ static void notify_cm_roam_bail(wi_msg_param_t param, void* priv)
    DriverEnvironment_acquire_lock(&ctx->lock);
    s = WEI_TQ_FIRST(&ctx->head);
    if(s) {
-      WEI_TQ_REMOVE(&ctx->head, s, session); 
+      WEI_TQ_REMOVE(&ctx->head, s, session);
       pending = __test_and_set_connect_pending(ctx);
    }
    DriverEnvironment_release_lock(&ctx->lock);
 
    if(!s) return;
 
-   DE_TRACE_PTR(TR_CM, "%p is disconnecting\n", s); 
+   DE_TRACE_PTR(TR_CM, "%p is disconnecting\n", s);
 
    DriverEnvironment_indicate(WE_IND_CM_DISCONNECTING, s, sizeof(s));
 
-   DE_TRACE_PTR(TR_CM, "%p is now disconneced\n", s); 
+   DE_TRACE_PTR(TR_CM, "%p is now disconneced\n", s);
 
    DriverEnvironment_indicate(WE_IND_CM_DISCONNECTED, s, sizeof(s));
 
@@ -552,7 +552,7 @@ static void notify_cm_disconnected(wi_msg_param_t param, void* priv)
 
    if(!s) return;
 
-   DE_TRACE_PTR(TR_CM, "session %p 80211 disconnected\n", s); 
+   DE_TRACE_PTR(TR_CM, "session %p 80211 disconnected\n", s);
 
    if(s->disconnect_req) {
       wei_roam_notify_user_disconnect();
@@ -561,11 +561,11 @@ static void notify_cm_disconnected(wi_msg_param_t param, void* priv)
       if(wei_roam_notify_disconnected()) return;
    }
 
-   DE_TRACE_PTR(TR_CM, "%p is now disconneced\n", s); 
+   DE_TRACE_PTR(TR_CM, "%p is now disconneced\n", s);
    list_all(ctx);
 
    DriverEnvironment_acquire_lock(&ctx->lock);
-   WEI_TQ_REMOVE(&ctx->head, s, session); 
+   WEI_TQ_REMOVE(&ctx->head, s, session);
    pending = __test_and_set_connect_pending(ctx);
    DriverEnvironment_release_lock(&ctx->lock);
 
@@ -581,4 +581,3 @@ static void notify_cm_disconnected(wi_msg_param_t param, void* priv)
    if(pending)
       do_connect(pending);
 }
-

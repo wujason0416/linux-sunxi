@@ -305,7 +305,7 @@ __s32 _fill_nand_cache(__u32 page, __u32 secbitmap, __u8 *pdata)
 					pos = i;
 					access_cnt = nand_w_cache[i].access_count;
 				}
-				
+
 				if((nand_w_cache[i].hit_page == page-1)&&(page>0))
 				{
 				    pos = i;
@@ -389,8 +389,8 @@ __s32 NAND_CacheWrite(__u32 blk, __u32 nblk, void *buf)
 					{
 					    _flush_w_cache_simple(i);
 					}
-					
-					
+
+
 				}
 				/*disable read cache with current page*/
 				if (nand_r_cache.hit_page == page){

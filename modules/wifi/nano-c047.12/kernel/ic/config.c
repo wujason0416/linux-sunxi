@@ -52,7 +52,7 @@ CALLOUT(max_channel_time, unsigned int)
 CALLOUT(active_scan, unsigned int)
 {
    rBasicWiFiProperties *basic = Registry_GetProperty(ID_basic);
-   
+
    if(write)
       basic->activeScanMode = (*value != 0);
    else
@@ -72,7 +72,7 @@ CALLOUT(scan_filter_ssid, void)
 
    if(write) {
       char *buf = nrx_px_data(psc);
-      
+
       KDEBUG(TRACE, "ssid = %s\n", buf);
       memset(ssid, 0, sizeof(ssid));
       if(sscanf(buf, "%32s", ssid) == 1) {
@@ -126,7 +126,7 @@ CALLOUT(scan_filter_bsstype, unsigned int)
 CALLOUT(adaptive_tx_rate, unsigned int)
 {
    rBasicWiFiProperties *basic = Registry_GetProperty(ID_basic);
-   
+
    if(write) {
       basic->txRatePowerControl = *value;
       WiFiEngine_SetLvl1AdaptiveTxRate(basic->txRatePowerControl);
@@ -138,7 +138,7 @@ CALLOUT(adaptive_tx_rate, unsigned int)
 
 CALLOUT(beacon_period, unsigned int)
 {
-   if(write) 
+   if(write)
       WiFiEngine_SetIBSSBeaconPeriod(*value);
    else {
       uint16_t period;
@@ -150,7 +150,7 @@ CALLOUT(beacon_period, unsigned int)
 
 CALLOUT(dtim_period, unsigned int)
 {
-   if(write) 
+   if(write)
       WiFiEngine_SetIBSSDTIMPeriod(*value);
    else {
       uint8_t period;
@@ -173,20 +173,20 @@ CALLOUT(join_timeout, unsigned int)
 CALLOUT(link_monitoring, unsigned int)
 {
    rBasicWiFiProperties *basic = Registry_GetProperty(ID_basic);
-   
+
    if(write) {
       basic->linkSupervision.enable = SETBOOL(*value);
       WiFiEngine_EnableLinkSupervision(basic->linkSupervision.enable);
    } else
       *value = basic->linkSupervision.enable;
-   
+
    return 0;
 }
 
 CALLOUT(multi_domain, unsigned int)
 {
    rBasicWiFiProperties *basic = Registry_GetProperty(ID_basic);
-   
+
    if(write) {
       if(*value == 2) {
          basic->multiDomainCapabilityEnforced = 1;
@@ -217,7 +217,7 @@ CALLOUT(wmm, unsigned int)
       basic->enableWMM = SETBOOL(*value);
    else
       *value = basic->enableWMM;
-   
+
    return 0;
 }
 
@@ -226,7 +226,7 @@ tx_power(struct net_device *dev, int write, int index, unsigned int *value)
 {
    uint8_t idx[2];
    size_t len = sizeof(idx);
-   
+
    if(nrx_get_mib(dev, MIB_dot11powerIndex, idx, &len) != 0 || len != 2) {
       KDEBUG(TRACE, "failed to get MIB_dot11powerIndex");
       return 1;
@@ -236,7 +236,7 @@ tx_power(struct net_device *dev, int write, int index, unsigned int *value)
       if(*value <= 19) {
          idx[index] = *value;
 
-         WiFiEngine_SendMIBSet(MIB_dot11powerIndex, 
+         WiFiEngine_SendMIBSet(MIB_dot11powerIndex,
                                NULL, idx, sizeof(idx));
       }
    } else {
@@ -260,22 +260,22 @@ CALLOUT(tx_power_index_11b, unsigned int)
 CALLOUT(bgscan_enable, unsigned int)
 {
    rBasicWiFiProperties *basic = Registry_GetProperty(ID_basic);
-   
+
    if(write) {
       basic->defaultScanJobDisposition = SETBOOL(*value);
       WiFiEngine_SetBackgroundScanMode(basic->defaultScanJobDisposition);
    } else
       *value = basic->defaultScanJobDisposition;
-   
+
    return 0;
 }
- 
+
 static int
 mib_32(struct net_device *dev, const char *mib, int write, unsigned int *value)
 {
    uint32_t u32;
    size_t len = sizeof(u32);
-   
+
    if(write) {
       u32 = *value;
       WiFiEngine_SendMIBSet(mib, NULL, (char*)&u32, sizeof(u32));
@@ -286,16 +286,16 @@ mib_32(struct net_device *dev, const char *mib, int write, unsigned int *value)
       }
       *value = u32;
    }
-   
+
    return 0;
 }
- 
+
 static int
 mib_16(struct net_device *dev, const char *mib, int write, unsigned int *value)
 {
    uint16_t u16;
    size_t len = sizeof(u16);
-   
+
    if(write) {
       u16 = *value;
       WiFiEngine_SendMIBSet(mib, NULL, (char*)&u16, sizeof(u16));
@@ -306,44 +306,44 @@ mib_16(struct net_device *dev, const char *mib, int write, unsigned int *value)
       }
       *value = u16;
    }
-   
+
    return 0;
 }
- 
+
 CALLOUT(bgscan_period, unsigned int)
 {
    int retval;
    rConnectionPolicy *conn = Registry_GetProperty(ID_connectionPolicy);
-   
+
    retval = mib_16(nrx_px_priv(psc), MIB_dot11backgroundScanPeriod, write, value);
    if(write) {
       conn->connectedScanPeriod = *value;
    }
    return retval;
 }
- 
+
 CALLOUT(bgscan_min_channel_time, unsigned int)
 {
    int retval;
    rConnectionPolicy *conn = Registry_GetProperty(ID_connectionPolicy);
-    
+
    retval = mib_16(nrx_px_priv(psc), MIB_dot11backgroundScanMinChannelTime, write, value);
    if(write) {
       conn->connectedScanTimeouts.minChannelTime = *value;
    }
    return retval;
 }
- 
+
 CALLOUT(bgscan_max_channel_time, unsigned int)
 {
    int retval;
    rConnectionPolicy *conn = Registry_GetProperty(ID_connectionPolicy);
 
    retval = mib_16(nrx_px_priv(psc), MIB_dot11backgroundScanMaxChannelTime, write, value);
-   
+
    if(write) {
       conn->connectedScanTimeouts.maxChannelTime = *value;
-   } 
+   }
    return retval;
 }
 
@@ -371,20 +371,20 @@ CALLOUT(channels, struct nrx_px_uintvec)
 {
    channel_list_t channels;
    size_t i;
-   
+
    if(write) {
-      for(i = 0; 
-          i < value->size && i < ARRAY_SIZE(channels.channelList); 
+      for(i = 0;
+          i < value->size && i < ARRAY_SIZE(channels.channelList);
           i++)
          channels.channelList[i] = value->vals[i];
-      
+
       channels.no_channels = i;
 
       WiFiEngine_SetRegionalChannels(&channels);
    } else {
       WiFiEngine_GetRegionalChannels(&channels);
-      for(i = 0; 
-          i < channels.no_channels && i < ARRAY_SIZE(value->vals); 
+      for(i = 0;
+          i < channels.no_channels && i < ARRAY_SIZE(value->vals);
           i++)
          value->vals[i] = channels.channelList[i];
       value->size = i;
@@ -396,7 +396,7 @@ CALLOUT(rates_supported, we_ratemask_t)
 {
    struct net_device *dev = nrx_px_priv(psc);
    struct nrx_softc *sc = netdev_priv(dev);
-   
+
    if(write)
       ;
    else
@@ -442,7 +442,7 @@ CALLOUT(rates_operational, we_ratemask_t)
    size_t len = sizeof(rates);
    size_t i;
    we_xmit_rate_t r;
-   
+
    if(write) {
       i = 0;
       WE_RATEMASK_FOREACH(r, *value) {
@@ -451,12 +451,12 @@ CALLOUT(rates_operational, we_ratemask_t)
          rates[i++] = WiFiEngine_rate_native2ieee(r);
       }
       WiFiEngine_SendMIBSet(MIB_dot11OperationalRatesSet,
-                            NULL, 
+                            NULL,
                             rates, i);
    } else {
       if(nrx_get_mib(dev, MIB_dot11OperationalRatesSet, rates, &len) != 0)
          return 1;
-   
+
       WE_RATEMASK_CLEAR(*value);
       for(i = 0; i < len; i++) {
          r = WiFiEngine_rate_ieee2native(rates[i]);
@@ -478,7 +478,7 @@ CALLOUT(wmm_association, unsigned int)
 static struct nrx_px_entry_head cfg_entries = WEI_TQ_HEAD_INITIALIZER(cfg_entries);
 
 struct nrx_px_entry*
-nrx_config_create(struct net_device *dev, 
+nrx_config_create(struct net_device *dev,
                   const char *name,
                   int (*open)(struct nrx_px_softc*, struct inode*, struct file*),
                   int (*release)(struct nrx_px_softc*, struct inode*, struct file*),
@@ -487,7 +487,7 @@ nrx_config_create(struct net_device *dev,
    struct nrx_softc *sc = netdev_priv(dev);
    struct nrx_px_entry *e;
    e = nrx_px_create_dynamic(dev, name, callout, sizeof(callout),
-                             0, NULL, open, release, 
+                             0, NULL, open, release,
                              sc->config_dir);
    if(e == NULL)
       return NULL;
@@ -506,9 +506,9 @@ CALLOUT(driver_version, void)
       int status;
       char v[128];
       status = WiFiEngine_GetReleaseInfo(v, sizeof(v));
-      if(status != WIFI_ENGINE_SUCCESS) 
+      if(status != WIFI_ENGINE_SUCCESS)
          strcpy(v, "failure");
-      
+
       nrx_px_setsize(psc, 0);
       nrx_px_printf(psc, "%s\n", v);
    }
@@ -542,13 +542,13 @@ create_config_entries(struct net_device *dev)
    CREATE(min-channel-timeout, min_channel_time, uint);
    CREATE(multi-domain, multi_domain, uint);
    CREATE(wmm, wmm, uint);
-   
+
    CREATE(background-scan-enable, bgscan_enable, uint);
    CREATE(background-scan-period, bgscan_period, uint);
    CREATE(background-scan-min-channel-time, bgscan_min_channel_time, uint);
    CREATE(background-scan-max-channel-time, bgscan_max_channel_time, uint);
    CREATE(background-scan-probe-delay, bgscan_probe_delay, uint);
-     
+
    CREATE(desired-bssid, desired_bssid, macaddr);
 
    CREATE(channel-list, channels, uintvec);
@@ -581,4 +581,3 @@ remove_config_entries(struct net_device *dev)
       nrx_px_remove(e, psc->config_dir);
    }
 }
-

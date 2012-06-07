@@ -1,6 +1,6 @@
 /******************************************************************************
 
-            Copyright (c) 2004 by Nanoradio AB 
+            Copyright (c) 2004 by Nanoradio AB
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
 All rights, title, ownership, or other interests in the software remain the
@@ -13,7 +13,7 @@ consent of Nanoradio AB.
 
 Nanoradio AB reserves the right to modify this software without notice.
 
-Nanoradio AB 
+Nanoradio AB
 Torshamnsgatan 39                       info@nanoradio.se
 164 40 Kista                            http://www.nanoradio.se
 SWEDEN
@@ -58,7 +58,7 @@ void hic_set_ul_message_properties(hic_message_ul_header_size_t header_size,
                                    uint8_t                      min_message_size,
                                    uint8_t                      message_modulo);
 S_BUF_BufType hic_pack_message_to_host(hic_message_type_t type,
-                                       hic_message_id_t   id, 
+                                       hic_message_id_t   id,
                                        S_BUF_BufType descriptor_ref);
 void hic_unpack_int8(char **source_p, char **dest_p,uint8_t packed_size);
 void hic_unpack_int8_aligned_32(char **source_p, char **dest_p, uint8_t packed_bytes);
@@ -81,4 +81,3 @@ void hic_pack_array_aligned_32(char **source_p, char **dest_p, uint8_t packed_by
 
 
 #endif    /* HIC_UNPACK_H */
-

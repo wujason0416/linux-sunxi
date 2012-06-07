@@ -79,7 +79,7 @@ add_version_file()
 conf_driver()
 {
 	sed -i '/CONFIG_AUTOCFG_CP = /c\CONFIG_AUTOCFG_CP = y' Makefile
-	if [ -f include/rtw_version.h ]; then	
+	if [ -f include/rtw_version.h ]; then
             echo "rtw_version.h has existed!"
 	else
 	add_version_file
@@ -91,7 +91,7 @@ conf_driver()
 #========================================
 
 
-if [ ! -f include/rtw_version.h ]; then	
+if [ ! -f include/rtw_version.h ]; then
 	# Make Version string
 	if [ -z "$2" ]; then
 		get_svn_revision

@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-            Copyright (c) 2004 by Nanoradio AB 
+            Copyright (c) 2004 by Nanoradio AB
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
  All rights, title, ownership, or other interests in the
@@ -58,7 +58,7 @@ Thing are coming in and things are coming out, bla bla bla.
 #define HIC_MESSAGE_TYPE_FLASH_PRG   5
 #define HIC_MESSAGE_TYPE_CUSTOM      6
 #define HIC_MESSAGE_TYPE_CTRL        7
-#define HIC_MESSAGE_TYPE_DLM         8 
+#define HIC_MESSAGE_TYPE_DLM         8
 #define HIC_MESSAGE_TYPE_NUM_TYPES   9
 #define HIC_MESSAGE_TYPE_AGGREGATION 0x3F
 
@@ -111,7 +111,7 @@ typedef struct
    (HIC_GET_ULE16(_pkt) + 2)
 #define HIC_MESSAGE_LENGTH_SET(_pkt, _len)	\
    HIC_PUT_ULE16((_pkt), (_len) - 2)
-	
+
 #define HIC_MESSAGE_TYPE(_pkt_p)             (((uint8_t*)_pkt_p)[2])
 #define HIC_MESSAGE_ID(_pkt_p)               (((uint8_t*)_pkt_p)[3])
 #define HIC_MESSAGE_HDR_SIZE(_pkt_p)         (((uint8_t*)_pkt_p)[4])

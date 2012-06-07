@@ -579,7 +579,7 @@ static __s32 _GetLogPageForWrite(__u32 nBlk, __u32 nPage, __u16 *pLogPage, __u32
     }
     else
     {
-    
+
         //use the page which is the next of the last used page
         tmpPage = tmpPage + 1;
     }
@@ -763,4 +763,3 @@ void PMM_SetCurMapPage(__u16 nLogicalPage,__u16 nPhysicPage)
 {
 	PAGE_MAP_TBL[nLogicalPage].PhyPageNum = nPhysicPage;
 }
-

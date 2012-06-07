@@ -55,7 +55,6 @@ A_INT16 statsPrintf ( FILE *pFile, const char *format, ...);
 extern A_UINT32 milliTime(void);
 extern void milliSleep(A_UINT32);
 #define microSleep(x) usleep(x)
-#endif	
-
 #endif
 
+#endif

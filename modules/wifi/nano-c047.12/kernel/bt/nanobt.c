@@ -237,16 +237,16 @@ void ns_net_rx(struct sk_buff *skb, struct net_device *dev)
   msg = (struct echo_msg *) skb_pull(skb, hdr->hdr_size);
 
   if (hdr->type == 0x89)
-  { 
+  {
     if (hdr->id == 0x81)
     {
       /* HCI CFM - empty or Number_Of_Completed_Packets_Event. */
       bt_cb(skb)->pkt_type = *((__u8 *) skb->data);
-      skb_pull(skb, 1); 
+      skb_pull(skb, 1);
 
       if (hdr->padding == 0x18)
       {
-        /* Empty CFM - do nothing. */ 
+        /* Empty CFM - do nothing. */
         /*printk("Empty HIC CFM!\n");*/
       }
       else
@@ -270,7 +270,7 @@ void ns_net_rx(struct sk_buff *skb, struct net_device *dev)
       /* HCI packet type */
       bt_cb(skb)->pkt_type = *((__u8 *) skb->data);
       KDEBUG(TRANSPORT, "\n%s: HCI packet type = %d", __func__, bt_cb(skb)->pkt_type);
-      skb_pull(skb, 1); 
+      skb_pull(skb, 1);
 
       if (bt_cb(skb)->pkt_type == 0x04)
       {
@@ -287,7 +287,7 @@ void ns_net_rx(struct sk_buff *skb, struct net_device *dev)
       }
       else
       {
-        /* HCI acl data */ 
+        /* HCI acl data */
         ASSERT(bt_cb(skb)->pkt_type == 0x02);
         hci_len = skb->data[2] + (skb->data[3] << 8);
         /*printk("acl data length: %d\n", hci_len);*/
@@ -304,7 +304,7 @@ void ns_net_rx(struct sk_buff *skb, struct net_device *dev)
   }
   else /* if (hdr->type == 0x89) */
   {
-    if (hdr->type == 0x84) /* && (hdr->id == 0x81 || hdr->id == 0x80))*/ 
+    if (hdr->type == 0x84) /* && (hdr->id == 0x81 || hdr->id == 0x80))*/
     {
       /* HCI console, e.g. DCP_DISPLAY */
       skb_pull(skb, 4);
@@ -340,7 +340,7 @@ nanonet_create(struct device *pdev, void *obj, struct nanonet_create_param *para
 
    data->transport = param;
    data->obj       = obj;
- 
+
    /* Init semaphore to 0 */
    sema_init(&data->rx, 0);
 

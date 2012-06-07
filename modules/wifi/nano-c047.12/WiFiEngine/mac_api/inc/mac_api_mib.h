@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-            Copyright (c) 2004 by Nanoradio AB 
+            Copyright (c) 2004 by Nanoradio AB
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
  All rights, title, ownership, or other interests in the
@@ -135,7 +135,7 @@ typedef union
 {
    mib_object_entry_t   object;
    char                 identifier[MIB_IDENTIFIER_MAX_LENGTH];
-}mib_reference_t; 
+}mib_reference_t;
 
 /******************************************************************************/
 /* DRIVER TO MAC PRIMITIVES                                                   */

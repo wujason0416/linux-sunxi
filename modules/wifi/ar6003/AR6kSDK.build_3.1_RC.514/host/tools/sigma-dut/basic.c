@@ -102,5 +102,5 @@ void basic_register_cmds(void)
 	sigma_dut_reg_cmd("device_list_interfaces",
 			  check_device_list_interfaces,
 			  cmd_device_list_interfaces);
-#endif    
+#endif
 }

@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -51,7 +51,7 @@ _mali_osk_errcode_t malipmm_kernel_subsystem_start( mali_kernel_subsystem_identi
  *
  * Post start up includes initializing the current policy, now that the system is
  * completely started - to stop policies turning off hardware during the start up
- * 
+ *
  * @param id the unique subsystem id
  * @return _MALI_OSK_ERR_OK if the post startup was successful, or a suitable
  * _mali_osk_errcode_t otherwise.
@@ -119,7 +119,7 @@ void power_test_start()
 {
 	power_test_timer = _mali_osk_timer_init();
 	_mali_osk_timer_setcallback( power_test_timer, power_test_callback, NULL );
-	
+
 	/* First event is power down */
 	power_test_event = MALI_PMM_EVENT_OS_POWER_DOWN;
 	_mali_osk_timer_add( power_test_timer, 10000 );
@@ -150,10 +150,10 @@ mali_bool power_test_check()
 			power_test_event = MALI_PMM_EVENT_OS_POWER_DOWN;
 		}
 		_mali_osk_timer_add( power_test_timer, 5000 );
-		
+
 		return MALI_TRUE;
 	}
-	
+
 	return MALI_FALSE;
 }
 
@@ -188,7 +188,7 @@ void _mali_ukk_pmm_event_message( _mali_uk_pmm_message_s *args )
 		event->id = args->id;
 		event->ts = _mali_osk_time_tickcount();
 		event->data = args->data;
-		
+
 		_mali_osk_atomic_inc( &(pmm->messages_queued) );
 
 		if( args->id > MALI_PMM_EVENT_INTERNALS )
@@ -214,7 +214,7 @@ void _mali_ukk_pmm_event_message( _mali_uk_pmm_message_s *args )
 		/* Make note of this OOM - which has caused a missed event */
 		pmm->missed++;
 	}
-	
+
 	/* Schedule time to look at the event or the fact we couldn't create an event */
 	_mali_osk_irq_schedulework( pmm->irq );
 }
@@ -368,7 +368,7 @@ void _mali_pmm_trace_hardware_change( mali_pmm_core_mask old, mali_pmm_core_mask
 		{
 			dname = pmm_trace_get_core_name( newstate );
 		}
-			
+
 		/* These state checks only work if the assumption that only cores can be
 		 * turned on or turned off in seperate actions is true. If core power states can
 		 * be toggled (some one, some off) at the same time, this check does not work
@@ -443,7 +443,7 @@ void _mali_pmm_trace_event_message( mali_pmm_message_t *event, mali_bool receive
 		case MALI_PMM_EVENT_INTERNAL_POWER_DOWN_ACK:
 			dname = pmm_trace_get_core_name( (mali_pmm_core_mask)event->data );
 			break;
-			
+
 		case MALI_PMM_EVENT_TIMEOUT:
 			dname = "timeout start";
 			/* Print data with a different format */
@@ -473,7 +473,7 @@ _mali_osk_errcode_t malipmm_create(_mali_osk_resource_t *resource)
 	/* Create PMM state memory */
 	MALI_DEBUG_ASSERT( pmm_state == NULL );
 	pmm_state = (_mali_pmm_internal_state_t *) _mali_osk_malloc(sizeof(*pmm_state));
-	MALI_CHECK_NON_NULL( pmm_state, _MALI_OSK_ERR_NOMEM );	
+	MALI_CHECK_NON_NULL( pmm_state, _MALI_OSK_ERR_NOMEM );
 
 	/* All values get 0 as default */
 	_mali_osk_memset(pmm_state, 0, sizeof(*pmm_state));
@@ -486,10 +486,10 @@ _mali_osk_errcode_t malipmm_create(_mali_osk_resource_t *resource)
 	/* Set up policy via compile time option for the moment */
 #if MALI_PMM_ALWAYS_ON
 	pmm_state->policy = MALI_PMM_POLICY_ALWAYS_ON;
-#else 
+#else
 	pmm_state->policy = MALI_PMM_POLICY_JOB_CONTROL;
 #endif
-	
+
 #if MALI_PMM_TRACE
 	_mali_pmm_trace_policy_change( MALI_PMM_POLICY_NONE, pmm_state->policy );
 #endif
@@ -538,7 +538,7 @@ pmm_fail_cleanup:
 		if( pmm_state->lock ) _mali_osk_lock_term( pmm_state->lock );
 		if( pmm_state->irq ) _mali_osk_irq_term( pmm_state->irq );
 		if( pmm_state->queue ) _mali_osk_notification_queue_term( pmm_state->queue );
-		if( pmm_state->iqueue ) _mali_osk_notification_queue_term( pmm_state->iqueue );		
+		if( pmm_state->iqueue ) _mali_osk_notification_queue_term( pmm_state->iqueue );
 #if USING_MALI_PMU
                 if( pmm_state->pmu_initialized )
                 {
@@ -548,7 +548,7 @@ pmm_fail_cleanup:
 #endif /* USING_MALI_PMU */
 
 		_mali_osk_free(pmm_state);
-		pmm_state = NULL; 
+		pmm_state = NULL;
 	}
 	MALI_ERROR( _MALI_OSK_ERR_FAULT );
 }
@@ -564,8 +564,8 @@ _mali_osk_errcode_t malipmm_kernel_load_complete( mali_kernel_subsystem_identifi
 	power_test_start();
 #endif
 
-	/* Initialize the profile now the system has loaded - so that cores are 
-	 * not turned off during start up 
+	/* Initialize the profile now the system has loaded - so that cores are
+	 * not turned off during start up
 	 */
 	return pmm_policy_init( pmm );
 }
@@ -577,7 +577,7 @@ void malipmm_force_powerup( void )
 	MALI_PMM_LOCK(pmm);
 	pmm->status = MALI_PMM_STATUS_OFF;
 	MALI_PMM_UNLOCK(pmm);
-	
+
 	/* flush PMM workqueue */
 	_mali_osk_flush_workqueue( pmm->irq );
 
@@ -625,7 +625,7 @@ void malipmm_kernel_subsystem_terminate( mali_kernel_subsystem_identifier id )
 		_mali_osk_atomic_term( &(pmm_state->messages_queued) );
 		MALI_PMM_LOCK_TERM(pmm_state);
 		_mali_osk_free(pmm_state);
-		pmm_state = NULL; 
+		pmm_state = NULL;
 	}
 
 	MALIPMM_DEBUG_PRINT( ("PMM: subsystem terminated\n") );
@@ -679,12 +679,12 @@ _mali_osk_errcode_t malipmm_core_register( mali_pmm_core_id core )
 
 	if( pmm == NULL )
 	{
-		/* PMM state has not been created, this is because the PMU resource has not been 
+		/* PMM state has not been created, this is because the PMU resource has not been
 		 * created yet.
-		 * This probably means that the PMU resource has not been specfied as the first 
+		 * This probably means that the PMU resource has not been specfied as the first
 		 * resource in the config file
 		 */
-		MALI_PRINT_ERROR( ("PMM: Cannot register core %s because the PMU resource has not been\n initialized. Please make sure the PMU resource is the first resource in the\n resource configuration.\n", 
+		MALI_PRINT_ERROR( ("PMM: Cannot register core %s because the PMU resource has not been\n initialized. Please make sure the PMU resource is the first resource in the\n resource configuration.\n",
 							pmm_trace_get_core_name(core)) );
 		MALI_ERROR(_MALI_OSK_ERR_FAULT);
 	}
@@ -720,11 +720,11 @@ _mali_osk_errcode_t malipmm_core_register( mali_pmm_core_id core )
 
 #if MALI_PMM_TRACE
 		_mali_pmm_trace_hardware_change( old_power, pmm->cores_powered );
-#endif		
+#endif
 	}
 	else
 	{
-		MALI_PRINT_ERROR( ("PMM: Error(%d) powering up registered core: (0x%x) %s\n", 
+		MALI_PRINT_ERROR( ("PMM: Error(%d) powering up registered core: (0x%x) %s\n",
 								err, core, pmm_trace_get_core_name(core)) );
 	}
 
@@ -733,7 +733,7 @@ _mali_osk_errcode_t malipmm_core_register( mali_pmm_core_id core )
 #endif /* MALI_STATE_TRACKING */
 
 	MALI_PMM_UNLOCK(pmm);
-	
+
 	return err;
 }
 
@@ -769,7 +769,7 @@ void malipmm_core_unregister( mali_pmm_core_id core )
 
 #if MALI_PMM_TRACE
 		_mali_pmm_trace_hardware_change( old_power, pmm->cores_powered );
-#endif		
+#endif
 	}
 
 #if MALI_STATE_TRACKING
@@ -841,7 +841,7 @@ void malipmm_irq_bhandler(void *data)
 		MALI_PRINT_ERROR( ("PMM: Failed to send %d events", pmm->missed) );
 		pmm_fatal_reset( pmm );
 	}
-	
+
 	if( pmm->check_policy )
 	{
 		pmm->check_policy = MALI_FALSE;
@@ -888,7 +888,7 @@ static void pmm_event_process( void )
 
 		if( err != _MALI_OSK_ERR_OK )
 		{
-			if( pmm->status == MALI_PMM_STATUS_IDLE || pmm->status == MALI_PMM_STATUS_OS_WAITING || pmm->status == MALI_PMM_STATUS_DVFS_PAUSE) 	
+			if( pmm->status == MALI_PMM_STATUS_IDLE || pmm->status == MALI_PMM_STATUS_OS_WAITING || pmm->status == MALI_PMM_STATUS_DVFS_PAUSE)
 			{
 				if( pmm->waiting > 0 ) pmm->waiting--;
 
@@ -939,13 +939,13 @@ static void pmm_event_process( void )
 		#endif
 		err = pmm_policy_process( pmm, event );
 
-		
+
 		if( err != _MALI_OSK_ERR_OK )
 		{
-			MALI_PRINT_ERROR( ("PMM: Error(%d) in policy %d when processing event message with id: %d", 
+			MALI_PRINT_ERROR( ("PMM: Error(%d) in policy %d when processing event message with id: %d",
 					err, pmm->policy, event->id) );
 		}
-		
+
 		/* Delete notification */
 		_mali_osk_notification_delete ( msg );
 
@@ -955,9 +955,9 @@ static void pmm_event_process( void )
 			return;
 		}
 
-			
+
 		#if MALI_PMM_TRACE
-			MALI_PRINT( ("PMM Trace: Event processed, msgs (sent/read) = %d/%d, int msgs (sent/read) = %d/%d, no events = %d, waiting = %d\n", 
+			MALI_PRINT( ("PMM Trace: Event processed, msgs (sent/read) = %d/%d, int msgs (sent/read) = %d/%d, no events = %d, waiting = %d\n",
 					pmm->messages_sent, pmm->messages_received, pmm->imessages_sent, pmm->imessages_received, pmm->no_events, pmm->waiting) );
 		#endif
 	}

@@ -76,7 +76,7 @@ unsigned int WiFiEngine_Initialize(void *adapter)
    WiFiEngine_RegisterAdapter(adapter);
 
    DriverEnvironment_initialize_lock(&wifiEngineState.lock);
-   DriverEnvironment_initialize_lock(&wifiEngineState.resource_hic_lock);    
+   DriverEnvironment_initialize_lock(&wifiEngineState.resource_hic_lock);
    DriverEnvironment_initialize_lock(&wifiEngineState.rlock);
    DriverEnvironment_init_trylock(&wifiEngineState.sm_lock);
    DriverEnvironment_init_trylock(&wifiEngineState.send_lock);
@@ -87,7 +87,7 @@ unsigned int WiFiEngine_Initialize(void *adapter)
    wei_ps_ctrl_alloc_init();
 
    WiFiEngine_SetMsgSizeAlignment(13, 0, 0, 0, HIC_CTRL_HOST_ATTENTION_GPIO, HIC_CTRL_ALIGN_SWAP_NO_BYTESWAP, 0xFF, 0xFF);
-   
+
    DriverEnvironment_Startup();
    init_state_trace(TRACE_LOG_SIZE);
 
@@ -96,7 +96,7 @@ unsigned int WiFiEngine_Initialize(void *adapter)
 #if (DE_NETWORK_SUPPORT & CFG_NETWORK_AMP)
    wei_hmg_pal_init();
 #endif
-   
+
    wei_pmkid_init();
 
    wei_virt_trig_init();
@@ -112,7 +112,7 @@ unsigned int WiFiEngine_Initialize(void *adapter)
       wei_cm_initialize(&wifiEngineState.cm_priv);
    }
 
-   wei_pm_initialize(&wifiEngineState.pm_priv);   
+   wei_pm_initialize(&wifiEngineState.pm_priv);
    wei_interface_init();
    wei_data_init();
    wei_arp_filter_init();
@@ -140,7 +140,7 @@ int WiFiEngine_Shutdown(unsigned int driver_id)
 {
 
    wei_ps_ctrl_shutdown();
-   
+
    wei_interface_shutdown();
    we_dlm_shutdown();
 
@@ -152,7 +152,7 @@ int WiFiEngine_Shutdown(unsigned int driver_id)
 
    wei_clear_mib_reply_list();
    wei_clear_console_reply_list();
-   deinit_state_trace();   
+   deinit_state_trace();
    wifiEngineState.main_state = Halted;
 
    wei_shutdown_roam();
@@ -168,7 +168,7 @@ int WiFiEngine_Shutdown(unsigned int driver_id)
    wei_shutdown_auth();
    wei_shutdown_mib();
    wei_data_shutdown();
-   
+
    WiFiEngine_RateMonShutdown();
 
    wei_ind_shutdown();
@@ -177,11 +177,11 @@ int WiFiEngine_Shutdown(unsigned int driver_id)
    wei_cb_shutdown();
 
    DriverEnvironment_free_lock(&wifiEngineState.lock);
-   DriverEnvironment_free_lock(&wifiEngineState.resource_hic_lock);    
+   DriverEnvironment_free_lock(&wifiEngineState.resource_hic_lock);
    DriverEnvironment_free_lock(&wifiEngineState.rlock);
-   
+
    DE_TRACE_STATIC(TR_INITIALIZE, "Done!\n");
-   
+
    return DriverEnvironment_Terminate(driver_id);
 }
 
@@ -205,7 +205,7 @@ int WiFiEngine_Plug()
       /* Always trace how much dynamic memory the driver have allocated.                 */
       /* If it increases after a deactivate-activate, list the buffers to find the leak. */
       static int last_sum_allocated = 0;
-      int        sum_allocated =  malloc_sum();     
+      int        sum_allocated =  malloc_sum();
       DE_TRACE_INT(TR_INITIALIZE, "Memory allocated by malloc at plug: %d\n", sum_allocated );
       if (sum_allocated > last_sum_allocated)
       {
@@ -217,15 +217,15 @@ int WiFiEngine_Plug()
 
    WIFI_LOCK();
    wifiEngineState.dataReqPending = 0;
-   DE_MEMSET(&wifiEngineState.dataReqByPrio, 0, 
+   DE_MEMSET(&wifiEngineState.dataReqByPrio, 0,
              sizeof(wifiEngineState.dataReqByPrio));
    wifiEngineState.txPktWindowMax = WIFI_ENGINE_MAX_PENDING_REPLIES;
    wifiEngineState.cmdReplyPending = 0;
    wifiEngineState.dataPathState = DATA_PATH_OPENED;
    wifiEngineState.users = 0;
-   wifiEngineState.users = RESOURCE_DISABLE_PS;   
+   wifiEngineState.users = RESOURCE_DISABLE_PS;
    wifiEngineState.flags = 0;
-   wifiEngineState.ps_inhibit_state = 0; 
+   wifiEngineState.ps_inhibit_state = 0;
    WES_SET_FLAG(WES_FLAG_HW_PRESENT);
    WES_SET_FLAG(WES_FLAG_8021X_PORT_OPEN);
    wifiEngineState.pkt_cnt = 1;
@@ -236,7 +236,7 @@ int WiFiEngine_Plug()
    wifiEngineState.ps_data_ind_received = 0;
    DE_MEMSET(&wifiEngineState.key_state, 0, sizeof wifiEngineState.key_state);
    wifiEngineState.core_dump_state = WEI_CORE_DUMP_DISABLED;
-#ifdef USE_IF_REINIT   
+#ifdef USE_IF_REINIT
    WEI_ACTIVITY();
 #endif
    WEI_CMD_TX();
@@ -245,7 +245,7 @@ int WiFiEngine_Plug()
    wifiEngineState.scan_count = 0;
 #endif
    WIFI_UNLOCK();
-   
+
    /* These two queues are declared in wifi_engine_internal.h */
    init_queue(&cmd_queue);
    wei_console_init();
@@ -258,7 +258,7 @@ int WiFiEngine_Plug()
 #ifdef ENABLE_STATE_TRACE
    transid_hist_init();
 #endif /* ENABLE_STATE_TRACE */
-   
+
    wei_asscache_init();
 
    i = DriverEnvironment_GetNewTimer(&wifiEngineState.mic_cm_detect_timer_id, FALSE);
@@ -295,15 +295,15 @@ int WiFiEngine_Plug()
 #endif
    wei_sm_init();
 
-   hp = (rHostDriverProperties *)Registry_GetProperty(ID_hostDriver);  
+   hp = (rHostDriverProperties *)Registry_GetProperty(ID_hostDriver);
    WiFiEngine_SetTxPktWindow(hp->txPktWinSize);
 
-   WiFiEngine_CommitPDUSizeAlignment(); 
+   WiFiEngine_CommitPDUSizeAlignment();
 
 #ifdef USE_IF_REINIT
    /* Check once per second. */
    WiFiEngine_SetActivityTimeout(registry.network.basic.activityTimeout, 1000);
-#endif 
+#endif
 
    wifiEngineState.driver_start_ts = DriverEnvironment_GetTimestamp_msec();
 
@@ -322,7 +322,7 @@ int wpa_exit(void);
  *
  * Write some registry settings to the device hardware.
  * WiFiEngine_Plug() must be called before calling this function.
- * 
+ *
  * @param test_mode TRUE if it's a rf test firmware running, FALSE if
  *                  it's a regular firmware
  *
@@ -333,16 +333,16 @@ int WiFiEngine_Configure_Device(int test_mode)
    rGeneralWiFiProperties* generalWiFiProperties;
    rBasicWiFiProperties*   basic;
 
-   basic   = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);  
-   generalWiFiProperties = (rGeneralWiFiProperties*)Registry_GetProperty(ID_general);  
+   basic   = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
+   generalWiFiProperties = (rGeneralWiFiProperties*)Registry_GetProperty(ID_general);
 
    we_wlp_configure_device(); /* this should come ~first */
 
    /* Set the MAC address from registry unless it is 0xffffffff */
    if (! wei_is_bssid_bcast(generalWiFiProperties->macAddress))
    {
-      WiFiEngine_SendMIBSet(MIB_dot11MACAddress, NULL, 
-                            generalWiFiProperties->macAddress.octet, 
+      WiFiEngine_SendMIBSet(MIB_dot11MACAddress, NULL,
+                            generalWiFiProperties->macAddress.octet,
                             sizeof(generalWiFiProperties->macAddress.octet));
    }
    else
@@ -374,17 +374,17 @@ int WiFiEngine_Configure_Device(int test_mode)
 
    WiFiEngine_EnableLinkSupervision(basic->linkSupervision.enable);
    WiFiEngine_SetLinkSupervisionBeaconFailCount(basic->linkSupervision.beaconFailCount);
-   /* 
+   /*
    TODO: implement this before enabling this
    WiFiEngine_SetLinkSupervisionBeaconWarningCount(basic->linkSupervision.beaconWarningCount);
    */
-   WiFiEngine_LinksupervisionTimeout(4000,5);   
+   WiFiEngine_LinksupervisionTimeout(4000,5);
    WiFiEngine_SetLinkSupervisionBeaconTimeout(basic->linkSupervision.beaconTimeout);
    WiFiEngine_SetLinkSupervisionTxFailureCount(basic->linkSupervision.TxFailureCount);
    WiFiEngine_SetLinkSupervisionRoundtripCount(basic->linkSupervision.roundtripCount);
    WiFiEngine_SetLinkSupervisionRoundtripSilent(basic->linkSupervision.roundtripSilent);
    WiFiEngine_SetPSTrafficTimeout(registry.powerManagement.psTrafficTimeout);
-   WiFiEngine_SetPSWMMPeriod(basic->wmmPsPeriod);   
+   WiFiEngine_SetPSWMMPeriod(basic->wmmPsPeriod);
    WiFiEngine_SetLvl1AdaptiveTxRate(basic->txRatePowerControl);
    if (basic->multiDomainCapabilityEnforced)
    {
@@ -403,19 +403,19 @@ int WiFiEngine_Configure_Device(int test_mode)
    wei_reconfigure_auth();
    we_lqm_configure_lqm_job();
    wei_multicast_update();
-   
+
    wei_arp_filter_configure();
 
    WiFiEngine_EnableBTCoex((bool_t)basic->enableBTCoex);
-   wei_get_mib_with_update(MIB_dot11manufacturerProductVersion, 
-                           wifiEngineState.x_mac_version, 
+   wei_get_mib_with_update(MIB_dot11manufacturerProductVersion,
+                           wifiEngineState.x_mac_version,
                            sizeof(wifiEngineState.x_mac_version),
                            NULL,
                            WE_IND_NOOP);
-   DE_MEMSET(&wifiEngineState.fw_capabilities, 0, 
+   DE_MEMSET(&wifiEngineState.fw_capabilities, 0,
           sizeof(wifiEngineState.fw_capabilities));
-   wei_get_mib_with_update(MIB_dot11firmwareCapabilites, 
-                           &wifiEngineState.fw_capabilities, 
+   wei_get_mib_with_update(MIB_dot11firmwareCapabilites,
+                           &wifiEngineState.fw_capabilities,
                            sizeof wifiEngineState.fw_capabilities,
                            NULL,
                            WE_IND_NOOP);
@@ -433,14 +433,14 @@ int WiFiEngine_Configure_Device(int test_mode)
    if(basic->defaultScanJobDisposition)
    {
       int status;
-      
+
       /* Start default scan job */
-      status = WiFiEngine_SetScanJobState(0, 1, NULL);   
+      status = WiFiEngine_SetScanJobState(0, 1, NULL);
       if(status != WIFI_ENGINE_SUCCESS)
-         DE_TRACE_INT(TR_INITIALIZE, "WiFiEngine_SetScanJobState=%d\n",  status);      
-   }  
+         DE_TRACE_INT(TR_INITIALIZE, "WiFiEngine_SetScanJobState=%d\n",  status);
+   }
    wifiEngineState.periodic_scan_interval = basic->connectionPolicy.disconnectedScanInterval;
-   
+
 #if (DE_BUILTIN_SUPPLICANT == CFG_INCLUDED)
    wpa_init();
 #endif
@@ -453,7 +453,7 @@ int WiFiEngine_Configure_Device(int test_mode)
    wei_sm_queue_sig(INTSIG_POWER_UP, SYSDEF_OBJID_HOST_MANAGER_PAL,     DUMMY, FALSE);
 #endif
    wei_sm_execute();
-   
+
 #ifdef CONNECT_ON_PROP_SET
    if (basic->desiredSSID.hdr.id == M80211_IE_ID_SSID) {
       int status;
@@ -461,24 +461,24 @@ int WiFiEngine_Configure_Device(int test_mode)
       DE_TRACE_STATIC(TR_INITIALIZE, "Desired SSID set in the registry");
       status = WiFiEngine_sac_start();
       if (status != WIFI_ENGINE_SUCCESS)
-         DE_TRACE_INT(TR_INITIALIZE, "WiFiEngine_sac_start=%d\n",  status);      
+         DE_TRACE_INT(TR_INITIALIZE, "WiFiEngine_sac_start=%d\n",  status);
    }
 #endif
 
    DE_TRACE_STATIC(TR_INITIALIZE, "Done!\n");
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
 
 /*!
- * @brief Reset WiFi_engine. 
+ * @brief Reset WiFi_engine.
  *
  * This will reset the state machine to the PowerOff state.  This
  * function should be called if the hardware is removed but the
  * driver/WiFiEngine remains loaded.
  */
-int WiFiEngine_Unplug() 
+int WiFiEngine_Unplug()
 {
    if (! WES_TEST_FLAG(WES_FLAG_HW_PRESENT))
    {
@@ -509,7 +509,7 @@ int WiFiEngine_Unplug()
    wei_cm_unplug(wifiEngineState.cm_priv);
    wei_interface_unplug();
    wei_data_unplug();
-   wei_ps_unplug();   
+   wei_ps_unplug();
 
    /* Drain signals */
    wei_sm_drain_sig_q();
@@ -528,11 +528,11 @@ int WiFiEngine_Unplug()
    DriverEnvironment_FreeTimer(wifiEngineState.mic_cm_assoc_holdoff_timer_id);
    DriverEnvironment_FreeTimer(wifiEngineState.monitor_traffic_timer_id);
 
-#ifdef USE_IF_REINIT   
+#ifdef USE_IF_REINIT
    DriverEnvironment_FreeTimer(wifiEngineState.inactivity_timer_id);
 #endif
-   DriverEnvironment_FreeTimer(wifiEngineState.cmd_timer_id);   
-   DriverEnvironment_FreeTimer(wifiEngineState.ps_traffic_timeout_timer_id);  
+   DriverEnvironment_FreeTimer(wifiEngineState.cmd_timer_id);
+   DriverEnvironment_FreeTimer(wifiEngineState.ps_traffic_timeout_timer_id);
 
 #if (DE_CCX == CFG_INCLUDED)
    wei_ccx_unplug();
@@ -545,15 +545,15 @@ int WiFiEngine_Unplug()
 
    /* some stuff from WiFiEngine_Reinitialize */
    wei_netlist_free_all_nets();
-   WiFiEngine_RateMonInit(); 
+   WiFiEngine_RateMonInit();
    wei_pmkid_unplug();
    wei_shutdown_roam();
    wei_shutdown_scan();
    wei_shutdown_auth();
-   wei_unplug_mib();   
+   wei_unplug_mib();
    wei_initialize_mib();
    wei_initialize_auth();
-   wei_initialize_scan(); 
+   wei_initialize_scan();
    wei_virt_trig_unplug();
 
    /* This must happen last since some components may be using cbc structures. */
@@ -564,7 +564,7 @@ int WiFiEngine_Unplug()
       /* Always trace how much dynamic memory the driver have allocated.                 */
       /* If it increases after a activate-deactivate, list the buffers to find the leak. */
       static int last_sum_allocated = 0;
-      int        sum_allocated =  malloc_sum();     
+      int        sum_allocated =  malloc_sum();
       DE_TRACE_INT(TR_INITIALIZE, "Memory allocated by malloc at unplug: %d\n", sum_allocated );
       if (sum_allocated > last_sum_allocated)
       {

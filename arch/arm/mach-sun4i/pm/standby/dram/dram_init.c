@@ -584,4 +584,3 @@ __s32 dram_scan_readpipe(void)
 {
     return DRAMC_scan_readpipe();
 }
-

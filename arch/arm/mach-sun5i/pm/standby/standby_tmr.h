@@ -101,4 +101,3 @@ void standby_tmr_enable_watchdog(void);
 void standby_tmr_disable_watchdog(void);
 
 #endif  //__STANDBY_TMR_H__
-

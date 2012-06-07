@@ -98,7 +98,7 @@ extern int cmd_sta_block_icmp_response(struct sigma_dut *dut,
 				       dutCmdResponse_t *cmdRes);
 
 extern int cmd_traffic_send_ping(struct sigma_dut *dut,
-                                        tgPingStart_t *staPing, 
+                                        tgPingStart_t *staPing,
                                         dutCmdResponse_t *spresp);
 
 int cmd_traffic_stop_ping(struct sigma_dut *dut,

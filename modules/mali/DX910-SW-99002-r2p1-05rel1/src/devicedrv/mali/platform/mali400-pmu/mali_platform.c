@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -16,7 +16,7 @@
 #include "mali_osk.h"
 #include "mali_platform.h"
 
-#include <linux/module.h>  
+#include <linux/module.h>
 #include <linux/clk.h>
 #include <mach/irqs.h>
 #include <mach/clock.h>
@@ -83,7 +83,7 @@ _mali_osk_errcode_t mali_platform_init(_mali_osk_resource_t *resource)
 	unsigned long rate;
 	int clk_div;
 	int mali_used = 0;
-	
+
 	//get mali ahb clock
 	h_ahb_mali = clk_get(NULL, "ahb_mali");
 	if(!h_ahb_mali){
@@ -104,7 +104,7 @@ _mali_osk_errcode_t mali_platform_init(_mali_osk_resource_t *resource)
 	if(clk_set_parent(h_mali_clk, h_ve_pll)){
 		MALI_PRINT(("try to set mali clock source failed!\n"));
 	}
-	
+
 	//set mali clock
 	rate = clk_get_rate(h_ve_pll);
 
@@ -125,17 +125,17 @@ _mali_osk_errcode_t mali_platform_init(_mali_osk_resource_t *resource)
 	if(clk_set_rate(h_mali_clk, rate)){
 		MALI_PRINT(("try to set mali clock failed!\n"));
 	}
-	
+
 	if(clk_reset(h_mali_clk,0)){
 		MALI_PRINT(("try to reset release failed!\n"));
 	}
-	
+
 	MALI_PRINT(("mali clock set completed, clock is  %d Mhz\n", rate));
-	
+
 #if USING_MALI_PMM
 	if( resource == NULL )
 	{
-		/* Nothing to set up for the system */	
+		/* Nothing to set up for the system */
 	}
 	else if( resource->type == PMU )
 	{
@@ -149,14 +149,14 @@ _mali_osk_errcode_t mali_platform_init(_mali_osk_resource_t *resource)
 
 		MALI_DEBUG_ASSERT( pmu_info == NULL );
 		pmu_info = (platform_pmu_t *)_mali_osk_malloc(sizeof(*pmu_info));
-		MALI_CHECK_NON_NULL( pmu_info, _MALI_OSK_ERR_NOMEM );	
+		MALI_CHECK_NON_NULL( pmu_info, _MALI_OSK_ERR_NOMEM );
 
 		/* All values get 0 as default */
 		_mali_osk_memset(pmu_info, 0, sizeof(*pmu_info));
-		
+
 		pmu_info->reg_base_addr = resource->base;
 		pmu_info->reg_size = (u32)PMU_REGISTER_ADDRESS_SPACE_SIZE;
-		pmu_info->name = resource->description; 
+		pmu_info->name = resource->description;
 		pmu_info->irq_num = resource->irq;
 
 		if( _MALI_OSK_ERR_OK != _mali_osk_mem_reqregion(pmu_info->reg_base_addr, pmu_info->reg_size, pmu_info->name) )
@@ -194,16 +194,16 @@ _mali_osk_errcode_t mali_platform_init(_mali_osk_resource_t *resource)
 		pmu_test(pmu_info, (MALI_PMM_CORE_GP|MALI_PMM_CORE_L2|MALI_PMM_CORE_PP0));
 #endif
 
-		MALI_DEBUG_PRINT( 4, ("PLATFORM mali400-pmu: Initialized - %s\n", pmu_info->name) );		
+		MALI_DEBUG_PRINT( 4, ("PLATFORM mali400-pmu: Initialized - %s\n", pmu_info->name) );
 	}
 	else
 	{
 		/* Didn't expect a different resource */
 		MALI_ERROR(_MALI_OSK_ERR_INVALID_ARGS);
-	}	
+	}
 
 	MALI_SUCCESS;
-	
+
 cleanup:
 	_mali_osk_free(pmu_info);
 	pmu_info = NULL;
@@ -218,12 +218,12 @@ cleanup:
 
 _mali_osk_errcode_t mali_platform_deinit(_mali_osk_resource_type_t *type)
 {
-	
+
 #if USING_MALI_PMM
 	if( type == NULL )
 	{
 		/* Nothing to tear down for the system */
-	}	
+	}
 	else if (*type == PMU)
 	{
 		if( pmu_info )
@@ -240,8 +240,8 @@ _mali_osk_errcode_t mali_platform_deinit(_mali_osk_resource_type_t *type)
 	{
 		/* Didn't expect a different resource */
 		MALI_ERROR(_MALI_OSK_ERR_INVALID_ARGS);
-	}	
-		
+	}
+
 	MALI_SUCCESS;
 
 #else
@@ -252,22 +252,22 @@ _mali_osk_errcode_t mali_platform_deinit(_mali_osk_resource_type_t *type)
 
 _mali_osk_errcode_t mali_platform_powerdown(u32 cores)
 {
-	
+
 #if USING_MALI_PMM
 	u32 stat;
 	u32 timeout;
 	u32 cores_pmu;
-	
+
 	MALI_DEBUG_ASSERT_POINTER(pmu_info);
 	MALI_DEBUG_ASSERT( cores != 0 ); /* Shouldn't receive zero from PMM */
 	MALI_DEBUG_PRINT( 4, ("PLATFORM mali400-pmu: power down (0x%x)\n", cores) );
 
-	
+
 	cores_pmu = pmu_translate_cores_to_pmu(cores);
 	pmu_reg_write( pmu_info, (u32)PMU_REG_ADDR_MGMT_POWER_DOWN, cores_pmu );
 
 	/* Wait for cores to be powered down */
-	timeout = 10; /* 10ms */ 
+	timeout = 10; /* 10ms */
 	do
 	{
 		/* Get status of sleeping cores */
@@ -279,7 +279,7 @@ _mali_osk_errcode_t mali_platform_powerdown(u32 cores)
 	} while( timeout > 0 );
 
 	if( timeout == 0 ) MALI_ERROR(_MALI_OSK_ERR_TIMEOUT);
-	
+
 	/*close mali axi/apb clock*/
 	if(mali_clk_flag == 1)
 	{
@@ -288,7 +288,7 @@ _mali_osk_errcode_t mali_platform_powerdown(u32 cores)
 	       clk_disable(h_mali_clk);
 	       clk_disable(h_ahb_mali);
 	}
-	
+
 	MALI_SUCCESS;
 
 #else
@@ -303,11 +303,11 @@ _mali_osk_errcode_t mali_platform_powerup(u32 cores)
 	u32 cores_pmu;
 	u32 stat;
 	u32 timeout;
-	
+
 	MALI_DEBUG_ASSERT_POINTER(pmu_info);
 	MALI_DEBUG_ASSERT( cores != 0 ); /* Shouldn't receive zero from PMM */
 	MALI_DEBUG_PRINT( 4, ("PLATFORM mali400-pmu: power up (0x%x)\n", cores) );
-	
+
 	/*enable mali axi/apb clock*/
 	if(mali_clk_flag == 0)
 	{
@@ -323,13 +323,13 @@ _mali_osk_errcode_t mali_platform_powerup(u32 cores)
 		       MALI_PRINT(("try to enable mali clock failed!\n"));
 	        }
 	}
-	
+
 	/* Don't use interrupts - just poll status */
 	pmu_reg_write( pmu_info, (u32)PMU_REG_ADDR_MGMT_INT_MASK, 0 );
 	cores_pmu = pmu_translate_cores_to_pmu(cores);
 	pmu_reg_write( pmu_info, (u32)PMU_REG_ADDR_MGMT_POWER_UP, cores_pmu );
 
-	timeout = 10; /* 10ms */ 
+	timeout = 10; /* 10ms */
 	do
 	{
 		/* Get status of sleeping cores */
@@ -341,7 +341,7 @@ _mali_osk_errcode_t mali_platform_powerup(u32 cores)
 	} while( timeout > 0 );
 
 	if( timeout == 0 ) MALI_ERROR(_MALI_OSK_ERR_TIMEOUT);
-	
+
 	MALI_SUCCESS;
 
 #else
@@ -445,29 +445,29 @@ void pmu_test( platform_pmu_t *pmu, u32 cores )
 {
 	u32 stat;
 	u32 timeout;
-	
+
 	MALI_PRINT( ("PMU_TEST: Start\n") );
-	
+
 	pmu_dump_regs( pmu );
-	
+
 	MALI_PRINT( ("PMU_TEST: Power down cores: 0x%x\n", cores) );
 	_mali_pmm_pmu_power_down( pmu, cores, MALI_TRUE );
-	
+
 	stat = pmu_reg_read( pmu, (u32)PMU_REG_ADDR_MGMT_STATUS );
 	MALI_PRINT( ("PMU_TEST: %s\n", (stat & cores) == cores ? "SUCCESS" : "FAIL" ) );
-	
+
 	pmu_dump_regs( pmu );
-	
+
 	MALI_PRINT( ("PMU_TEST: Power up cores: 0x%x\n", cores) );
 	_mali_pmm_pmu_power_up( pmu, cores, MALI_FALSE );
-	
+
 	MALI_PRINT( ("PMU_TEST: Waiting for power up...\n") );
 	timeout = 1000; /* 1 sec */
 	while( !_mali_pmm_pmu_irq_power_up(pmu) && timeout > 0 )
 	{
 		_mali_osk_time_ubusydelay(1000); /* 1ms */
-		timeout--;		
-	} 
+		timeout--;
+	}
 
 	MALI_PRINT( ("PMU_TEST: Waited %dms for interrupt\n", (1000-timeout)) );
 	stat = pmu_reg_read( pmu, (u32)PMU_REG_ADDR_MGMT_STATUS );

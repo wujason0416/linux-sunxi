@@ -35,7 +35,7 @@ typedef enum            /* Enumeration used as identification for a property. */
 /*****************************************************************************
 G L O B A L   D A T A T Y P E S
 *****************************************************************************/
-typedef struct 
+typedef struct
 {
    char* buffer;
    char* ptr;

@@ -1,7 +1,7 @@
-/* 
+/*
  * drivers/input/key/hv2605_keypad.c
  *
- * FocalTech ft5x0x TouchScreen driver. 
+ * FocalTech ft5x0x TouchScreen driver.
  *
  * Copyright (c) 2010  Focal tech Ltd.
  *
@@ -57,12 +57,12 @@ static int revert_x_flag = 0;
 static int revert_y_flag = 0;
 
 /*
- * aw_get_pendown_state  : get the int_line data state, 
- * 
+ * aw_get_pendown_state  : get the int_line data state,
+ *
  * return value:
  *             return PRESS_DOWN: if down
  *             return FREE_UP: if up,
- *             return 0: do not need process, equal free up.          
+ *             return 0: do not need process, equal free up.
  */
 static int aw_get_pendown_state(void)
 {
@@ -72,14 +72,14 @@ static int aw_get_pendown_state(void)
     //get the input port state
     reg_val = readl(gpio_addr + PIOH_DATA);
 	//printk("reg_val = %x\n",reg_val);
-    if(!(reg_val & (1<<IRQ_NO))) 
+    if(!(reg_val & (1<<IRQ_NO)))
     {
         state = PRESS_DOWN;
         //printk("pen down\n");
         return PRESS_DOWN;
     }
     //touch panel is free up
-    else   
+    else
     {
         state = FREE_UP;
         return FREE_UP;
@@ -100,17 +100,17 @@ static void aw_clear_penirq(void)
     //writel(reg_val&(1<<(IRQ_EINT21)),gpio_addr + PIO_INT_STAT_OFFSET);
     if((reg_val = (reg_val&(1<<(IRQ_NO)))))
     {
-        //printk("==IRQ_EINT29=\n");              
+        //printk("==IRQ_EINT29=\n");
         writel(reg_val,gpio_addr + PIO_INT_STAT_OFFSET);
     }
 }
 
 /**
  * aw_set_irq_mode - according sysconfig's subkey "ctp_int_port" to config int port.
- * 
- * return value: 
+ *
+ * return value:
  *              0:      success;
- *              others: fail; 
+ *              others: fail;
  */
 static int aw_set_irq_mode(void)
 {
@@ -134,37 +134,37 @@ static int aw_set_irq_mode(void)
             goto request_tp_int_port_failed;
         }
     #endif
-    
+
 #ifdef AW_GPIO_INT_API_ENABLE
 
 #else
         //Config IRQ_EINT25 Negative Edge Interrupt
         reg_val = readl(gpio_addr + PIO_INT_CFG3_OFFSET);
         reg_val &=(~(7<<4));
-        reg_val |=(1<<4);  
+        reg_val |=(1<<4);
         writel(reg_val,gpio_addr + PIO_INT_CFG3_OFFSET);
-        
+
         aw_clear_penirq();
-            
+
         //Enable IRQ_EINT25 of PIO Interrupt
         reg_val = readl(gpio_addr + PIO_INT_CTRL_OFFSET);
         reg_val |=(1<<IRQ_NO);
         writel(reg_val,gpio_addr + PIO_INT_CTRL_OFFSET);
 	    //disable_irq(IRQ_EINT);
-	    	
+
     mdelay(2);
 #endif
 
 request_tp_int_port_failed:
-    return ret;  
+    return ret;
 }
 
 /**
  * aw_set_gpio_mode - according sysconfig's subkey "ctp_io_port" to config io port.
  *
- * return value: 
+ * return value:
  *              0:      success;
- *              others: fail; 
+ *              others: fail;
  */
 static int aw_set_gpio_mode(void)
 {
@@ -195,9 +195,9 @@ request_tp_io_port_failed:
 /**
  * aw_judge_int_occur - whether interrupt occur.
  *
- * return value: 
+ * return value:
  *              0:      int occur;
- *              others: no int occur; 
+ *              others: no int occur;
  */
 static int aw_judge_int_occur(void)
 {
@@ -210,7 +210,7 @@ static int aw_judge_int_occur(void)
     {
         ret = 0;
     }
-    return ret; 	
+    return ret;
 }
 
 /**
@@ -232,7 +232,7 @@ static void aw_free_platform_resource(void)
     if(gpio_reset_hdle){
         gpio_release(gpio_reset_hdle, 2);
     }
-    
+
     return;
 }
 
@@ -246,12 +246,12 @@ static void aw_free_platform_resource(void)
 static int aw_init_platform_resource(void)
 {
 	int ret = 0;
-	
+
         gpio_addr = ioremap(PIO_BASE_ADDRESS, PIO_RANGE_SIZE);
         //printk("%s, gpio_addr = 0x%x. \n", __func__, gpio_addr);
         if(!gpio_addr) {
 	    ret = -EIO;
-	    goto exit_ioremap_failed;	
+	    goto exit_ioremap_failed;
 	}
 //    gpio_wakeup_enable = 1;
     gpio_wakeup_hdle = gpio_request_ex("ctp_para", "ctp_wakeup");
@@ -268,9 +268,9 @@ static int aw_init_platform_resource(void)
         //ret = EIO;
         gpio_reset_enable = 0;
         //goto exit_gpio_reset_request_failed;
-        
+
     }
-    
+
     printk("TP IRQ INITAL\n");
     if(aw_set_irq_mode()){
         ret = -EIO;
@@ -278,8 +278,8 @@ static int aw_init_platform_resource(void)
     }
 
     return ret;
-    
-exit_gpio_int_request_failed: 
+
+exit_gpio_int_request_failed:
 exit_ioremap_failed:
 aw_free_platform_resource();
     return ret;
@@ -288,7 +288,7 @@ aw_free_platform_resource();
 
 /**
  * aw_fetch_sysconfig_para - get config info from sysconfig.fex file.
- * return value:  
+ * return value:
  *                    = 0; success;
  *                    < 0; err
  */
@@ -300,7 +300,7 @@ static int aw_fetch_sysconfig_para(void)
     script_parser_value_type_t type = SCIRPT_PARSER_VALUE_TYPE_STRING;
 
     printk("%s. \n", __func__);
-    
+
     if(SCRIPT_PARSER_OK != script_parser_fetch("ctp_para", "ctp_used", &ctp_used, 1)){
         pr_err("ilitek_ts: script_parser_fetch err. \n");
         goto script_parser_fetch_err;
@@ -369,7 +369,7 @@ static void aw_ts_reset(void)
         }
         mdelay(TS_INITIAL_HIGH_PERIOD);
     }
-    
+
 }
 
 /**
@@ -379,7 +379,7 @@ static void aw_ts_reset(void)
 static void aw_ts_wakeup(void)
 {
     printk("%s. \n", __func__);
-    if(1 == gpio_wakeup_enable){  
+    if(1 == gpio_wakeup_enable){
         if(EGPIO_SUCCESS != gpio_write_one_pin_value(gpio_wakeup_hdle, 0, "ctp_wakeup")){
             printk("ts_resume: err when operate gpio. \n");
         }
@@ -390,7 +390,7 @@ static void aw_ts_wakeup(void)
         mdelay(TS_WAKEUP_HIGH_PERIOD);
 
     }
-    
+
     return;
 }
 ////////////////////////////////////////////////////////////////
@@ -448,7 +448,7 @@ static int zt_i2c_rxdata(char *rxdata, int length)
 	ret = i2c_transfer(this_client->adapter, msgs, 2);
 	if (ret < 0)
 		pr_err("msg %s i2c read error: %d\n", __func__, ret);
-	
+
 	return ret;
 }
 
@@ -484,7 +484,7 @@ static int zt_set_reg(u8 para)
         pr_err("write reg failed! %#x ret: %d", buf[0], ret);
         return -1;
     }
-    
+
     return 0;
 }
 
@@ -496,7 +496,7 @@ static void zt_ts_release(void)
 	input_sync(data->input_dev);
 }
 /*
- * We have 4 complete samples.  
+ * We have 4 complete samples.
  * treating X and Y values separately.  Then pick the two with the
  * least variance, and average them.
  */
@@ -518,15 +518,15 @@ static unsigned int ts_filter(int *xdata,int *ydata,int *x, int *y)
 		   min_y = ydata[i];
 		sum_x += xdata[i];
 		sum_y += ydata[i];
-		   
+
 		if(xdata[i] > max_x)
 		  max_x = xdata[i];
 		if(ydata[i] > max_y)
 		  max_y = ydata[i];
-		 
+
 	}
 
-       
+
 
 	*x = (sum_x - min_x - max_x) >>1;
 	*y = (sum_y - min_y - max_y) >>1;
@@ -541,7 +541,7 @@ static int zt_read_data(void)
 	int x[4],y[4];
 	u8 buf[2] = {0};
 	int ret = -1;
-	
+
 	//printk("%s. \n", __func__);
 	memset(event, 0, sizeof(struct ts_event));
 	zt_set_reg(READ_X);
@@ -550,7 +550,7 @@ static int zt_read_data(void)
 	zt_set_reg(READ_Y);
 	ret = zt_i2c_rxdata(buf, 2);
 	y[0] =(buf[0]<<4) + (buf[1]>>4);
-	
+
 	zt_set_reg(READ_X);
 	ret = zt_i2c_rxdata(buf, 2);
 	x[1] =(buf[0]<<4) + (buf[1]>>4);
@@ -571,7 +571,7 @@ static int zt_read_data(void)
 	zt_set_reg(READ_Y);
 	ret = zt_i2c_rxdata(buf, 2);
 	y[3] =(buf[0]<<4) + (buf[1]>>4);
-			
+
 	zt_set_reg(READ_Z1);
 	ret = zt_i2c_rxdata(buf, 2);
 	z1 =(buf[0]<<4) + (buf[1]>>4);
@@ -596,14 +596,14 @@ static void zt_report_value(void)
 	struct zt_ts_data *data = i2c_get_clientdata(this_client);
 	struct ts_event *event = &data->event;
         //printk("%s. \n", __func__);
-        
+
 	input_report_abs(data->input_dev, ABS_X, (event->x |TP_ID));
 	input_report_abs(data->input_dev, ABS_Y, (event->y |TP_ID) );
 	//printk("event->x = %x,event->y = %x\n",event->x,event->y);
 	input_report_abs(data->input_dev, ABS_PRESSURE, event->pressure);
 	input_report_key(data->input_dev, BTN_TOUCH, 1);
 	input_sync(data->input_dev);
-}	
+}
 
 static void zt_read_loop(struct work_struct *work)
 {
@@ -611,25 +611,25 @@ static void zt_read_loop(struct work_struct *work)
 	int i;
 	int reg_data[3];
 	/*
-	uint32_t tmp = 0; 
+	uint32_t tmp = 0;
 	tmp = readl(PIOI_DATA);
 	printk("%s. tmp = 0x%x. \n", __func__, tmp);
 	*/
-	
+
 	for(i = 0;i< 16;i++);
 	reg_data[0] = (readl(PIOI_DATA)>>13)&0x1;
 	for(i = 0;i< 16;i++);
 	reg_data[1] = (readl(PIOI_DATA)>>13)&0x1;
 	for(i = 0;i< 16;i++);
-	reg_data[2] = (readl(PIOI_DATA)>>13)&0x1;  
+	reg_data[2] = (readl(PIOI_DATA)>>13)&0x1;
 	//printk("==work=\n");
 	//printk("reg_data[0]  = 0x%x,  reg_data[1]  = 0x%x, reg_data[2]  = 0x%x .\n",  reg_data[0], reg_data[1], reg_data[2]);
-	
+
 	if((!reg_data[0])&&(!reg_data[1])&&(!reg_data[2]))
 	{
 	        //printk("press down. \n");
-		ret = zt_read_data();	
-	    if (ret == 0) 
+		ret = zt_read_data();
+	    if (ret == 0)
 		  zt_report_value();
 		  tp_flg = 0;
 		  queue_delayed_work(zt_ts->queue, &zt_ts->work, POINT_DELAY);
@@ -646,19 +646,19 @@ static void zt_read_loop(struct work_struct *work)
 }
 
 
-static int 
+static int
 zt_ts_probe(struct i2c_client *client, const struct i2c_device_id *id)
 {
 
 	struct input_dev *input_dev;
 	int err = 0;
-	
+
 	printk("======================================zt_ts_probe=============================================\n");
 	err = aw_ops.init_platform_resource();
 	if(0 != err){
-	    printk("%s:aw_ops.init_platform_resource err. \n", __func__);    
+	    printk("%s:aw_ops.init_platform_resource err. \n", __func__);
 	}
-	
+
 	tp_flg = 0;
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
 		err = -ENODEV;
@@ -691,7 +691,7 @@ zt_ts_probe(struct i2c_client *client, const struct i2c_device_id *id)
 		dev_err(&client->dev, "failed to allocate input device\n");
 		goto exit_input_dev_alloc_failed;
 	}
-	
+
 	zt_ts->input_dev = input_dev;
 
 	set_bit(ABS_X, input_dev->absbit);
@@ -721,7 +721,7 @@ zt_ts_probe(struct i2c_client *client, const struct i2c_device_id *id)
         aw_ops.set_gpio_mode();
 	queue_delayed_work(zt_ts->queue, &zt_ts->work, 5*POINT_DELAY);
 	printk("==probe over =\n");
-  
+
     	return 0;
 
 exit_input_register_device_failed:
@@ -740,7 +740,7 @@ exit_check_functionality_failed:
 
 static int __devexit zt_ts_remove(struct i2c_client *client)
 {
-	
+
 	struct zt_ts_data *zt_tsc = i2c_get_clientdata(client);
 	input_unregister_device(zt_tsc->input_dev);
 	kfree(zt_ts);
@@ -789,4 +789,3 @@ module_exit(zt_ts_exit);
 MODULE_AUTHOR("<zhengdixu@allwinnertech.com>");
 MODULE_DESCRIPTION("zt8031 TouchScreen driver");
 MODULE_LICENSE("GPL");
-

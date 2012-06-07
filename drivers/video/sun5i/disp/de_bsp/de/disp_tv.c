@@ -9,11 +9,11 @@ __s32 Disp_Switch_Dram_Mode(__u32 type, __u8 tv_mod)
 {
     return DIS_SUCCESS;
 }
- 
+
 __s32 Disp_TVEC_Init(__u32 sel)
 {
     __s32 ret = 0, value = 0;
-    
+
     tve_clk_init(sel);
     tve_clk_on(sel);
 	TVE_init(sel);
@@ -37,11 +37,11 @@ __s32 Disp_TVEC_Init(__u32 sel)
 	    {
 	        __s32 i = 0;
 	        char sub_key[20];
-	        
+
 	        for(i=0; i<4; i++)
 	        {
 	            sprintf(sub_key, "dac%d_src", i);
-	            
+
 	            ret = OSAL_Script_FetchParser_Data("tv_out_dac_para", sub_key, &value, 1);
 	            if(ret < 0)
 	            {
@@ -59,7 +59,7 @@ __s32 Disp_TVEC_Init(__u32 sel)
     gdisp.screen[sel].tv_mode = DISP_TV_MOD_720P_50HZ;
     return DIS_SUCCESS;
 }
-      
+
 
 __s32 Disp_TVEC_Exit(__u32 sel)
 {
@@ -95,7 +95,7 @@ static void Disp_TVEC_DacCfg(__u32 sel, __u8 mode)
 	TVE_dac_disable(sel, 1);
 	TVE_dac_disable(sel, 2);
 	TVE_dac_disable(sel, 3);
-    
+
 	switch(mode)
 	{
 	case DISP_TV_MOD_NTSC:
@@ -137,7 +137,7 @@ static void Disp_TVEC_DacCfg(__u32 sel, __u8 mode)
 		    }
 		}
 		break;
-    					
+
 	case DISP_TV_MOD_480I:
 	case DISP_TV_MOD_576I:
 	case DISP_TV_MOD_480P:
@@ -179,7 +179,7 @@ static void Disp_TVEC_DacCfg(__u32 sel, __u8 mode)
     	break;
 
 	default:
-		break;           
+		break;
 	}
 }
 
@@ -218,11 +218,11 @@ __s32 BSP_disp_tv_open(__u32 sel)
                 }
             }
         }
-        
+
         TCON1_set_tv_mode(sel,tv_mod);
-        TVE_set_tv_mode(sel, tv_mod);	
+        TVE_set_tv_mode(sel, tv_mod);
         Disp_TVEC_DacCfg(sel, tv_mod);
-		
+
         TCON1_open(sel);
         Disp_TVEC_Open(sel);
 
@@ -231,7 +231,7 @@ __s32 BSP_disp_tv_open(__u32 sel)
         {
             user_gpio_set_t  gpio_info[1];
             __hdle gpio_pa_shutdown;
-            __s32 ret;            
+            __s32 ret;
 
             memset(gpio_info, 0, sizeof(user_gpio_set_t));
             ret = OSAL_Script_FetchParser_Data("audio_para","audio_pa_ctrl", (int *)gpio_info, sizeof(user_gpio_set_t)/sizeof(int));
@@ -242,7 +242,7 @@ __s32 BSP_disp_tv_open(__u32 sel)
             else
             {
                 gpio_pa_shutdown = OSAL_GPIO_Request(gpio_info, 1);
-                if(!gpio_pa_shutdown) 
+                if(!gpio_pa_shutdown)
                 {
                     DE_WRN("audio codec_wakeup request gpio fail!\n");
                 }
@@ -263,14 +263,14 @@ __s32 BSP_disp_tv_open(__u32 sel)
     }
     return DIS_SUCCESS;
 }
-      
+
 
 __s32 BSP_disp_tv_close(__u32 sel)
 {
     if(gdisp.screen[sel].status & TV_ON)
     {
         __u32 scaler_index = 0;
-        
+
         Image_close(sel);
         TCON1_close(sel);
         Disp_TVEC_Close(sel);
@@ -290,7 +290,7 @@ __s32 BSP_disp_tv_close(__u32 sel)
         {
             user_gpio_set_t  gpio_info[1];
             __hdle gpio_pa_shutdown;
-            __s32 ret;         
+            __s32 ret;
 
             memset(gpio_info, 0, sizeof(user_gpio_set_t));
             ret = OSAL_Script_FetchParser_Data("audio_para","audio_pa_ctrl", (int *)gpio_info, sizeof(user_gpio_set_t)/sizeof(int));
@@ -301,7 +301,7 @@ __s32 BSP_disp_tv_close(__u32 sel)
             else
             {
                 gpio_pa_shutdown = OSAL_GPIO_Request(gpio_info, 1);
-                if(!gpio_pa_shutdown) 
+                if(!gpio_pa_shutdown)
                 {
                     DE_WRN("audio codec_wakeup request gpio fail!\n");
                 }
@@ -328,7 +328,7 @@ __s32 BSP_disp_tv_set_mode(__u32 sel, __disp_tv_mode_t tv_mod)
         DE_WRN("unsupported tv mode:%d in BSP_disp_tv_set_mode\n", tv_mod);
         return DIS_FAIL;
     }
-    
+
     gdisp.screen[sel].tv_mode = tv_mod;
     gdisp.screen[sel].output_type = DISP_OUTPUT_TYPE_TV;
     return DIS_SUCCESS;
@@ -336,10 +336,10 @@ __s32 BSP_disp_tv_set_mode(__u32 sel, __disp_tv_mode_t tv_mod)
 
 
 __s32 BSP_disp_tv_get_mode(__u32 sel)
-{   
+{
     return gdisp.screen[sel].tv_mode;
 }
-      
+
 
 __s32 BSP_disp_tv_get_interface(__u32 sel)
 {
@@ -377,8 +377,8 @@ __s32 BSP_disp_tv_get_interface(__u32 sel)
 
     return  ret;
 }
-      
-      
+
+
 
 __s32 BSP_disp_tv_get_dac_status(__u32 sel, __u32 index)
 {
@@ -388,12 +388,12 @@ __s32 BSP_disp_tv_get_dac_status(__u32 sel, __u32 index)
 __s32 BSP_disp_tv_set_dac_source(__u32 sel, __u32 index, __disp_tv_dac_source source)
 {
     gdisp.screen[sel].dac_source[index] = source;
-    
+
     if(gdisp.screen[sel].status & TV_ON)
     {
         Disp_TVEC_DacCfg(sel, gdisp.screen[sel].tv_mode);
     }
-    
+
     return  0;
 }
 
@@ -408,7 +408,7 @@ __s32 BSP_disp_tv_auto_check_enable(__u32 sel)
     TVE_dac_autocheck_enable(sel, 1);
     TVE_dac_autocheck_enable(sel, 2);
     TVE_dac_autocheck_enable(sel, 3);
-    
+
     return DIS_SUCCESS;
 }
 
@@ -419,7 +419,7 @@ __s32 BSP_disp_tv_auto_check_disable(__u32 sel)
     TVE_dac_autocheck_disable(sel, 1);
     TVE_dac_autocheck_disable(sel, 2);
     TVE_dac_autocheck_disable(sel, 3);
-    
+
     return DIS_SUCCESS;
 }
 
@@ -434,7 +434,7 @@ __s32 BSP_disp_tv_set_src(__u32 sel, __disp_lcdc_src_t src)
         case DISP_LCDC_SRC_DE_CH2:
             TCON1_select_src(sel, LCDC_SRC_DE2);
             break;
-            
+
         case DISP_LCDC_SRC_BLUT:
             TCON1_select_src(sel, LCDC_SRC_BLUE);
             break;
@@ -445,4 +445,3 @@ __s32 BSP_disp_tv_set_src(__u32 sel, __disp_lcdc_src_t src)
     }
     return DIS_SUCCESS;
 }
-

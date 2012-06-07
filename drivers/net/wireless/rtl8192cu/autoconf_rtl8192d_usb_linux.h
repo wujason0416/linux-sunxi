@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -82,7 +82,7 @@
 #ifdef CONFIG_AP_MODE
 	#ifndef CONFIG_NATIVEAP_MLME
 		#define CONFIG_HOSTAPD_MLME	1
-	#endif			
+	#endif
 	#define CONFIG_FIND_BEST_CHANNEL	1
 #endif
 
@@ -128,13 +128,13 @@
 
 
 
-/* 
+/*
  * CONFIG_USE_USB_BUFFER_ALLOC_XX uses Linux USB Buffer alloc API and is for Linux platform only now!
  */
 #define CONFIG_USE_USB_BUFFER_ALLOC_TX 1	// Trade-off: For TX path, improve stability on some platforms, but may cause performance degrade on other platforms.
 //#define CONFIG_USE_USB_BUFFER_ALLOC_RX 1	// For RX path
 
-/* 
+/*
  * USB VENDOR REQ BUFFER ALLOCATION METHOD
  * if not set we'll use function local variable (stack memory)
  */
@@ -163,7 +163,7 @@
 
 #define RTL8192CU_ADHOC_WORKAROUND_SETTING 1
 
-#define DISABLE_BB_RF	0	
+#define DISABLE_BB_RF	0
 
 #define RTL8191C_FPGA_NETWORKTYPE_ADHOC 0
 

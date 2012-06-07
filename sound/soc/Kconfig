@@ -11,7 +11,7 @@ menuconfig SND_SOC
 
 	  If you want ASoC support, you should say Y here and also to the
 	  specific driver for your SoC platform below.
-	  
+
 	  ASoC provides power efficient ALSA support for embedded battery powered
 	  SoC based systems like PDA's, Phones and Personal Media Players.
 
@@ -62,8 +62,8 @@ config SOUND_SUN4I
        depends on ARCH_SUN4I
        help
          SOUND driver for sun4i
-         
-if SOUND_SUN4I          
+
+if SOUND_SUN4I
 source "sound/soc/sun4i/Kconfig"
 source "sound/soc/sun4i/hdmiaudio/Kconfig"
 source "sound/soc/sun4i/spdif/Kconfig"
@@ -76,7 +76,7 @@ config SOUND_SUN5I
        help
          SOUND driver for sun5i
 
-if SOUND_SUN5I          
+if SOUND_SUN5I
 source "sound/soc/sun5i/Kconfig"
 source "sound/soc/sun5i/hdmiaudio/Kconfig"
 source "sound/soc/sun5i/spdif/Kconfig"

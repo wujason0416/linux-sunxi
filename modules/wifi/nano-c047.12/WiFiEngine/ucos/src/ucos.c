@@ -11,7 +11,7 @@
 /* Module Description :                                                   */
 /* ==================                                                     */
 /*                                                                        */
-/* This module bla, bla bla                                               */ 
+/* This module bla, bla bla                                               */
  /*                                                                        */
 /* Restrictions/special remarks:                                          */
 /* ============================                                           */
@@ -237,7 +237,7 @@ ucos_rc_t ucos_init(void)
 
    MEMSET(&ucos_statistics, 0x00, sizeof(ucos_statistics));
 #ifdef POWER_MEASUREMENT
-   idle_enabled = TRUE;   
+   idle_enabled = TRUE;
 #else
 	idle_enabled = FALSE;
 #endif
@@ -297,7 +297,7 @@ void ucos_startup(void)
    GPIO_PIN_DIRECTION_SET_OUTPUT(CPU_LOAD_PIN);
 #endif
    UCOS_PORT_SETUP_TIMER;
-} /* End ucos_startup */ 
+} /* End ucos_startup */
 
 
 void ucos_idle_enable(void)
@@ -440,7 +440,7 @@ void ucos_send_msg(ucos_msg_id_t     msg,
             )
          {
             ucos_msg_fifo_entry_t * m_entry;
-            
+
             m_entry          = m_queue->next_in;
             m_queue->next_in = m_queue->next_in->next;
 
@@ -450,7 +450,7 @@ void ucos_send_msg(ucos_msg_id_t     msg,
             m_entry->param      = param;
             m_entry->obj_id     = dest;
             m_entry->obj_entry = obj_info->obj_entry;
-            
+
             SYSIO_EXIT_MONITOR;
          }
          else
@@ -475,7 +475,7 @@ void ucos_kill_msg(SYSDEF_ObjectType dest,
       ucos_object_info_t       * obj_info;
       ucos_msg_queue_t         * m_queue;
       ucos_object_entry_t   obj_entry;
-      
+
       obj_info  = &object_info[dest];
       m_queue   = obj_info->ucos_msg_queue;
       obj_entry = obj_info->obj_entry;
@@ -483,7 +483,7 @@ void ucos_kill_msg(SYSDEF_ObjectType dest,
       if (!m_queue->empty)
       {
          ucos_msg_fifo_entry_t * this_entry;
-         
+
          this_entry = m_queue->next_out;
          for(;;)
          {
@@ -511,14 +511,14 @@ void ucos_kill_msg(SYSDEF_ObjectType dest,
 
 
 /*********************************************************/
-/*   B U F F E R    H A N D L I N G    F U N C T I O N S */  
+/*   B U F F E R    H A N D L I N G    F U N C T I O N S */
 /*********************************************************/
 
 
 
 
 
-   
+
 #ifndef SMALL_UCOS
 /**************************************************************************/
 /* initBufferPool Function Description:                                   */
@@ -551,8 +551,8 @@ void ucos_kill_msg(SYSDEF_ObjectType dest,
 /* None                                                                   */
 /**************************************************************************/
 void initBufferPool(void)
-{  
-   char              * tmpPtr;        
+{
+   char              * tmpPtr;
    uint16_t i;
 #ifndef UCOS_SKIP_FILL_BUFFERS
    uint16_t j;
@@ -563,9 +563,9 @@ void initBufferPool(void)
    #if UCOS_NUM_SMALL_XBUFFERS != 0
 
    smallxBufferPoolStart = nextFreeSmallxBuffer = &smallxBufferPool[0];
-   
+
    smallxBufferPoolEnd = &smallxBufferPool[UCOS_NUM_SMALL_XBUFFERS];
-   
+
    for (i=0;i<UCOS_NUM_SMALL_XBUFFERS;i++)
    {
       smallxBufferPool[i].next = &smallxBufferPool[i+1];
@@ -578,14 +578,14 @@ void initBufferPool(void)
 #endif
    }
    smallxBufferPool[UCOS_NUM_SMALL_XBUFFERS-1].next = NULL;
-   
+
 #endif
-   
+
 #if UCOS_NUM_LARGE_XBUFFERS != 0
    largexBufferPoolStart = nextFreeLargexBuffer  = &largexBufferPool[0];
-   
+
    largexBufferPoolEnd = &largexBufferPool[UCOS_NUM_LARGE_XBUFFERS];
-   
+
    for (i=0;i<UCOS_NUM_LARGE_XBUFFERS;i++)
    {
       largexBufferPool[i].next = &largexBufferPool[i+1];
@@ -598,9 +598,9 @@ void initBufferPool(void)
 #endif
    }
    largexBufferPool[UCOS_NUM_LARGE_XBUFFERS-1].next = NULL;
-   
+
 #endif
-   
+
 #ifndef SMALL_UCOS
    HEAP_init();
 #endif
@@ -672,7 +672,7 @@ UCOS_XBufType UCOS_xmalloc(uint16_t reqSize)
    UCOS_XBufType        retBuf;
    SYSIO_USING_MONITOR;
    SYSIO_ENTER_MONITOR;
-   
+
    rc = UCOS_RC_OUT_OF_BUFFERS;
 
 #if UCOS_NUM_SMALL_XBUFFERS != 0
@@ -689,7 +689,7 @@ UCOS_XBufType UCOS_xmalloc(uint16_t reqSize)
    else
  #endif
 #endif
-   
+
 #if UCOS_NUM_LARGE_XBUFFERS != 0
    if (reqSize <= sizeof(largexBufferPool[0].buffer))
    {
@@ -707,7 +707,7 @@ UCOS_XBufType UCOS_xmalloc(uint16_t reqSize)
       rc  = UCOS_RC_REQUESTED_BUFFER_TOO_LARGE;
       tmp = NULL;
    }
-   
+
    if (rc == UCOS_RC_OK)
    {
       tmp->next = (uint8_t *)BUFMARK_ALLOCATED;
@@ -767,10 +767,10 @@ void *UCOS_intMalloc(uint16_t reqSize)
    void * p;
    SYSIO_USING_MONITOR;
    SYSIO_ENTER_MONITOR;
- 
+
    p = UCOS_PORT_MALLOC( reqSize );
 
-   if(!p ) 
+   if(!p )
    {
       SCB_error( SYSDEF_OBJID_UCOS, UCOS_RC_OUT_OF_CORE );
    }
@@ -838,7 +838,7 @@ ucos_rc_t UCOS_xfree(UCOS_XBufType buffer)
    ucos_rc_t rc;
    SYSIO_USING_MONITOR;
    SYSIO_ENTER_MONITOR;
-   
+
    rc  = UCOS_RC_OK;
    tmp = NULL;
    tmp = (XBufRefType  *)((uintptr_t)buffer - ((char*)&tmp->buffer - (char*)&tmp->next));
@@ -861,7 +861,7 @@ ucos_rc_t UCOS_xfree(UCOS_XBufType buffer)
          else
          #endif
       #endif
-   
+
       #if UCOS_NUM_LARGE_XBUFFERS != 0
          if (
                ( (uintptr_t)buffer > (uintptr_t)largexBufferPoolStart) &&
@@ -872,9 +872,9 @@ ucos_rc_t UCOS_xfree(UCOS_XBufType buffer)
             nextFreeLargexBuffer = (LargeXBufferType  *)tmp;
          }
       #endif
-   
+
       else
-      { 
+      {
          rc = UCOS_RC_INVALID_BUFFER;
       }
    }
@@ -890,12 +890,12 @@ ucos_rc_t UCOS_xfree(UCOS_XBufType buffer)
 
 
 /*********************************************************/
-/*   T I M E R      H A N D L I N G    F U N C T I O N S */  
+/*   T I M E R      H A N D L I N G    F U N C T I O N S */
 /*********************************************************/
 
 
 static void ucos_init_timer(void)
-{  
+{
    int             i;
    timer_entry_t * t_entry;
 
@@ -918,7 +918,7 @@ void ucos_get_timer(SYSDEF_ObjectType object, ucos_timeout_t ticks, ucos_timer_i
    timer_entry_t * scan_entry;
    timer_entry_t * prev_entry;
    timer_entry_t * new_entry;
-   
+
    uint32_t        expiration_time;
    uint32_t        norm;
    uint32_t        normalized_expiration_time;
@@ -954,7 +954,7 @@ void ucos_get_timer(SYSDEF_ObjectType object, ucos_timeout_t ticks, ucos_timer_i
       }
       scan_entry = scan_entry->next;
    }
-   
+
    new_entry                  = timer_list.free;
    timer_list.free            = timer_list.free->next;
    new_entry->id              = id;
@@ -985,7 +985,7 @@ void ucos_get_timer(SYSDEF_ObjectType object, ucos_timeout_t ticks, ucos_timer_i
    {
       prev_entry->next = new_entry;
    }
-   
+
    SYSIO_EXIT_MONITOR;
 error:
    return;
@@ -1016,7 +1016,7 @@ void ucos_kill_timer(SYSDEF_ObjectType object, ucos_timer_id_t id)
       prev_entry = scan_entry;
       scan_entry = scan_entry->next;
    }
-   
+
    if (scan_entry != NULL)
    {
       if (prev_entry == NULL)
@@ -1097,7 +1097,7 @@ static bool_t check_timers_on_msg_queue(SYSDEF_ObjectType dest,
    if (!m_queue->empty)
    {
       ucos_msg_fifo_entry_t * this_entry;
-      
+
       this_entry = m_queue->next_out;
       for(;;)
       {

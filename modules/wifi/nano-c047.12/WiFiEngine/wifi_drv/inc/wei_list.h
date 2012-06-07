@@ -2,7 +2,7 @@
 #define __WEI_LIST_H
 /* **** */
 /* Named and anonymous in-line list implementation */
-typedef struct wei_list_head 
+typedef struct wei_list_head
 {
       struct wei_list_head *next;
       struct wei_list_head *prev;

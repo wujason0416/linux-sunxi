@@ -15,9 +15,9 @@ net_rx_cb_t data_path_cfm_cb = NULL;
 
 /*!
  * @brief Reset everything that has to do with AMP
- * 
+ *
  * @param net_id        Unique identifier for the network defined by driver.
- * @param reset_target ***TBD*** 
+ * @param reset_target ***TBD***
  *
  * @return WIFI_ENGINE_SUCCESS if successful.
  */
@@ -29,10 +29,10 @@ int WiFiEngine_Transport_Reset(mac_api_net_id_t net_id, bool_t reset_target)
 
 
 /*!
- * @brief Discards any AMP data buffer in driver and firmware 
- * 
+ * @brief Discards any AMP data buffer in driver and firmware
+ *
  * For each buffer added to the tx pipe by WiFiEngine_AMP_Transport_Send
- * a HIC_AMP_DATA_CFM will be generated that can be handled in the hmg_pal 
+ * a HIC_AMP_DATA_CFM will be generated that can be handled in the hmg_pal
  * statemachine. The status of the data confirm message AMP_DATA_FLUSHED.
  *
  * The PAL layer will use the transaction id's to handle the data buffers
@@ -53,7 +53,7 @@ int WiFiEngine_Transport_Flush(mac_api_net_id_t net_id)
 /*!
  * @brief Request transmission of AMP data over wifi
  *
- * The buffer shall be kept by the PAL layer until a cfm message with the same 
+ * The buffer shall be kept by the PAL layer until a cfm message with the same
  * trans_id has been returned.
  *
  * @param net_id        Unique identifier for the network defined by driver.
@@ -70,7 +70,7 @@ int WiFiEngine_Transport_Flush(mac_api_net_id_t net_id)
  * -+------------+---
  * 0|   VLANID   |PRI
  * </PRE>
- * @param trans_id_p    Output buffer for the data transaction ID. 
+ * @param trans_id_p    Output buffer for the data transaction ID.
  *
  * @return WIFI_ENGINE_SUCCESS if successful.
  */
@@ -81,7 +81,7 @@ int WiFiEngine_Transport_Send(mac_api_net_id_t net_id, void* m802_1_data, int da
    int      pad_len = 0;
    int      status;
    char*    pkt;
-	
+
    DE_TRACE_INT2(TR_AMP, "net_id: %d, vlanid_prio: %d\n", net_id, vlanid_prio);
 
 	if(wifiEngineState.config.pdu_size_alignment != 0 &&
@@ -92,9 +92,9 @@ int WiFiEngine_Transport_Send(mac_api_net_id_t net_id, void* m802_1_data, int da
 	pkt = (char*)DriverEnvironment_TX_Alloc(len + pad_len);
 	DE_MEMCPY(pkt + dhsize, m802_1_data, data_len);
 
-	status = WiFiEngine_ProcessSendPacket(pkt + dhsize, 14, 
+	status = WiFiEngine_ProcessSendPacket(pkt + dhsize, 14,
 					                          len - dhsize, pkt, &dhsize, 0, NULL);
-	if(status == WIFI_ENGINE_SUCCESS) 
+	if(status == WIFI_ENGINE_SUCCESS)
    {
 		pkt[5] = pad_len;
 		*(uint16_t*)pkt += pad_len;
@@ -124,7 +124,7 @@ int WiFiEngine_Transport_RegisterDataPath(mac_api_net_id_t net_id, net_rx_cb_t r
    data_path_cfm_cb = cfm_handler;
    return WIFI_ENGINE_SUCCESS;
 }
-   
+
 
 /*!
  * @brief Set the Pairwise Master Key for a WPA2 connection
@@ -138,7 +138,7 @@ int WiFiEngine_Transport_RegisterDataPath(mac_api_net_id_t net_id, net_rx_cb_t r
  * @param size      Size in bytes of the pmk (32 bytes).
  *
  * @return WIFI_ENGINE_SUCCESS if successful.
- */  
+ */
 int WiFiEngine_Supplicant_Set_PSK(mac_api_net_id_t net_id, char* pmk, int size)
 {
    DE_TRACE_INT(TR_AMP, "net_id: %d\n", net_id);
@@ -154,16 +154,16 @@ int WiFiEngine_Supplicant_Set_PSK(mac_api_net_id_t net_id, char* pmk, int size)
  *
  * !UL 111113 (add parameters in defaultreg)!
  *
- * The SSID will be used when for identifying a network. It may be either 
- * a BSS when acting as AP, a BSS when acting as STA, or a peer to peer network 
- * (e.g when setting up an AMP link)    
+ * The SSID will be used when for identifying a network. It may be either
+ * a BSS when acting as AP, a BSS when acting as STA, or a peer to peer network
+ * (e.g when setting up an AMP link)
  *
  * @param net_id   Unique identifier for the network defined by driver.
  * @param ssid    Input buffer containg SSID string.
  * @param size    size of the input buffer. If this is 0
  *                then the desired SSID will be unset. Max size is 32 bytes.
  *
- * @return WIFI_ENGINE_SUCCESS on success. 
+ * @return WIFI_ENGINE_SUCCESS on success.
  * WIFI_ENGINE_FAILURE_INVALID_LENGTH if the input string was too long.
  */
 int WiFiEngine_NetSetSSID(mac_api_net_id_t net_id, char *ssid, int size)
@@ -194,7 +194,7 @@ int WiFiEngine_NetStartBeacon(mac_api_net_id_t net_id)
 
 /*!
  * @brief Stop to send beacons.
- * 
+ *
  * @param net_id   Unique identifier for the network defined by driver.
  *
  * @return WIFI_ENGINE_SUCCESS
@@ -209,7 +209,7 @@ int WiFiEngine_NetStopBeacon(mac_api_net_id_t net_id)
 
 /*!
  * @brief Connect and maintain connection with BSS.
- * 
+ *
  * @param net_id   Unique identifier for the network defined by driver.
  *
  * @return WIFI_ENGINE_SUCCESS
@@ -226,7 +226,7 @@ int WiFiEngine_NetConnect(mac_api_net_id_t net_id)
 
 /*!
  * @brief Disconnect and stop maintaining connection with BSS.
- * 
+ *
  * @param net_id   Unique identifier for the network defined by driver.
  *
  * @return WIFI_ENGINE_SUCCESS
@@ -239,6 +239,3 @@ int WiFiEngine_NetDisconnect(mac_api_net_id_t net_id)
 
    return WIFI_ENGINE_SUCCESS;
 }
-
-
-

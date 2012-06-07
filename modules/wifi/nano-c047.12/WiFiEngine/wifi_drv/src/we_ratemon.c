@@ -23,7 +23,7 @@ SWEDEN
 
 Module Description :
 ==================
-This module will monitor changes in RX and TX rate. 
+This module will monitor changes in RX and TX rate.
 
 *****************************************************************************/
 
@@ -33,10 +33,10 @@ This module will monitor changes in RX and TX rate.
 /*********************
  *
  * Common stuff
- * 
+ *
  *********************/
 
-typedef struct 
+typedef struct
 {
       m80211_std_rate_encoding_t   thr_limit;
       we_ind_cb_t                  thr_cb;         /* NULL when disabled */
@@ -51,9 +51,9 @@ typedef struct
 
 static int common_threshold_enable(int32_t *thr_id,
                                    rate_ind_conf_t *rate_ind,
-                                   uint32_t supv_interval, 
-                                   m80211_std_rate_encoding_t thr_level, 
-                                   uint8_t dir, 
+                                   uint32_t supv_interval,
+                                   m80211_std_rate_encoding_t thr_level,
+                                   uint8_t dir,
                                    we_ind_cb_t cb)
 {
    DE_ASSERT(rate_ind != NULL);
@@ -61,7 +61,7 @@ static int common_threshold_enable(int32_t *thr_id,
 
    /* Don't allow both dir simultaneously */
    DE_ASSERT(dir == WE_TRIG_THR_RISING || dir == WE_TRIG_THR_FALLING);
-   
+
    rate_ind->thr_limit = thr_level;
    rate_ind->thr_cb = cb;
    rate_ind->thr_dir = dir;
@@ -118,18 +118,18 @@ static void common_limit_check(rate_ind_conf_t *rate_ind,
    }
 
    /* Clear flags */
-   if (rate_ind->thr_dir == WE_TRIG_THR_FALLING && median > rate_ind->thr_limit) 
+   if (rate_ind->thr_dir == WE_TRIG_THR_FALLING && median > rate_ind->thr_limit)
       rate_ind->thr_sent = FALSE;
-   if (rate_ind->thr_dir == WE_TRIG_THR_RISING && median < rate_ind->thr_limit) 
+   if (rate_ind->thr_dir == WE_TRIG_THR_RISING && median < rate_ind->thr_limit)
       rate_ind->thr_sent = FALSE;
 
    /* Send indication */
    if (rate_ind->thr_cb != NULL && ! rate_ind->thr_sent)
       if (rate_ind->hist_count >= rate_ind->hist_len) {
          int send_it = 0;
-         if (rate_ind->thr_dir == WE_TRIG_THR_FALLING && median <= rate_ind->thr_limit) 
+         if (rate_ind->thr_dir == WE_TRIG_THR_FALLING && median <= rate_ind->thr_limit)
             send_it = 1;
-         if (rate_ind->thr_dir == WE_TRIG_THR_RISING && median >= rate_ind->thr_limit) 
+         if (rate_ind->thr_dir == WE_TRIG_THR_RISING && median >= rate_ind->thr_limit)
             send_it = 1;
          if (send_it) {
             we_vir_trig_data_t ind;
@@ -149,7 +149,7 @@ static void common_threshold_disable(rate_ind_conf_t *rate_ind, uint32_t reason)
    we_vir_trig_data_t ind;
 
    DE_ASSERT(rate_ind != NULL);
-   
+
    ind.trig_id = rate_ind->thr_dir; /* use dir as id */
    ind.type    = WE_TRIG_TYPE_CANCEL;
    ind.value   = 0;
@@ -184,7 +184,7 @@ int WiFiEngine_GetRxRate(m80211_std_rate_encoding_t *rate)
 }
 
 int WiFiEngine_EnableRxRateMon(int32_t                    *thr_id,
-                               uint32_t                   supv_interval, 
+                               uint32_t                   supv_interval,
                                m80211_std_rate_encoding_t thr_level,
                                uint8_t                    dir, /* rising/falling */
                                we_ind_cb_t                cb)
@@ -210,10 +210,10 @@ int WiFiEngine_EnableRxRateMon(int32_t                    *thr_id,
    if (*rate_ind == NULL)
       return WIFI_ENGINE_FAILURE_RESOURCES;
 
-   return common_threshold_enable(thr_id, 
+   return common_threshold_enable(thr_id,
                                   *rate_ind,
-                                  supv_interval, 
-                                  thr_level, 
+                                  supv_interval,
+                                  thr_level,
                                   WE_TRIG_THR_FALLING,
                                   cb);
 }
@@ -265,7 +265,7 @@ int WiFiEngine_GetTxRate(m80211_std_rate_encoding_t *rate)
 }
 
 int WiFiEngine_EnableTxRateMon(int32_t                    *thr_id,
-                               uint32_t                   supv_interval, 
+                               uint32_t                   supv_interval,
                                m80211_std_rate_encoding_t thr_level,
                                uint8_t                    dir, /* rising/falling */
                                we_ind_cb_t                cb)
@@ -291,10 +291,10 @@ int WiFiEngine_EnableTxRateMon(int32_t                    *thr_id,
    if (*rate_ind == NULL)
       return WIFI_ENGINE_FAILURE_RESOURCES;
 
-   return common_threshold_enable(thr_id, 
+   return common_threshold_enable(thr_id,
                                   *rate_ind,
-                                  supv_interval, 
-                                  thr_level, 
+                                  supv_interval,
+                                  thr_level,
                                   WE_TRIG_THR_FALLING,
                                   cb);
 }
@@ -348,4 +348,3 @@ void WiFiEngine_RateMonShutdown(void)
       rate_tx_falling = NULL;
    }
 }
-

@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-            Copyright (c) 2004 by Nanoradio AB 
+            Copyright (c) 2004 by Nanoradio AB
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
  All rights, title, ownership, or other interests in the
@@ -41,7 +41,7 @@ Thing are coming in and things are coming out, bla bla bla.
 /* E X P O R T E D  D A T A T Y P E S ****************************************/
 typedef uint16_t m802_ethertype_t;
 
-typedef struct 
+typedef struct
 {
    char octet[M802_ADDRESS_SIZE];
 }m802_mac_addr_t;

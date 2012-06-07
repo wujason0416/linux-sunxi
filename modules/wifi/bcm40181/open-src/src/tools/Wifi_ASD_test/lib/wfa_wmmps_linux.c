@@ -36,7 +36,7 @@ extern int num_hello;
 extern tgWMM_t wmm_thr[];
 extern wfaWmmPS_t wmmps_info;
 extern unsigned int psTxMsg[512];
-tgThrData_t tdata[WFA_THREADS_NUM]; 
+tgThrData_t tdata[WFA_THREADS_NUM];
 
 extern void tmout_stop_send(int num);
 extern void wfaSetDUTPwrMgmt(int mode);
@@ -116,7 +116,7 @@ int WfaRcvStop(unsigned int *rmsg,int length,int *state)
 
 
 /*
-* wfaStaSndHello(): This function sends a Hello packet 
+* wfaStaSndHello(): This function sends a Hello packet
 *                and sleeps for sleep_period, the idea is
 *                to keep sending hello packets till the console
 *                responds, the function keeps a check on the MAX
@@ -147,7 +147,7 @@ int WfaStaSndHello(char psave,int sleep_period,int *state)
 		asd_closeSocket(psSockfd);
 		psSockfd = -1;
 		signal(SIGALRM, SIG_IGN);
-	} 
+	}
 	return 0;
 }
 
@@ -197,7 +197,7 @@ void * wfa_wmm_thread(void *thr_param)
 	tgStream_t *myStream = NULL;
 	tgThrData_t *tdata =(tgThrData_t *) thr_param;
 	int myStreamId;
-	int mySock = -1; 
+	int mySock = -1;
 	int status, respLen;
 	tgProfile_t *myProfile;
 	StationProcStatetbl_t  curr_state;
@@ -269,8 +269,8 @@ void * wfa_wmm_thread(void *thr_param)
 			signal(SIGALRM, tmout_stop_send);
 			alarm(myProfile->duration);
 
-			/* Whenever frameRate is 0,sending data at the maximum possible rate */	
-			if (myProfile->rate != 0) 
+			/* Whenever frameRate is 0,sending data at the maximum possible rate */
+			if (myProfile->rate != 0)
 				wfaSendLongFile(mySock, myStreamId, respBuf, &respLen );
 			else
 				wfaImprovePerfSendLongFile(mySock, myStreamId, respBuf, &respLen );

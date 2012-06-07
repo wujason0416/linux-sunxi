@@ -68,4 +68,3 @@ void standby_mdelay(int ms)
 {
     standby_delay(ms * cpu_ms_loopcnt);
 }
-

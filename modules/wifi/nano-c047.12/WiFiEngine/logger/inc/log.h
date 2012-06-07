@@ -51,18 +51,18 @@ struct log_file_s {
 
 /*!
  * \brief append event and data to buffer.
- * 
+ *
  * Copies the event and data to at the end of a circular buffer. Data length is
  * determined by event.data_len
- * @param src Null-terminated string to copy. 
- * 
+ * @param src Null-terminated string to copy.
+ *
  * @return dest is returned.
  */
 void logger_init(struct log_t *lg, char *buffer,unsigned int size);
 
 /*!
  * \brief append event and data to fifo buffer.
- * 
+ *
  * Copies the event and data to at the end of a circular buffer. Data length is
  * determined by event.data_len
  */
@@ -70,21 +70,21 @@ int logger_put(struct log_t *lg, struct log_event_t *event, const char *data);
 
 /*!
  * \brief retrieve an event and data from fifo buffer.
- * 
- * Retrieve an event and data from fifo buffer. Data must be a buffer 
+ *
+ * Retrieve an event and data from fifo buffer. Data must be a buffer
  * of sufficient size. The actual length of the data is determined by
  * event->data_len.
  * @param event where to storethe event.
  * @param data where to store the data.
  * @param len size of *data buffer to avoid buffer overflow.
- * 
+ *
  * @return bytes read is returned
  */
 unsigned int logger_get(struct log_t *lg, struct log_event_t *event, char *data, unsigned int len);
 
 /*!
  * \brief bytes of allocated data in buffer.
- * 
+ *
  * Bytes of allocated data in buffer.
  *
  * @return bytes of allocated data in buffer.
@@ -98,21 +98,21 @@ void logger_get_file_header(struct log_file_s *h);
 
 /*!
  * \brief Write log buffer to *fwrite(buf,size,...);
- * 
+ *
  * Write the buffer to a file api, copy to pre allocated memory or
  * allocate mem in fwrite function
  *
- * The log lock will be taken during call to *fp and will thereby 
+ * The log lock will be taken during call to *fp and will thereby
  * prevent messages to be written to the log during this time.
  *
- * @param *fp function pointer to write the buffer to. May be called 
+ * @param *fp function pointer to write the buffer to. May be called
  * several times.
  * @param *ctx context to be passed to *fp.
  *
  * - return number of bytes successfully reported as written by *fp
  *              (negative on: driver lock taken, invalid params, ...)
  */
-int logger_write_to_fp( struct log_t *lg, 
+int logger_write_to_fp( struct log_t *lg,
                 int (*fp)(const void* ptr, size_t size, void *ctx),
                 void *ctx);
 

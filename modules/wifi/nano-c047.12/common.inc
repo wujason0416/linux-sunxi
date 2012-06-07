@@ -12,7 +12,7 @@ STRIP		= $(CROSS_COMPILE)strip
 OBJCOPY		= $(CROSS_COMPILE)objcopy
 OBJDUMP		= $(CROSS_COMPILE)objdump
 
-export AS LD CC CPP CXX AR NM STRIP OBJCOPY OBJDUMP CROSS_COMPILE LDFLAGS 
+export AS LD CC CPP CXX AR NM STRIP OBJCOPY OBJDUMP CROSS_COMPILE LDFLAGS
 
 ifneq ($(CONFIG),release)
 	DEBUG_FLAGS += -DWIFI_DEBUG_ON -DWIFI_DUMP_PACKETS
@@ -24,7 +24,7 @@ DEFS +=	-DEXPORT_SYMTAB
 DEFS += -DHAVE_ANSI_INTTYPES
 DEFS +=	-D_LARGEFILE64_SOURCE
 
-## please don't remove these warning options, 
+## please don't remove these warning options,
 ## try to fix the problem instead
 DEFS += -Wall
 DEFS += -Wextra

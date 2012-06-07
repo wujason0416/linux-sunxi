@@ -10,14 +10,14 @@
 *
 * Author 		: javen
 *
-* Description 	: ≤Ÿ◊˜œµÕ≥  ≈‰≤„
+* Description 	: Êìç‰ΩúÁ≥ªÁªüÈÄÇÈÖçÂ±Ç
 *
 * History 		:
 *      <author>    		<time>       	<version >    		<desc>
 *       javen     	   2010-09-07          1.0         create this word
 *
 *************************************************************************************
-*/ 
+*/
 #ifndef  __OSAL_H__
 #define  __OSAL_H__
 
@@ -38,5 +38,3 @@
 #include  "OSAL_Parser.h"
 
 #endif   //__OSAL_H__
-
-

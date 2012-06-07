@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-            Copyright (c) 2004 by Nanoradio AB 
+            Copyright (c) 2004 by Nanoradio AB
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
  All rights, title, ownership, or other interests in the
@@ -38,14 +38,14 @@ Thing are coming in and things are coming out, bla bla bla.
 #define SYSCFG_TIMER_TICK 10
 
 #define UCOS_PORT_SETUP_TIMER                      /* Nothing to do in host environment. */
-#define UCOS_PORT_START_TIMER(_time, _trans_id)    
-#define UCOS_PORT_STOP_TIMER                       
+#define UCOS_PORT_START_TIMER(_time, _trans_id)
+#define UCOS_PORT_STOP_TIMER
 #define UCOS_PORT_GET_CURRENT_TIME
 #define UCOS_PORT_OS_IDLE
 
 #define UCOS_PORT_MALLOC(_size)                    DriverEnvironment_Malloc(_size)
 #define UCOS_PORT_FREE(_ptr)                       DriverEnvironment_Free(_ptr)
-        
+
 
 /* E X P O R T E D  D A T A T Y P E S ****************************************/
 

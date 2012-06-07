@@ -2,7 +2,7 @@
 
 /*****************************************************************************
 
-Copyright (c) 2004 by Nanoradio AB  
+Copyright (c) 2004 by Nanoradio AB
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
 All rights, title, ownership, or other interests in the
@@ -16,7 +16,7 @@ consent of Nanoradio AB.
 
 Nanoradio AB reserves the right to modify this software without
 notice.
- 
+
 Nanoradio AB
 Torshamnsgatan 39                       info@nanoradio.se
 164 40 Kista                            http://www.nanoradio.se
@@ -66,11 +66,11 @@ bool_t HicWrapper_VerifyInterfaceVersion(uint32_t version)
 
 
 void HicWrapper_uint8_t(uint8_t* object_p, Blob_t* blob, WrapperAction_t action)
-{ 
+{
    switch (action)
    {
       case ACTION_PACK:
-         if (blob->index + 1 > blob->length) 
+         if (blob->index + 1 > blob->length)
          {
             blob->status = FALSE;
          }
@@ -81,7 +81,7 @@ void HicWrapper_uint8_t(uint8_t* object_p, Blob_t* blob, WrapperAction_t action)
          break;
 
       case ACTION_UNPACK:
-         if (blob->index + 1 > blob->length) 
+         if (blob->index + 1 > blob->length)
          {
             blob->status = FALSE;
             *object_p = 0;
@@ -95,14 +95,14 @@ void HicWrapper_uint8_t(uint8_t* object_p, Blob_t* blob, WrapperAction_t action)
          break;
    }
    blob->index += 1;
-} /* HicWrapper_uint8_t */ 
+} /* HicWrapper_uint8_t */
 
 void HicWrapper_uint16_t(uint16_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
    switch (action)
    {
       case ACTION_PACK:
-         if (blob->index + 2 > blob->length) 
+         if (blob->index + 2 > blob->length)
          {
             blob->status = FALSE;
          }
@@ -115,7 +115,7 @@ void HicWrapper_uint16_t(uint16_t* object_p, Blob_t* blob, WrapperAction_t actio
          break;
 
       case ACTION_UNPACK:
-         if (blob->index + 2 > blob->length) 
+         if (blob->index + 2 > blob->length)
          {
             blob->status = FALSE;
             *object_p = 0;
@@ -131,14 +131,14 @@ void HicWrapper_uint16_t(uint16_t* object_p, Blob_t* blob, WrapperAction_t actio
          break;
    }
    blob->index += 2;
-} /* HicWrapper_uint16_t */ 
+} /* HicWrapper_uint16_t */
 
 void HicWrapper_uint32_t(uint32_t* object_p, Blob_t* blob, WrapperAction_t action)
-{ 
+{
    switch (action)
    {
       case ACTION_PACK:
-         if (blob->index + 4 > blob->length) 
+         if (blob->index + 4 > blob->length)
          {
             blob->status = FALSE;
          }
@@ -153,7 +153,7 @@ void HicWrapper_uint32_t(uint32_t* object_p, Blob_t* blob, WrapperAction_t actio
          break;
 
       case ACTION_UNPACK:
-         if (blob->index + 4 > blob->length) 
+         if (blob->index + 4 > blob->length)
          {
             blob->status = FALSE;
             *object_p = 0;
@@ -171,14 +171,14 @@ void HicWrapper_uint32_t(uint32_t* object_p, Blob_t* blob, WrapperAction_t actio
          break;
    }
    blob->index += 4;
-} /* HicWrapper_uint32_t */ 
+} /* HicWrapper_uint32_t */
 
-void HicWrapper_uint64_t(uint64_t* object_p, Blob_t* blob, WrapperAction_t action) 
-{ 
+void HicWrapper_uint64_t(uint64_t* object_p, Blob_t* blob, WrapperAction_t action)
+{
    switch (action)
    {
       case ACTION_PACK:
-         if (blob->index + 8 > blob->length) 
+         if (blob->index + 8 > blob->length)
          {
             blob->status = FALSE;
          }
@@ -199,7 +199,7 @@ void HicWrapper_uint64_t(uint64_t* object_p, Blob_t* blob, WrapperAction_t actio
          break;
 
       case ACTION_UNPACK:
-         if (blob->index + 8 > blob->length) 
+         if (blob->index + 8 > blob->length)
          {
             blob->status = FALSE;
             blob->index  = blob->length;
@@ -228,7 +228,7 @@ void HicWrapper_uint64_t(uint64_t* object_p, Blob_t* blob, WrapperAction_t actio
          blob->index += 8;
          break;
    }
-} /* HicWrapper_uint64_t */ 
+} /* HicWrapper_uint64_t */
 
 void HicWrapper_array_t(char* object_p, int length, Blob_t* blob, WrapperAction_t action)
 {
@@ -280,32 +280,32 @@ void WrapperCopy_mlme_bss_description_t(void * context_p, mlme_bss_description_t
 void HicWrapper_mlme_bss_description_t(mlme_bss_description_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
    Blob_t local_blob;
- 
+
    INIT_BLOB(&local_blob, NULL, BLOB_UNKNOWN_SIZE);
 
    HicWrapper_m80211_mac_addr_t(&object_p->bssId, blob, action);
    HicWrapper_uint8_t(&object_p->bssType, blob, action);
-   HicWrapper_uint8_t(&object_p->dtim_period, blob, action); 
-   HicWrapper_uint64_t(&object_p->local_timestamp, blob, action);   
-   HicWrapper_uint32_t((uint32_t *)&object_p->rssi_info, blob, action);  
+   HicWrapper_uint8_t(&object_p->dtim_period, blob, action);
+   HicWrapper_uint64_t(&object_p->local_timestamp, blob, action);
+   HicWrapper_uint32_t((uint32_t *)&object_p->rssi_info, blob, action);
    HicWrapper_uint32_t((uint32_t *)&object_p->snr_info, blob, action);
 
-   /* Since we do not know the real size of the encoded data, 
+   /* Since we do not know the real size of the encoded data,
       we must use a local blob to remember where the size field shall be stored.
     */
    DE_MEMCPY(&local_blob, blob, sizeof(*blob));
    HicWrapper_uint32_t(&object_p->size_of_packed_bss_description, &local_blob, action);
-   
+
    if (action == ACTION_UNPACK)
    {
-      /* Limit the blob to the actual size of this field, 
-         including what ever is before it. 
+      /* Limit the blob to the actual size of this field,
+         including what ever is before it.
        */
       BLOB_BUF_RESIZE(&local_blob, BLOB_CURRENT_SIZE(blob)
          + object_p->size_of_packed_bss_description + sizeof(object_p->size_of_packed_bss_description));
 
       /* Before unpacking the elements of this IE, allocate a buffer for it. */
-      object_p->bss_description_p = (m80211_bss_description_t*) 
+      object_p->bss_description_p = (m80211_bss_description_t*)
                WrapperAttachStructure(blob->structure, sizeof(m80211_bss_description_t));
 
       /* Attach any dynamic structure to the bss_description_p rather than the parent structure. */
@@ -318,31 +318,31 @@ void HicWrapper_mlme_bss_description_t(mlme_bss_description_t* object_p, Blob_t*
 
    /**********************************************************************/
    /* Note that the original blob is still positioned at the size field. */
-   
+
    /* Update size field. */
    if (action != ACTION_UNPACK)
    {
-      object_p->size_of_packed_bss_description = BLOB_CURRENT_SIZE(&local_blob) 
-                                               - BLOB_CURRENT_SIZE(blob) 
+      object_p->size_of_packed_bss_description = BLOB_CURRENT_SIZE(&local_blob)
+                                               - BLOB_CURRENT_SIZE(blob)
                                                - (uint16_t)sizeof(object_p->size_of_packed_bss_description);
    }
 
    /* Pack the updated size field. */
    HicWrapper_uint32_t(&object_p->size_of_packed_bss_description, blob, action);
 
-   /* Skip the bss_description to get to the index rigth after the messy 
-      bss_description field. 
+   /* Skip the bss_description to get to the index rigth after the messy
+      bss_description field.
     */
-   BLOB_PAD(blob, object_p->size_of_packed_bss_description);      
+   BLOB_PAD(blob, object_p->size_of_packed_bss_description);
    /**********************************************************************/
-   
+
 } /* HicWrapper_mlme_bss_description_t */
 
 
 void HicWrapper_m80211_mlme_scan_ind_t(m80211_mlme_scan_ind_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
    HicWrapper_uint32_t(&object_p->trans_id, blob, action);
-   
+
    HicWrapper_mlme_bss_description_t(&object_p->scan_ind_body, blob, action);
 } /* HicWrapper_m80211_mlme_scan_ind_t */
 
@@ -382,7 +382,7 @@ void WrapperCopy_common_IEs_t(void* context_p, common_IEs_t* dest, common_IEs_t*
    WrapperCopy_m80211_ie_wmm_tspec_parameter_set_t(context_p, &dest->wmm_tspec_parameter_set, &source->wmm_tspec_parameter_set);
    WrapperCopy_m80211_ie_ccx_reassoc_req_parameter_set_t(context_p, &dest->ccx_reassoc_req_parameter_set, &source->ccx_reassoc_req_parameter_set);
    WrapperCopy_m80211_ie_ccx_reassoc_rsp_parameter_set_t(context_p, &dest->ccx_reassoc_rsp_parameter_set, &source->ccx_reassoc_rsp_parameter_set);
-#if 0  
+#if 0
    WrapperCopy_m80211_ie_ccx_adj_parameter_set_t(context_p, &dest->ccx_adj_parameter_set, &source->ccx_adj_parameter_set);
 #endif //0
 #endif //DE_CCX
@@ -589,7 +589,7 @@ void HicWrapper_common_IEs_t(common_IEs_t* object_p, Blob_t* blob, WrapperAction
    HicWrapper_m80211_wmm_tspec_ie_t(&object_p->wmm_tspec_parameter_set, blob, action);
    HicWrapper_m80211_ie_ccx_reassoc_req_parameter_set_t(&object_p->ccx_reassoc_req_parameter_set, blob, action);
    HicWrapper_m80211_ie_ccx_reassoc_rsp_parameter_set_t(&object_p->ccx_reassoc_rsp_parameter_set, blob, action);
-#if 0  
+#if 0
    HicWrapper_m80211_ie_ccx_adj_parameter_set_t(&object_p->ccx_adj_parameter_set, blob, action);
 #endif //0
 #endif //DE_CCX
@@ -654,8 +654,8 @@ void HicWrapper_m80211_mlme_join_req_t(m80211_mlme_join_req_t* object_p, Blob_t*
    HicWrapper_mac_api_transid_t(&object_p->trans_id, blob, action);
    HicWrapper_uint16_t(&object_p->join_timeout, blob, action);
    HicWrapper_uint16_t(&object_p->probe_delay, blob, action);
-   HicWrapper_uint32_t(&object_p->operational_rate_mask, blob, action);   
-   HicWrapper_uint32_t(&object_p->basic_rate_mask, blob, action);   
+   HicWrapper_uint32_t(&object_p->operational_rate_mask, blob, action);
+   HicWrapper_uint32_t(&object_p->basic_rate_mask, blob, action);
    HicWrapper_mlme_bss_description_t(&object_p->bss, blob, action);
 } /* HicWrapper_m80211_mlme_join_req_t */
 
@@ -704,8 +704,8 @@ void HicWrapper_m80211_mlme_start_req_t(m80211_mlme_start_req_t* object_p, Blob_
    HicWrapper_uint8_t(&object_p->bss_type, blob, action);
    HicWrapper_uint8_t(&object_p->dtim_period, blob, action);
    HicWrapper_array_t((char*)object_p->reserved, (sizeof(uint8_t)*2), blob, action);
-   HicWrapper_uint32_t(&object_p->supported_rate_mask, blob, action);   
-   HicWrapper_uint32_t(&object_p->basic_rate_mask, blob, action);   
+   HicWrapper_uint32_t(&object_p->supported_rate_mask, blob, action);
+   HicWrapper_uint32_t(&object_p->basic_rate_mask, blob, action);
    HicWrapper_common_IEs_t(&object_p->ie, blob, action);
 } /* HicWrapper_m80211_mlme_start_req_t */
 
@@ -1001,7 +1001,7 @@ void HicWrapper_hic_ctrl_init_completed_req_t(hic_ctrl_init_completed_req_t* obj
 {
    HicWrapper_mac_api_transid_t(&object_p->trans_id, blob, action);
    HicWrapper_uint32_t(&object_p->dummy, blob, action);
-} 
+}
 void HicWrapper_hic_ctrl_init_completed_cfm_t(hic_ctrl_init_completed_cfm_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
    HicWrapper_mac_api_transid_t(&object_p->trans_id, blob, action);
@@ -1407,5 +1407,3 @@ G L O B A L   A C C E S S   F U N C T I O N S
 *****************************************************************************/
 
 /******************************* END OF FILE ********************************/
-
-

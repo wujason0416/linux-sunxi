@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2011, Broadcom Corporation
  * All Rights Reserved.
- * 
+ *
  * This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
  * the contents of this file may not be disclosed to third parties, copied
  * or duplicated in any form, in whole or in part, without the prior
@@ -75,7 +75,7 @@ void *g_wl_handle;
 unsigned short defined_debug = DEBUG_ERR | DEBUG_INFO;
 extern int remote_server_exec(int argc, char **argv, void *ifr);
 
-/* Global to have the PID of the current sync command 
+/* Global to have the PID of the current sync command
  * This is required in case the sync command fails to respond,
  * the alarm handler shall kill the PID upon a timeout
  */
@@ -280,7 +280,7 @@ void rwl_chld_handler(int num)
 	g_sig_chld = 0;
 }
 
-/* Alarm handler called after SHELL_TIMEOUT value  
+/* Alarm handler called after SHELL_TIMEOUT value
  * This handler kills the non-responsive shell process
  * with the PID value g_shellsync_pid
  */

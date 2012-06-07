@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -265,7 +265,7 @@ u32 mali_core_renderunit_register_read(mali_core_renderunit *core, u32 relative_
 	#if USING_MALI_PMM
 		if( core->state == CORE_OFF )
 		{
-			MALI_PRINT_ERROR(("Core is OFF during read: Core:%s Addr:0x%04X\n", 
+			MALI_PRINT_ERROR(("Core is OFF during read: Core:%s Addr:0x%04X\n",
 				core->description,relative_address));
 			return 0xDEADBEEF;
 		}
@@ -319,7 +319,7 @@ void mali_core_renderunit_register_write(mali_core_renderunit *core, u32 relativ
 			return;
 		}
 	#endif
-			
+
 	MALI_DEBUG_ASSERT((relative_address & 0x03) == 0);
 
 	if (mali_benchmark) return;
@@ -435,13 +435,13 @@ _mali_osk_errcode_t mali_core_renderunit_init(mali_core_renderunit * core)
 #if USING_MALI_PMM
 	/* Init no pending power downs */
 	core->pend_power_down = MALI_FALSE;
-	
+
 	/* Register the core with the PMM - which powers it up */
 	if (_MALI_OSK_ERR_OK != malipmm_core_register( core->pmm_id ))
 	{
 		_mali_osk_timer_term(core->timer);
 		_mali_osk_timer_term(core->timer_hang_detection);
-	    MALI_PRINT_ERROR(("Core: renderunit_init: Core:%s -- cannot register with PMM\n", core->description));        
+	    MALI_PRINT_ERROR(("Core: renderunit_init: Core:%s -- cannot register with PMM\n", core->description));
         MALI_ERROR(_MALI_OSK_ERR_FAULT);
 	}
 #endif /* USING_MALI_PMM */
@@ -835,7 +835,7 @@ void mali_core_subsystem_cleanup(mali_core_subsystem* subsys)
 #if MALI_PMM_NO_PMU
 				/* We need to reset when there is no PMU - but this will
 				 * cause the register read/write functions to report an
-				 * error (hence the if to check for CORE_OFF below) we 
+				 * error (hence the if to check for CORE_OFF below) we
 				 * change state to allow the reset to happen.
 				 */
 				core->state = CORE_IDLE;
@@ -1066,8 +1066,8 @@ static void mali_core_subsystem_move_core_set_idle(mali_core_renderunit *core)
 #if USING_MALI_PMM
 
 	oldstatus = core->state;
-	
-	if ( !core->pend_power_down )	
+
+	if ( !core->pend_power_down )
 	{
 		core->state = CORE_IDLE ;
 		_mali_osk_list_move( &core->list, &subsystem->renderunit_idle_head );
@@ -1094,7 +1094,7 @@ static void mali_core_subsystem_move_core_set_idle(mali_core_renderunit *core)
 	{
 		core->state = CORE_OFF ;
 		_mali_osk_list_move( &core->list, &subsystem->renderunit_off_head );
-		
+
 		/* Done the move from the active queues, so the pending power down can be done */
 		core->pend_power_down = MALI_FALSE;
 		malipmm_core_power_down_okay( core->pmm_id );
@@ -1324,7 +1324,7 @@ static void mali_core_subsystem_schedule(mali_core_subsystem * subsystem)
 
 #if USING_MALI_PMM
 			{
-				/* Message that there is a job scheduled to run 
+				/* Message that there is a job scheduled to run
 				 * NOTE: mali_core_job_start_on_core() can fail to start
 				 * the job for several reasons, but it will move the core
 				 * back to idle which will create the FINISHED message
@@ -1537,11 +1537,11 @@ static void mali_core_renderunit_detach_job_from_core(mali_core_renderunit* core
 	MALI_DEBUG_ASSERT(CORE_IDLE != core->state);
 
 	/* The reset_core() called some lines below might call this detach
-	 * funtion again. To protect the core object from being modified by 
+	 * funtion again. To protect the core object from being modified by
 	 * recursive calls, the in_detach_function would track if it is an recursive call
 	 */
 	already_in_detach_function = core->in_detach_function;
-	
+
 	if ( MALI_FALSE == already_in_detach_function )
 	{
 		core->in_detach_function = MALI_TRUE;
@@ -1687,7 +1687,7 @@ static void continue_job_handling(struct mali_core_subsystem * subsys)
 
 	i = subsys->number_of_cores;
 	j = subsys->awaiting_sessions_sum_all_priorities;
-	
+
 	/* Schedule MIN(nr_waiting_jobs , number of cores) times */
 	while( i-- && j--)
 	{
@@ -1846,13 +1846,13 @@ _mali_osk_errcode_t mali_core_subsystem_signal_power_down(mali_core_subsystem *s
 	MALI_CHECK_SUBSYSTEM(subsys);
 	MALI_CORE_SUBSYSTEM_MUTEX_GRAB(subsys);
 
-	/* It is possible that this signal funciton can be called during a driver exit, 
+	/* It is possible that this signal funciton can be called during a driver exit,
 	 * and so the requested core may now be destroyed. (This is due to us not having
 	 * the subsys lock before signalling power down).
 	 * mali_core_renderunit_get_mali_core_nr() will report a Mali ERR because
-	 * the core number is out of range (which is a valid error in other cases). 
-	 * So instead we check here (now that we have the subsys lock) and let the 
-	 * caller cope with the core get failure and check that the core has 
+	 * the core number is out of range (which is a valid error in other cases).
+	 * So instead we check here (now that we have the subsys lock) and let the
+	 * caller cope with the core get failure and check that the core has
 	 * been unregistered in the PMM as part of its destruction.
 	 */
 	if ( subsys->number_of_cores > mali_core_nr )
@@ -1870,7 +1870,7 @@ _mali_osk_errcode_t mali_core_subsystem_signal_power_down(mali_core_subsystem *s
 	else if ( core->state != CORE_IDLE )
 	{
 		/* When powering down we either set a pending power down flag here so we
-		 * can power down cleanly after the job completes or we don't set the 
+		 * can power down cleanly after the job completes or we don't set the
 		 * flag if we have been asked to only do a power down right now
 		 * In either case, return that the core is busy
 		 */
@@ -1885,12 +1885,12 @@ _mali_osk_errcode_t mali_core_subsystem_signal_power_down(mali_core_subsystem *s
 
 	/* Move core to off queue */
 	mali_core_subsystem_move_core_set_off(core);
-	
+
 	MALI_CORE_SUBSYSTEM_MUTEX_RELEASE(subsys);
 
     MALI_SUCCESS;
 }
-	
+
 _mali_osk_errcode_t mali_core_subsystem_signal_power_up(mali_core_subsystem *subsys, u32 mali_core_nr, mali_bool queue_only)
 {
 	mali_core_renderunit * core;
@@ -1944,7 +1944,7 @@ _mali_osk_errcode_t mali_core_subsystem_signal_power_up(mali_core_subsystem *sub
 
 	/* Need to schedule work to start on this core */
 	mali_core_subsystem_schedule(subsys);
-	
+
 	MALI_CORE_SUBSYSTEM_MUTEX_RELEASE(subsys);
 
     MALI_SUCCESS;
@@ -1958,7 +1958,7 @@ u32 mali_core_renderunit_dump_state(mali_core_subsystem* subsystem, char *buf, u
 	u32 i, len = 0;
 	mali_core_renderunit *core;
 	mali_core_renderunit *tmp_core;
-	
+
 	mali_core_session* session;
 	mali_core_session* tmp_session;
 

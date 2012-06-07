@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -167,7 +167,7 @@ static mali_physical_memory_allocation_result os_allocator_allocate(void* ctx, m
 
             /* Some OS do not perform a full cache flush (including all outer caches) for uncached mapped memory.
              * They zero the memory through a cached mapping, then flush the inner caches but not the outer caches.
-             * This is required for MALI to have the correct view of the memory. 
+             * This is required for MALI to have the correct view of the memory.
              */
             _mali_osk_cache_ensure_uncached_range_flushed( (void *)descriptor, allocation->offset_start, pages_allocated *_MALI_OSK_CPU_PAGE_SIZE );
 			allocation->num_pages = pages_allocated;

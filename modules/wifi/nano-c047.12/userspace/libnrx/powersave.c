@@ -4,12 +4,12 @@
 #include "nrx_priv.h"
 #include "mac_mib_defs.h"
 
-/** \defgroup PS Power Save 
- * \brief The Power Save settings are used to configure and enable/disable 
+/** \defgroup PS Power Save
+ * \brief The Power Save settings are used to configure and enable/disable
  *        both the legacy power save mode and WMM power save mode.
- * 
+ *
  * See the <em>NRX700 Power Save Function Description</em> (15516/14-NRX700) for further
- * details about the NRX700 Power Save implementation. 
+ * details about the NRX700 Power Save implementation.
  */
 
 /*!
@@ -21,7 +21,7 @@
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -44,7 +44,7 @@ nrx_enable_ps(nrx_context ctx)
  * @param ps_enabled Where the result is stored. This is 1 when power
  *        save is enabled and 0 when it's disabled.
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -76,7 +76,7 @@ nrx_get_ps_mode(nrx_context ctx, nrx_bool *ps_enabled)
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -101,8 +101,8 @@ nrx_disable_ps(nrx_context ctx)
  *
  * @param rx_all_dtim Boolean that defines whether the device should
  *                    wake up to receive all DTIM frames (1) or
- *                    if it can skip some of them (0), see 802.11 for 
- *                    details. This parameter can be changed dynamically 
+ *                    if it can skip some of them (0), see 802.11 for
+ *                    details. This parameter can be changed dynamically
  *                    at any time.
  *
  * @param use_ps_poll Boolean that defines whether the device should
@@ -124,9 +124,9 @@ nrx_disable_ps(nrx_context ctx)
  *        traffic occurs at the same time as the traffic timeout has elapsed
  *        the pending traffic will be handled, then the device will go into
  *        sleep mode immediately. This parameter can be changed dynamically at
- *        any time and cannot be 0. 
+ *        any time and cannot be 0.
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -159,9 +159,9 @@ nrx_conf_ps(nrx_context ctx,
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  *
- * @param listen_every_beacon Choose 1 to listen on every single beacon 
- *        sent by the AP or 0 to use the beacon interval agreed with the AP (default). 
- * @return 
+ * @param listen_every_beacon Choose 1 to listen on every single beacon
+ *        sent by the AP or 0 to use the beacon interval agreed with the AP (default).
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -196,7 +196,7 @@ nrx_set_dev_listen_interval(nrx_context ctx,
  *               (see 802.11e for details). When sp_len is 0 the AP will
  *               deliver all buffered data during a service period.
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -235,7 +235,7 @@ nrx_enable_wmm_ps(nrx_context ctx,
  *                  (re)association. All ac:s can be set separately or
  *                  together.
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -270,7 +270,7 @@ nrx_conf_wmm_ps(nrx_context ctx,
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -281,4 +281,3 @@ nrx_disable_wmm_ps(nrx_context ctx)
    NRX_ASSERT(ctx);
    return nrx_nrxioctl(ctx, NRXIOCWMMPSDISABLE, &ioc);
 }
-

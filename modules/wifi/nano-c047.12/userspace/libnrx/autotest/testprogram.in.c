@@ -7,7 +7,7 @@
  *
  * NRX_API_PROTOCOL_HEADERS : Files with official APIs.
  *                            All functions in this file will be exported unless marked with NRX_API_EXCLUDE.
- * NRX_API_PRIVATE_HEADERS  : File with internal functions. 
+ * NRX_API_PRIVATE_HEADERS  : File with internal functions.
  *                            No functions will be exported unless marked with NRX_API_FOR_TESTING.
  * NRX_API_TYPE_HEADERS     : Files with definition of types
  *                            Currently only #defines are extracted from this file, but eventually enums, typedefs, etc.
@@ -22,7 +22,7 @@
  * NRX_API_FOR_TESTING      : Function will be included, but hidden from listing.
  *                            Applies to NRX_API_PROTOCOL_HEADERS and NRX_API_PRIVATE_HEADERS.
  * NRX_API_NOT_IMPLEMENTED  : Function will be listed in the "Functions not yet completed" section.
- * 
+ *
  * Should a function exist in the header file but not in the lib, a stub will be created and the function
  * will be listed in "Functions replaced with stub" section.
  *
@@ -62,7 +62,7 @@ int nrx_show_scan(nrx_context ctx, char *nets, size_t len); /* no header file fo
 
 /* Defines */
 #define NULL_ON_ZERO_LEN(x) ((x->len)?(x):NULL) /* If len is 0, use NULL pointer instead */
-#define __UNUSED__ __attribute__((__unused__)) 
+#define __UNUSED__ __attribute__((__unused__))
 
 static int __UNUSED__ init_char_p(char buf[])
 {
@@ -79,7 +79,7 @@ static int __UNUSED__ init_const_char_p(char *buf, const char *argv[])
 static int __UNUSED__ init_int(int *num, const char *argv[])
 {
    char *end;
-   
+
    *num = strtol(argv[0], &end, 0);
    if(*end != '\0')
       FATAL("Not a numeric value (%s)\n", argv[0]);
@@ -89,13 +89,13 @@ static int __UNUSED__ init_int(int *num, const char *argv[])
 static int __UNUSED__ init_int8_t(int8_t *i8, const char *argv[])
 {
    int i32;
-   
+
    init_int(&i32, argv);
    if (i32 > 0x7F)
       FATAL("Overflow: Number larger than 0x7F (%s)\n", *argv);
    if (i32 < -0x80)
       FATAL("Overflow: Number smaller than -0x80 (%s)\n", *argv);
-      
+
    *i8 = i32;
    return 1;
 }
@@ -103,7 +103,7 @@ static int __UNUSED__ init_int8_t(int8_t *i8, const char *argv[])
 static int __UNUSED__ init_uint32_t(uint32_t *u32, const char *argv[])
 {
    char *end;
-   
+
    *u32 = strtoul(argv[0], &end, 0);
    if(*end != '\0')
       FATAL("Not a numeric value (%s)\n", argv[0]);
@@ -416,7 +416,7 @@ static int __UNUSED__ init_nrx_preamble_type_t(nrx_preamble_type_t *p, const cha
    else if (!strcmp("NRX_LONG_PREAMBLE", argv[0]))
       *p = NRX_LONG_PREAMBLE;
    else
-      FATAL("Unknown value: %s\n", argv[0]);   
+      FATAL("Unknown value: %s\n", argv[0]);
    return 1;
 }
 
@@ -427,7 +427,7 @@ static int __UNUSED__ print_nrx_preamble_type_t(const nrx_preamble_type_t *p)
    else if (*p == NRX_LONG_PREAMBLE)
       printf("NRX_LONG_PREAMBLE");
    else
-      FATAL("Unknown value: %d\n", *p);   
+      FATAL("Unknown value: %d\n", *p);
    return 0;
 }
 
@@ -471,7 +471,7 @@ static int __UNUSED__ init_nrx_region_code_t(nrx_region_code_t *p, const char *a
    else if (!strcmp("NRX_REGION_EMEA", argv[0]))
       *p = NRX_REGION_EMEA;
    else
-      FATAL("Unknown value: %s\n", argv[0]);   
+      FATAL("Unknown value: %s\n", argv[0]);
    return 1;
 }
 
@@ -484,7 +484,7 @@ static int __UNUSED__ print_nrx_region_code_t(const nrx_region_code_t *p)
    else if (*p == NRX_REGION_EMEA)
       printf("NRX_REGION_EMEA");
    else
-      FATAL("Unknown value: %d\n", *p);   
+      FATAL("Unknown value: %d\n", *p);
    return 0;
 }
 
@@ -495,7 +495,7 @@ static int __UNUSED__ init_nrx_scan_type_t(nrx_scan_type_t *p, const char *argv[
    else if (!strcmp("NRX_SCAN_PASSIVE", argv[0]))
       *p = NRX_SCAN_PASSIVE;
    else
-      FATAL("Unknown value: %s\n", argv[0]);   
+      FATAL("Unknown value: %s\n", argv[0]);
    return 1;
 }
 
@@ -506,7 +506,7 @@ static int __UNUSED__ print_nrx_scan_type_t(const nrx_scan_type_t *p)
    else if (*p == NRX_SCAN_PASSIVE)
       printf("NRX_SCAN_PASSIVE");
    else
-      FATAL("Unknown value: %d\n", *p);   
+      FATAL("Unknown value: %d\n", *p);
    return 0;
 }
 
@@ -533,7 +533,7 @@ static int __UNUSED__ init_nrx_antenna_t(nrx_antenna_t *p, const char *argv[])
    else if (!strcmp("NRX_ANTENNA_2", argv[0]))
       *p = NRX_ANTENNA_2;
    else
-      FATAL("Unknown value: %s\n", argv[0]);   
+      FATAL("Unknown value: %s\n", argv[0]);
    return 1;
 }
 
@@ -544,7 +544,7 @@ static int __UNUSED__ print_nrx_antenna_t(const nrx_antenna_t *p)
    else if (*p == NRX_ANTENNA_2)
       printf("NRX_ANTENNA_2");
    else
-      FATAL("Unknown value: %d\n", *p);   
+      FATAL("Unknown value: %d\n", *p);
    return 0;
 }
 */
@@ -568,7 +568,7 @@ static int __UNUSED__ init_nrx_sp_len_t(nrx_sp_len_t *p, const char *argv[])
    else if (!strcmp("NRX_SP_LEN_6", argv[0]))
       *p = NRX_SP_LEN_6;
    else
-      FATAL("Unknown value: %s\n", argv[0]);   
+      FATAL("Unknown value: %s\n", argv[0]);
    return 1;
 }
 
@@ -763,7 +763,7 @@ static int __UNUSED__ init_nrx_ssid_action_t(nrx_ssid_action_t *p,
       *p = NRX_SSID_ADD;
    else if (!strcmp("NRX_SSID_REMOVE", argv[0]))
       *p = NRX_SSID_REMOVE;
-   else 
+   else
       FATAL("Unknown value: %s\n", argv[0]);
    return 1;
 }
@@ -792,15 +792,15 @@ static int callback(nrx_context ctx, int operation, void *event_data, size_t eve
 {
    printf("Callback operation: ");
    switch (operation) {
-      case NRX_CB_TRIGGER: 
-         printf("TRIGGERED\n"); 
+      case NRX_CB_TRIGGER:
+         printf("TRIGGERED\n");
          *(int *)user_data += 1;
          break;
-      case NRX_CB_CANCEL:  
-         printf("CANCELED\n");    
+      case NRX_CB_CANCEL:
+         printf("CANCELED\n");
          break;
-      default: 
-         FATAL("Unknown option\n"); 
+      default:
+         FATAL("Unknown option\n");
          break;
    }
    return 0;
@@ -867,9 +867,9 @@ int main(int argc, const char *argv[])
    // Generate output file name
    static char *output_fn =
    // NRX_API_INSERT_COMMAND=printf "\t\"$NRX_API_OUTPUT_FILE\";\n"
-   
+
    for (i = strlen(testobj) - 1; i >= 0; i--)
-      if (testobj[i] == '/') 
+      if (testobj[i] == '/')
          break;
    testobj += i + 1;
 
@@ -897,7 +897,7 @@ int main(int argc, const char *argv[])
          printf("\n" title ":\n");                                              \
       printf("      %-43s %s\n", group[i].name, group[i].brief);                \
    }
-   
+
    if (testobj == NULL || !strcmp(testobj, "--help")) {
       if (argc == 1) {          /* want help with particular function */
          const char *dummy[2] = {"--help", NULL};
@@ -925,10 +925,10 @@ int main(int argc, const char *argv[])
       return 1;
    }
 
-   else if (!strcmp(testobj, "--version")) { 
+   else if (!strcmp(testobj, "--version")) {
       char *version = "$Id: testprogram.in.c 9954 2008-09-15 09:41:38Z joda $";
       char *md5sums[] = {
-         // Autogenerate md5sum for this file. 
+         // Autogenerate md5sum for this file.
          // NRX_API_INSERT_COMMAND=for f in $NRX_API_PROTOCOL_HEADERS  $NRX_API_PRIVATE_HEADERS $NRX_API_TYPE_HEADERS $NRX_API_LIBRARY_FILE; do if [ -f $f ]; then C="md5sum $f";X=`$C | awk '{ printf $1 }'`; printf "\t\"$X : $C\",\n" ; fi ; done
          // NRX_API_INSERT_COMMAND=for f in header2test.c replace_nanokey testprogram.in.c; do if [ -f $f ]; then C="md5sum $f";X=`$C | awk '{ printf $1 }'`; printf "\t\"$X : $C\",\n"; fi ; done
       } ;
@@ -949,11 +949,11 @@ int main(int argc, const char *argv[])
       FIND_AND_EXECUTE(stubs)
       FIND_AND_EXECUTE(hidden)
    }
-      
+
    printf("Unsupported function: %s\n", testobj);
    printf("Use --help for more information.\n");
    return 1;
-   
+
 }
 
 

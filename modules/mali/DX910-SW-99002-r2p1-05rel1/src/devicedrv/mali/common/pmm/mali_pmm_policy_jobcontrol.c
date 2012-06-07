@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -33,7 +33,7 @@ typedef struct _pmm_policy_data_job_control
 } _pmm_policy_data_job_control_t;
 
 
-/* @ brief Local data for this policy 
+/* @ brief Local data for this policy
  */
 static _pmm_policy_data_job_control_t *data_job_control = NULL;
 
@@ -108,13 +108,13 @@ _mali_osk_errcode_t pmm_policy_init_job_control( _mali_pmm_internal_state_t *pmm
 	_mali_osk_errcode_t err;
 	MALI_DEBUG_ASSERT_POINTER( pmm );
 	MALI_DEBUG_ASSERT( data_job_control == NULL );
-	
+
 	data_job_control = (_pmm_policy_data_job_control_t *) _mali_osk_malloc(sizeof(*data_job_control));
 	MALI_CHECK_NON_NULL( data_job_control, _MALI_OSK_ERR_NOMEM );
 
 	data_job_control->core_active_start = _mali_osk_time_tickcount();
 	data_job_control->timeout = MALI_PMM_POLICY_JOBCONTROL_INACTIVITY_TIMEOUT;
-	
+
 	err = pmm_policy_timer_init( &data_job_control->latency, data_job_control->timeout, MALI_PMM_EVENT_TIMEOUT );
 	if( err != _MALI_OSK_ERR_OK )
 	{
@@ -122,10 +122,10 @@ _mali_osk_errcode_t pmm_policy_init_job_control( _mali_pmm_internal_state_t *pmm
 		data_job_control = NULL;
 		return err;
 	}
-	
+
 	/* Start the latency timeout */
 	job_control_timeout_setup( pmm, &data_job_control->latency );
-	
+
 	MALI_SUCCESS;
 }
 
@@ -200,13 +200,13 @@ _mali_osk_errcode_t pmm_policy_process_job_control( _mali_pmm_internal_state_t *
 			/*** FALL THROUGH to QUEUED to check POWER UP ***/
 
 		case MALI_PMM_EVENT_JOB_QUEUED:
-		
+
 			pmm_policy_job_control_job_queued( pmm );
 #if MALI_POWER_MGMT_TEST_SUITE
 			_mali_osk_pmm_policy_events_notifications(MALI_PMM_EVENT_JOB_QUEUED);
 #endif
 			break;
-		
+
 		case MALI_PMM_EVENT_DVFS_PAUSE:
 
 			cores_subset = pmm_cores_to_power_down( pmm, cores, MALI_FALSE );
@@ -234,7 +234,7 @@ _mali_osk_errcode_t pmm_policy_process_job_control( _mali_pmm_internal_state_t *
 				if( !pmm_invoke_power_down( pmm ) )
 				{
 					/* We need to wait until they are idle */
-					
+
 					pmm->status = MALI_PMM_STATUS_OS_POWER_DOWN;
 					/* Save the OS data to respond later */
 					pmm_save_os_event_data( pmm, event->data );
@@ -262,7 +262,7 @@ _mali_osk_errcode_t pmm_policy_process_job_control( _mali_pmm_internal_state_t *
 			}
 			/* For job control policy - turn off all cores */
 			cores = pmm->cores_powered;
-			
+
 			/*** FALL THROUGH to TIMEOUT TEST as NO TIMEOUT ***/
 
 		case MALI_PMM_EVENT_TIMEOUT:
@@ -270,9 +270,9 @@ _mali_osk_errcode_t pmm_policy_process_job_control( _mali_pmm_internal_state_t *
 			/* Main job control policy - turn off cores after inactivity */
 			if( job_control_timeout_valid( pmm, &data_job_control->latency, (u32)event->data ) )
  			{
-				/* Valid timeout of inactivity - so find out if we can power down 
+				/* Valid timeout of inactivity - so find out if we can power down
 				 * immedately - if we can't then this means the cores are still in fact
-				 * active 
+				 * active
 				 */
 				cores_subset = pmm_cores_to_power_down( pmm, cores, MALI_TRUE );
 				if( cores_subset != 0 )
@@ -369,9 +369,9 @@ _mali_osk_errcode_t pmm_policy_process_job_control( _mali_pmm_internal_state_t *
 		{
 
 		case MALI_PMM_EVENT_INTERNAL_POWER_DOWN_ACK:
-			
+
 			pmm_cores_set_down_ack( pmm, cores );
-			
+
 			if ( pmm->is_dvfs_active == 1 )
 			{
 				if( pmm_power_down_okay( pmm ) )
@@ -382,7 +382,7 @@ _mali_osk_errcode_t pmm_policy_process_job_control( _mali_pmm_internal_state_t *
 				}
 				break;
 			}
-			
+
 			/* Now check if we can power down */
 			if( pmm_invoke_power_down( pmm ) )
 			{
@@ -400,7 +400,7 @@ _mali_osk_errcode_t pmm_policy_process_job_control( _mali_pmm_internal_state_t *
 			MALI_ERROR(_MALI_OSK_ERR_ITEM_NOT_FOUND);
 		}
 		break;
-		
+
 	case MALI_PMM_STATUS_OS_WAITING:
 		switch( event->id )
 		{
@@ -423,13 +423,13 @@ _mali_osk_errcode_t pmm_policy_process_job_control( _mali_pmm_internal_state_t *
 			/* All cores now up - respond to OS power up event */
 			_mali_osk_pmm_power_up_done( event->data );
 			break;
-			
+
 		default:
 			/* All other messages are ignored in this state */
 			break;
 		}
-		break;	
-	
+		break;
+
 	default:
 		/* Unexpected state */
 		MALI_ERROR(_MALI_OSK_ERR_FAULT);

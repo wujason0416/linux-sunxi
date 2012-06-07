@@ -79,7 +79,7 @@ const char  SINGLE_NUMBER[] = "";
 
 int IsSpaceNR(char c)
 {
-   if ( (c == ' ') 
+   if ( (c == ' ')
      || (c == '\t') )
    {
       return TRUE;
@@ -95,7 +95,7 @@ char* AscciHex2bin(char* text, char* bin, const char* delimiter)
        || ((*text >= 'A') && (*text <= 'F'))
        || ((*text >= 'a') && (*text <= 'f')) )
    {
-      
+
       val = text[0] - ( (text[0] > '9') ? ( text[0] > 'F' ? ('a' - 10) : ('A' - 10) ): '0');
 
       val = val << 4;
@@ -226,13 +226,13 @@ G L O B A L   C O N S T A N T S / V A R I A B L E S
 
 void Cache_BasicType(PersistentStorage_t* storage, Action_t action, int* object_p, char* name)
 {
-   char* pos; 
+   char* pos;
    switch (action)
    {
       case CACHE_ACTION_READ:
       {
          pos = DE_STRCHR(storage->ptr, ':') + 2;
-         VALIDATE_CACHE(name, pos);         
+         VALIDATE_CACHE(name, pos);
          *object_p = AscciDec2Int(&pos);
          break;
       }
@@ -263,13 +263,13 @@ G L O B A L   F U N C T I O N S (Hand Coded)
 
 void Cache_m80211_ie_ssid_t(PersistentStorage_t* storage, Action_t action, m80211_ie_ssid_t* object_p, char* name)
 {
-   char* pos; 
+   char* pos;
 
-   switch (action)                       
-   {                                                  
+   switch (action)
+   {
       case CACHE_ACTION_READ:
          pos = DE_STRCHR(storage->ptr, ':') + 2;
-         VALIDATE_CACHE(name, pos);         
+         VALIDATE_CACHE(name, pos);
          pos = AscciHex2bin(pos, (char*)&object_p->hdr.id, SINGLE_NUMBER);
          if (object_p->hdr.id == M80211_IE_ID_NOT_USED)
          {
@@ -280,9 +280,9 @@ void Cache_m80211_ie_ssid_t(PersistentStorage_t* storage, Action_t action, m8021
             DE_STRNCPY(object_p->ssid, pos, M80211_IE_MAX_LENGTH_SSID);
             object_p->hdr.len = (m80211_ie_len_t)DE_STRLEN(object_p->ssid);
          }
-         break;                                       
+         break;
 
-      case CACHE_ACTION_WRITE:                        
+      case CACHE_ACTION_WRITE:
          if (object_p->hdr.id == M80211_IE_ID_NOT_USED
              || object_p->hdr.len == 0) /* XXX zero-size SSID is ok */
          {
@@ -294,35 +294,35 @@ void Cache_m80211_ie_ssid_t(PersistentStorage_t* storage, Action_t action, m8021
             DE_MEMCPY(ssid, object_p->ssid, object_p->hdr.len);
             ssid[object_p->hdr.len] = '\0';
             DE_SPRINTF(storage->ptr, "%s%s: %02X %s\n", &TABS[20-nrTabs], name,
-                       object_p->hdr.id, ssid);  
+                       object_p->hdr.id, ssid);
          }
-         break;                                       
-   } 
+         break;
+   }
    storage->ptr += DE_STRLEN(storage->ptr) + 1;
 } /* Cache_m80211_ie_ssid_t */
 
 void Cache_m80211_mac_addr_t(PersistentStorage_t* storage, Action_t action, m80211_mac_addr_t* object_p, char* name)
 {
-   char* pos; 
+   char* pos;
    const char* Delimiter = ":";
    int size = M80211_ADDRESS_SIZE;
 
-   switch (action)                       
-   {                                                  
+   switch (action)
+   {
       case CACHE_ACTION_READ:
-      {    
+      {
          pos = DE_STRCHR(storage->ptr, ':') + 2;
-         VALIDATE_CACHE(name, pos);         
+         VALIDATE_CACHE(name, pos);
          AscciHex2bin(pos, (char*)&(object_p->octet[0]), Delimiter);
-         break;                                       
-      }                                               
-      case CACHE_ACTION_WRITE:                        
-         DE_SPRINTF(storage->ptr, "%s%s: ", &TABS[20-nrTabs], name);  
+         break;
+      }
+      case CACHE_ACTION_WRITE:
+         DE_SPRINTF(storage->ptr, "%s%s: ", &TABS[20-nrTabs], name);
          pos = &storage->ptr[DE_STRLEN(storage->ptr)];
          pos = Bin2HexAscii(pos, (char*)&(object_p->octet[0]), size, Delimiter);
          DE_STRCPY(pos, "\n");
-         break;                                       
-   } 
+         break;
+   }
    storage->ptr += DE_STRLEN(storage->ptr) + 1;
 } /* Cache_m80211_mac_addr_t */
 
@@ -330,12 +330,12 @@ void Cache_m80211_mac_addr_t(PersistentStorage_t* storage, Action_t action, m802
 
 void Cache_channel_list_t(PersistentStorage_t* storage, Action_t action, channel_list_t* object_p, char* name)
 {
-   char* pos; 
+   char* pos;
    const char* Delimiter = ",";
    int no_channels;
 
-   switch (action) 
-   { 
+   switch (action)
+   {
       case CACHE_ACTION_READ:
          pos = DE_STRCHR(storage->ptr, ':') + 2;
          VALIDATE_CACHE(name, pos);
@@ -347,23 +347,23 @@ void Cache_channel_list_t(PersistentStorage_t* storage, Action_t action, channel
 
       case CACHE_ACTION_WRITE:
          no_channels = object_p->no_channels;
-         DE_SPRINTF(storage->ptr, "%s%s: %02d ", &TABS[20-nrTabs], name, no_channels);  
+         DE_SPRINTF(storage->ptr, "%s%s: %02d ", &TABS[20-nrTabs], name, no_channels);
          pos = &storage->ptr[DE_STRLEN(storage->ptr)];
          pos = Bin2HexAscii(pos, (char*)&object_p->channelList[0], no_channels, Delimiter);
          DE_STRCPY(pos, "\n");
          break;
-   } 
+   }
    storage->ptr += DE_STRLEN(storage->ptr) + 1;
 } /* Cache_channel_list_t */
 
 void Cache_rSupportedRates(PersistentStorage_t* storage, Action_t action, rSupportedRates* object_p, char* name)
 {
-   char* pos; 
+   char* pos;
    const char* Delimiter = ",";
 
-   switch (action)                                    
-   {                                                  
-      case CACHE_ACTION_READ:                         
+   switch (action)
+   {
+      case CACHE_ACTION_READ:
          pos = DE_STRCHR(storage->ptr, ':') + 2;
          VALIDATE_CACHE(name, pos);
          pos = AscciHex2bin(pos, (char*)&object_p->hdr.id, SINGLE_NUMBER);
@@ -378,7 +378,7 @@ void Cache_rSupportedRates(PersistentStorage_t* storage, Action_t action, rSuppo
             {
                pos = DE_STRCHR(pos, ' ') + 1;
                DE_ASSERT(pos != NULL);
-               AscciHex2bin(pos, (char*)object_p->rates, Delimiter);          
+               AscciHex2bin(pos, (char*)object_p->rates, Delimiter);
             }
             else
             {
@@ -386,34 +386,34 @@ void Cache_rSupportedRates(PersistentStorage_t* storage, Action_t action, rSuppo
                object_p->hdr.len = 0;
             }
          }
-         break;                                       
+         break;
 
-      case CACHE_ACTION_WRITE:                        
+      case CACHE_ACTION_WRITE:
          if ( (object_p->hdr.id  == M80211_IE_ID_NOT_USED)
-           || (object_p->hdr.len == 0) 
+           || (object_p->hdr.len == 0)
            || (object_p->hdr.len > sizeof(object_p->rates)) )
          {
-            DE_SPRINTF(storage->ptr, "%s%s: %02X\n", &TABS[20-nrTabs], name, M80211_IE_ID_NOT_USED);  
+            DE_SPRINTF(storage->ptr, "%s%s: %02X\n", &TABS[20-nrTabs], name, M80211_IE_ID_NOT_USED);
          }
          else
          {
-            DE_SPRINTF(storage->ptr, "%s%s: %02X %03d ", &TABS[20-nrTabs], name, object_p->hdr.id, object_p->hdr.len);  
+            DE_SPRINTF(storage->ptr, "%s%s: %02X %03d ", &TABS[20-nrTabs], name, object_p->hdr.id, object_p->hdr.len);
             pos = &storage->ptr[DE_STRLEN(storage->ptr)];
             DE_STRCPY(Bin2HexAscii(pos, (char*)object_p->rates, object_p->hdr.len, Delimiter), "\n");
          }
-         break;                                       
-   } 
+         break;
+   }
    storage->ptr += DE_STRLEN(storage->ptr) + 1;
 } /* Cache_rSupportedRates */
 
 void Cache_rExtSupportedRates(PersistentStorage_t* storage, Action_t action, rExtSupportedRates* object_p, char* name)
 {
-   char* pos; 
+   char* pos;
    const char* Delimiter = ",";
 
-   switch (action)                                    
-   {                                                  
-      case CACHE_ACTION_READ:                         
+   switch (action)
+   {
+      case CACHE_ACTION_READ:
          pos = DE_STRCHR(storage->ptr, ':') + 2;
          VALIDATE_CACHE(name, pos);
          pos = AscciHex2bin(pos, (char*)&object_p->hdr.id, SINGLE_NUMBER);
@@ -428,7 +428,7 @@ void Cache_rExtSupportedRates(PersistentStorage_t* storage, Action_t action, rEx
             {
                pos = DE_STRCHR(pos, ' ') + 1;
                DE_ASSERT(pos != NULL);
-               AscciHex2bin(pos, (char*)object_p->rates, Delimiter);          
+               AscciHex2bin(pos, (char*)object_p->rates, Delimiter);
             }
             else
             {
@@ -436,23 +436,23 @@ void Cache_rExtSupportedRates(PersistentStorage_t* storage, Action_t action, rEx
                object_p->hdr.len = 0;
             }
          }
-         break;                                       
+         break;
 
-      case CACHE_ACTION_WRITE:                        
+      case CACHE_ACTION_WRITE:
          if ( (object_p->hdr.id  == M80211_IE_ID_NOT_USED)
-           || (object_p->hdr.len == 0) 
+           || (object_p->hdr.len == 0)
            || (object_p->hdr.len > sizeof(object_p->rates)) )
          {
-            DE_SPRINTF(storage->ptr, "%s%s: %02X\n", &TABS[20-nrTabs], name, M80211_IE_ID_NOT_USED);  
+            DE_SPRINTF(storage->ptr, "%s%s: %02X\n", &TABS[20-nrTabs], name, M80211_IE_ID_NOT_USED);
          }
          else
          {
-            DE_SPRINTF(storage->ptr, "%s%s: %02X %03d ", &TABS[20-nrTabs], name, object_p->hdr.id, object_p->hdr.len);  
+            DE_SPRINTF(storage->ptr, "%s%s: %02X %03d ", &TABS[20-nrTabs], name, object_p->hdr.id, object_p->hdr.len);
             pos = &storage->ptr[DE_STRLEN(storage->ptr)];
             DE_STRCPY(Bin2HexAscii(pos, (char*)object_p->rates, object_p->hdr.len, Delimiter), "\n");
          }
-         break;                                       
-   } 
+         break;
+   }
    storage->ptr += DE_STRLEN(storage->ptr) + 1;
 } /* Cache_rExtSupportedRates */
 
@@ -460,11 +460,11 @@ void Cache_rExtSupportedRates(PersistentStorage_t* storage, Action_t action, rEx
 
 void Cache_rATIMSet(PersistentStorage_t* storage, Action_t action, rATIMSet* object_p, char* name)
 {
-   char* pos; 
+   char* pos;
 
-   switch (action)                                    
-   {                                                  
-      case CACHE_ACTION_READ:                         
+   switch (action)
+   {
+      case CACHE_ACTION_READ:
          pos = DE_STRCHR(storage->ptr, ':') + 2;
          VALIDATE_CACHE(name, pos);
          pos = AscciHex2bin(pos, (char*)&object_p->hdr.id, SINGLE_NUMBER);
@@ -479,33 +479,33 @@ void Cache_rATIMSet(PersistentStorage_t* storage, Action_t action, rATIMSet* obj
             DE_ASSERT(pos != NULL);
             object_p->atim_window = (uint16_t)AscciDec2Int(&pos);
          }
-         break;                                       
+         break;
 
-      case CACHE_ACTION_WRITE:                        
+      case CACHE_ACTION_WRITE:
          if ( (object_p->hdr.id  == M80211_IE_ID_NOT_USED)
            || (object_p->hdr.len == 0) )
          {
-            DE_SPRINTF(storage->ptr, "%s%s: %02X\n", &TABS[20-nrTabs], name, M80211_IE_ID_NOT_USED);  
+            DE_SPRINTF(storage->ptr, "%s%s: %02X\n", &TABS[20-nrTabs], name, M80211_IE_ID_NOT_USED);
          }
          else
          {
-            DE_SPRINTF(storage->ptr, "%s%s: %02X %03d ", &TABS[20-nrTabs], name, object_p->hdr.id, object_p->hdr.len);  
+            DE_SPRINTF(storage->ptr, "%s%s: %02X %03d ", &TABS[20-nrTabs], name, object_p->hdr.id, object_p->hdr.len);
             pos = &storage->ptr[DE_STRLEN(storage->ptr)];
 	    DE_STRCPY(Bin2DecAscii(pos, object_p->atim_window), "\n");
          }
-         break;                                       
-   } 
+         break;
+   }
    storage->ptr += DE_STRLEN(storage->ptr) + 1;
 } /* Cache_rATIMSet */
 
 
 void Cache_rChannelSet(PersistentStorage_t* storage, Action_t action, rChannelSet* object_p, char* name)
 {
-   char* pos; 
+   char* pos;
 
-   switch (action)                                    
-   {                                                  
-      case CACHE_ACTION_READ:                         
+   switch (action)
+   {
+      case CACHE_ACTION_READ:
          pos = DE_STRCHR(storage->ptr, ':') + 2;
          VALIDATE_CACHE(name, pos);
          pos = AscciHex2bin(pos, (char*)&object_p->hdr.id, SINGLE_NUMBER);
@@ -520,43 +520,43 @@ void Cache_rChannelSet(PersistentStorage_t* storage, Action_t action, rChannelSe
             DE_ASSERT(pos != NULL);
             object_p->channel = (uint8_t)AscciDec2Int(&pos);
          }
-         break;                                       
+         break;
 
-      case CACHE_ACTION_WRITE:                        
+      case CACHE_ACTION_WRITE:
          if ( (object_p->hdr.id  == M80211_IE_ID_NOT_USED)
            || (object_p->hdr.len == 0) )
          {
-            DE_SPRINTF(storage->ptr, "%s%s: %02X\n", &TABS[20-nrTabs], name, M80211_IE_ID_NOT_USED);  
+            DE_SPRINTF(storage->ptr, "%s%s: %02X\n", &TABS[20-nrTabs], name, M80211_IE_ID_NOT_USED);
          }
          else
          {
-            DE_SPRINTF(storage->ptr, "%s%s: %02X %03d ", &TABS[20-nrTabs], name, object_p->hdr.id, object_p->hdr.len);  
+            DE_SPRINTF(storage->ptr, "%s%s: %02X %03d ", &TABS[20-nrTabs], name, object_p->hdr.id, object_p->hdr.len);
             pos = &storage->ptr[DE_STRLEN(storage->ptr)];
 	    DE_STRCPY(Bin2DecAscii(pos, object_p->channel), "\n");
          }
-         break;                                       
-   } 
+         break;
+   }
    storage->ptr += DE_STRLEN(storage->ptr) + 1;
 } /* Cache_rChannelSet */
 
 
 void Cache_rVersionId(PersistentStorage_t* storage, Action_t action, rVersionId* object_p, char* name)
 {
-   char* pos; 
-   switch (action)                       
-   {                                                  
+   char* pos;
+   switch (action)
+   {
       case CACHE_ACTION_READ:
          pos = DE_STRCHR(storage->ptr, ':') + 2;
          VALIDATE_CACHE(name, pos);
          *object_p = (rVersionId)DE_STRTOUL(pos, NULL, 16);
 /*          DE_ASSERT(Registry_VerifyVersion(*object_p)); */
-         break;                                       
+         break;
 
-      case CACHE_ACTION_WRITE:                        
+      case CACHE_ACTION_WRITE:
          DE_SPRINTF(storage->ptr, "%s%s: %08lX\n", &TABS[20-nrTabs], name,
-                 Registry_VERSION_ID);  
-         break;                                       
-   } 
+                 Registry_VERSION_ID);
+         break;
+   }
    storage->ptr += DE_STRLEN(storage->ptr) + 1;
 } /* Cache_rVersionId */
 
@@ -574,13 +574,13 @@ void Cache_rVersionId(PersistentStorage_t* storage, Action_t action, rVersionId*
 
 void Cache_rRateList(PersistentStorage_t* storage, Action_t action, rRateList* object_p, char* name)
 {
-   char* pos; 
+   char* pos;
    const char* Delimiter = ",";
    int len;
 
-   switch (action)                                    
-   {                                                  
-      case CACHE_ACTION_READ:                         
+   switch (action)
+   {
+      case CACHE_ACTION_READ:
          pos = DE_STRCHR(storage->ptr, ':') + 2;
          VALIDATE_CACHE(name, pos);
          len = 0;
@@ -590,22 +590,22 @@ void Cache_rRateList(PersistentStorage_t* storage, Action_t action, rRateList* o
             AscciHex2binN(pos, (char*)object_p->rates, Delimiter, &len);
          }
          object_p->len = len;
-         break;                                       
+         break;
 
-      case CACHE_ACTION_WRITE:                        
-         if ((object_p->len == 0) 
+      case CACHE_ACTION_WRITE:
+         if ((object_p->len == 0)
            || (object_p->len > sizeof(object_p->rates)) )
          {
-            DE_SPRINTF(storage->ptr, "%s%s: \n", &TABS[20-nrTabs], name);  
+            DE_SPRINTF(storage->ptr, "%s%s: \n", &TABS[20-nrTabs], name);
          }
          else
          {
-            DE_SPRINTF(storage->ptr, "%s%s: ", &TABS[20-nrTabs], name);  
+            DE_SPRINTF(storage->ptr, "%s%s: ", &TABS[20-nrTabs], name);
             pos = &storage->ptr[DE_STRLEN(storage->ptr)];
             DE_STRCPY(Bin2HexAscii(pos, (char*)object_p->rates, object_p->len, Delimiter), "\n");
          }
-         break;                                       
-   } 
+         break;
+   }
    storage->ptr += DE_STRLEN(storage->ptr) + 1;
 } /* Cache_rRateList */
 
@@ -711,7 +711,7 @@ void Cache_rLinkSupervision(PersistentStorage_t* storage, Action_t action, rLink
    nrTabs++;
    Cache_rBool(storage, action, &object_p->enable, "enable");
    Cache_uint(storage, action, &object_p->beaconFailCount, "beaconFailCount");
-   Cache_uint(storage, action, &object_p->beaconWarningCount, "beaconWarningCount");   
+   Cache_uint(storage, action, &object_p->beaconWarningCount, "beaconWarningCount");
    Cache_uint(storage, action, &object_p->beaconTimeout, "beaconTimeout");
    Cache_uint(storage, action, &object_p->TxFailureCount, "TxFailureCount");
    Cache_uint(storage, action, &object_p->roundtripCount, "roundtripCount");
@@ -739,7 +739,7 @@ void Cache_rBasicWiFiProperties(PersistentStorage_t* storage, Action_t action, r
    Cache_int(storage, action, &object_p->txRatePowerControl, "txRatePowerControl");
    Cache_rSTA_WMMSupport(storage, action, &object_p->enableWMM, "enableWMM");
    Cache_rBool(storage, action, &object_p->enableWMMPs, "enableWMMPs");
-   Cache_int(storage, action, &object_p->wmmPsPeriod, "wmmPsPeriod");   
+   Cache_int(storage, action, &object_p->wmmPsPeriod, "wmmPsPeriod");
    Cache_rSTA_QoSInfo(storage, action, &object_p->QoSInfoElements, "QoSinfo");
    Cache_int(storage, action, &object_p->qosMaxServicePeriodLength, "qosMaxServicePeriodLength");
    Cache_rLinkSupervision(storage, action, &object_p->linkSupervision, "linkSupervision");
@@ -780,7 +780,7 @@ void Cache_rPowerManagementProperties(PersistentStorage_t* storage, Action_t act
    Cache_TreeStructure(storage, action, name);
    nrTabs++;
    Cache_rPowerSaveMode(storage, action, &object_p->mode, "mode");
-   Cache_rBool(storage, action, &object_p->enablePsPoll, "enablePsPoll");   
+   Cache_rBool(storage, action, &object_p->enablePsPoll, "enablePsPoll");
    Cache_rBool(storage, action, &object_p->receiveAll_DTIM, "receiveAll_DTIM");
    Cache_rInterval(storage, action, &object_p->listenInterval, "listenInterval");
    Cache_rTimeout(storage, action, &object_p->psTrafficTimeout, "psTrafficTimeout");
@@ -878,5 +878,3 @@ void* Registry_GetProperty(PropertyId_t id)
 
 
 /******************************* END OF FILE ********************************/
-
-

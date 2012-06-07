@@ -45,7 +45,7 @@ void NAND_EnRbInt(void)
 		dbg_rbint_wrn("nand clear rb int status error in int enable \n");
 		dbg_rbint_wrn("rb status: 0x%x\n", NFC_READ_REG(NFC_REG_ST));
 	}
-	
+
 	nandrb_ready_flag = 0;
 
 	//enable interrupt
@@ -57,7 +57,7 @@ void NAND_EnRbInt(void)
 
 void NAND_ClearRbInt(void)
 {
-    
+
 	//disable interrupt
 	NFC_WRITE_REG(NFC_REG_INT, 0);
 
@@ -70,7 +70,7 @@ void NAND_ClearRbInt(void)
 		dbg_rbint_wrn("nand clear rb int status error in int clear \n");
 		dbg_rbint_wrn("rb status: 0x%x\n", NFC_READ_REG(NFC_REG_ST));
 	}
-	
+
 	nandrb_ready_flag = 0;
 }
 
@@ -83,9 +83,9 @@ void NAND_RbInterrupt(void)
 	{
 		dbg_rbint_wrn("nand rb int late, rb status: 0x%x, rb int en: 0x%x \n",NFC_READ_REG(NFC_REG_ST),NFC_READ_REG(NFC_REG_INT));
 	}
-    
+
     NAND_ClearRbInt();
-    
+
     nandrb_ready_flag = 1;
 	wake_up( &NAND_RB_WAIT );
 
@@ -95,9 +95,9 @@ void NAND_RbInterrupt(void)
 __s32 NAND_WaitRbReady(void)
 {
 	__u32 rb;
-	
+
 	NAND_EnRbInt();
-	
+
 	//wait_event(NAND_RB_WAIT, nandrb_ready_flag);
 	dbg_rbint("rb wait, nfc_ctl: 0x%x, rb status: 0x%x, rb int en: 0x%x\n", NFC_READ_REG(NFC_REG_CTL), NFC_READ_REG(NFC_REG_ST), NFC_READ_REG(NFC_REG_INT));
 
@@ -118,7 +118,7 @@ __s32 NAND_WaitRbReady(void)
 			NAND_ClearRbInt();
 			return 0;
 		}
-			
+
 	}
 	else
 	{
@@ -130,7 +130,7 @@ __s32 NAND_WaitRbReady(void)
 			return 0;
 		}
 	}
-	
+
 	if(wait_event_timeout(NAND_RB_WAIT, nandrb_ready_flag, 1*HZ)==0)
 	{
 		dbg_rbint_wrn("nand wait rb ready time out\n");
@@ -141,7 +141,7 @@ __s32 NAND_WaitRbReady(void)
 	{
 		dbg_rbint("nand wait rb ready ok\n");
 	}
-	
+
     return 0;
 }
 
@@ -153,7 +153,7 @@ __s32 NAND_WaitRbReady(void)
 	printk("rb wait, nfc_ctl: 0x%x, rb status:0x%x, rb int en: 0x%x\n", NFC_READ_REG(NFC_REG_CTL), NFC_READ_REG(NFC_REG_ST), NFC_READ_REG(NFC_REG_INT));
     wait_event(NAND_RB_WAIT, nandrb_ready_flag);
 	printk("rb wait ok\n");
-	
+
     return 0;
 }
 */

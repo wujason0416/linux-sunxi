@@ -27,7 +27,7 @@ extern int gtgWmmPS;
 extern int num_stops;
 extern int num_hello;
 extern tgWMM_t wmm_thr[];
-tgThrData_t tdata[WFA_THREADS_NUM]; 
+tgThrData_t tdata[WFA_THREADS_NUM];
 extern HANDLE thr_flag_cond;
 extern HANDLE thr_stop_cond;
 extern wfaWmmPS_t wmmps_info;
@@ -102,7 +102,7 @@ int WfaRcvStop(unsigned int *rmsg,int length,int *state)
 }
 
 /*
- * wfaStaSndHello(): This function sends a Hello packet 
+ * wfaStaSndHello(): This function sends a Hello packet
  *                and sleeps for sleep_period, the idea is
  *                to keep sending hello packets till the console
  *                responds, the function keeps a check on the MAX
@@ -130,7 +130,7 @@ int WfaStaSndHello(char psave,int sleep_period,int *state)
 		num_hello=0;
 		asd_closeSocket(psSockfd);
 		psSockfd = -1;
-	} 
+	}
 	return 0;
 }
 

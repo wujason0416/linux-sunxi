@@ -86,8 +86,8 @@ make_format(char *buf, int x, size_t len, int flags, int size)
 }
 
 static int
-format(const char *format, 
-       char *buf, size_t len, 
+format(const char *format,
+       char *buf, size_t len,
        const void *data, size_t data_size)
 {
    char fbuf[32];
@@ -96,9 +96,9 @@ format(const char *format,
    size_t l;
    int flags;
    int size;
-   
+
    b = buf;
-   
+
    while(data_size > 0) {
       for(f = format; *f != '\0'; ) {
          if(*f != '%') {
@@ -228,7 +228,7 @@ bool_format(struct mibinfo *m, const void *data, size_t data_size, char *buf, si
       strlcpy(buf, "on", len);
    else
       strlcpy(buf, "off", len);
-   
+
    return 0;
 }
 
@@ -279,7 +279,7 @@ read_mibinfo(const char *filename)
    char *q;
    struct mibinfo *m, *mhead = NULL, **mtail = &mhead;
    int lineno = 1;
-   
+
    f = fopen(filename, "r");
    if(f == NULL) {
       warn("%s", filename);
@@ -406,7 +406,7 @@ printmib(nrx_context ctx, struct mibinfo *mhead, const char *id)
    int ret;
 
    m = foo(mhead, id);
-   
+
    ret = nrx_get_mib_val(ctx, m->oid, data, &len);
    if(ret != 0) {
       warnx("%s: %d", id, ret);
@@ -432,17 +432,17 @@ printmib(nrx_context ctx, struct mibinfo *mhead, const char *id)
 }
 
 static int
-mib_set(nrx_context ctx, 
-        struct mibinfo *mhead, 
-        const char *id, 
-        void *value, 
+mib_set(nrx_context ctx,
+        struct mibinfo *mhead,
+        const char *id,
+        void *value,
         size_t len)
 {
    struct mibinfo *m;
    int ret;
 
    m = foo(mhead, id);
- 
+
    ret = nrx_set_mib_val(ctx, m->oid, value, len);
    if(ret != 0) {
       warnx("%s: %d", id, ret);
@@ -495,7 +495,7 @@ main(int argc, char **argv)
             else {
                errx(1, "unrecognized format \"%s\"", optarg);
             }
-               
+
             break;
          case 'q':
             oformat = BRIEF;
@@ -513,7 +513,7 @@ main(int argc, char **argv)
       errx(1, "set requires binary format");
 
    mhead = read_mibinfo(mibtable);
-   
+
    nrx_init_context(&ctx, ifname);
 
    if(opt_s) {

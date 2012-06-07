@@ -45,7 +45,7 @@ ifeq ($(OLYMPIC_RWL),1)
     CFLAGS += -DOLYMPIC_RWL
 endif
 ifneq ($(findstring $(TARGETENV), "linux linuxmips linux26mips linuxmips_be linuxarm linuxarm_le android"),)
- 
+
 
 #ifdef WLP2P
   CFLAGS += -DWLP2P
@@ -53,7 +53,7 @@ ifneq ($(findstring $(TARGETENV), "linux linuxmips linux26mips linuxmips_be linu
 
 # extra warnings
 CFLAGS += -Wextra
-CFLAGS += -DWLPFN -DWLPFN_AUTO_CONNECT -DLINUX 
+CFLAGS += -DWLPFN -DWLPFN_AUTO_CONNECT -DLINUX
 CFLAGS += -DWLC_HIGH
 CFLAGS += -I$(SRCBASE)/wl/sys -I$(SRCBASE)/wl/phy -I ../../include
 
@@ -63,7 +63,7 @@ ifeq ($(findstring x86,$(TARGETARCH)),x86)
         TARGETARCH = x86
 endif
 
-ASD        ?= 0 
+ASD        ?= 0
 ifneq ($(ASD),1)
   override ASD:=
 endif
@@ -71,13 +71,13 @@ ifneq ($(ASD),1)
   NOASDDIR    = _noasd
 endif
 
-RWL        ?= 1 
+RWL        ?= 1
 ifeq ($(RWL),0)
   override RWL:=
 endif
 
-RWL_DONGLE        ?= 1 
-RWL_SOCKET        ?= 1 
+RWL_DONGLE        ?= 1
+RWL_SOCKET        ?= 1
 RWL_WIFI          ?= 1
 RWL_SERIAL        ?= 1
 
@@ -188,11 +188,11 @@ $(WLHIGHSTUB): $(WLHIGHSTUB_OBJS)
 
 # Final link targets
 $(WL_EXE): $(WL_OBJS)
-	$(CC) $(LDFLAGS) -o $@ $^ 
+	$(CC) $(LDFLAGS) -o $@ $^
 
 $(SERVER_DONGLE): $(DONGLE_OBJS)
 	@mkdir -pv $(@D)
-	$(CC) $(LDFLAGS) -o $@ $^ $(ASD_LDFLAGS) 
+	$(CC) $(LDFLAGS) -o $@ $^ $(ASD_LDFLAGS)
 
 $(SERVER_SOCKET): $(SOCKET_OBJS)
 	@mkdir -pv $(@D)

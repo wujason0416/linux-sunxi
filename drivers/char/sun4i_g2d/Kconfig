@@ -5,5 +5,3 @@ config SUN4I_G2D
 	default y
 #	depends on HAS_IOMEM
 	help
-
-

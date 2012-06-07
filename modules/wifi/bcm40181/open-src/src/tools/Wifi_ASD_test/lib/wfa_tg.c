@@ -492,7 +492,7 @@ int wfaTGStopPing(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 	{
 #ifndef WIN32
 		/* Ping will be stopped after the specified duration which will
-		* be specified by the user at the time send ping. For some reason popen with grep 
+		* be specified by the user at the time send ping. For some reason popen with grep
 		* does not work well in Intel PXA with Linux
 		* Use system() call for such things and avoid using popen
 		*/
@@ -513,11 +513,11 @@ int wfaTGStopPing(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
 
 			return TRUE;
 		}
-		DPRINT_INFO(WFA_OUT,"\nCmdStr is:%s\n", strout);      
+		DPRINT_INFO(WFA_OUT,"\nCmdStr is:%s\n", strout);
 		fgets(strout, sizeof(strout), tmpfile);
 		stpResp->cmdru.pingStp.sendCnt = atoi(strout);
 		fgets(strout, sizeof(strout), tmpfile);
-		stpResp->cmdru.pingStp.repliedCnt = atoi(strout); 
+		stpResp->cmdru.pingStp.repliedCnt = atoi(strout);
 		fclose(tmpfile);
 
 		remove(TMP_FILE_PATH);
@@ -600,7 +600,7 @@ int wfaTGConfig(int len, BYTE *caCmdBuf, int *respLen, BYTE *respBuf)
  *
  * In this function we create the UDP sockets for receiving the traffic and then
  * set the global flag gtgRecv to indicate the receive thread to receive the incoming traffic.
- * In the case of IPTV profile we multiple Create Events for multiple streams 
+ * In the case of IPTV profile we multiple Create Events for multiple streams
  */
 
 int wfaTGRecvStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
@@ -657,8 +657,8 @@ int wfaTGRecvStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 			if(btRecvSockfd > 0) {
 				gtgRecv = streamid;
 #ifdef WIN32
-				/*Create receive event which is initially non-signalled and 
-				* later  reset the state of the signal when we call the command 
+				/*Create receive event which is initially non-signalled and
+				* later  reset the state of the signal when we call the command
 				* WfaRecvStop() */
 				if((g_hRecvEvent = CreateEvent(NULL, FALSE, TRUE, NULL)) == 0) {
 					DPRINT_INFO(WFA_OUT, "CreateEvent Failed = %d\r\n", GetLastError());
@@ -666,7 +666,7 @@ int wfaTGRecvStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 				}
 #endif
 				/*Creating a thread for receiving traffic in case of File_Transfer, Transac,Multicast */
-				wfaRecvThrCreate();				
+				wfaRecvThrCreate();
 			}
 			else
 			{
@@ -686,13 +686,13 @@ int wfaTGRecvStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 			if(btRecvSockfd > 0)
 			{
 #ifdef WIN32
-				/*Create receive event which is initially non-signalled and 
+				/*Create receive event which is initially non-signalled and
 				* later  automatically reset the state of the signal
 				* when the receive thread exits.  */
 				if((g_hRecvEvent = CreateEvent(NULL, FALSE, TRUE, NULL)) == 0){
 					DPRINT_INFO(WFA_OUT, "CreateEvent Failed = %d\r\n", GetLastError());
 				}
-#endif				
+#endif
 				gtgRecv = streamid;
 				/*Creating a thread for receiving traffic in case of File_Transfer, Transac,Multicast */
 				wfaRecvThrCreate();
@@ -730,10 +730,10 @@ int wfaTGRecvStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 			tgSockfds[myStream->tblidx] = wfaCreateUDPSock(theProfile->dipaddr, theProfile->dport);
 			DPRINT_INFO(WFA_OUT, "sock fd prof iptv = %d , streamid = %d\n", tgSockfds[myStream->tblidx], streamid);
 			if(tgSockfds[myStream->tblidx] > 0){
-#ifdef WIN32	
+#ifdef WIN32
 				/* Create multiple event for different recv streams and get
-				* the values in the array of recv handles, Which will be later used in 
-				* WfaRecvStop() to signal the recv thread to stop the recv process. */		  
+				* the values in the array of recv handles, Which will be later used in
+				* WfaRecvStop() to signal the recv thread to stop the recv process. */
 				if((g_recvEvent[myStream->tblidx] = CreateEvent(NULL, FALSE, TRUE, NULL)) == 0){
 					DPRINT_INFO(WFA_OUT, "CreateEvent Failed = %d\r\n", GetLastError());
 
@@ -765,7 +765,7 @@ int wfaTGRecvStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 			{
 				gtgTransac = streamid;
 				gtgRecv = streamid;
-#ifdef WIN32               
+#ifdef WIN32
 				if((g_hRecvEvent = CreateEvent(NULL, FALSE, TRUE, NULL)) == 0){
 					DPRINT_INFO(WFA_OUT, "CreateEvent Failed = %d\r\n", GetLastError());
 
@@ -792,8 +792,8 @@ int wfaTGRecvStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 
 			 wmmps_info.sta_state = 0;
 			 wmmps_info.wait_state = WFA_WAIT_STAUT_00;
-#ifdef WIN32              
-			 init_wmmps_thr(); 
+#ifdef WIN32
+			 init_wmmps_thr();
 				if((g_hRecvEvent = CreateEvent(NULL, FALSE, TRUE, NULL)) == 0){
 					DPRINT_INFO(WFA_OUT, "CreateEvent Failed = %d\r\n", GetLastError());
 
@@ -804,7 +804,7 @@ int wfaTGRecvStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 			 wmmps_info.psToAddr.sin_addr.s_addr = inet_addr(theProfile->sipaddr);
 			 wmmps_info.psToAddr.sin_port = htons(theProfile->sport);
 			 wmmps_info.reset = 0;
-			
+
 			 wmm_thr[usedThread].thr_flag = streamid;
 			 wmmps_info.streamid = streamid;
 #ifndef WIN32
@@ -819,7 +819,7 @@ int wfaTGRecvStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 #endif /* WIN32 */
 			 gtimeOut = MINISECONDS/10;  /* in msec */
 			 gRegSec = 0;
-			 
+
 			 /* Create the receiver thread */
 		     wfaRecvThrCreate();
 #endif   /* WFA_WMM_PS_EXT */
@@ -912,8 +912,8 @@ int wfaTGRecvStop(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 				CloseHandle(g_hRecvEvent);
 
 #else
-			/* Waiting for signal from wfaRecvStart once the receive 
-			 * operation is complete in order to close the socket 
+			/* Waiting for signal from wfaRecvStart once the receive
+			 * operation is complete in order to close the socket
 			 */
 			sem_wait(&sem_gtgrecv);
 #endif
@@ -934,8 +934,8 @@ int wfaTGRecvStop(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 			if(g_hRecvEvent != NULL)
 				CloseHandle(g_hRecvEvent);
 #else
-			/* Waiting for signal from wfaRecvStart once the receive 
-			 * operation is complete in order to close the socket 
+			/* Waiting for signal from wfaRecvStart once the receive
+			 * operation is complete in order to close the socket
 			 */
 			sem_wait(&sem_gtgrecv);
 #endif
@@ -958,8 +958,8 @@ int wfaTGRecvStop(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 			if(g_recvEvent[myStream->tblidx] != NULL)
 				CloseHandle(g_recvEvent[myStream->tblidx]);
 #else
-			/* Waiting for signal from wfaIPTVRecvStart once the receive 
-			 * operation is complete in order to close the socket 
+			/* Waiting for signal from wfaIPTVRecvStart once the receive
+			 * operation is complete in order to close the socket
 			 */
 			sem_wait(&sem_iptv_gtgrecv[myStream->tblidx]);
 #endif
@@ -987,8 +987,8 @@ int wfaTGRecvStop(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 			if(g_hRecvEvent != NULL)
 				CloseHandle(g_hRecvEvent);
 #else
-			/* Waiting for signal from wfaRecvStart once the receive 
-			 * operation is complete in order to close the socket 
+			/* Waiting for signal from wfaRecvStart once the receive
+			 * operation is complete in order to close the socket
 			 */
 			sem_wait(&sem_gtgrecv);
 #endif
@@ -1041,7 +1041,7 @@ int wfaTGRecvStop(int len, BYTE *parms, int *respLen, BYTE *respBuf)
  *
  * In this function we will create the UDP sockets to send the traffic
  * and set the global flag gtgSend, increment usedThread for each stream
- * also set the socket option and type ofservice bits (TOS) in 
+ * also set the socket option and type ofservice bits (TOS) in
  * the case of Multicast profiles . We also
  * Call the thread Win32_tmout_stop_send() which sleeps for the duration specified in the profile
  * and then stops the sending of the traffic by resetting the  runloop, decrement usedThread .
@@ -1116,7 +1116,7 @@ int wfaTGSendStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 		* need to reset the stats
 		*/
 		memset(&myStream->stats, 0, sizeof(tgStats_t));
-		/* Here increment the usedThread for every time we wish to send a stream 
+		/* Here increment the usedThread for every time we wish to send a stream
 		* so as to maintain the count of streams that are running at the same time.
 		*/
 		switch(theProfile->profile)
@@ -1135,7 +1135,7 @@ int wfaTGSendStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 				errnum = GetLastError();
 				DPRINT_INFO(WFA_OUT, "Could not create the thread1\n");
 				return TRUE;
-			} 
+			}
 #endif
 			}
 			else
@@ -1190,7 +1190,7 @@ int wfaTGSendStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 				errnum = GetLastError();
 				DPRINT_INFO(WFA_OUT, "Could not create the thread1\n");
 				return TRUE;
-			} 
+			}
 #endif
 			break;
 		case PROF_IPTV:
@@ -1217,7 +1217,7 @@ int wfaTGSendStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 				errnum = GetLastError();
 				DPRINT_INFO(WFA_OUT, "Could not create the thread1\n");
 				return TRUE;
-			} 
+			}
 
 #endif
 			DPRINT_INFO(WFA_OUT, "wfa_wmm_thread: myProfile->startdelay %i\n", theProfile->startdelay);
@@ -1276,7 +1276,7 @@ int wfaTGSendStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 					* value for waiting transaction echo responses.
 					*/
 					if(theProfile->rate == 0){
-						gtimeOut = MINISECONDS;  /* in msec */     
+						gtimeOut = MINISECONDS;  /* in msec */
 					} else {
 						gtimeOut = MINISECONDS/theProfile->rate;  /* in msec */
 					}
@@ -1315,7 +1315,7 @@ int wfaTGSendStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 				errnum = GetLastError();
 				DPRINT_INFO(WFA_OUT, "Could not create the thread1\n");
 				return TRUE;
-				} 
+				}
 #endif
 			}
 			break;
@@ -1366,16 +1366,16 @@ int wfaTGSendStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 			break;
 #endif
 		default :
-			DPRINT_INFO(WFA_OUT, "No profile match findStreams problem\n");	
+			DPRINT_INFO(WFA_OUT, "No profile match findStreams problem\n");
 		}
 	}
 
-#ifdef WIN32	
+#ifdef WIN32
 	/* Wait fo the event to be signalled from the timeout function, after all
-	*  the threads have finished sending the traffic. 
-	* 
+	*  the threads have finished sending the traffic.
+	*
 	*/
-	
+
 		Sleep(theProfile->duration*1000);
 		if(SetEvent(send_event)== 0 ){
 			DPRINT_INFO(WFA_OUT, "SetEvent failure %d \n", GetLastError());
@@ -1386,11 +1386,11 @@ int wfaTGSendStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 			memset(Send_dutResp, 0, WFA_BUFF_512);
 			wfaSentStatsResp(Send_dutResp);
 		}
-	
+
 
 	if(send_event != NULL) {
 		CloseHandle(send_event);
-		send_event = NULL;		 
+		send_event = NULL;
 	}
 
 #else
@@ -1399,7 +1399,7 @@ int wfaTGSendStart(int len, BYTE *parms, int *respLen, BYTE *respBuf)
 		sem_wait(&sem_wmm);
 		memset(Send_dutResp, 0, WFA_BUFF_512);
 		wfaSentStatsResp(Send_dutResp);
-	} 
+	}
 #endif
 
 	wfaEncodeTLV(WFA_TRAFFIC_AGENT_SEND_RESP_TLV, (WORD)(numStreams* sizeof(dutCmdResponse_t)),Send_dutResp, (BYTE*)respBuf);
@@ -1691,7 +1691,7 @@ int wfaSendLongFile(int mySockfd, int streamid, BYTE *aRespBuf, int *aRespLen)
 	while (runLoop)
 #else
 	while ((WaitForSingleObject(send_event,0) != WAIT_OBJECT_0))
-#endif		
+#endif
 		{
 			counter++;
 			/* fill in the counter */
@@ -1738,10 +1738,10 @@ int wfaSendLongFile(int mySockfd, int streamid, BYTE *aRespBuf, int *aRespLen)
 					gettimeofday(&after, NULL);
 					difftime = wfa_itime_diff(&after, &before);
 #else
-					/* In case of win32 for higher frame rate we are sleeping 
+					/* In case of win32 for higher frame rate we are sleeping
 					 * less to meet the required Tx frame rate efficiency.
 					 */
-					
+
 					if (theProf->rate > HIGH_FRAME_RATE_VAL)
 						usleep(act_sleep_time / SLEEP_DENOMINATOR);
 					else
@@ -1803,7 +1803,7 @@ int wfaSendLongFile(int mySockfd, int streamid, BYTE *aRespBuf, int *aRespLen)
 				case EAGAIN:
 				case ENOBUFS:
 					//DPRINT_INFO(WFA_OUT, "send error\n");
-					usleep(50);            
+					usleep(50);
 					counter-- ;
 					//myStream->stats.txFrames--;
 
@@ -1865,7 +1865,7 @@ int wfaSendLongFile(int mySockfd, int streamid, BYTE *aRespBuf, int *aRespLen)
 	/* free the buffer */
 	free(packBuf);
 
-	/* Populate the statistics of the sent response in Send_dutResp . In the case of multiple streams 
+	/* Populate the statistics of the sent response in Send_dutResp . In the case of multiple streams
 	* Send_dutResp buffer will have all the response at the end of the send process of all the streams.
 	*/
 	sendResp.status = STATUS_COMPLETE;
@@ -1990,7 +1990,7 @@ int wfaSendShortFile(int mySockfd, int streamid, BYTE *sendBuf, int pksize, BYTE
 	}
 	sentTranPkts++;
 	DPRINT_INFO(WFA_OUT, "SendShortFile: sentTranPkts = %d\r\n",sentTranPkts);
-	/* Populate the statistics of the sent response in Send_dutResp . In the case of multiple streams 
+	/* Populate the statistics of the sent response in Send_dutResp . In the case of multiple streams
 	* Send_dutResp buffer will have all the response at the end of the send process of all the streams.
 	*/
 
@@ -2063,7 +2063,7 @@ int wfaRecvFile(int mySockfd, int streamid, char *recvBuf)
 		myStream->stats.rxFrames++;
 		myStream->stats.rxPayloadBytes +=bytesRecvd;
 #ifdef WIN32
-		/* 
+		/*
 		 * This sleep is added to avoid driver crash at Dut side when TG sends
 		 * traffic at unlimited frame rate for longer duration
 		 */
@@ -2080,7 +2080,7 @@ int wfaRecvFile(int mySockfd, int streamid, char *recvBuf)
 	return (bytesRecvd);
 }
 
-/* This is going to be a blocking SEND till it finishes 
+/* This is going to be a blocking SEND till it finishes
  * The code is optimized for to achieve higher through put
  * by using hardcoded header buffers
  */
@@ -2186,7 +2186,7 @@ int wfaImprovePerfSendLongFile(int mySockfd, int streamid, BYTE *aRespBuf, int *
 			case EAGAIN:
 			case ENOBUFS:
 				//DPRINT_INFO(WFA_OUT, "send error\n");
-				usleep(50);            
+				usleep(50);
 				counter-- ;
 				//myStream->stats.txFrames--;
 
@@ -2238,7 +2238,7 @@ int wfaImprovePerfSendLongFile(int mySockfd, int streamid, BYTE *aRespBuf, int *
 	/* free the buffer */
 	free(packBuf);
 
-	/* Populate the statistics of the sent response in Send_dutResp . In the case of multiple streams 
+	/* Populate the statistics of the sent response in Send_dutResp . In the case of multiple streams
 	* Send_dutResp buffer will have all the response at the end of the send process of all the streams.
 	*/
 	sendResp.status = STATUS_COMPLETE;
@@ -2269,7 +2269,7 @@ DWORD Win32_tmout_stop_send(LPVOID num )
 	*/
 	runLoop = 0;
 	/*Reset to stop sending the short file*/
-	gTransactrunLoop = 0; 
+	gTransactrunLoop = 0;
 	/*
 	* Decrement the usedThread everytime the timeout function is called .
 	*/
@@ -2289,7 +2289,7 @@ DWORD Win32_tmout_stop_send(LPVOID num )
 			if(g_TGSndThr[i] != NULL){
 				CloseHandle(g_TGSndThr[i]);
 				g_TGSndThr[i] = NULL;
-			}	
+			}
 		}
 	}
 	/*

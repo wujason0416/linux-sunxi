@@ -542,4 +542,3 @@ cdev_destroy(void *data)
         KDEBUG(EXIT, "EXIT");
         destroy_workqueue(cdev_wq);
 }
-

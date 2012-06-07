@@ -49,14 +49,14 @@ static struct sw_dma_client sun5i_dma_client_in = {
 
 static struct sun5i_dma_params sun5i_i2s_pcm_stereo_out = {
 	.client		=	&sun5i_dma_client_out,
-	.channel	=	DMACH_NIIS,	
+	.channel	=	DMACH_NIIS,
 	.dma_addr 	=	SUN5I_IISBASE + SUN5I_IISTXFIFO,
 	.dma_size 	=   4,               /* dma transfer 32bits */
 };
 
 static struct sun5i_dma_params sun5i_i2s_pcm_stereo_in = {
 	.client		=	&sun5i_dma_client_in,
-	.channel	=	DMACH_NIIS,	
+	.channel	=	DMACH_NIIS,
 	.dma_addr 	=	SUN5I_IISBASE + SUN5I_IISRXFIFO,
 	.dma_size 	=   4,               /* dma transfer 32bits */
 };
@@ -84,22 +84,22 @@ void sun5i_snd_txctrl_i2s(struct snd_pcm_substream *substream, int on)
 	}
 	writel(reg_val, sun5i_iis.regs + SUN5I_TXCHMAP);
 
-	reg_val = readl(sun5i_iis.regs + SUN5I_IISCTL);	
+	reg_val = readl(sun5i_iis.regs + SUN5I_IISCTL);
 	reg_val &= ~SUN5I_IISCTL_SDO0EN;
 	switch(substream->runtime->channels) {
 		case 1:
 		case 2:
-			reg_val |= SUN5I_IISCTL_SDO0EN; break;	
+			reg_val |= SUN5I_IISCTL_SDO0EN; break;
 		default:
 			reg_val |= SUN5I_IISCTL_SDO0EN; break;
 	}
 	writel(reg_val, sun5i_iis.regs + SUN5I_IISCTL);
-	
+
 	//flush TX FIFO
 	reg_val = readl(sun5i_iis.regs + SUN5I_IISFCTL);
-	reg_val |= SUN5I_IISFCTL_FTX;	
+	reg_val |= SUN5I_IISFCTL_FTX;
 	writel(reg_val, sun5i_iis.regs + SUN5I_IISFCTL);
-	
+
 	//clear TX counter
 	writel(0, sun5i_iis.regs + SUN5I_IISTXCNT);
 
@@ -108,12 +108,12 @@ void sun5i_snd_txctrl_i2s(struct snd_pcm_substream *substream, int on)
 		reg_val = readl(sun5i_iis.regs + SUN5I_IISCTL);
 		reg_val |= SUN5I_IISCTL_TXEN;
 		writel(reg_val, sun5i_iis.regs + SUN5I_IISCTL);
-		
+
 		/* enable DMA DRQ mode for play */
 		reg_val = readl(sun5i_iis.regs + SUN5I_IISINT);
 		reg_val |= SUN5I_IISINT_TXDRQEN;
 		writel(reg_val, sun5i_iis.regs + SUN5I_IISINT);
-		
+
 		//Global Enable Digital Audio Interface
 		reg_val = readl(sun5i_iis.regs + SUN5I_IISCTL);
 		reg_val |= SUN5I_IISCTL_GEN;
@@ -124,63 +124,63 @@ void sun5i_snd_txctrl_i2s(struct snd_pcm_substream *substream, int on)
 		reg_val = readl(sun5i_iis.regs + SUN5I_IISCTL);
 		reg_val &= ~SUN5I_IISCTL_TXEN;
 		writel(reg_val, sun5i_iis.regs + SUN5I_IISCTL);
-			
+
 		/* DISBALE dma DRQ mode */
 		reg_val = readl(sun5i_iis.regs + SUN5I_IISINT);
 		reg_val &= ~SUN5I_IISINT_TXDRQEN;
 		writel(reg_val, sun5i_iis.regs + SUN5I_IISINT);
-			
+
 		//Global disable Digital Audio Interface
 		reg_val = readl(sun5i_iis.regs + SUN5I_IISCTL);
 		reg_val &= ~SUN5I_IISCTL_GEN;
 		writel(reg_val, sun5i_iis.regs + SUN5I_IISCTL);
-	}		
+	}
 }
 
 void sun5i_snd_rxctrl_i2s(int on)
 {
 	u32 reg_val;
-	
+
 	//flush RX FIFO
 	reg_val = readl(sun5i_iis.regs + SUN5I_IISFCTL);
-	reg_val |= SUN5I_IISFCTL_FRX;	
+	reg_val |= SUN5I_IISFCTL_FRX;
 	writel(reg_val, sun5i_iis.regs + SUN5I_IISFCTL);
 
 	//clear RX counter
 	writel(0, sun5i_iis.regs + SUN5I_IISRXCNT);
-	
+
 	if (on) {
 		/* IIS RX ENABLE */
 		reg_val = readl(sun5i_iis.regs + SUN5I_IISCTL);
 		reg_val |= SUN5I_IISCTL_RXEN;
 		writel(reg_val, sun5i_iis.regs + SUN5I_IISCTL);
-			
+
 		/* enable DMA DRQ mode for record */
 		reg_val = readl(sun5i_iis.regs + SUN5I_IISINT);
 		reg_val |= SUN5I_IISINT_RXDRQEN;
 		writel(reg_val, sun5i_iis.regs + SUN5I_IISINT);
-			
+
 		//Global Enable Digital Audio Interface
 		reg_val = readl(sun5i_iis.regs + SUN5I_IISCTL);
 		reg_val |= SUN5I_IISCTL_GEN;
 		writel(reg_val, sun5i_iis.regs + SUN5I_IISCTL);
-			
+
 	} else {
 		/* IIS RX DISABLE */
 		reg_val = readl(sun5i_iis.regs + SUN5I_IISCTL);
 		reg_val &= ~SUN5I_IISCTL_RXEN;
 		writel(reg_val, sun5i_iis.regs + SUN5I_IISCTL);
-			
+
 		/* DISBALE dma DRQ mode */
 		reg_val = readl(sun5i_iis.regs + SUN5I_IISINT);
 		reg_val &= ~SUN5I_IISINT_RXDRQEN;
 		writel(reg_val, sun5i_iis.regs + SUN5I_IISINT);
-				
+
 		//Global disable Digital Audio Interface
 		reg_val = readl(sun5i_iis.regs + SUN5I_IISCTL);
 		reg_val &= ~SUN5I_IISCTL_GEN;
 		writel(reg_val, sun5i_iis.regs + SUN5I_IISCTL);
-	}		
+	}
 }
 
 static inline int sun5i_snd_is_clkmaster(void)
@@ -195,7 +195,7 @@ static int sun5i_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
 
 	//SDO ON
 	reg_val = readl(sun5i_iis.regs + SUN5I_IISCTL);
-	reg_val |= (SUN5I_IISCTL_SDO0EN); 
+	reg_val |= (SUN5I_IISCTL_SDO0EN);
 	writel(reg_val, sun5i_iis.regs + SUN5I_IISCTL);
 
 	/* master or slave selection */
@@ -211,7 +211,7 @@ static int sun5i_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
 			return -EINVAL;
 	}
 	writel(reg_val, sun5i_iis.regs + SUN5I_IISCTL);
-	
+
 	/* pcm or i2s mode selection */
 	reg_val = readl(sun5i_iis.regs + SUN5I_IISCTL);
 	reg_val1 = readl(sun5i_iis.regs + SUN5I_IISFAT0);
@@ -242,7 +242,7 @@ static int sun5i_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
 	}
 	writel(reg_val, sun5i_iis.regs + SUN5I_IISCTL);
 	writel(reg_val1, sun5i_iis.regs + SUN5I_IISFAT0);
-	
+
 	/* DAI signal inversions */
 	reg_val1 = readl(sun5i_iis.regs + SUN5I_IISFAT0);
 	switch(fmt & SND_SOC_DAIFMT_INV_MASK){
@@ -264,13 +264,13 @@ static int sun5i_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
 			break;
 	}
 	writel(reg_val1, sun5i_iis.regs + SUN5I_IISFAT0);
-	
+
 	/* word select size */
 	reg_val = readl(sun5i_iis.regs + SUN5I_IISFAT0);
 	reg_val &= ~SUN5I_IISFAT0_WSS_32BCLK;
 	if(sun5i_iis.ws_size == 16)
 		reg_val |= SUN5I_IISFAT0_WSS_16BCLK;
-	else if(sun5i_iis.ws_size == 20) 
+	else if(sun5i_iis.ws_size == 20)
 		reg_val |= SUN5I_IISFAT0_WSS_20BCLK;
 	else if(sun5i_iis.ws_size == 24)
 		reg_val |= SUN5I_IISFAT0_WSS_24BCLK;
@@ -281,16 +281,16 @@ static int sun5i_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
 	/* PCM REGISTER setup */
 	reg_val = sun5i_iis.pcm_txtype&0x3;
 	reg_val |= sun5i_iis.pcm_rxtype<<2;
-	
+
 	if(!sun5i_iis.pcm_sync_type)
-		reg_val |= SUN5I_IISFAT1_SSYNC;							//short sync		
+		reg_val |= SUN5I_IISFAT1_SSYNC;							//short sync
 	if(sun5i_iis.pcm_sw == 16)
 		reg_val |= SUN5I_IISFAT1_SW;
-			
+
 	reg_val |=((sun5i_iis.pcm_start_slot - 1)&0x3)<<6;		//start slot index
-		
+
 	reg_val |= sun5i_iis.pcm_lsb_first<<9;			//MSB or LSB first
-		
+
 	if(sun5i_iis.pcm_sync_period == 256)
 		reg_val |= 0x4<<12;
 	else if (sun5i_iis.pcm_sync_period == 128)
@@ -300,7 +300,7 @@ static int sun5i_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
 	else if (sun5i_iis.pcm_sync_period == 32)
 		reg_val |= 0x1<<12;
 	writel(reg_val, sun5i_iis.regs + SUN5I_IISFAT1);
-	
+
 	/* set FIFO control register */
 	reg_val = 0 & 0x3;
 	reg_val |= (1 & 0x1)<<2;
@@ -316,13 +316,13 @@ static int sun5i_i2s_hw_params(struct snd_pcm_substream *substream,
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct sun5i_dma_params *dma_data;
-	
+
 	/* play or record */
 	if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 		dma_data = &sun5i_i2s_pcm_stereo_out;
 	else
 		dma_data = &sun5i_i2s_pcm_stereo_in;
-	
+
 	snd_soc_dai_set_dma_data(rtd->cpu_dai, substream, dma_data);
 	return 0;
 }
@@ -332,7 +332,7 @@ static int sun5i_i2s_trigger(struct snd_pcm_substream *substream,
 {
 	int ret = 0;
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-	struct sun5i_dma_params *dma_data = 
+	struct sun5i_dma_params *dma_data =
 					snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
 
 	switch (cmd) {
@@ -363,8 +363,8 @@ static int sun5i_i2s_trigger(struct snd_pcm_substream *substream,
 	return ret;
 }
 
-//freq:   1: 22.5792MHz   0: 24.576MHz  
-static int sun5i_i2s_set_sysclk(struct snd_soc_dai *cpu_dai, int clk_id, 
+//freq:   1: 22.5792MHz   0: 24.576MHz
+static int sun5i_i2s_set_sysclk(struct snd_soc_dai *cpu_dai, int clk_id,
                                  unsigned int freq, int dir)
 {
 	if (!freq) {
@@ -415,7 +415,7 @@ static int sun5i_i2s_set_clkdiv(struct snd_soc_dai *cpu_dai, int div_id, int div
 		default:
 			return -EINVAL;
 	}
-	
+
 	//diable MCLK output when high samplerate
 	reg = readl(sun5i_iis.regs + SUN5I_IISCLKD);
 	if (!(reg & 0xF)) {
@@ -425,12 +425,12 @@ static int sun5i_i2s_set_clkdiv(struct snd_soc_dai *cpu_dai, int div_id, int div
 		reg |= SUN5I_IISCLKD_MCLKOEN;
 		writel(reg, sun5i_iis.regs + SUN5I_IISCLKD);
 	}
-	
+
 	return 0;
 }
 
 static int sun5i_i2s_dai_probe(struct snd_soc_dai *dai)
-{			
+{
 	return 0;
 }
 static int sun5i_i2s_dai_remove(struct snd_soc_dai *dai)
@@ -473,16 +473,16 @@ static int sun5i_i2s_suspend(struct snd_soc_dai *cpu_dai)
 	writel(reg_val, sun5i_iis.regs + SUN5I_IISCTL);
 
 	iisregsave();
-	
+
 	//release the module clock
 	clk_disable(i2s_moduleclk);
 
 	clk_disable(i2s_apbclk);
-	
+
 	//printk("[IIS]PLL2 0x01c20008 = %#x\n", *(volatile int*)0xF1C20008);
 	printk("[IIS]SPECIAL CLK 0x01c20068 = %#x, line= %d\n", *(volatile int*)0xF1C20068, __LINE__);
 	printk("[IIS]SPECIAL CLK 0x01c200B8 = %#x, line = %d\n", *(volatile int*)0xF1C200B8, __LINE__);
-	
+
 	return 0;
 }
 static int sun5i_i2s_resume(struct snd_soc_dai *cpu_dai)
@@ -495,18 +495,18 @@ static int sun5i_i2s_resume(struct snd_soc_dai *cpu_dai)
 
 	//release the module clock
 	clk_enable(i2s_moduleclk);
-	
+
 	iisregrestore();
-	
+
 	//Global Enable Digital Audio Interface
 	reg_val = readl(sun5i_iis.regs + SUN5I_IISCTL);
 	reg_val |= SUN5I_IISCTL_GEN;
 	writel(reg_val, sun5i_iis.regs + SUN5I_IISCTL);
-	
+
 	//printk("[IIS]PLL2 0x01c20008 = %#x\n", *(volatile int*)0xF1C20008);
 	printk("[IIS]SPECIAL CLK 0x01c20068 = %#x, line= %d\n", *(volatile int*)0xF1C20068, __LINE__);
 	printk("[IIS]SPECIAL CLK 0x01c200B8 = %#x, line = %d\n", *(volatile int*)0xF1C200B8, __LINE__);
-	
+
 	return 0;
 }
 
@@ -516,10 +516,10 @@ static struct snd_soc_dai_ops sun5i_iis_dai_ops = {
 	.hw_params 	= sun5i_i2s_hw_params,
 	.set_fmt 	= sun5i_i2s_set_fmt,
 	.set_clkdiv = sun5i_i2s_set_clkdiv,
-	.set_sysclk = sun5i_i2s_set_sysclk, 
+	.set_sysclk = sun5i_i2s_set_sysclk,
 };
 
-static struct snd_soc_dai_driver sun5i_iis_dai = {	
+static struct snd_soc_dai_driver sun5i_iis_dai = {
 	.probe 		= sun5i_i2s_dai_probe,
 	.suspend 	= sun5i_i2s_suspend,
 	.resume 	= sun5i_i2s_resume,
@@ -537,14 +537,14 @@ static struct snd_soc_dai_driver sun5i_iis_dai = {
 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE,
 	},
 	.symmetric_rates = 1,
-	.ops 		= &sun5i_iis_dai_ops,	
-};		
+	.ops 		= &sun5i_iis_dai_ops,
+};
 
 static int __devinit sun5i_i2s_dev_probe(struct platform_device *pdev)
 {
 	int reg_val = 0;
 	int ret;
-	
+
 	sun5i_iis.regs = ioremap(SUN5I_IISBASE, 0x100);
 	if (sun5i_iis.regs == NULL)
 		return -ENXIO;
@@ -555,36 +555,36 @@ static int __devinit sun5i_i2s_dev_probe(struct platform_device *pdev)
 		printk("i2s_apbclk failed! line = %d\n", __LINE__);
 		goto out;
 	}
-	
+
 	i2s_pllx8 = clk_get(NULL, "audio_pllx8");
-	
+
 	//i2s pll2clk
 	i2s_pll2clk = clk_get(NULL, "audio_pll");
-	
+
 	//i2s module clk
 	i2s_moduleclk = clk_get(NULL, "i2s");
-	
+
 	if(clk_set_parent(i2s_moduleclk, i2s_pll2clk)){
 		printk("try to set parent of i2s_moduleclk to i2s_pll2ck failed! line = %d\n",__LINE__);
 		goto out1;
 	}
-	
+
 	if(clk_set_rate(i2s_moduleclk, 24576000/8)){
 		printk("set i2s_moduleclk clock freq to 24576000 failed! line = %d\n", __LINE__);
 		goto out1;
 	}
-	
+
 	if(-1 == clk_enable(i2s_moduleclk)){
 		printk("open i2s_moduleclk failed! line = %d\n", __LINE__);
 		goto out1;
 	}
-	
+
 	reg_val = readl(sun5i_iis.regs + SUN5I_IISCTL);
 	reg_val |= SUN5I_IISCTL_GEN;
 	writel(reg_val, sun5i_iis.regs + SUN5I_IISCTL);
-	
+
 	iounmap(sun5i_iis.ioregs);
-	ret = snd_soc_register_dai(&pdev->dev, &sun5i_iis_dai);	
+	ret = snd_soc_register_dai(&pdev->dev, &sun5i_iis_dai);
 	if (ret) {
 		dev_err(&pdev->dev, "Failed to register DAI\n");
 		goto out2;
@@ -605,17 +605,17 @@ static int __devexit sun5i_i2s_dev_remove(struct platform_device *pdev)
 		i2s_used = 0;
 		//release the module clock
 		clk_disable(i2s_moduleclk);
-		
+
 		//release pllx8clk
 		clk_put(i2s_pllx8);
-		
+
 		//release pll2clk
 		clk_put(i2s_pll2clk);
-		
+
 		//release apbclk
 		clk_put(i2s_apbclk);
-		
-		gpio_release(i2s_handle, 2);		
+
+		gpio_release(i2s_handle, 2);
 		snd_soc_unregister_dai(&pdev->dev);
 		platform_set_drvdata(pdev, NULL);
 	}
@@ -638,23 +638,23 @@ static struct platform_driver sun5i_i2s_driver = {
 };
 
 static int __init sun5i_i2s_init(void)
-{	
-	int err = 0;	
+{
+	int err = 0;
 	int ret;
-	
+
 	ret = script_parser_fetch("i2s_para","i2s_used", &i2s_used, sizeof(int));
 	if (ret) {
         printk("[I2S]sun5i_i2s_init fetch i2s using configuration failed\n");
-    } 
-    
- 	if (i2s_used) {	
+    }
+
+ 	if (i2s_used) {
 		i2s_handle = gpio_request_ex("i2s_para", NULL);
-		
+
 		if((err = platform_device_register(&sun5i_i2s_device)) < 0)
 			return err;
-	
+
 		if ((err = platform_driver_register(&sun5i_i2s_driver)) < 0)
-			return err;	
+			return err;
 	} else {
         printk("[I2S]sun5i-i2s cannot find any using configuration for controllers, return directly!\n");
         return 0;
@@ -664,7 +664,7 @@ static int __init sun5i_i2s_init(void)
 module_init(sun5i_i2s_init);
 
 static void __exit sun5i_i2s_exit(void)
-{	
+{
 	platform_driver_unregister(&sun5i_i2s_driver);
 }
 module_exit(sun5i_i2s_exit);
@@ -674,4 +674,3 @@ MODULE_AUTHOR("ALLWINNER");
 MODULE_DESCRIPTION("sun5i I2S SoC Interface");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:sun5i-i2s");
-

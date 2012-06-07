@@ -19,11 +19,11 @@
 static int apm_6xxx_gpio_ctrl(char* name, int level)
 {
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
-    char* gpio_cmd[5] = {"apm_6981_vcc_en", "apm_6981_vdd_en", "apm_6981_wakeup", 
+    char* gpio_cmd[5] = {"apm_6981_vcc_en", "apm_6981_vdd_en", "apm_6981_wakeup",
                                "apm_6981_rst_n", "apm_6981_pwd_n"};
     int i = 0;
     int ret = 0;
-    
+
     for (i=0; i<5; i++) {
         if (strcmp(name, gpio_cmd[i])==0)
             break;
@@ -32,7 +32,7 @@ static int apm_6xxx_gpio_ctrl(char* name, int level)
         apm_msg("No gpio %s for APM 6XXX module\n", name);
         return -1;
     }
-    
+
     ret = gpio_write_one_pin_value(ops->pio_hdle, level, name);
     if (ret) {
         apm_msg("Failed to set gpio %s to %d !\n", name, level);

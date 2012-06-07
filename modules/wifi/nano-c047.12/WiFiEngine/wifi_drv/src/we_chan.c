@@ -58,12 +58,12 @@ This module implements frequency/channel conversion functions
 #define F11a(C) { (C), F(5000 + (C) * 5) }
 #define F11j(C) { (C), F(4000 + (C) * 5) }
 
-/* US Public Safety 4.9GHz band defines 
-   Fps(C) = F(4920 + 0.5 * C) C = 5, 10, ..., 95 
+/* US Public Safety 4.9GHz band defines
+   Fps(C) = F(4920 + 0.5 * C) C = 5, 10, ..., 95
 */
 
-static const struct ftable { 
-   uint8_t channel; 
+static const struct ftable {
+   uint8_t channel;
    unsigned long khz;
 } ftable[] = {
 #if defined(HAVE_802_11bg)
@@ -129,7 +129,7 @@ static const struct ftable {
 };
 
 
-/*! 
+/*!
  *  @brief Convert a channel number to a frequency
  *
  *  @param channel IN  the channel number
@@ -148,11 +148,11 @@ WiFiEngine_Channel2Frequency(uint8_t channel, unsigned long *khz)
          return WIFI_ENGINE_SUCCESS;
       }
    }
-   
+
    return WIFI_ENGINE_FAILURE;
 }
 
-/*! 
+/*!
  *  @brief Convert a frequency to a channel number
  *
  *  @param khz     IN  frequency in kHz
@@ -164,7 +164,7 @@ int
 WiFiEngine_Frequency2Channel(unsigned long khz, uint8_t *channel)
 {
    unsigned int i;
-   
+
    for(i = 0; i < DE_ARRAY_SIZE(ftable); i++) {
       if(khz == ftable[i].khz) {
          *channel = ftable[i].channel;
@@ -175,4 +175,3 @@ WiFiEngine_Frequency2Channel(unsigned long khz, uint8_t *channel)
 }
 
 /** @} */ /* End of we_chan group */
-

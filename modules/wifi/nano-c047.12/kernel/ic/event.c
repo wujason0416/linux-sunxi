@@ -26,7 +26,7 @@
 #endif
 
 static size_t
-format_hex(char *buf, 
+format_hex(char *buf,
            size_t buf_size,
            const void *data,
            size_t data_len)
@@ -43,7 +43,7 @@ format_hex(char *buf,
 #if WIRELESS_EXT < 18
 static void
 send_custom_event(struct net_device *dev,
-                  const char *prefix, const char *suffix, 
+                  const char *prefix, const char *suffix,
                   void *buf, size_t len)
 {
    union iwreq_data wrqu;
@@ -114,7 +114,7 @@ nrx_wxevent_assoc_req_ie(struct net_device *dev)
       wireless_send_event(dev, IWEVASSOCREQIE, &wrqu, buf);
 #endif
    }
-      
+
    return 0;
 }
 
@@ -144,7 +144,7 @@ nrx_wxevent_assoc_resp_ie(struct net_device *dev)
       wireless_send_event(dev, IWEVASSOCRESPIE, &wrqu, buf);
 #endif
    }
-#endif /* DE_CCX */      
+#endif /* DE_CCX */
    return 0;
 }
 
@@ -175,7 +175,7 @@ nrx_wxevent_ap(struct net_device *dev)
        printk("[nano] BSSID sent - 0x%02x:0x%02x:0x%02x:0x%02x:0x%02x:0x%02x\n",
               bssid.octet[0], bssid.octet[1], bssid.octet[2],
               bssid.octet[3], bssid.octet[4], bssid.octet[5]);
-   
+
    wireless_send_event(dev, SIOCGIWAP, (union iwreq_data*)&sa, NULL);
 
    return 0;
@@ -190,7 +190,7 @@ nrx_wxevent_pmkid_candidate(struct net_device *dev,
    union iwreq_data wrqu;
 
    struct iw_pmkid_cand cand;
-   
+
    KDEBUG(TRACE, "ENTRY");
 
    wrqu.data.length = sizeof(cand);
@@ -214,8 +214,8 @@ nrx_wxevent_pmkid_candidate(struct net_device *dev,
 }
 
 int
-nrx_wxevent_michael_mic_failure(struct net_device *dev, 
-				void *bssid, 
+nrx_wxevent_michael_mic_failure(struct net_device *dev,
+				void *bssid,
 				int group_failure)
 {
    unsigned int keyid = 0;
@@ -223,13 +223,13 @@ nrx_wxevent_michael_mic_failure(struct net_device *dev,
    char buf[128];
    char addr[32];
    format_hex(addr, sizeof(addr), bssid, 6);
-   snprintf(buf, sizeof(buf), 
+   snprintf(buf, sizeof(buf),
 	    "MLME-MICHAELMICFAILURE.indication(keyid=%u %s addr=%s)",
 	    keyid,
 	    group_failure ? "broadcast" : "unicast",
 	    addr);
    send_custom_event(dev, buf, "", NULL, 0);
-   
+
 #else
    struct iw_michaelmicfailure mic;
    union iwreq_data wrqu;
@@ -260,7 +260,7 @@ nrx_wxevent_scan_complete(struct net_device *dev)
    wrqu.data.flags = 0;
 
    wireless_send_event(dev, SIOCGIWSCAN, &wrqu, NULL);
-      
+
    return 0;
 }
 
@@ -273,7 +273,7 @@ nrx_wxevent_rssi_trigger(struct net_device *dev, int32_t threshold)
    wrqu.sens.fixed = 0;
    wrqu.sens.disabled = 0;
    wrqu.sens.flags = 0;
-   
+
    wireless_send_event(dev, SIOCGIWSENS, &wrqu, NULL);
 
    return 0;
@@ -291,7 +291,7 @@ int
 nrx_wxevent_connection_lost(struct net_device *dev, we_conn_lost_ind_t *data)
 {
    char bssid[13];
-   format_hex(bssid, sizeof(bssid), 
+   format_hex(bssid, sizeof(bssid),
               data->bssid.octet, sizeof(data->bssid.octet));
 
    send_nrx_event(dev, "CONNLOST,type=%#x,bssid=%s,reason=%#x",
@@ -310,7 +310,7 @@ nrx_wxevent_incompatible(struct net_device *dev,
 }
 
 int
-nrx_wxevent_scan(struct net_device *dev, 
+nrx_wxevent_scan(struct net_device *dev,
                  m80211_nrp_mlme_scannotification_ind_t *ind)
 {
    unsigned int flags = 0;
@@ -323,17 +323,17 @@ nrx_wxevent_scan(struct net_device *dev,
    if(ind->flags & SCAN_NOTIFICATION_FLAG_HIT)
       flags |= 8; /* NRX_SN_POL_JOB_COMPLETE_WITH_HIT */
    /* SCAN_NOTIFICATION_FLAG_DIRECT_SCAN_JOB */
-   send_nrx_event(dev, "SCANNOTIFICATION,policy=%#x,jobid=%#x", 
+   send_nrx_event(dev, "SCANNOTIFICATION,policy=%#x,jobid=%#x",
                   flags, ind->job_id);
    return 0;
 }
 
 int
-nrx_wxevent_mibtrig_ind(struct net_device *dev, 
-                          uint32_t trig_id, 
+nrx_wxevent_mibtrig_ind(struct net_device *dev,
+                          uint32_t trig_id,
                           uint32_t value)
 {
-   send_nrx_event(dev, "MIBTRIG,id=%#x,value=%#x", 
+   send_nrx_event(dev, "MIBTRIG,id=%#x,value=%#x",
                   trig_id,
                   value);
    return 0;
@@ -353,9 +353,9 @@ nrx_wxevent_mibtrig(void *data, size_t len)
 {
    we_vir_trig_data_t *p = (we_vir_trig_data_t *)data;
    struct net_device *dev = WiFiEngine_GetAdapter();
-   
+
    DE_BUG_ON(len != sizeof(*p), "Size don't agree");
-   
+
    switch(p->type) {
       case WE_TRIG_TYPE_IND:
          nrx_wxevent_mibtrig_ind(dev, p->trig_id, p->value);
@@ -363,7 +363,7 @@ nrx_wxevent_mibtrig(void *data, size_t len)
       case WE_TRIG_TYPE_CANCEL:
          nrx_wxevent_mibtrig_cancel(dev, p->trig_id, p->reason);
          break;
-      default: 
+      default:
          panic("Unknown type");
          break;
    }
@@ -386,7 +386,7 @@ nrx_wxevent_threshold(const char *type_str, void *data, size_t len)
       case WE_TRIG_TYPE_CANCEL:
          send_nrx_event(dev, "CANCEL,%s,id=%#x,reason=%#x", type_str, p->trig_id, p->reason);
          break;
-      default: 
+      default:
          panic("Unknown type");
          break;
    }

@@ -96,7 +96,7 @@ static struct hv2605_keyboard_data *keyboard_data;
 
 /**
  * tkey_fetch_sysconfig_para - get config info from sysconfig.fex file.
- * return value:  
+ * return value:
  *                    = 0; success;
  *                    < 0; err
  */
@@ -108,7 +108,7 @@ static int tkey_fetch_sysconfig_para(void)
 
 	char name[I2C_NAME_SIZE];
 	script_parser_value_type_t type = SCIRPT_PARSER_VALUE_TYPE_STRING;
-	
+
 	//__u32 twi_id = 0;
 
 	printk("========HV Inital ===================\n");
@@ -135,13 +135,13 @@ static int tkey_fetch_sysconfig_para(void)
 		u_i2c_addr.dirty_addr_buf[1] = I2C_CLIENT_END;
 		printk("%s: after: tkey_twi_addr is 0x%x, dirty_addr_buf: 0x%hx. dirty_addr_buf[1]: 0x%hx \n", \
 		__func__, twi_addr, u_i2c_addr.dirty_addr_buf[0], u_i2c_addr.dirty_addr_buf[1]);
-		
+
 		if(SCRIPT_PARSER_OK != script_parser_fetch("tkey_para", "tkey_twi_id", &twi_id, 1)){
 			pr_err("%s: script_parser_fetch err. \n", name);
 			goto script_parser_fetch_err;
 		}
 		printk("%s: tkey_twi_id is %d. \n", __func__, twi_id);
-		
+
 	}else{
 		pr_err("%s: tkey_unused. \n",  __func__);
 		ret = -1;
@@ -157,7 +157,7 @@ script_parser_fetch_err:
 
 /**
  * tkey_detect - Device detection callback for automatic device creation
- * return value:  
+ * return value:
  *                    = 0; success;
  *                    < 0; err
  */
@@ -253,7 +253,7 @@ static int hv_init(void)
 	int ret = -1;
 	struct hv_keypad_data *data = i2c_get_clientdata(this_client);
 	struct key_event *event = &data->event;
-	
+
 	printk("===%s===.\n",  __func__);
 	event->key_status = 2;
 	event->key_last = 0;
@@ -390,7 +390,7 @@ static int hv_keypad_probe(struct i2c_client *client, const struct i2c_device_id
 	i2c_set_clientdata(client, hv_keypad);
 
 	hv_init();
-	
+
 	INIT_DELAYED_WORK(&hv_keypad->work, hv_read_loop);
 	hv_keypad->queue = create_singlethread_workqueue(dev_name(&client->dev));
 	if (!hv_keypad->queue) {
@@ -507,7 +507,7 @@ static int __init hv_keypad_init(void)
 	__func__, u_i2c_addr.normal_i2c[0], u_i2c_addr.normal_i2c[1]);
 
 	hv_keypad_driver.detect = tkey_detect;
-	
+
 	ret = i2c_add_driver(&hv_keypad_driver);
 
 	return ret;
@@ -524,4 +524,3 @@ module_exit(hv_keypad_exit);
 MODULE_AUTHOR("<zhengdixu@allwinnertech.com>");
 MODULE_DESCRIPTION("hv keypad driver");
 MODULE_LICENSE("GPL");
-

@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2011, Broadcom Corporation
  * All Rights Reserved.
- * 
+ *
  * This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
  * the contents of this file may not be disclosed to third parties, copied
  * or duplicated in any form, in whole or in part, without the prior
@@ -94,7 +94,7 @@ rwl_connectsocket(int SocketDes, struct sockaddr* SerAddr, int SizeOfAddr)
 	return SUCCESS;
 }
 
-/* 
+/*
  * Function for associating a local address with a socket.
  */
 int
@@ -108,7 +108,7 @@ rwl_bindsocket(int SocketDes, struct sockaddr * MyAddr, int SizeOfAddr)
 	return SUCCESS;
 }
 
-/* 
+/*
  * Function for making the socket to listen for incoming connection.
  */
 int
@@ -122,7 +122,7 @@ rwl_listensocket(int SocketDes, int BackLog)
 	return SUCCESS;
 }
 
-/* 
+/*
  * Function for permitting an incoming connection attempt on a socket
  * Function  called by server
  */
@@ -498,7 +498,7 @@ rwl_open_transport(int remote_type, char *port, int ReadTotalTimeout, int debug)
 	case REMOTE_DONGLE:
 			if ((g_irh = rwl_open_serial(remote_type, g_rwl_device_name_serial))
 				 == FAIL) {
-			/* Initial port opening settings failed in reboot. 
+			/* Initial port opening settings failed in reboot.
 			 * So retry opening the serial port
 			 */
 				if ((g_irh = rwl_open_serial(remote_type, g_rwl_device_name_serial))

@@ -10,13 +10,13 @@ CFG80211_LOADED="no"
 modprobe -l cfg80211 | grep cfg80211 > /dev/null
 if [ $? -eq 0 ]; then
 # cfg80211 kernel module is available
-CFG80211_AVAIL="yes"	
+CFG80211_AVAIL="yes"
 fi
 
-lsmod | grep cfg80211 > /dev/null   
+lsmod | grep cfg80211 > /dev/null
 if [ $? -eq 0 ]; then
 # cfg80211 kernel module is loaded
-CFG80211_LOADED="yes"	
+CFG80211_LOADED="yes"
 fi
 
 if [ -f /usr/sbin/hciconfig ]; then
@@ -33,17 +33,17 @@ case $1 in
 	loadbus)
 	# Make sure this platform actually has the native MMC stack loaded.
 	# Some distributions use mmc_core; others incorporate into mmc_block.
-	lsmod | grep mmc_ > /dev/null   
+	lsmod | grep mmc_ > /dev/null
 	if [ $? -ne 0 ]; then
 		echo "*** Native Linux MMC stack not loaded!"
 		exit -1
 	fi
 	;;
-	
+
 	unloadbus)
 	# nothing to do for native MMC stack
 	;;
-	
+
 	loadAR6K)
 	if [ "$CFG80211_AVAIL" = "yes" ]; then
    	   if [ "$CFG80211_LOADED" = "no" ]; then
@@ -61,7 +61,7 @@ case $1 in
 		exit -1
 	fi
 	;;
-	
+
 	unloadAR6K)
 	if [ "$ATH_AR6K_HCI_PAL" = "yes" ]; then
 		if [ -n "$HCI1_IF" ]; then
@@ -76,5 +76,5 @@ case $1 in
 	;;
 	*)
 		echo "Unknown option : $1"
-	
+
 esac

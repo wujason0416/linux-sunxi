@@ -10,8 +10,8 @@
 #define PIO_BASE_ADDRESS             (0x01c20800)
 #define PIO_RANGE_SIZE               (0x400)
 
-#define IRQ_EINT21                   (21) 
-#define IRQ_EINT29                   (29) 
+#define IRQ_EINT21                   (21)
+#define IRQ_EINT29                   (29)
 #define IRQ_EINT25                   (25)
 
 #define TS_POLL_DELAY			    10/* ms delay between samples */
@@ -24,7 +24,7 @@
 #define PIO_INT_CTRL_OFFSET          (0x210)
 #define PIO_INT_CFG2_OFFSET          (0x208)
 #define PIO_INT_CFG3_OFFSET          (0x20c)
-#define PIO_PN_DAT_OFFSET(n)         ((n)*0x24 + 0x10) 
+#define PIO_PN_DAT_OFFSET(n)         ((n)*0x24 + 0x10)
 //#define PIOI_DATA                    (0x130)
 #define PIOH_DATA                    (0x10c)
 #define PIOI_CFG3_OFFSET             (0x12c)
@@ -62,8 +62,8 @@ struct zt_ts_platform_data{
 };
 
 #define PIOA_CFG1_REG    (gpio_addr+0x4)
-#define PIOA_DATA             (gpio_addr+0x10) 
-#define PIOI_DATA              (gpio_addr+0x130) 
+#define PIOA_DATA             (gpio_addr+0x10)
+#define PIOI_DATA              (gpio_addr+0x130)
 
 #define POINT_DELAY      (1)
 #define ZT8031_ADDR                     (0x90>>1)
@@ -101,4 +101,3 @@ struct zt_ts_platform_data{
 #define POINT_DELAY                  (1)
 
 #endif
-

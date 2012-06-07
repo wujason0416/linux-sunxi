@@ -636,4 +636,3 @@ config MSM_SMD_PKT
 source "drivers/char/sun4i_g2d/Kconfig"
 
 endmenu
-

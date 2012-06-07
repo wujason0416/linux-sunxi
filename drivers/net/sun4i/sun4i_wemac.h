@@ -53,7 +53,7 @@
 #define EMAC_SAFX_L_REG0         (0xA4)
 #define EMAC_SAFX_H_REG0         (0xA8)
 #define EMAC_SAFX_L_REG1         (0xAC)
-#define EMAC_SAFX_H_REG1         (0xB0)       
+#define EMAC_SAFX_H_REG1         (0xB0)
 #define EMAC_SAFX_L_REG2         (0xB4)
 #define EMAC_SAFX_H_REG2         (0xB8)
 #define EMAC_SAFX_L_REG3         (0xBC)
@@ -138,7 +138,7 @@
 
 
 //set up PHY
-#define PHY_AUTO_NEGOTIOATION  1  // 0: Normal     1: Auto(default) 
+#define PHY_AUTO_NEGOTIOATION  1  // 0: Normal     1: Auto(default)
 #define PHY_SPEED              1  // 0: 10M        1: 100M(default)
 #define EMAC_MAC_FULL          1  //0: Half duplex   1: Full duplex(default)
 
@@ -158,17 +158,17 @@
 #define EMAC_RX_UCAD        1  //0: Not accept             1: Accept unicast Packets(default)
 #define EMAC_RX_DAF         1  //0: Normal(default)        1: DA Filtering
 #define EMAC_RX_MCO         1  //0: Not accept             1: Accept multicast Packets(default)
-#define EMAC_RX_MHF         1  //0: Disable(default)       1: Enable Hash filter 
+#define EMAC_RX_MHF         1  //0: Disable(default)       1: Enable Hash filter
 #define EMAC_RX_BCO		    1  //0: Not accept             1: Accept Broadcast Packets(default)
 #define EMAC_RX_SAF         0  //0: Disable(default)       1: Enable SA Filtering
 #define EMAC_RX_SAIF        0  //0: Normal(default)        1: Inverse Filtering
-                                                           
-//set up MAC                                               
+
+//set up MAC
 #define EMAC_MAC_TFC        1  //0: Disable                1: Enable Transmit Flow Control(default)
 #define EMAC_MAC_RFC        1  //0: Disable                1: Enable Receive Flow Control(default)
 
 
-                                                           
+
 #define EMAC_MAC_FLC        1  //0: Disable                1: Enable MAC Frame Length Checking(default)
 #define EMAC_MAC_HF         0  //0: Disable(default)       1: Enable Huge Frame
 #define EMAC_MAC_DCRC       0  //0: Disable(default)       1: Enable MAC Delayed CRC
@@ -184,7 +184,7 @@
 
 #if EMAC_MAC_FULL
   #define EMAC_MAC_IPGT   0x15
-#else    
+#else
   #define EMAC_MAC_IPGT   0x12
 #endif
 
@@ -224,4 +224,3 @@ struct wemac_plat_data {
 
 
 #endif /* _WEMACX_H_ */
-

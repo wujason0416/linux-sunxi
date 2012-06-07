@@ -81,7 +81,7 @@ void nanddma_buffdone(struct sw_dma_chan * ch, void *buf, int size,enum sw_dma_b
 	//printk("buffer done. nanddma_completed_flag: %d\n", nanddma_completed_flag);
 }
 int  nanddma_opfn(struct sw_dma_chan * ch,   enum sw_chan_op op_code){
-	if(op_code == SW_DMAOP_START) 
+	if(op_code == SW_DMAOP_START)
 		nanddma_completed_flag = 0;
 
 	//printk("buffer opfn: %d, nanddma_completed_flag: %d\n", (int)op_code, nanddma_completed_flag);
@@ -92,7 +92,7 @@ int  nanddma_opfn(struct sw_dma_chan * ch,   enum sw_chan_op op_code){
 __hdle NAND_RequestDMA  (__u32 dmatype)
 {
 	__hdle ch;
-	
+
 	ch = sw_dma_request(DMACH_DNAND, &nand_dma_client, NULL);
 	if(ch < 0)
 		return ch;
@@ -101,7 +101,7 @@ __hdle NAND_RequestDMA  (__u32 dmatype)
 	sw_dma_set_buffdone_fn(ch, nanddma_buffdone);
 
 	return ch;
-	
+
 //    hNandDmaHdle = esDMA_Request(dmatype);
 //    if(!hNandDmaHdle)
 //    {
@@ -132,10 +132,10 @@ __s32  NAND_ReleaseDMA  (__hdle hDma)
 {
 //    if(hNandDmaHdle)
 //    {
-// 
+//
 //        esDMA_DisableINT(hNandDmaHdle, 0x03);
 //        esINT_UniISR(esDMA_QueryINT(hNandDmaHdle)>>24, (__pISR_t)_IsrDmaFinish);
-//  
+//
 //
 //        //release dma resource
 //        esDMA_Release(hNandDmaHdle);
@@ -150,7 +150,7 @@ __s32  NAND_ReleaseDMA  (__hdle hDma)
 //        esKRNL_SemDel(pNandDmaSem, OS_DEL_ALWAYS, &err);
 //        pNandDmaSem = 0;
 //    }
-  
+
 
 	return 0;
 }
@@ -186,7 +186,7 @@ __s32 NAND_StartDMA(__u8 rw,__hdle hDMA, __u32 saddr, __u32 daddr, __u32 bytes)
 //        //eanble dma end interupt
 //        esDMA_EnableINT(hNandDmaHdle, DMA_END_INT_MASK, 0);
 //    }
-//    
+//
 //
 //	return (esDMA_Start(hDMA, saddr, daddr, bytes));
 }
@@ -261,7 +261,7 @@ __s32 NAND_WaitDmaFinish(void)
 {
  	//unsigned long flags;
  	//int i;
- 
+
 //    __u8        err;
 //
 //    if(pNandDmaSem && hNandDmaHdle)
@@ -284,7 +284,6 @@ __s32 NAND_WaitDmaFinish(void)
 //	}
 
 	 wait_event(DMA_wait, nanddma_completed_flag);
-	
+
     return 0;
 }
-

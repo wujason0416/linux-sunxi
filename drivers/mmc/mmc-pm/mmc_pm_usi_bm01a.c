@@ -18,9 +18,9 @@
  * usi_bm01a_wl_rst        = port:PA03<1><default><default><0>
  * usi_bm01a_bt_rst        = port:PA04<1><default><default><0>
  * usi_bm01a_bt_wake       = port:PA05<1><default><default><0>
- * usi_bm01a_bt_hostwake   = 
+ * usi_bm01a_bt_hostwake   =
  */
- 
+
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include <mach/sys_config.h>
@@ -37,7 +37,7 @@ static int usi_bm01a_power_onoff(int onoff)
 {
 	struct regulator* wifi_ldo = NULL;
 	static int first = 1;
-	  
+
 #ifndef CONFIG_AW_AXP
 	usi_msg("AXP driver is disabled, pls check !!\n");
 	return 0;
@@ -68,11 +68,11 @@ static int usi_bm01a_power_onoff(int onoff)
 static int usi_bm01a_gpio_ctrl(char* name, int level)
 {
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
-    char* gpio_cmd[6] = {"usi_bm01a_wl_regon", "usi_bm01a_bt_regon", "usi_bm01a_wl_rst", 
+    char* gpio_cmd[6] = {"usi_bm01a_wl_regon", "usi_bm01a_bt_regon", "usi_bm01a_wl_rst",
                                "usi_bm01a_wl_wake", "usi_bm01a_bt_rst", "usi_bm01a_bt_wake"};
     int i = 0;
     int ret = 0;
-    
+
     for (i=0; i<6; i++) {
         if (strcmp(name, gpio_cmd[i])==0)
             break;
@@ -81,7 +81,7 @@ static int usi_bm01a_gpio_ctrl(char* name, int level)
         usi_msg("No gpio %s for USI-BM01A module\n", name);
         return -1;
     }
-    
+
 //    usi_msg("Set GPIO %s to %d !\n", name, level);
     if (strcmp(name, "usi_bm01a_wl_regon") == 0) {
         if (level) {
@@ -102,7 +102,7 @@ static int usi_bm01a_gpio_ctrl(char* name, int level)
             }
         }
     }
-    
+
     if (strcmp(name, "usi_bm01a_bt_regon") == 0) {
         if (level) {
             if (usi_bm01a_wl_on) {
@@ -122,16 +122,16 @@ static int usi_bm01a_gpio_ctrl(char* name, int level)
             }
         }
     }
-    
-    
+
+
     ret = gpio_write_one_pin_value(ops->pio_hdle, level, name);
     if (ret) {
         usi_msg("Failed to set gpio %s to %d !\n", name, level);
         return -1;
     }
-    
+
     return 0;
-    
+
 power_change:
     #if CONFIG_CHIP_ID==1123
     ret = gpio_write_one_pin_value(ops->pio_hdle, level, "usi_bm01a_wl_pwr");
@@ -149,7 +149,7 @@ power_change:
         usi_msg("Failed to regon off for  USI-BM01A module!\n");
         return -1;
     }
-    
+
 change_state:
     if (strcmp(name, "usi_bm01a_wl_regon")==0)
         usi_bm01a_wl_on = level;
@@ -163,12 +163,12 @@ static int usi_bm01a_get_gpio_value(char* name)
 {
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
     char* bt_hostwake =  "usi_bm01a_bt_hostwake";
-    
+
     if (strcmp(name, bt_hostwake)) {
         usi_msg("No gpio %s for USI-BM01A\n", name);
         return -1;
     }
-    
+
     return gpio_read_one_pin_value(ops->pio_hdle, name);
 }
 

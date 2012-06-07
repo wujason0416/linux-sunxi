@@ -315,7 +315,7 @@ static int __devinit axp_mfd_probe(struct i2c_client *client,
 	if(ret){
 		return ret;
 	}
-	
+
 	/* set ac/usb_in shutdown mean restart */
   	ret = script_parser_fetch("target", "power_start", &power_start, sizeof(int));
   	if (ret)
@@ -324,7 +324,7 @@ static int __devinit axp_mfd_probe(struct i2c_client *client,
      	power_start = 0;
      	printk("[AXP]power_start = %d\n",power_start);
   	}
-  	
+
 	return 0;
 
 out_free_irq:

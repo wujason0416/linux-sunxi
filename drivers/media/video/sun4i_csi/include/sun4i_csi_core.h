@@ -13,15 +13,15 @@
 #include <media/v4l2-mediabus.h>//linux-3.0
 
 //for internel driver debug
-#define DBG_EN   		0 	
+#define DBG_EN   		0
 //debug level 0~3
 #define DBG_LEVEL 	3
 
 //for internel driver debug
-#if(DBG_EN==1)		
+#if(DBG_EN==1)
 #define csi_dbg(l,x,arg...) if(l <= DBG_LEVEL) printk("[CSI_DEBUG]"x,##arg)
 #else
-#define csi_dbg(l,x,arg...) 
+#define csi_dbg(l,x,arg...)
 #endif
 
 //print when error happens
@@ -151,7 +151,7 @@ typedef struct tag_CSI_CONF
 
 typedef enum tag_CSI_BUF
 {
-    CSI_BUF_0_A,    /* FIFO for Y address A */  
+    CSI_BUF_0_A,    /* FIFO for Y address A */
     CSI_BUF_0_B,    /* FIFO for Y address B */
     CSI_BUF_1_A,    /* FIFO for Cb address A */
     CSI_BUF_1_B,    /* FIFO for Cb address B */
@@ -164,8 +164,8 @@ typedef enum tag_CSI_BUF
  */
 typedef struct tag_CSI_CAPTURE_STATUS
 {
-    _Bool picture_in_progress;  
-    _Bool video_in_progress;    
+    _Bool picture_in_progress;
+    _Bool video_in_progress;
 }__csi_capture_status;
 
 
@@ -174,7 +174,7 @@ typedef struct tag_CSI_CAPTURE_STATUS
  */
 typedef enum tag_CSI_DOUBLE_BUF
 {
-    CSI_BUF_A,  
+    CSI_BUF_A,
     CSI_BUF_B,
 }__csi_double_buf_t;
 
@@ -227,7 +227,7 @@ typedef struct tag_CSI_SUBDEV_INFO
     __csi_ref_t        vref;        /* input vref signal polarity */
     __csi_ref_t        href;        /* input href signal polarity */
     __csi_clk_t        clock;       /* input data valid of the input clock edge type */
-    int								 iocfg;				/*0 for csi back , 1 for csi front*/				 
+    int								 iocfg;				/*0 for csi back , 1 for csi front*/
 }__csi_subdev_info_t;
 struct csi_buf_addr {
 	dma_addr_t	y;
@@ -239,8 +239,8 @@ struct csi_fmt {
 	u8					name[32];
 	enum v4l2_mbus_pixelcode					ccm_fmt;//linux-3.0
 	u32   				fourcc;          /* v4l2 format id */
-	__csi_input_fmt_t	input_fmt;	
-	__csi_output_fmt_t 	output_fmt;	
+	__csi_input_fmt_t	input_fmt;
+	__csi_output_fmt_t 	output_fmt;
 	int   				depth;
 	u16	  				planes_cnt;
 };
@@ -258,7 +258,7 @@ struct csi_buffer {
 
 struct csi_dmaqueue {
 	struct list_head active;
-	
+
 	/* Counters to control fps rate */
 	int frame;
 	int ini_jiffies;
@@ -277,11 +277,11 @@ struct ccm_config {
 	int hflip;
 	int stby_mode;
 	int interface;
-	int flash_pol;		
+	int flash_pol;
 	struct regulator 	 *iovdd;		  /*interface voltage source of sensor module*/
 	struct regulator 	 *avdd;			/*anlog voltage source of sensor module*/
 	struct regulator 	 *dvdd;			/*core voltage source of sensor module*/
-	__csi_subdev_info_t ccm_info;  
+	__csi_subdev_info_t ccm_info;
 	struct v4l2_subdev			*sd;
 };
 
@@ -292,7 +292,7 @@ struct csi_dev {
 	struct platform_device	*pdev;
 
 	int						id;
-	
+
 	spinlock_t              slock;
 
 	/* various device info */
@@ -329,24 +329,24 @@ struct csi_dev {
 	int						irq;
 	void __iomem			*regs;
 	struct resource			*regs_res;
-	
+
 	/*power issue*/
-	
+
 	int								 stby_mode;
 	struct regulator 	 *iovdd;		  /*interface voltage source of sensor module*/
   struct regulator 	 *avdd;			/*anlog voltage source of sensor module*/
   struct regulator 	 *dvdd;			/*core voltage source of sensor module*/
-	
+
 	/* attribution */
 	int interface;
 	int vflip;
 	int hflip;
 	int flash_pol;
-	
+
 	/*parameters*/
 	__csi_conf_t			csi_mode;
 	struct csi_buf_addr		csi_buf_addr;
-	
+
 	/* ccm config */
   int dev_qty;
 	int module_flag;

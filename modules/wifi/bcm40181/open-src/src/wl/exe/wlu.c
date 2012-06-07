@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2011, Broadcom Corporation
  * All Rights Reserved.
- * 
+ *
  * This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
  * the contents of this file may not be disclosed to third parties, copied
  * or duplicated in any form, in whole or in part, without the prior
@@ -354,7 +354,7 @@ static int wl_tsf(void *wl, cmd_t *cmd, char **argv);
 #define WL_DUMP_BUF_LEN (8 * 1024)
 #else
 #define WL_DUMP_BUF_LEN (127 * 1024)
-#endif 
+#endif
 
 #define OUI_STR_SIZE    8   /* OUI string size */
 #define MAX_OUI_SIZE    3   /* MAX  OUI size */

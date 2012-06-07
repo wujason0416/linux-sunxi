@@ -8,13 +8,13 @@
  * $Id: sbchipc.h,v 13.169.2.11 2011/01/07 02:37:37 Exp $
  *
  * Copyright (C) 1999-2011, Broadcom Corporation
- * 
+ *
  *         Unless you and Broadcom execute a separate written software license
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
  * following added to such license:
- * 
+ *
  *      As a special exception, the copyright holders of this software give you
  * permission to link this software with independent modules, and to copy and
  * distribute the resulting executable under terms of your choice, provided that
@@ -22,7 +22,7 @@
  * the license of that module.  An independent module is a module which is not
  * derived from this software.  The special exception does not apply to any
  * modifications of the software.
- * 
+ *
  *      Notwithstanding the above, under no circumstances may you combine this
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
@@ -810,7 +810,7 @@ typedef volatile struct {
 #define GSIO_START			0x80000000
 #define GSIO_BUSY			GSIO_START
 
-/* 
+/*
  * These are the UART port assignments, expressed as offsets from the base
  * register.  These assignments should hold for any serial port based on
  * a 8250, 16450, or 16550(A).
@@ -1169,8 +1169,8 @@ typedef volatile struct {
 #define RES5354_BB_PLL_PU		19	/* 0x80000 */
 
 /* 5357 Chip specific ChipControl register bits */
-#define CCTRL5357_EXTPA                 (1<<14) /* extPA in ChipControl 1, bit 14 */ 
-#define CCTRL5357_ANT_MUX_2o3		(1<<15) /* 2o3 in ChipControl 1, bit 15 */ 
+#define CCTRL5357_EXTPA                 (1<<14) /* extPA in ChipControl 1, bit 14 */
+#define CCTRL5357_ANT_MUX_2o3		(1<<15) /* 2o3 in ChipControl 1, bit 15 */
 
 /* 4328 resources */
 #define RES4328_EXT_SWITCHER_PWM	0	/* 0x00001 */

@@ -1,9 +1,9 @@
 /**
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -142,10 +142,10 @@ _mali_osk_errcode_t _mali_osk_pmm_dev_idle(void)
 #ifdef CONFIG_PM_RUNTIME
 #if MALI_PMM_RUNTIME_JOB_CONTROL_ON
 
-	err = pm_runtime_put_sync(&(mali_gpu_device.dev));	
+	err = pm_runtime_put_sync(&(mali_gpu_device.dev));
 	if(err)
 	{
-		MALI_DEBUG_PRINT(4, ("OSPMM: Error in _mali_osk_pmm_dev_idle\n" ));	
+		MALI_DEBUG_PRINT(4, ("OSPMM: Error in _mali_osk_pmm_dev_idle\n" ));
 	}
 #endif /* MALI_PMM_RUNTIME_JOB_CONTROL_ON */
 #endif /* CONFIG_PM_RUNTIME */
@@ -157,7 +157,7 @@ _mali_osk_errcode_t _mali_osk_pmm_dev_idle(void)
 */
 void _mali_osk_pmm_dev_activate(void)
 {
-	
+
 #if MALI_LICENSE_IS_GPL
 #ifdef CONFIG_PM_RUNTIME
 #if MALI_PMM_RUNTIME_JOB_CONTROL_ON
@@ -207,5 +207,3 @@ void _mali_osk_pmm_dvfs_operation_done(mali_pmm_message_data data)
 #endif /* CONFIG_PM */
 #endif /* MALI_LICENSE_IS_GPL */
 }
-
-

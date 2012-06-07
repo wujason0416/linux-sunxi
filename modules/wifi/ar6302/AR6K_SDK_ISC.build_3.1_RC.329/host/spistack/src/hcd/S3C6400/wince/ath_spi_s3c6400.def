@@ -13,5 +13,3 @@ ATS_Seek
 ATS_Write
 ATS_PreDeinit
 ATS_PreClose
-
-

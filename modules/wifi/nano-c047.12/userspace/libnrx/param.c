@@ -4,22 +4,22 @@
 #include "nrx_priv.h"
 #include "mac_mib_defs.h"
 
-/** \defgroup MISC Miscellaneous settings 
- * \brief The Miscellaneous settings functions are various functions that do not belong  
- *        to any of the other modules. They are mainly configuration functions used to set and enable/disable 
+/** \defgroup MISC Miscellaneous settings
+ * \brief The Miscellaneous settings functions are various functions that do not belong
+ *        to any of the other modules. They are mainly configuration functions used to set and enable/disable
  *        certain parameters of the Nanoradio Linux driver registry file.
  *
  * There are also three functions to retrieve product version, product id and manufacturer id.
  * This information is taken from the MAC MIB of the NRX700 firmware.
- * 
+ *
  * Not all configuration parameters of the driver registry and the MAC MIB are available as NRX API-functions.
  * However, the list of configuration functions of the NRX API may be extended in future releases.
- * 
- * See <em>NRX700 MAC Management Reference Manual</em> (1543/16-NRX701) for details about the configuration 
+ *
+ * See <em>NRX700 MAC Management Reference Manual</em> (1543/16-NRX701) for details about the configuration
  * parameters of the driver registry and the MAC MIB.
- * 
+ *
 */
- 
+
 /*!
  * @internal
  * @ingroup MISC
@@ -44,12 +44,12 @@ nrx_get_join_timeout(nrx_context ctx, uint32_t *value)
       return ret;
 
    *value = param.value;
-   
+
    return 0;
 }
 
 /*!
- * 
+ *
  * @ingroup MISC
  * @brief <b>Set the join timeout value</b>
  *
@@ -88,7 +88,7 @@ nrx_set_join_timeout(nrx_context ctx, uint32_t value)
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -114,17 +114,17 @@ nrx_disable_heartbeat(nrx_context ctx)
  * a view of exactly what happened in the chip just before the system failure.
  * The core dump can be used for troubleshooting and analysis.
  *
- * Any core files will be put in /proc/drivers/\<interface name\>/core/ 
+ * Any core files will be put in /proc/drivers/\<interface name\>/core/
  * and will be named 0, 1 etc.
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  *
  * @param hb_period Heartbeat period in ms. Current implementation
- * will round up to a multiple of 1000 (i.e. resolution in seconds). Minimum 
- * value is 1 ms (i.e. 1 second) and maximum is 35 minutes (2100000 ms). 0 will 
+ * will round up to a multiple of 1000 (i.e. resolution in seconds). Minimum
+ * value is 1 ms (i.e. 1 second) and maximum is 35 minutes (2100000 ms). 0 will
  * reset to default value (60 sec).
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -190,7 +190,7 @@ nrx_get_maxcorecount(nrx_context ctx, uint32_t *count)
    if(ret != 0)
       return ret;
    *count = param.value;
-   
+
    return 0;
 }
 
@@ -216,7 +216,7 @@ int nrx_get_mib_string(nrx_context ctx, const char *id, char *res, size_t len)
    NRX_ASSERT(ctx);
    NRX_ASSERT(id);
    NRX_ASSERT(res);
-   
+
    ret = nrx_get_mib_val(ctx, id, res, &len);
    if(ret != 0)
       return ret;
@@ -243,7 +243,7 @@ int nrx_get_mib_string(nrx_context ctx, const char *id, char *res, size_t len)
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -261,17 +261,17 @@ nrx_enable_multi_domain(nrx_context ctx)
  * @ingroup MISC
  * @brief <b>Configure multi-domain support</b>
  *
- * This command will have effect only when multi-domain is enabled. It configures 
- * whether association is allowed with IEEE 802.11d compliant APs only or whether 
- * to use IEEE 802.11d information obtained but associate to both compliant and 
- * non-compliant APs. 
+ * This command will have effect only when multi-domain is enabled. It configures
+ * whether association is allowed with IEEE 802.11d compliant APs only or whether
+ * to use IEEE 802.11d information obtained but associate to both compliant and
+ * non-compliant APs.
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
- * @param enforce When this parameter is non-zero association will only be done 
- *        with APs that are compliant with the IEEE 802.11d standard.  When 0, 
- *        association will also be done with APs that are not compliant. 
+ * @param enforce When this parameter is non-zero association will only be done
+ *        with APs that are compliant with the IEEE 802.11d standard.  When 0,
+ *        association will also be done with APs that are not compliant.
  */
-int 
+int
 nrx_conf_multi_domain(nrx_context ctx, nrx_bool enforce)
 {
    struct nrx_ioc_bool param;
@@ -285,12 +285,12 @@ nrx_conf_multi_domain(nrx_context ctx, nrx_bool enforce)
  * @ingroup MISC
  * @brief <b>Disable multi-domain support</b>
  *
- * Deactivates support for the IEEE 802.11d standard 
+ * Deactivates support for the IEEE 802.11d standard
  * (the "Global Harmonization standard").
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -339,7 +339,7 @@ nrx_conf_arp_filter(nrx_context ctx, nrx_arp_policy_t mode, in_addr_t ip)
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -360,7 +360,7 @@ nrx_enable_bt_coex(nrx_context ctx)
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -379,20 +379,20 @@ nrx_disable_bt_coex(nrx_context ctx)
  * @ingroup MISC
  * @brief <b>Configure BT coexistence</b>
  *
- * Configures the bluetooth coexistence, as several types of coexistence schemes exist. 
+ * Configures the bluetooth coexistence, as several types of coexistence schemes exist.
  * A new bluetooth coexistence configuration will only be activated when bluetooth
  * coexistence is enabled. When the configuration is changed with nrx_conf_bt_coex()
  * then nrx_disable_bt_coex() should be called followed by nrx_enable_bt_coex()
  * to effect the change.
- * 
+ *
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  * @param bt_vendor Vendor of Bluetooth hardware
- *                   - 0x00 = CSR, 
- *                   - 0x01 = Broadcom, 
- *                   - 0x02 = STMicroelectronics, 
+ *                   - 0x00 = CSR,
+ *                   - 0x01 = Broadcom,
+ *                   - 0x02 = STMicroelectronics,
  *                   - 0x03-0xFF = RESERVED
- * @param pta_mode  Vendor specific definition of PTA interface. 
+ * @param pta_mode  Vendor specific definition of PTA interface.
  *                  Settings CSR:
  *                   - 0x00 = 2-wire scheme
  *                   - 0x01 = 3-wire scheme
@@ -402,8 +402,8 @@ nrx_disable_bt_coex(nrx_context ctx)
  *                  Settings STMicroelectronics:
  *                   - 0x00 = 3-wire scheme
  *                   - 0x01 = 4-wire scheme
- * @param pta_def   Length equals number of wires. For each PTA interface wire from Bluetooth, 
- *                  specify which gpio_coex_pin id (0 to 4) the wire is connected to and its 
+ * @param pta_def   Length equals number of wires. For each PTA interface wire from Bluetooth,
+ *                  specify which gpio_coex_pin id (0 to 4) the wire is connected to and its
  *                  active logic level (0="Low", 1="High"). For WLAN_Active, WLAN_Activity and
  *                  RF_Confirm this referes to the logic level when BT is blocked.
  *                  For CSR 2-wire scheme specify pins in the following order:
@@ -434,21 +434,21 @@ nrx_disable_bt_coex(nrx_context ctx)
  *                   - RF_Confirm
  *                   - Status
  *                   - Freq
- * @param antenna_dual  0=Single, 1=Dual. 
+ * @param antenna_dual  0=Single, 1=Dual.
  * @param antenna_sel0  0=Don't use AntSel0, 1=Use AntSel0.
  * @param antenna_sel1  0=Don't use AntSel1, 1=Use AntSel1.
- * @param antenna_level0 Logical level for AntSel0 in position BT, 0="Low", 1="High". 
- * @param antenna_level1 Logical level for AntSel1 in position BT, 0="Low", 1="High". 
+ * @param antenna_level0 Logical level for AntSel0 in position BT, 0="Low", 1="High".
+ * @param antenna_level1 Logical level for AntSel1 in position BT, 0="Low", 1="High".
  *
- * @return 
+ * @return
  * - 0 on success
  * - EINVAL on invalid arguments or failure.
  */
 int
-nrx_conf_bt_coex(nrx_context ctx, 
-                 uint8_t bt_vendor,  
-                 uint8_t pta_mode, 
-                 const nrx_gpio_list_t *pta_def, 
+nrx_conf_bt_coex(nrx_context ctx,
+                 uint8_t bt_vendor,
+                 uint8_t pta_mode,
+                 const nrx_gpio_list_t *pta_def,
                  uint8_t antenna_dual,
                  uint8_t antenna_sel0,
                  uint8_t antenna_sel1,
@@ -470,7 +470,7 @@ nrx_conf_bt_coex(nrx_context ctx,
          switch (pta_mode) {
             case 0x00: NRX_CHECK(pta_def->len == 2);break;
             case 0x01: NRX_CHECK(pta_def->len == 3);break;
-            case 0x02: NRX_CHECK(pta_def->len == 3);break;      
+            case 0x02: NRX_CHECK(pta_def->len == 3);break;
          };break;
       case 1:                   /* Broadcom */
          NRX_CHECK(pta_mode == 0);
@@ -526,7 +526,7 @@ nrx_conf_bt_coex(nrx_context ctx,
  *                  -  1: use antenna #1.
  *                  -  2: use antenna #2.
  *                  -  3: use antenna diversity, i.e. both antenna #1 and #2.
- * @param rssi_thr RSSI threshold used by the antenna selection 
+ * @param rssi_thr RSSI threshold used by the antenna selection
  *                algorithm. This is only used in mode 3. Minimum value is -120 dBm
  *                and maximum is 0 dBm.
  *
@@ -534,7 +534,7 @@ nrx_conf_bt_coex(nrx_context ctx,
  * @retval EINVAL on invalid arguments.
  */
 int
-nrx_antenna_diversity(nrx_context ctx, 
+nrx_antenna_diversity(nrx_context ctx,
                       uint32_t antenna_mode,
                       int32_t rssi_thr)
 {
@@ -554,7 +554,7 @@ nrx_antenna_diversity(nrx_context ctx,
  * @brief <b>Retrieve the manufacturer id string</b>
  *
  * @param ctx A valid nrx_context.
- * @param mfg_id A buffer where the manufacturer id will be stored as a zero-terminated string. 
+ * @param mfg_id A buffer where the manufacturer id will be stored as a zero-terminated string.
  *               The maximum length of the manufacturer id string is 128 bytes.
  * @param len The size of buffer mfg_id. No more than len characters will be written
  *            to mfg_id. Minimum value is 1 and maximum value is 2^32-1.
@@ -587,13 +587,13 @@ nrx_get_product_id(nrx_context ctx, uint32_t *prod_id)
    size_t len = sizeof(*prod_id);
    NRX_ASSERT(ctx);
    NRX_ASSERT(prod_id);
-   
+
    ret = nrx_get_mib_val(ctx, MIB_dot11ProductID, prod_id, &len);
    if(ret != 0)
       return ret;
    if(len != sizeof(*prod_id))
       ;
-   
+
    return 0;
 }
 
@@ -617,7 +617,7 @@ nrx_get_product_version(nrx_context ctx, char *prod_version, size_t len)
    NRX_ASSERT(prod_version);
    NRX_CHECK(len != 0);
 
-   return nrx_get_mib_string(ctx, MIB_dot11manufacturerProductVersion, 
+   return nrx_get_mib_string(ctx, MIB_dot11manufacturerProductVersion,
                              prod_version, len);
 }
 
@@ -625,19 +625,19 @@ nrx_get_product_version(nrx_context ctx, char *prod_version, size_t len)
  * @ingroup MISC
  * @brief <b>Enable device reset notification</b>
  *
- * Notify the caller when the device has stopped responding.  
+ * Notify the caller when the device has stopped responding.
  * The device will be reset and restarted by the driver but volatile
  * configurations such as scan jobs, scan filters, notifications
  * (except this one) and thresholds are lost. The
  * application should register this notification callback so that it can
  * reinitialize all those settings in case of device crash.  The
  * callback is invoked every time (until disabled) the condition is
- * met. 
+ * met.
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  *
  * @param cb Callback that is invoked to notify the caller that
- *           the device has been reset. The callback is invoked with operation 
+ *           the device has been reset. The callback is invoked with operation
  *           NRX_CB_TRIGGER on a successful notification. It will
  *           be passed a NULL-pointer for event_data.
  * @param cb_ctx Pointer to a user-defined callback context that will
@@ -656,7 +656,7 @@ nrx_register_dev_reset_notification(nrx_context ctx,
    NRX_ASSERT(cb);
    return nrx_register_custom_event(ctx, "RESET", 0, cb, cb_ctx);
 }
-                        
+
 /*!
  * @ingroup MISC
  * @brief <b>Disable device reset notification</b>
@@ -667,8 +667,8 @@ nrx_register_dev_reset_notification(nrx_context ctx,
  * @param ctx NRX context that was created by the call to nrx_init_context().
  * @param handle A handle previously obtained from
  * nrx_register_dev_reset_notification.
- * 
- * @return 
+ *
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments, e.g the handle is not registered.
  */
@@ -685,8 +685,8 @@ nrx_cancel_dev_reset_notification(nrx_context ctx, nrx_callback_handle handle)
  * @ingroup MISC
  * @brief <b>Set the driver activity timeout value</b>
  *
- * This configures the time of inactivity to elapse before the driver 
- * will consider itself inactive. 
+ * This configures the time of inactivity to elapse before the driver
+ * will consider itself inactive.
  * The inact_check_interval parameter defines how exact the timeout
  * will be. If the inact_check_interval is very short then the timeout
  * will be very accurate but the host CPU load will be high since the
@@ -701,13 +701,13 @@ nrx_cancel_dev_reset_notification(nrx_context ctx, nrx_callback_handle handle)
  *        inactive if no rx/tx activity has occurred within the timeout period.
  *        A 0 value disabled the inactivity indications. Maximum value is 2^30-1.
  * @param inact_check_interval The activity timeout check interval. Range 1 to 2^30-1.
- * 
- * @return 
+ *
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
 int
-nrx_set_activity_timeout(nrx_context ctx, 
+nrx_set_activity_timeout(nrx_context ctx,
                          uint32_t timeout,
                          uint32_t inact_check_interval)
 {
@@ -732,12 +732,12 @@ nrx_set_activity_timeout(nrx_context ctx,
  * for debugging purposes.
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
- * 
- * @return 
+ *
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
-int 
+int
 nrx_fw_suicide(nrx_context ctx)
 {
    struct nrx_ioc ioc;
@@ -799,14 +799,14 @@ nrx_ccx_send_delts(nrx_context ctx, uint8_t identifier)
  * @brief <b>Enter shutdown state</b>
  *
  * Issuing this command will cause the device to enter the shutdown state.
- * 
+ *
  * @param ctx NRX context that was created by the call to nrx_init_context().
- * 
- * @return 
+ *
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
-int 
+int
 nrx_shutdown(nrx_context ctx)
 {
    struct nrx_ioc ioc;

@@ -29,4 +29,3 @@ typedef struct net_profile_t net_profile_s;
 WiFiEngine_net_t* WiFiEngine_elect_net(net_filter_t filter_out, void *filter_priv, int use_standard_filters);
 
 #endif /* __we_cm_h__ */
-

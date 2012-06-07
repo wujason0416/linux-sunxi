@@ -134,8 +134,8 @@ typeNameStr_t nameStr[] =
 };
 
 
-/* functions to  be executed from  RWL server 
- * These control commands get executed from CA which calls Rwl client with the 
+/* functions to  be executed from  RWL server
+ * These control commands get executed from CA which calls Rwl client with the
  * required transport options
  */
 typeNameStr_t nameLocalStr[] =

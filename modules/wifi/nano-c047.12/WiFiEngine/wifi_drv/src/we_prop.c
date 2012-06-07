@@ -53,7 +53,7 @@ This module implements the WiFiEngine 802.11 properties interface
  *
  * Get the desired BSSID. If the BSSID is the broadcast address, it
  * means we associate with any BSSID.
- * 
+ *
  * @param [out] bssid Where the BSSID will be stored.
  *
  * @return WIFI_ENGINE_SUCCESS on success, WIFI_ENGINE_FAILURE on
@@ -81,12 +81,12 @@ WiFiEngine_GetDesiredBSSID(m80211_mac_addr_t *bssid)
  * Set the desired BSSID. Setting the BSSID will disable roaming.
  * Setting the BSSID to ff:ff:ff:ff:ff:ff (the broadcast MAC)
  * will reenable roaming and clear the desired BSSID.
- * 
+ *
  * @param [in] bssid The desired bssid.
  *
  * @return WIFI_ENGINE_SUCCESS on success,
  * WIFI_ENGINE_FAILURE_INVALID_LENGTH if the input buffer length is
- * not 6. 
+ * not 6.
  */
 int
 WiFiEngine_SetDesiredBSSID(const m80211_mac_addr_t *bssid)
@@ -113,7 +113,7 @@ WiFiEngine_SetDesiredBSSID(const m80211_mac_addr_t *bssid)
  * @return WIFI_ENGINE_SUCCESS on success, WIFI_ENGINE_FAILURE if
  *  no BSSID could be found.
  */
-int   WiFiEngine_GetBSSID(m80211_mac_addr_t *bssid) 
+int   WiFiEngine_GetBSSID(m80211_mac_addr_t *bssid)
 {
    WiFiEngine_net_t *net;
 
@@ -131,7 +131,7 @@ int   WiFiEngine_GetBSSID(m80211_mac_addr_t *bssid)
       DE_TRACE_STATIC(TR_NOISE, "No current net available\n");
    }
    REGISTRY_RUNLOCK();
-   
+
    return WIFI_ENGINE_FAILURE;
 }
 
@@ -142,7 +142,7 @@ int   WiFiEngine_GetBSSID(m80211_mac_addr_t *bssid)
  * set. If the NIC is already associated with a BSSID it will
  * disassociate from it first (even if it is the same BSSID as the one
  * being set).
- * 
+ *
  * @param addr The input buffer.
  * @param c IN: The size of the input buffer (this value should be 6
  * and is only used for sanity checking). OUT: The required
@@ -150,9 +150,9 @@ int   WiFiEngine_GetBSSID(m80211_mac_addr_t *bssid)
  *
  * @return WIFI_ENGINE_SUCCESS on success,
  * WIFI_ENGINE_FAILURE_INVALID_LENGTH if the input buffer length is
- * not 6. 
+ * not 6.
  */
-int   WiFiEngine_SetBSSID(const m80211_mac_addr_t *bssid) 
+int   WiFiEngine_SetBSSID(const m80211_mac_addr_t *bssid)
 {
    int status;
 
@@ -172,25 +172,25 @@ int   WiFiEngine_SetBSSID(const m80211_mac_addr_t *bssid)
 
 /*!
  * @brief Get the adapter MAC address
- * 
+ *
  * @param addr Output buffer.
  * @param byte_count IN: size of the input buffer, OUT: bytes copied.
  *
- * @return WIFI_ENGINE_SUCCESS on success, 
+ * @return WIFI_ENGINE_SUCCESS on success,
  *         WIFI_ENGINE_FAILURE if no BSSID could be found.
  *         WIFI_ENGINE_FAILURE_DEFER if the query should be retried at a later time.
  */
-int   WiFiEngine_GetMACAddress(char *addr, IN OUT int *byte_count) 
+int   WiFiEngine_GetMACAddress(char *addr, IN OUT int *byte_count)
 {
    rGeneralWiFiProperties *prop;
-   
+
    if (*byte_count < M80211_ADDRESS_SIZE) {
       *byte_count = M80211_ADDRESS_SIZE;
       return WIFI_ENGINE_FAILURE_INVALID_LENGTH;
    }
    *byte_count = M80211_ADDRESS_SIZE;
    REGISTRY_RLOCK();
-   prop = (rGeneralWiFiProperties*)Registry_GetProperty(ID_general);  
+   prop = (rGeneralWiFiProperties*)Registry_GetProperty(ID_general);
    if (prop != NULL) {
       if (wei_is_bssid_bcast(prop->macAddress))
       {
@@ -208,19 +208,19 @@ int   WiFiEngine_GetMACAddress(char *addr, IN OUT int *byte_count)
 
 /*!
  * @brief Set the adapter MAC address
- * 
+ *
  * @param addr Input buffer.
  * @param byte_count size of the input buffer
  *
  * @return WIFI_ENGINE_SUCCESS on success.
  * WIFI_ENGINE_FAILURE_INVALID_LENGTH on bad buffer length.
  */
-int   WiFiEngine_SetMACAddress(char *addr, int byte_count) 
+int   WiFiEngine_SetMACAddress(char *addr, int byte_count)
 {
    rGeneralWiFiProperties *properties;
    m80211_mac_addr_t a;
    char buf[20];
-   
+
    if (byte_count != sizeof(a.octet)) {
       return WIFI_ENGINE_FAILURE_INVALID_LENGTH;
    }
@@ -236,7 +236,7 @@ int   WiFiEngine_SetMACAddress(char *addr, int byte_count)
    }
    DE_TRACE_STRING(TR_NOISE, "setting mac address %s\n", buf);
    /* Update target */
-   WiFiEngine_SendMIBSet(MIB_dot11MACAddress, 
+   WiFiEngine_SendMIBSet(MIB_dot11MACAddress,
                          NULL, addr, byte_count);
 
    properties = (rGeneralWiFiProperties *)Registry_GetProperty(ID_general);
@@ -256,7 +256,7 @@ int   WiFiEngine_SetMACAddress(char *addr, int byte_count)
  *
  * @return WIFI_ENGINE_SUCCESS or WIFI_ENGINE_FAILURE
  */
-int   WiFiEngine_GetBeaconPeriod(unsigned long *period) 
+int   WiFiEngine_GetBeaconPeriod(unsigned long *period)
 {
    WiFiEngine_net_t*      assoc;
 
@@ -265,7 +265,7 @@ int   WiFiEngine_GetBeaconPeriod(unsigned long *period)
       *period = (unsigned long)assoc->bss_p->bss_description_p->beacon_period;
       return WIFI_ENGINE_SUCCESS;
    }
-   
+
    return WIFI_ENGINE_FAILURE;
 }
 
@@ -285,7 +285,7 @@ int WiFiEngine_GetDTIMPeriod(uint8_t *period)
       *period = (unsigned long)assoc->bss_p->dtim_period;
       return WIFI_ENGINE_SUCCESS;
    }
-   
+
    return WIFI_ENGINE_FAILURE;
 }
 
@@ -296,7 +296,7 @@ int WiFiEngine_GetDTIMPeriod(uint8_t *period)
  *
  * @return WIFI_ENGINE_SUCCESS or WIFI_ENGINE_FAILURE
  */
-int   WiFiEngine_SetBeaconPeriod(unsigned long period) 
+int   WiFiEngine_SetBeaconPeriod(unsigned long period)
 {
    WiFiEngine_net_t*      assoc;
 
@@ -304,10 +304,10 @@ int   WiFiEngine_SetBeaconPeriod(unsigned long period)
    if (assoc) {
       assoc->bss_p->bss_description_p->beacon_period = (uint16_t)period;
       /* Make it so */
-      
+
       return WIFI_ENGINE_SUCCESS;
    }
-   
+
    return WIFI_ENGINE_FAILURE;
 }
 
@@ -319,7 +319,7 @@ int   WiFiEngine_SetBeaconPeriod(unsigned long period)
  * @retval WIFI_ENGINE_SUCCESS on success
  * @retval WIFI_ENGINE_FAILURE if there's no active net
  */
-int WiFiEngine_GetActiveChannel(uint8_t *channel) 
+int WiFiEngine_GetActiveChannel(uint8_t *channel)
 {
    WiFiEngine_net_t*      assoc;
 
@@ -339,21 +339,21 @@ int WiFiEngine_GetActiveChannel(uint8_t *channel)
  * @retval WIFI_ENGINE_SUCCESS on success
  * @retval WIFI_ENGINE_FAILURE if there's no active net
  */
-int WiFiEngine_SetActiveChannel(uint8_t channel) 
+int WiFiEngine_SetActiveChannel(uint8_t channel)
 {
    WiFiEngine_net_t*      assoc;
-   
+
    assoc = wei_netlist_get_current_net();
    if (assoc == NULL)
       return WIFI_ENGINE_FAILURE;
-   
+
    assoc->bss_p->bss_description_p->ie.ds_parameter_set.channel = channel;
    return WIFI_ENGINE_SUCCESS;
 }
 
-/* 
- * \brief Set channel number used for IBSS creation 
- * \param [in] channel The channel number to use, zero for no channel 
+/*
+ * \brief Set channel number used for IBSS creation
+ * \param [in] channel The channel number to use, zero for no channel
  * \return WIFI_ENGINE_SUCCESS
  */
 int
@@ -377,8 +377,8 @@ WiFiEngine_SetIBSSTXChannel(uint8_t channel)
    return WIFI_ENGINE_SUCCESS;
 }
 
-/* 
- * \brief Get channel number used for IBSS creation 
+/*
+ * \brief Get channel number used for IBSS creation
  * \param [out] channel The channel number used, zero for no channel.
  * \return WIFI_ENGINE_SUCCESS
  */
@@ -407,7 +407,7 @@ WiFiEngine_GetIBSSTXChannel(uint8_t *channel)
  *
  * @return WIFI_ENGINE_SUCCESS or WIFI_ENGINE_FAILURE
  */
-int   WiFiEngine_GetIBSSBeaconPeriod(uint16_t *period) 
+int   WiFiEngine_GetIBSSBeaconPeriod(uint16_t *period)
 {
    rIBSSBeaconProperties *ibss;
 
@@ -415,10 +415,10 @@ int   WiFiEngine_GetIBSSBeaconPeriod(uint16_t *period)
 
    ibss = (rIBSSBeaconProperties *)Registry_GetProperty(ID_ibssBeacon);
    DE_ASSERT(ibss != NULL);
-   
+
    *period = ibss->beacon_period;
    REGISTRY_WUNLOCK();
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -429,7 +429,7 @@ int   WiFiEngine_GetIBSSBeaconPeriod(uint16_t *period)
  *
  * @return WIFI_ENGINE_SUCCESS or WIFI_ENGINE_FAILURE
  */
-int   WiFiEngine_SetIBSSBeaconPeriod(uint16_t period) 
+int   WiFiEngine_SetIBSSBeaconPeriod(uint16_t period)
 {
    rIBSSBeaconProperties *ibss;
 
@@ -437,10 +437,10 @@ int   WiFiEngine_SetIBSSBeaconPeriod(uint16_t period)
 
    ibss = (rIBSSBeaconProperties *)Registry_GetProperty(ID_ibssBeacon);
    DE_ASSERT(ibss != NULL);
-   
+
    ibss->beacon_period = period;
    REGISTRY_WUNLOCK();
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -451,7 +451,7 @@ int   WiFiEngine_SetIBSSBeaconPeriod(uint16_t period)
  *
  * @return WIFI_ENGINE_SUCCESS or WIFI_ENGINE_FAILURE
  */
-int   WiFiEngine_GetIBSSDTIMPeriod(uint8_t *period) 
+int   WiFiEngine_GetIBSSDTIMPeriod(uint8_t *period)
 {
    rIBSSBeaconProperties *ibss;
 
@@ -459,10 +459,10 @@ int   WiFiEngine_GetIBSSDTIMPeriod(uint8_t *period)
 
    ibss = (rIBSSBeaconProperties *)Registry_GetProperty(ID_ibssBeacon);
    DE_ASSERT(ibss != NULL);
-   
+
    *period = ibss->dtim_period;
    REGISTRY_WUNLOCK();
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -473,7 +473,7 @@ int   WiFiEngine_GetIBSSDTIMPeriod(uint8_t *period)
  *
  * @return WIFI_ENGINE_SUCCESS or WIFI_ENGINE_FAILURE
  */
-int   WiFiEngine_SetIBSSDTIMPeriod(uint8_t period) 
+int   WiFiEngine_SetIBSSDTIMPeriod(uint8_t period)
 {
    rIBSSBeaconProperties *ibss;
 
@@ -481,10 +481,10 @@ int   WiFiEngine_SetIBSSDTIMPeriod(uint8_t period)
 
    ibss = (rIBSSBeaconProperties *)Registry_GetProperty(ID_ibssBeacon);
    DE_ASSERT(ibss != NULL);
-   
+
    ibss->dtim_period = period;
    REGISTRY_WUNLOCK();
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -495,7 +495,7 @@ int   WiFiEngine_SetIBSSDTIMPeriod(uint8_t period)
  *
  * @return WIFI_ENGINE_SUCCESS or WIFI_ENGINE_FAILURE
  */
-int   WiFiEngine_GetIBSSATIMWindow(uint16_t *period) 
+int   WiFiEngine_GetIBSSATIMWindow(uint16_t *period)
 {
    rIBSSBeaconProperties *ibss;
 
@@ -503,13 +503,13 @@ int   WiFiEngine_GetIBSSATIMWindow(uint16_t *period)
 
    ibss = (rIBSSBeaconProperties *)Registry_GetProperty(ID_ibssBeacon);
    DE_ASSERT(ibss != NULL);
-   
+
    if(ibss->atim_set.hdr.id == M80211_IE_ID_IBSS_PAR_SET)
       *period = ibss->atim_set.atim_window;
-   else 
+   else
       *period = 0;
    REGISTRY_WUNLOCK();
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -520,7 +520,7 @@ int   WiFiEngine_GetIBSSATIMWindow(uint16_t *period)
  *
  * @return WIFI_ENGINE_SUCCESS or WIFI_ENGINE_FAILURE
  */
-int   WiFiEngine_SetIBSSATIMWindow(uint16_t period) 
+int   WiFiEngine_SetIBSSATIMWindow(uint16_t period)
 {
    rIBSSBeaconProperties *ibss;
 
@@ -528,7 +528,7 @@ int   WiFiEngine_SetIBSSATIMWindow(uint16_t period)
 
    ibss = (rIBSSBeaconProperties *)Registry_GetProperty(ID_ibssBeacon);
    DE_ASSERT(ibss != NULL);
-   
+
    if(period == 0) {
       ibss->atim_set.hdr.id = M80211_IE_ID_NOT_USED;
    } else {
@@ -537,7 +537,7 @@ int   WiFiEngine_SetIBSSATIMWindow(uint16_t period)
    ibss->atim_set.hdr.len = sizeof(ibss->atim_set.atim_window);
    ibss->atim_set.atim_window = period;
    REGISTRY_WUNLOCK();
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -565,7 +565,7 @@ static void rssi_data_ind_release(void* priv)
  * @return Returns WIFI_ENGINE_SUCCESS on success. WIFI_ENGINE_FAILURE_DEFER if
  * the value wasn't present in the MIB cache.
  */
-int   WiFiEngine_GetRSSI(int32_t *rssi_level, int poll) 
+int   WiFiEngine_GetRSSI(int32_t *rssi_level, int poll)
 {
    int status;
 
@@ -575,18 +575,18 @@ int   WiFiEngine_GetRSSI(int32_t *rssi_level, int poll)
       return WIFI_ENGINE_SUCCESS;
 
    status = we_ind_cond_register(&wifiEngineState.rssi_beacon_h,
-                           WE_IND_MIB_DOT11RSSI, 
-                           "WE_IND_MIB_DOT11RSSI", 
+                           WE_IND_MIB_DOT11RSSI,
+                           "WE_IND_MIB_DOT11RSSI",
                            generic_mib_cb,
                            rssi_beacon_ind_release,
                            RELEASE_IND_AFTER_EVENT | RELEASE_IND_ON_UNPLUG,
                            NULL);
    DE_ASSERT(status == WIFI_ENGINE_SUCCESS);
 
-   wei_get_mib_with_update(MIB_dot11rssi, 
-                           (char *)&wifiEngineState.rssi, 
+   wei_get_mib_with_update(MIB_dot11rssi,
+                           (char *)&wifiEngineState.rssi,
                            sizeof wifiEngineState.rssi,
-                           DriverEnvironment_LittleEndian2Native, 
+                           DriverEnvironment_LittleEndian2Native,
                            WE_IND_MIB_DOT11RSSI);
 
    return WIFI_ENGINE_SUCCESS;
@@ -601,7 +601,7 @@ int   WiFiEngine_GetRSSI(int32_t *rssi_level, int poll)
  * @return Returns WIFI_ENGINE_SUCCESS on success. WIFI_ENGINE_FAILURE_DEFER if
  * the value wasn't present in the MIB cache.
  */
-int   WiFiEngine_GetDataRSSI(int32_t *rssi_level, int poll) 
+int   WiFiEngine_GetDataRSSI(int32_t *rssi_level, int poll)
 {
    int status;
 
@@ -611,7 +611,7 @@ int   WiFiEngine_GetDataRSSI(int32_t *rssi_level, int poll)
       return WIFI_ENGINE_SUCCESS;
 
    status = we_ind_cond_register(&wifiEngineState.rssi_data_h,
-                                 WE_IND_MIB_DOT11RSSI_DATA, 
+                                 WE_IND_MIB_DOT11RSSI_DATA,
                                  "WE_IND_MIB_DOT11RSSI_DATA",
                                  generic_mib_cb,
                                  rssi_data_ind_release,
@@ -619,23 +619,23 @@ int   WiFiEngine_GetDataRSSI(int32_t *rssi_level, int poll)
                                  NULL);
    DE_ASSERT(status == WIFI_ENGINE_SUCCESS);
 
-   wei_get_mib_with_update(MIB_dot11rssiDataFrame, 
-                           (char *)&wifiEngineState.data_rssi, 
+   wei_get_mib_with_update(MIB_dot11rssiDataFrame,
+                           (char *)&wifiEngineState.data_rssi,
                            sizeof wifiEngineState.data_rssi,
-                           DriverEnvironment_LittleEndian2Native, 
+                           DriverEnvironment_LittleEndian2Native,
                            WE_IND_MIB_DOT11RSSI_DATA);
 
    return WIFI_ENGINE_SUCCESS;
 }
 
 
-int   WiFiEngine_GetSNR(int32_t *snr_level, int poll) 
+int   WiFiEngine_GetSNR(int32_t *snr_level, int poll)
 {
    if(poll)
-      wei_get_mib_with_update(MIB_dot11snrBeacon, 
-                              (char *)&wifiEngineState.snr, 
+      wei_get_mib_with_update(MIB_dot11snrBeacon,
+                              (char *)&wifiEngineState.snr,
                               sizeof wifiEngineState.snr,
-                              DriverEnvironment_LittleEndian2Native, 
+                              DriverEnvironment_LittleEndian2Native,
                               WE_IND_MIB_DOT11SNR_BEACON);
    *snr_level = (int32_t)wifiEngineState.snr;
 
@@ -643,11 +643,11 @@ int   WiFiEngine_GetSNR(int32_t *snr_level, int poll)
 }
 
 
-int   WiFiEngine_GetDataSNR(int32_t *snr_level, int poll) 
+int   WiFiEngine_GetDataSNR(int32_t *snr_level, int poll)
 {
    if(poll)
-      wei_get_mib_with_update(MIB_dot11snrData, 
-                              (char *)&wifiEngineState.data_snr, 
+      wei_get_mib_with_update(MIB_dot11snrData,
+                              (char *)&wifiEngineState.data_snr,
                               sizeof wifiEngineState.data_snr,
                               DriverEnvironment_LittleEndian2Native,
                               WE_IND_MIB_DOT11SNR_DATA);
@@ -668,9 +668,9 @@ WiFiEngine_GetNoiseFloor(struct we_noise_floor *noise_floor)
 
    /* this is slowly changing background noise, so not much point in
     * updating more often than every 5 seconds */
-   status = WiFiEngine_RatelimitMIBGet(MIB_dot11noiseFloor, 
-                                       5000, 
-                                       mibval, 
+   status = WiFiEngine_RatelimitMIBGet(MIB_dot11noiseFloor,
+                                       5000,
+                                       mibval,
                                        sizeof(mibval));
 
 
@@ -716,7 +716,7 @@ int WiFiEngine_GetSSID(m80211_ie_ssid_t *ssid)
 
    /* else use the desired SSID, if present */
    properties = (rBasicWiFiProperties *)Registry_GetProperty(ID_basic);
-   if (properties != NULL && 
+   if (properties != NULL &&
        properties->desiredSSID.hdr.id == M80211_IE_ID_SSID) {
       *ssid = properties->desiredSSID;
       REGISTRY_RUNLOCK();
@@ -763,7 +763,7 @@ void   WiFiEngine_DisableSSID(void)
  * @param byte_count size of the input buffer. If this is 0
  * then the desired SSID will be unset.
  *
- * @return WIFI_ENGINE_SUCCESS on success. 
+ * @return WIFI_ENGINE_SUCCESS on success.
  * WIFI_ENGINE_FAILURE_INVALID_LENGTH if the input string was too long.
  */
 int   WiFiEngine_SetSSID(char *ssid, int byte_count)
@@ -855,7 +855,7 @@ WiFiEngine_GetRegionalChannels(channel_list_t *channels)
 
 /*!
  * @brief Set operational rates (both basic and extended)
- * 
+ *
  * @param rates a list of rates (in 0.5Mb/s units)
  * @param len size of rates
  *
@@ -866,10 +866,10 @@ WiFiEngine_SetSupportedRates(uint8_t *rates, size_t len)
 {
    rBasicWiFiProperties* bwp;
    rRateList *brates;
-    
+
    REGISTRY_WLOCK();
 
-   bwp = (rBasicWiFiProperties *)Registry_GetProperty(ID_basic);  
+   bwp = (rBasicWiFiProperties *)Registry_GetProperty(ID_basic);
    brates = &bwp->supportedRateSet;
 
    if (len > sizeof(brates->rates))
@@ -885,7 +885,7 @@ WiFiEngine_SetSupportedRates(uint8_t *rates, size_t len)
 
 /*!
  * @brief Set IBSS operational rates (both basic and extended)
- * 
+ *
  * @param rates a list of rates (in 0.5Mb/s units)
  * @param len size of rates
  *
@@ -896,7 +896,7 @@ WiFiEngine_SetIBSSSupportedRates(uint8_t *rates, size_t len)
 {
    rIBSSBeaconProperties *ibss;
    rRateList *brates;
-    
+
    REGISTRY_WLOCK();
 
    ibss = (rIBSSBeaconProperties*)Registry_GetProperty(ID_ibssBeacon);
@@ -920,7 +920,7 @@ static we_ratemask_t wei_ratemask(uint8_t *rates, size_t len)
    we_ratemask_t mask;
 
    WE_RATEMASK_CLEAR(mask);
-   for (i = 0; i < len; i++) 
+   for (i = 0; i < len; i++)
    {
       r = WiFiEngine_rate_ieee2native(rates[i]);
       DE_ASSERT(r != WE_XMIT_RATE_INVALID);
@@ -931,18 +931,18 @@ static we_ratemask_t wei_ratemask(uint8_t *rates, size_t len)
 
 /*!
  * @brief Get a bitmask describing the list of supported data rates
- * 
+ *
  * @param rateMask The output buffer (allocated by caller).
  *
  * @return Always return WIFI_ENGINE_SUCCESS
  */
-int   WiFiEngine_GetSupportedRates(we_ratemask_t *rateMask) 
+int   WiFiEngine_GetSupportedRates(we_ratemask_t *rateMask)
 {
    rBasicWiFiProperties*   basicWiFiProperties;
 
    REGISTRY_RLOCK();
-   basicWiFiProperties = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);  
-   *rateMask = wei_ratemask(basicWiFiProperties->supportedRateSet.rates, 
+   basicWiFiProperties = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
+   *rateMask = wei_ratemask(basicWiFiProperties->supportedRateSet.rates,
                             basicWiFiProperties->supportedRateSet.len);
    REGISTRY_RUNLOCK();
    return WIFI_ENGINE_SUCCESS;
@@ -950,13 +950,13 @@ int   WiFiEngine_GetSupportedRates(we_ratemask_t *rateMask)
 
 /*!
  * @brief Get a bitmask describing the basic rate set for the current association
- * 
+ *
  * @param rateMask The output buffer (allocated by caller).
  *
- * @return WIFI_ENGINE_SUCCESS on success. 
+ * @return WIFI_ENGINE_SUCCESS on success.
  * WIFI_ENGINE_FAILURE_NOT_ACCEPTED if no association has been made.
  */
-int   WiFiEngine_GetBSSRates(we_ratemask_t *rateMask) 
+int   WiFiEngine_GetBSSRates(we_ratemask_t *rateMask)
 {
    we_ratemask_t m;
    WiFiEngine_net_t *net;
@@ -995,8 +995,8 @@ int   WiFiEngine_GetBSSRates(we_ratemask_t *rateMask)
  */
 int   WiFiEngine_GetFragmentationThreshold(int *frag_threshold)
 {
-   wei_get_mib_with_update(MIB_dot11FragmentationThreshold, 
-                           (char *)&wifiEngineState.frag_thres, 
+   wei_get_mib_with_update(MIB_dot11FragmentationThreshold,
+                           (char *)&wifiEngineState.frag_thres,
                            sizeof wifiEngineState.frag_thres,
                            DriverEnvironment_LittleEndian2Native,
                            WE_IND_NOOP);
@@ -1039,8 +1039,8 @@ int   WiFiEngine_SetFragmentationThreshold(int frag_threshold)
  */
 int   WiFiEngine_GetRTSThreshold(int *rts_threshold)
 {
-   wei_get_mib_with_update(MIB_dot11RTSThreshold, 
-                           (char *)&wifiEngineState.rts_thres, 
+   wei_get_mib_with_update(MIB_dot11RTSThreshold,
+                           (char *)&wifiEngineState.rts_thres,
                            sizeof wifiEngineState.rts_thres,
                            DriverEnvironment_LittleEndian2Native,
                            WE_IND_NOOP);
@@ -1059,7 +1059,7 @@ int   WiFiEngine_GetRTSThreshold(int *rts_threshold)
 int   WiFiEngine_SetRTSThreshold(int rts_threshold)
 {
    uint16_t thres;
-   
+
    /* Set the frag threshold in the device MIB */
    thres = rts_threshold;
    if ( WiFiEngine_SendMIBSet(MIB_dot11RTSThreshold,
@@ -1076,7 +1076,7 @@ int   WiFiEngine_SetRTSThreshold(int rts_threshold)
 /*!
  * @brief Get the join timeout
  *
- * Gets the join timeout. 
+ * Gets the join timeout.
  *
  * @param joinTimeout OUT: Timeout value given in beacon intervals.
  *
@@ -1085,7 +1085,7 @@ int   WiFiEngine_SetRTSThreshold(int rts_threshold)
 int WiFiEngine_GetJoin_Timeout(int* joinTimeout)
 {
    rBasicWiFiProperties*   basicWiFiProperties;
-   basicWiFiProperties = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);  
+   basicWiFiProperties = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
 
    *joinTimeout = (int)basicWiFiProperties->connectionPolicy.joinTimeout;
    return WIFI_ENGINE_SUCCESS;
@@ -1094,7 +1094,7 @@ int WiFiEngine_GetJoin_Timeout(int* joinTimeout)
 /*!
  * @brief Set the join timeout
  *
- * Sets the join timeout. 
+ * Sets the join timeout.
  *
  * @param joinTimeout Timeout value given in beacon intervals.
  *
@@ -1103,7 +1103,7 @@ int WiFiEngine_GetJoin_Timeout(int* joinTimeout)
 int WiFiEngine_SetJoin_Timeout(int joinTimeout)
 {
    rBasicWiFiProperties*   basicWiFiProperties;
-   basicWiFiProperties = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);  
+   basicWiFiProperties = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
 
    basicWiFiProperties->connectionPolicy.joinTimeout = (rTimeout)joinTimeout;
    return WIFI_ENGINE_SUCCESS;
@@ -1111,7 +1111,7 @@ int WiFiEngine_SetJoin_Timeout(int joinTimeout)
 
 /*!
  * @brief Get the BSS basic rate set
- * 
+ *
  * Get the basic rate set for the currently associated BSS
  *
  * @param rates The output buffer.
@@ -1124,7 +1124,7 @@ int   WiFiEngine_GetBSSBasicRateSet(m80211_ie_supported_rates_t *rates)
    WiFiEngine_net_t*      net;
 
    REGISTRY_RLOCK();
-   
+
    net = wei_netlist_get_current_net();
 
    if (net == NULL)
@@ -1138,7 +1138,7 @@ int   WiFiEngine_GetBSSBasicRateSet(m80211_ie_supported_rates_t *rates)
       return WIFI_ENGINE_FAILURE_NOT_ACCEPTED;
    }
    DE_MEMCPY((rSupportedRates *)rates, &(net->bss_p->bss_description_p->ie.supported_rate_set), sizeof *rates);
-   
+
    REGISTRY_RUNLOCK();
    return WIFI_ENGINE_SUCCESS;
 }
@@ -1147,13 +1147,13 @@ int   WiFiEngine_GetBSSBasicRateSet(m80211_ie_supported_rates_t *rates)
  * @brief Get the current BSS type
  *
  * Get the current BSS Type, Infrastructure or Independent.
- * 
+ *
  * @param bss_type Output buffer. Will contain the values M802
  */
 int WiFiEngine_GetBSSType(WiFiEngine_bss_type_t *bss_type)
 {
    rBasicWiFiProperties*   basicWiFiProperties;
-   basicWiFiProperties = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);  
+   basicWiFiProperties = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
 
    *bss_type = (WiFiEngine_bss_type_t)basicWiFiProperties->connectionPolicy.defaultBssType;
    return WIFI_ENGINE_SUCCESS;
@@ -1174,7 +1174,7 @@ int WiFiEngine_GetBSSType(WiFiEngine_bss_type_t *bss_type)
 int WiFiEngine_SetBSSType(WiFiEngine_bss_type_t bss_type)
 {
    rBasicWiFiProperties*   basicWiFiProperties;
-   basicWiFiProperties = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);  
+   basicWiFiProperties = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
 
    if (bss_type != (WiFiEngine_bss_type_t)Infrastructure_BSS && bss_type != (WiFiEngine_bss_type_t)Independent_BSS)
    {
@@ -1196,11 +1196,11 @@ int WiFiEngine_SetBSSType(WiFiEngine_bss_type_t bss_type)
       /* Mode is already set */
       return WIFI_ENGINE_SUCCESS;
    }
-   
-   if (wei_network_status_busy()) 
+
+   if (wei_network_status_busy())
    {
       WiFiEngine_bss_type_t type;
-      
+
       WiFiEngine_GetBSSType(&type);
       if(type == M80211_CAPABILITY_ESS)
       {
@@ -1218,9 +1218,9 @@ int WiFiEngine_SetBSSType(WiFiEngine_bss_type_t bss_type)
       }
 
    }
-   
+
    basicWiFiProperties->connectionPolicy.defaultBssType = (rBSS_Type)bss_type;
- 
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -1234,11 +1234,11 @@ int WiFiEngine_SetBSSType(WiFiEngine_bss_type_t bss_type)
  * @param type Output buffer.
  * @param index The network type index (0 based).
  *
- * @return WIFI_ENGINE_SUCCESS on success. 
+ * @return WIFI_ENGINE_SUCCESS on success.
  * WIFI_ENGINE_FAILURE_INVALID_LENGTH if the index was out of bounds.
  */
 int WiFiEngine_GetSupportedNetworkTypes(WiFiEngine_phy_t *type,
-                                        int index) 
+                                        int index)
 {
    switch(index) {
       case 0:
@@ -1297,9 +1297,9 @@ int WiFiEngine_GetCurrentRxRate(unsigned int *rate)
  *
  * @return WIFI_ENGINE_SUCCESS
  */
-int WiFiEngine_GetNetworkTypeInUse(WiFiEngine_phy_t *type) 
+int WiFiEngine_GetNetworkTypeInUse(WiFiEngine_phy_t *type)
 {
-   
+
 
    return WIFI_ENGINE_SUCCESS;
 }
@@ -1313,8 +1313,8 @@ int   WiFiEngine_GetTxPowerLevel(int *qpsk_level, int *ofdm_level)
    *qpsk_level = -(int)wifiEngineState.power_index.qpsk_index;
    *ofdm_level = -(int)wifiEngineState.power_index.ofdm_index;
 
-   wei_get_mib_with_update(MIB_dot11powerIndex, 
-                           (void*)&wifiEngineState.power_index, 
+   wei_get_mib_with_update(MIB_dot11powerIndex,
+                           (void*)&wifiEngineState.power_index,
                            sizeof(wifiEngineState.power_index),
                            NULL,
                            WE_IND_NOOP);
@@ -1338,7 +1338,7 @@ int   WiFiEngine_SetTxPowerLevel_from_cpl_ie(int qpsk_level, int ofdm_level)
       return WIFI_ENGINE_FAILURE_INVALID_DATA;
    if(ofdm_level < -19 || ofdm_level > 0)
       return WIFI_ENGINE_FAILURE_INVALID_DATA;
-   
+
 
    wifiEngineState.ccxState.cpl_tx_value_dsss = DSSS_MAX_LVL+qpsk_level;
    wifiEngineState.ccxState.cpl_tx_value_ofdm = DSSS_MAX_LVL+ofdm_level;
@@ -1364,13 +1364,13 @@ int   WiFiEngine_SetTxPowerLevel(int qpsk_level, int ofdm_level)
       return WIFI_ENGINE_FAILURE_INVALID_DATA;
    if(ofdm_level < -19 || ofdm_level > 0)
       return WIFI_ENGINE_FAILURE_INVALID_DATA;
-   
+
    wifiEngineState.power_index.qpsk_index = -qpsk_level;
    wifiEngineState.power_index.ofdm_index = -ofdm_level;
 
    return WiFiEngine_SendMIBSet(MIB_dot11powerIndex,
                                 NULL,
-                                (void*)&wifiEngineState.power_index, 
+                                (void*)&wifiEngineState.power_index,
                                 sizeof(wifiEngineState.power_index));
 }
 /*!
@@ -1508,7 +1508,7 @@ int get_link_stats_cb(we_cb_container_t *cbc)
  * @param update Normally a MIB query is issued to the device to update
  *        the cached statistics information. When update is 0 this does
  *        not happen. The cached statistics is just returned.
- * 
+ *
  * @return WIFI_ENGINE_SUCCESS on success or WIFI_ENGINE_FAILURE on failure
  */
 int   WiFiEngine_GetStatistics(WiFiEngine_stats_t* stats, int update)
@@ -1530,7 +1530,7 @@ int   WiFiEngine_GetStatistics(WiFiEngine_stats_t* stats, int update)
  * @brief Configures aggregation between WFE and target
  *
  * Enables aggregation of messages sent from target to host-driver via SDIO/SPI.
- * Please note that this function only queues the configuration messages, the 
+ * Please note that this function only queues the configuration messages, the
  * acctual messages will be sent to target later.
  * This functon cannot be called when we are unplugged.
  *
@@ -1540,7 +1540,7 @@ int   WiFiEngine_GetStatistics(WiFiEngine_stats_t* stats, int update)
  *
  * @return WIFI_ENGINE_SUCCESS on success
  *         WIFI_ENGINE_FAILURE on any error.
- *         
+ *
  */
 int
 WiFiEngine_ConfigureHICaggregation(we_aggr_type_t type, uint32_t aggr_max_size)
@@ -1548,7 +1548,7 @@ WiFiEngine_ConfigureHICaggregation(we_aggr_type_t type, uint32_t aggr_max_size)
 
    if (!WES_TEST_FLAG(WES_FLAG_HW_PRESENT))
       return WIFI_ENGINE_FAILURE;
-      
+
    //There is no scientiffic reason for choosing theese values
    if((aggr_max_size < 256) || (aggr_max_size > 8192))
    {
@@ -1565,8 +1565,7 @@ WiFiEngine_ConfigureHICaggregation(we_aggr_type_t type, uint32_t aggr_max_size)
    wei_enable_aggregation(type, aggr_max_size);
 
     return WIFI_ENGINE_SUCCESS;
-   
+
 }
 
 /** @} */ /* End of we_prop group */
-

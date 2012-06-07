@@ -42,7 +42,7 @@ This module implements the WiFiEngine MIB interface
  * The preferred interface is the asynchronous callback based interface
  * (WiFiEngine_GetMIBAsynch()) which invoke a caller-supplied callback
  * when the reply is received from the hardware.
- * 
+ *
  *  @{
  */
 #include "driverenv.h"
@@ -85,7 +85,7 @@ static struct mib_cfm_container*
 find_mib_reply(uint32_t id)
 {
    struct mib_cfm_container *cfm;
-   
+
    WEI_TQ_FOREACH(cfm, &mib_cfm_list, next) {
       if(cfm->idnum == id)
          return cfm;
@@ -97,7 +97,7 @@ find_mib_reply(uint32_t id)
 
 /* the guts of sending a mib get. caller must free msg_ref, if call is
  * successful */
-static int mib_get(hic_message_context_t *msg_ref, 
+static int mib_get(hic_message_context_t *msg_ref,
                    mib_id_t *mib_id,
                    uint32_t *num)
 {
@@ -127,7 +127,7 @@ static int mib_get(hic_message_context_t *msg_ref,
       return WIFI_ENGINE_FAILURE;
    }
 #endif /* DE_MIB_TABLE_SUPPORT */
-   
+
    if(num)
       *num = tid;
 
@@ -157,14 +157,14 @@ static int wei_mib_ascii2bin(mib_id_t *dst, const char *src)
             return FALSE;
          }
          seen_digit = 1;
-      } 
+      }
       else if(*p == '.' || *p == ' ' || *p == '\t') {
          if(seen_digit) {
             *dp++ = (char)val;
             seen_digit = 0;
             val = 0;
          }
-      } 
+      }
       else {
          DE_TRACE_STATIC(TR_MIB, "bad character in MIB string\n");
          return FALSE;
@@ -180,7 +180,7 @@ static int wei_mib_ascii2bin(mib_id_t *dst, const char *src)
 static int wei_mib_is_valid(const mib_id_t *mib_id)
 {
    mib_object_entry_t mib_object;
-   
+
    if(wei_have_mibtable()
       && wei_get_mib_object(mib_id, &mib_object) != WIFI_ENGINE_SUCCESS) {
       return FALSE;
@@ -196,7 +196,7 @@ char *wei_print_mib(const mib_id_t *mib_id, char *str, size_t size)
 
    len = DE_SNPRINTF(str, size, "%u", (unsigned char)mib_id->octets[0]);
    for(i = 1; i < MIB_IDENTIFIER_MAX_LENGTH && mib_id->octets[i] != 0; i++) {
-      len += DE_SNPRINTF(str + len, size - DE_MIN(size,len), ".%u", 
+      len += DE_SNPRINTF(str + len, size - DE_MIN(size,len), ".%u",
                          (unsigned char)mib_id->octets[i]);
    }
    return str;
@@ -206,14 +206,14 @@ char *wei_print_mib(const mib_id_t *mib_id, char *str, size_t size)
 /*!
  * @brief Send a MIB query
  *
- * Posts a MIB query to the hardware. The response data can 
+ * Posts a MIB query to the hardware. The response data can
  * be retrieved by a matching WiFiEngine_GetMIBResponse().
  *
  * @param mib_id A binary string identifying the MIB variable to be set.
  * @param num Pointer to the queue id number of the query. This should
  * be used when retrieving the result later.
- * 
- * @return 
+ *
+ * @return
  * - WIFI_ENGINE_SUCCESS on success
  * - WIFI_ENGINE_FAILURE_RESOURCES if the response queue is full or
  *  or if a command is outstanding
@@ -223,7 +223,7 @@ int wei_send_mib_get_binary(mib_id_t mib_id, uint32_t *num)
 {
    hic_message_context_t   msg_ref;
    int                status;
-   
+
    BAIL_IF_UNPLUGGED;
    status = mib_get(&msg_ref, &mib_id, num);
    if(status != WIFI_ENGINE_SUCCESS)
@@ -232,7 +232,7 @@ int wei_send_mib_get_binary(mib_id_t mib_id, uint32_t *num)
    status = wei_send_cmd(&msg_ref);
    Mlme_ReleaseMessageContext(msg_ref);
 
-   if (status == WIFI_ENGINE_FAILURE_DEFER) 
+   if (status == WIFI_ENGINE_FAILURE_DEFER)
    {
       return WIFI_ENGINE_FAILURE_RESOURCES;
    }
@@ -246,14 +246,14 @@ int wei_send_mib_get_binary(mib_id_t mib_id, uint32_t *num)
 /*!
  * @brief Send a MIB query
  *
- * Posts a MIB query to the hardware. The response data can 
+ * Posts a MIB query to the hardware. The response data can
  * be retrieved by a matching WiFiEngine_GetMIBResponse().
  *
  * @param id A string identifying the MIB variable to be queried.
  * @param num Pointer to the queue id number of the query. This should
  * be used when retrieving the result later.
- * 
- * @return 
+ *
+ * @return
  * - WIFI_ENGINE_SUCCESS on success
  * - WIFI_ENGINE_FAILURE_RESOURCES if the response queue is full or
  *  or if a command is outstanding
@@ -262,7 +262,7 @@ int wei_send_mib_get_binary(mib_id_t mib_id, uint32_t *num)
 int   WiFiEngine_SendMIBGet(const char *id, uint32_t *num)
 {
    mib_id_t           mib_id;
-   
+
    if(!wei_mib_ascii2bin(&mib_id, id)) {
       /* we can't easily print the string here, since it may not be
        * zero terminated */
@@ -276,16 +276,16 @@ int   WiFiEngine_SendMIBGet(const char *id, uint32_t *num)
  * @internal
  * @brief Query all MIBs in sequence.
  *
- * Posts a MIB query to the hardware. The response data can 
+ * Posts a MIB query to the hardware. The response data can
  * be retrieved by a matching WiFiEngine_GetMIBResponse().
  *
  * @param [in]  get_first If TRUE, get first mib, else get next mib.
  * @param [out] trans_id  Pointer to the transaction id number of the
- *                        query. This should be used when retrieving 
+ *                        query. This should be used when retrieving
  *                        the result later.
  *
  * @note This function is only usful with x_test firmware.
- * 
+ *
  * @retval WIFI_ENGINE_SUCCESS on success
  * @retval WIFI_ENGINE_FAILURE_RESOURCES if the response queue is full or
  *                                       or if a command is outstanding
@@ -296,7 +296,7 @@ int wei_send_mib_get_next(bool_t get_first, uint32_t *trans_id)
    hic_message_context_t   msg_ref;
    int                status;
    mlme_mib_get_next_req_t *req;
-   
+
    BAIL_IF_UNPLUGGED;
 
    Mlme_CreateMessageContext(msg_ref);
@@ -310,7 +310,7 @@ int wei_send_mib_get_next(bool_t get_first, uint32_t *trans_id)
    }
    msg_ref.msg_type = HIC_MESSAGE_TYPE_MIB;
    msg_ref.msg_id = MLME_GET_NEXT_REQ;
-   
+
    WEI_SET_TRANSID(req->trans_id);
    if (trans_id != NULL)
    {
@@ -321,7 +321,7 @@ int wei_send_mib_get_next(bool_t get_first, uint32_t *trans_id)
    status = wei_send_cmd(&msg_ref);
    Mlme_ReleaseMessageContext(msg_ref);
 
-   if (status == WIFI_ENGINE_FAILURE_DEFER) 
+   if (status == WIFI_ENGINE_FAILURE_DEFER)
    {
       return WIFI_ENGINE_FAILURE_RESOURCES;
    }
@@ -334,11 +334,11 @@ int wei_send_mib_get_next(bool_t get_first, uint32_t *trans_id)
 /*!
  * @brief Send a MIB set command with binary MIB id.
  *
- * Posts a MIB set command to the hardware. The response data can 
+ * Posts a MIB set command to the hardware. The response data can
  * be retrieved by a matching WiFiEngine_GetMIBResponse().
- * 
+ *
  * Beware that setting some variables may have unintended consequences.
- * For instance, setting the MAC address of the adapter through MIB set 
+ * For instance, setting the MAC address of the adapter through MIB set
  * will not change the MAC address in the driver (in the driver
  * registry) and confusion may ensue.
  *
@@ -362,13 +362,13 @@ int wei_send_mib_get_next(bool_t get_first, uint32_t *trans_id)
  *            The cbc->status member will contain the set cfm result value
  *            on successful invocation.
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success
  * - WIFI_ENGINE_FAILURE_RESOURCES if the a cmd reply is pending
  * - WIFI_ENGINE_FAILURE on failure
  */
 int wei_send_mib_set_binary(mib_id_t mib_id,
-			    uint32_t *num, 
+			    uint32_t *num,
 			    const void *inbuf,
 			    size_t inbuflen,
                 we_cb_container_t *cbc)
@@ -383,9 +383,9 @@ int wei_send_mib_set_binary(mib_id_t mib_id,
    mlme_mib_set_raw_req_t *raw_req;
 #endif
 
-   /* Don't remove this willy-nilly, we rely on WiFiEngine_SetMACAddress() 
+   /* Don't remove this willy-nilly, we rely on WiFiEngine_SetMACAddress()
     * to work ok even while not plugged */
-   BAIL_IF_UNPLUGGED; 
+   BAIL_IF_UNPLUGGED;
    Mlme_CreateMessageContext(msg_ref);
 
 #if DE_MIB_TABLE_SUPPORT == CFG_ON
@@ -407,18 +407,18 @@ int wei_send_mib_set_binary(mib_id_t mib_id,
          wei_cb_queue_pending_callback(cbc);
       }
       status = wei_send_cmd(&msg_ref);
-      if (status == WIFI_ENGINE_FAILURE_DEFER) 
+      if (status == WIFI_ENGINE_FAILURE_DEFER)
       {
          DE_TRACE_STATIC(TR_MIB, "MIB set command send was deferred\n");
          Mlme_ReleaseMessageContext(msg_ref);
          return WIFI_ENGINE_FAILURE_RESOURCES;
       }
-      else if (status != WIFI_ENGINE_SUCCESS) 
+      else if (status != WIFI_ENGINE_SUCCESS)
       {
          DE_BUG_ON(1, "wei_send_cmd() failed\n");
       }
    }
-   else 
+   else
    {
       DE_TRACE_STATIC(TR_MIB, "CreateMIBSetRequest() failed in WiFiEngine_SendMIBSet()\n");
       Mlme_ReleaseMessageContext(msg_ref);
@@ -453,18 +453,18 @@ int wei_send_mib_set_binary(mib_id_t mib_id,
 
    if(WES_TEST_FLAG(WES_DEVICE_CONFIGURED))
       cache_add_mib(mib_id, inbuf, inbuflen);
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
 /*!
  * @brief Send a MIB set command
  *
- * Posts a MIB set command to the hardware. The response data can 
+ * Posts a MIB set command to the hardware. The response data can
  * be retrieved by a matching WiFiEngine_GetMIBResponse().
- * 
+ *
  * Beware that setting some variables may have unintended consequences.
- * For instance, setting the MAC address of the adapter through MIB set 
+ * For instance, setting the MAC address of the adapter through MIB set
  * will not change the MAC address in the driver (in the driver
  * registry) and confusion may ensue.
  *
@@ -474,13 +474,13 @@ int wei_send_mib_set_binary(mib_id_t mib_id,
  * @param inbuf Input buffer
  * @param inbuflen Length of the input buffer
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success
  * - WIFI_ENGINE_FAILURE_RESOURCES if the a cmd reply is pending
  * - WIFI_ENGINE_FAILURE on failure
  */
-int   WiFiEngine_SendMIBSet(const char *id, 
-                            uint32_t *num, 
+int   WiFiEngine_SendMIBSet(const char *id,
+                            uint32_t *num,
 			    const void *inbuf,
                             size_t inbuflen)
 {
@@ -498,11 +498,11 @@ int   WiFiEngine_SendMIBSet(const char *id,
 /*!
  * @brief Send a MIB set command with asynchronous completion
  *
- * Posts a MIB set command to the hardware. The response data can 
+ * Posts a MIB set command to the hardware. The response data can
  * be retrieved by a matching WiFiEngine_GetMIBResponse().
- * 
+ *
  * Beware that setting some variables may have unintended consequences.
- * For instance, setting the MAC address of the adapter through MIB set 
+ * For instance, setting the MAC address of the adapter through MIB set
  * will not change the MAC address in the driver (in the driver
  * registry) and confusion may ensue.
  *
@@ -526,13 +526,13 @@ int   WiFiEngine_SendMIBSet(const char *id,
  *            The cbc->status member will contain the set cfm result value
  *            on successful invocation.
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success
  * - WIFI_ENGINE_FAILURE_RESOURCES if the a cmd reply is pending
  * - WIFI_ENGINE_FAILURE on failure
  */
-int   WiFiEngine_SetMIBAsynch(const char *id, 
-                             uint32_t *num, 
+int   WiFiEngine_SetMIBAsynch(const char *id,
+                             uint32_t *num,
                              const void *inbuf,
                              size_t inbuflen,
                              we_cb_container_t *cbc)
@@ -549,14 +549,14 @@ int   WiFiEngine_SetMIBAsynch(const char *id,
 }
 
 static struct mib_cfm_container*
-get_cfm(uint8_t msgId, 
+get_cfm(uint8_t msgId,
         mlme_mib_get_cfm_t *reply,
-        const void *raw, 
+        const void *raw,
         size_t raw_size)
 {
    struct mib_cfm_container *cfm;
    size_t size;
-   
+
    DE_ASSERT(msgId == MLME_GET_CFM || msgId == MLME_SET_CFM);
 
    size = sizeof(*cfm) + raw_size;
@@ -597,12 +597,12 @@ free_mib_container(struct mib_cfm_container *c)
 }
 
 static void
-wei_prune_mib_reply_list(size_t max_size) 
+wei_prune_mib_reply_list(size_t max_size)
 {
    struct mib_cfm_container *cfm;
 
    WIFI_LOCK();
-   while(mib_cfm_list_size > max_size 
+   while(mib_cfm_list_size > max_size
          && (cfm = WEI_TQ_FIRST(&mib_cfm_list)) != NULL) {
       WEI_TQ_REMOVE(&mib_cfm_list, cfm, next);
       mib_cfm_list_size--;
@@ -623,26 +623,26 @@ void wei_clear_mib_reply_list(void)
  * @param msgId The type of message (get or set)
  * @param replyPacked Char array representation of the packed reply (including header)
  * @param replySize Length of the packed reply
- * @return 
+ * @return
  * - 1 on success
  * - 0 on failure
  */
-int wei_queue_mib_reply(uint8_t msgId, hic_message_context_t *msg_ref) 
+int wei_queue_mib_reply(uint8_t msgId, hic_message_context_t *msg_ref)
 {
    struct mib_cfm_container *rc;
    mlme_mib_get_cfm_t *cfm;
 
    cfm = HIC_GET_RAW_FROM_CONTEXT(msg_ref, mlme_mib_get_cfm_t);
-   
+
    wei_prune_mib_reply_list(LIST_SIZE);
 
    rc = get_cfm(msgId, cfm, msg_ref->packed, msg_ref->packed_size);
-                
+
    if(rc == NULL) {
       DE_TRACE_STATIC(TR_MIB, "Failed to allocate buffer for received MIB reply \n");
       return 0;
    }
-   
+
    WIFI_LOCK();
    WEI_TQ_INSERT_TAIL(&mib_cfm_list, rc, next);
    mib_cfm_list_size++;
@@ -826,7 +826,7 @@ int wei_mib_schedule_cb(int msgId, hic_interface_wrapper_t *msg)
       default:
          DE_TRACE_INT(TR_SEVERE, "Unknown message ID %d\n", msgId);
          return WIFI_ENGINE_FAILURE;
-   }  
+   }
    WiFiEngine_ScheduleCallback(cbc);
 
    if ( ! wei_cb_still_valid(cbc)) {
@@ -844,14 +844,14 @@ int wei_mib_schedule_cb(int msgId, hic_interface_wrapper_t *msg)
  * @brief Get a MIB response
  *
  * Retrieve the data from a previously sent MIB query (with
- * WiFiEngine_SendMIBGet/Set(). 
+ * WiFiEngine_SendMIBGet/Set().
  *
  * @param num ID of the response (returned by the request call)
  * @param outbuf Output buffer (allocated by caller)
  * @param buflen IN: size of the output buffer
  *               OUT: amount of data copied to the output buffer
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success
  * - WIFI_ENGINE_FAILURE_INVALID_LENGTH if the output buffer was too small
  * - WIFI_ENGINE_FAILURE_INVALID_DATA if the variable was write-only
@@ -862,7 +862,7 @@ int   WiFiEngine_GetMIBResponse(uint32_t num, void *outbuf, IN OUT size_t *bufle
 {
    struct mib_cfm_container *c;
    int status;
-   
+
    BAIL_IF_UNPLUGGED;
    WIFI_LOCK();
    c = find_mib_reply(num);
@@ -881,7 +881,7 @@ int   WiFiEngine_GetMIBResponse(uint32_t num, void *outbuf, IN OUT size_t *bufle
 
    *buflen = c->mib_object_size;
    status = c->reply.result;
-   if (status == MIB_RESULT_OK) 
+   if (status == MIB_RESULT_OK)
    {
       if (c->reply.value.size < *buflen || c->reply.value.ref == 0) {
           /* This will generate bluescreen by Anders Dahl's testcases, so I prevent it
@@ -927,18 +927,18 @@ int   WiFiEngine_GetMIBResponse(uint32_t num, void *outbuf, IN OUT size_t *bufle
  * @param [in,out] buflen IN: size of the output buffer
  *               OUT: amount of data copied to the output buffer
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success
  * - WIFI_ENGINE_FAILURE_DEFER if no matching reply was found
  * - WIFI_ENGINE_FAILURE_INVALID_LENGTH if buflen is too small
  */
 
-int WiFiEngine_GetMIBResponse_raw(uint32_t num, 
-                                  void *outbuf, 
+int WiFiEngine_GetMIBResponse_raw(uint32_t num,
+                                  void *outbuf,
                                   IN OUT size_t *buflen)
 {
    struct mib_cfm_container *c;
-   
+
    BAIL_IF_UNPLUGGED;
    WIFI_LOCK();
    c = find_mib_reply(num);
@@ -946,7 +946,7 @@ int WiFiEngine_GetMIBResponse_raw(uint32_t num,
       WIFI_UNLOCK();
       return WIFI_ENGINE_FAILURE_DEFER;
    }
-      
+
    /* We found it! */
    if (*buflen < c->raw_size) {
       *buflen = c->raw_size;
@@ -986,13 +986,13 @@ int WiFiEngine_GetMIBResponse_raw(uint32_t num,
  * - WIFI_ENGINE_FAILURE_NOT_ACCEPTED if the entry wasn't found.
  * - WIFI_ENGINE_FAILURE_RESOURCES if some resource (memory) was exhausted.
  */
-int WiFiEngine_GetMIBAsynch(const char *id, we_cb_container_t *cbc) 
+int WiFiEngine_GetMIBAsynch(const char *id, we_cb_container_t *cbc)
 {
    hic_message_context_t   msg_ref;
    int                status;
    uint32_t trans_id;
    mib_id_t mib_id;
-   
+
    BAIL_IF_UNPLUGGED;
    if(!wei_mib_ascii2bin(&mib_id, id)) {
       /* we can't easily print the string here, since it may not be
@@ -1012,7 +1012,7 @@ int WiFiEngine_GetMIBAsynch(const char *id, we_cb_container_t *cbc)
    status = wei_send_cmd(&msg_ref);
    Mlme_ReleaseMessageContext(msg_ref);
 
-   if (status == WIFI_ENGINE_FAILURE_DEFER) 
+   if (status == WIFI_ENGINE_FAILURE_DEFER)
    {
       return WIFI_ENGINE_FAILURE_RESOURCES;
    }
@@ -1066,14 +1066,14 @@ int wei_get_mib_with_update_cb(we_cb_container_t *cbc)
  * @param id MIB identifier to query.
  * @param transform Destination buffer transformation function (can be NULL).
  * @param we_ind indication after a success. (WE_IND_NOOP for none)
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success.
  * - WIFI_ENGINE_FAILURE on failure.
  */
-int wei_get_mib_with_update(const char *id, 
-                            void *dst, 
-                            size_t dstlen, 
-                            wei_update_transform transform, 
+int wei_get_mib_with_update(const char *id,
+                            void *dst,
+                            size_t dstlen,
+                            wei_update_transform transform,
                             we_indication_t we_ind)
 {
    we_cb_container_t *cbc;
@@ -1190,7 +1190,7 @@ wei_ratelimit_mib_update(struct wei_ratelimit_mib *wrm, driver_tick_t now)
       /* no point in continuing */
       return WIFI_ENGINE_FAILURE;
    }
-   cbc = WiFiEngine_BuildCBC(wei_ratelimit_mib_update_cb, 
+   cbc = WiFiEngine_BuildCBC(wei_ratelimit_mib_update_cb,
                              wrm, sizeof(*wrm), FALSE);
    if(cbc == NULL) {
       DE_TRACE_STATIC(TR_MIB, "Failed to build cbc\n");
@@ -1273,18 +1273,18 @@ WiFiEngine_RatelimitMIBGet(const char *id, uint32_t period_ms,
    }
    WRMS_LOCK();
    WEI_TQ_FOREACH(wrm, &wrlm_state.rlms_all, rlm_all) {
-      if(DE_MEMCMP(mib_id.octets, wrm->rlm_id.octets, 
+      if(DE_MEMCMP(mib_id.octets, wrm->rlm_id.octets,
                    sizeof(mib_id.octets)) == 0) {
          break;
       }
    }
    WRMS_UNLOCK();
-   
+
    if(wrm == NULL) {
       wei_ratelimit_mib_alloc(&mib_id, len, period_ms);
       return WIFI_ENGINE_FAILURE_DEFER;
    }
-   
+
    if(len != wrm->rlm_size) {
       return WIFI_ENGINE_FAILURE_INVALID_LENGTH;
    }
@@ -1311,7 +1311,7 @@ WiFiEngine_RatelimitMIBGet(const char *id, uint32_t period_ms,
  * @param id The MIB ID of the MIB to set the trigger on.
  * @param gating_trig_id A MIB triggers can be coupled to another MIB trigger so
  *        it only triggers when it and the other trigger (the gating trigger)
- *        are both triggered at the same time. 
+ *        are both triggered at the same time.
  * ...
  * @param cbc Pointer to a caller-allocated callback-container.
  *            This should be completely filled out and the
@@ -1338,7 +1338,7 @@ WiFiEngine_RatelimitMIBGet(const char *id, uint32_t period_ms,
  * - WIFI_ENGINE_FAILURE_RESOURCES if the input buffer was too small
  */
 int WiFiEngine_RegisterMIBTrigger(int32_t *trig_id,
-				  const char *id, 
+				  const char *id,
 				  uint32_t gating_trig_id,
 				  uint32_t          supv_interval,
 				  int32_t           level,
@@ -1350,7 +1350,7 @@ int WiFiEngine_RegisterMIBTrigger(int32_t *trig_id,
    hic_message_context_t   msg_ref;
    int                status;
    mib_id_t           mib_id;
-   
+
    BAIL_IF_UNPLUGGED;
    if (NULL == cbc)
    {
@@ -1363,7 +1363,7 @@ int WiFiEngine_RegisterMIBTrigger(int32_t *trig_id,
       return WIFI_ENGINE_FAILURE;
    }
    Mlme_CreateMessageContext(msg_ref);
-   if (!Mlme_CreateMIBSetTriggerRequest(&msg_ref, mib_id, gating_trig_id, 
+   if (!Mlme_CreateMIBSetTriggerRequest(&msg_ref, mib_id, gating_trig_id,
                                        supv_interval, level, event, event_count,
 				       triggmode, (uint32_t *)trig_id))
    {
@@ -1376,13 +1376,13 @@ int WiFiEngine_RegisterMIBTrigger(int32_t *trig_id,
    wei_cb_queue_pending_callback(cbc);
 
    status = wei_send_cmd(&msg_ref);
-   if (status == WIFI_ENGINE_FAILURE_DEFER) 
+   if (status == WIFI_ENGINE_FAILURE_DEFER)
    {
       DE_TRACE_STATIC(TR_MIB, "cmd send was deferred\n");
       Mlme_ReleaseMessageContext(msg_ref);
       return WIFI_ENGINE_FAILURE_RESOURCES;
    }
-   else if (status != WIFI_ENGINE_SUCCESS) 
+   else if (status != WIFI_ENGINE_SUCCESS)
    {
       DE_BUG_ON(1, "wei_send_cmd() failed\n");
    }
@@ -1400,7 +1400,7 @@ int WiFiEngine_RegisterMIBTrigger(int32_t *trig_id,
  *
  * @param trig_id The id of the MIB trigger to be removed.
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success.
  * - WIFI_ENGINE_FAILURE_INVALID_DATA if the trigger ID was invalid.
  * - WIFI_ENGINE_FAILURE_RESOURCES if the message could not be sent.
@@ -1416,25 +1416,25 @@ int WiFiEngine_DeregisterMIBTrigger(uint32_t trig_id)
    if (Mlme_CreateMIBRemoveTriggerRequest(&msg_ref, trig_id))
    {
       status = wei_send_cmd(&msg_ref);
-      if (status == WIFI_ENGINE_FAILURE_DEFER) 
+      if (status == WIFI_ENGINE_FAILURE_DEFER)
       {
          DE_TRACE_STATIC(TR_MIB, "cmd send was deferred\n");
          Mlme_ReleaseMessageContext(msg_ref);
          return WIFI_ENGINE_FAILURE_RESOURCES;
       }
-      else if (status != WIFI_ENGINE_SUCCESS) 
+      else if (status != WIFI_ENGINE_SUCCESS)
       {
          DE_BUG_ON(1, "wei_send_cmd() failed\n");
       }
    }
-   else 
+   else
    {
       DE_TRACE_STATIC(TR_MIB, "Mlme call failed\n");
       Mlme_ReleaseMessageContext(msg_ref);
       return WIFI_ENGINE_FAILURE;
    }
    Mlme_ReleaseMessageContext(msg_ref);
-   
+
    if((cbc = wei_cb_find_pending_callback(trig_id)) == NULL)
    {
       return WIFI_ENGINE_FAILURE_INVALID_DATA;
@@ -1469,7 +1469,7 @@ static struct mib_cache_entry_t* _cache_mib_create(mib_id_t mib_id,
                                                    size_t inbuflen)
 {
    struct mib_cache_entry_t* mc;
-      
+
    mc = (struct mib_cache_entry_t* )
       DriverEnvironment_Nonpaged_Malloc(sizeof(*mc) + inbuflen);
    if(mc == NULL) {
@@ -1499,9 +1499,9 @@ static int cache_add_mib(mib_id_t mib_id, const void *inbuf, size_t inbuflen)
    char str[32];
 #endif
 
-   DE_TRACE_STRING(TR_MIB, "Caching MIB: %s\n", 
+   DE_TRACE_STRING(TR_MIB, "Caching MIB: %s\n",
                    wei_print_mib(&mib_id, str, sizeof(str)));
-   
+
    WEI_TQ_FOREACH(e, &mib_cache_head, next) {
       if(_cache_mib_equal(&e->mib_id, &mib_id)) {
          DE_TRACE_STATIC(TR_MIB, "Replacing previous entry in mib cache\n");
@@ -1514,7 +1514,7 @@ static int cache_add_mib(mib_id_t mib_id, const void *inbuf, size_t inbuflen)
    mib_cache_entry = _cache_mib_create(mib_id, inbuf, inbuflen);
    if(mib_cache_entry == NULL)
       return WIFI_ENGINE_FAILURE;
-   
+
    WEI_TQ_INSERT_TAIL(&mib_cache_head, mib_cache_entry, next);
    return WIFI_ENGINE_SUCCESS;
 }
@@ -1529,21 +1529,21 @@ int wei_reconfigure_mib(void)
 {
    struct mib_cache_entry_t* e;
    int exit_code = WIFI_ENGINE_SUCCESS;
-   
+
    WEI_TQ_FOREACH(e, &mib_cache_head, next) {
       int status;
 
-      status =  wei_send_mib_set_binary(e->mib_id, NULL, 
+      status =  wei_send_mib_set_binary(e->mib_id, NULL,
                                         (char*)&e[1], e->inbuflen,
                                         NULL);
 
       if(status != WIFI_ENGINE_SUCCESS) {
          DE_TRACE_STATIC(TR_MIB, "Failed to set mib from cache.\n");
          exit_code = WIFI_ENGINE_FAILURE;
-         continue;         
+         continue;
       }
    }
-   
+
    return exit_code;
 }
 
@@ -1556,7 +1556,7 @@ int wei_unplug_mib(void)
    }
 
    DE_ASSERT(WEI_TQ_EMPTY(&mib_cache_head));
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -1576,4 +1576,3 @@ int wei_shutdown_mib(void)
 /* c-basic-offset: 3 */
 /* indent-tabs-mode: nil */
 /* End: */
- 

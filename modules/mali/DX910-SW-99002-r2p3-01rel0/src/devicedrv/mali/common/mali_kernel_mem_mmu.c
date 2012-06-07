@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -1196,7 +1196,7 @@ static _mali_osk_errcode_t mali_kernel_memory_mmu_interrupt_handler_upper_half(v
 	mmu = (mali_kernel_memory_mmu *)data;
 
 	MALI_DEBUG_ASSERT_POINTER(mmu);
-	
+
 	/* Pointer to core holding this MMU */
 	core = (mali_core_renderunit *)mmu->core;
 
@@ -1373,7 +1373,7 @@ static mali_bool mali_mmu_enable_stall(mali_kernel_memory_mmu * mmu)
 			return MALI_FALSE;
 		}
 	}
-	
+
 	return MALI_TRUE;
 }
 
@@ -1459,8 +1459,8 @@ static void mali_kernel_memory_mmu_interrupt_handler_bottom_half(void * data)
 	_mali_kernel_core_broadcast_subsystem_message(MMU_KILL_STEP0_LOCK_SUBSYSTEM, (u32)mmu);
 
 	/* Pointer to core holding this MMU */
-	core = (mali_core_renderunit *)mmu->core;	
-	
+	core = (mali_core_renderunit *)mmu->core;
+
 	if(CORE_OFF == core->state)
         {
                 _mali_kernel_core_broadcast_subsystem_message(MMU_KILL_STEP4_UNLOCK_SUBSYSTEM, (u32)mmu);
@@ -1786,7 +1786,7 @@ _mali_osk_errcode_t _mali_ukk_release_ump_mem( _mali_uk_release_ump_mem_s *args 
 	}
 
 	mali_descriptor_mapping_free(session_data->descriptor_mapping, args->cookie);
-	
+
 	_mali_osk_lock_wait( session_data->lock, _MALI_OSK_LOCKMODE_RW );
 
 	mali_allocation_engine_release_memory(memory_engine, descriptor);
@@ -2198,7 +2198,7 @@ void mali_mmu_release_table_page(u32 pa)
 				/* transfer to partial list */
 				_mali_osk_list_move(&alloc->list, &page_table_cache.partial);
 			}
-			
+
            	_mali_osk_lock_signal(page_table_cache.lock, _MALI_OSK_LOCKMODE_RW);
         	MALI_DEBUG_PRINT(4, ("(full list)Released table page 0x%08X to the cache\n", pa));
 			return;
@@ -2896,7 +2896,7 @@ _mali_osk_errcode_t _mali_ukk_mem_munmap( _mali_uk_mem_munmap_s *args )
     descriptor at this point. */
 
     MALI_DEBUG_ASSERT_POINTER((memory_session*)descriptor->mali_addr_mapping_info);
-    
+
 	descriptor_lock = descriptor->lock; /* should point to the session data lock... */
 
 	err = _MALI_OSK_ERR_BUSY;
@@ -2913,7 +2913,7 @@ _mali_osk_errcode_t _mali_ukk_mem_munmap( _mali_uk_mem_munmap_s *args )
 		{
 			_mali_osk_lock_signal( descriptor_lock, _MALI_OSK_LOCKMODE_RW );
 		}
-		
+
 		if (err == _MALI_OSK_ERR_BUSY)
 		{
 			/*

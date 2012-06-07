@@ -75,7 +75,7 @@
  *
  */
 
- /* NOTE: The response for the commands are not sent using 
+ /* NOTE: The response for the commands are not sent using
   * wfaCtrlSend(gCaSockfd, (BYTE *)gRespStr, strlen(gRespStr)) in case of RWL
  */
 
@@ -392,7 +392,7 @@ int wfaTrafficAgentSendResp(BYTE *cmdBuf)
     {
 	   	if(statResp[i].status!= STATUS_COMPLETE)
 	        {
-	        
+
 	   		    errorStatus = 1;
 	        }
     }
@@ -482,7 +482,7 @@ int wfaTrafficAgentRecvStopResp(BYTE *cmdBuf)
     int i = 0;
     int errorStatus = 0;
     char copyBuf[64];
-	
+
     BYTE *dutRsp = cmdBuf+4;
     BYTE *startRsp = dutRsp;
     wfaTLV *ptlv = (wfaTLV *)cmdBuf;
@@ -491,7 +491,7 @@ int wfaTrafficAgentRecvStopResp(BYTE *cmdBuf)
 	dutCmdResponse_t statResp[WFA_MAX_TRAFFIC_STREAMS];
     DPRINT_INFO(WFA_OUT, "Entering wfaTrafficAgentRecvStopResp ...\n");
 
-    
+
     for(i=0; i<numStreams; i++)
     {
         dutRsp = startRsp + i * sizeof(dutCmdResponse_t);
@@ -995,7 +995,7 @@ int wfaDeviceGetInfoResp(BYTE *cmdBuf)
     int done=0;
     dutCmdResponse_t *devInfoResp = (dutCmdResponse_t *) (cmdBuf + 4);
 
-	
+
 
     caDeviceGetInfoResp_t *dinfo = &devInfoResp->cmdru.devInfo;
 

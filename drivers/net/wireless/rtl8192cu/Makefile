@@ -1,14 +1,14 @@
-EXTRA_CFLAGS += -O1 
+EXTRA_CFLAGS += -O1
 #EXTRA_CFLAGS += -O3
-#EXTRA_CFLAGS += -Wall 
-#EXTRA_CFLAGS += -Wextra 
+#EXTRA_CFLAGS += -Wall
+#EXTRA_CFLAGS += -Wextra
 #EXTRA_CFLAGS += -Werror
 #EXTRA_CFLAGS += -pedantic
-#EXTRA_CFLAGS += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes 
+#EXTRA_CFLAGS += -Wshadow -Wpointer-arith -Wcast-qual -Wstrict-prototypes -Wmissing-prototypes
 
-EXTRA_CFLAGS += -Wno-unused-variable 
-EXTRA_CFLAGS += -Wno-unused-value 
-EXTRA_CFLAGS += -Wno-unused-label 
+EXTRA_CFLAGS += -Wno-unused-variable
+EXTRA_CFLAGS += -Wno-unused-value
+EXTRA_CFLAGS += -Wno-unused-label
 EXTRA_CFLAGS += -Wno-unused-parameter
 EXTRA_CFLAGS += -Wno-unused-function
 EXTRA_CFLAGS += -Wno-unused
@@ -133,7 +133,7 @@ _OS_INTFS_FILES :=	os_dep/osdep_service.o \
 _HAL_INTFS_FILES := hal/$(RTL871X)/hal_init.o \
 		    hal/$(RTL871X)/sdio_halinit.o \
 		    hal/$(RTL871X)/sdio_ops.o \
-		    hal/$(RTL871X)/sdio_ops_linux.o    	
+		    hal/$(RTL871X)/sdio_ops_linux.o
 
 endif
 
@@ -163,14 +163,14 @@ _HAL_INTFS_FILES :=	hal/hal_init.o \
 			hal/$(RTL871X)/usb/rtl$(MODULE_NAME)_led.o \
 			hal/$(RTL871X)/usb/rtl$(MODULE_NAME)_xmit.o \
 			hal/$(RTL871X)/usb/rtl$(MODULE_NAME)_recv.o
-			
+
 _HAL_INTFS_FILES += $(CHIP_FILES)
 
 endif
 
 
 ifeq ($(CONFIG_PCI_HCI), y)
- 
+
 HCI_NAME = pci
 
 _OS_INTFS_FILES :=	os_dep/osdep_service.o \
@@ -224,11 +224,11 @@ endif
 
 ifeq ($(CONFIG_BT_COEXISTENCE), y)
 EXTRA_CFLAGS += -DCONFIG_BT_COEXISTENCE
-endif 
+endif
 
 ifeq ($(CONFIG_RTL8192CU_REDEFINE_1X1), y)
 EXTRA_CFLAGS += -DRTL8192C_RECONFIG_TO_1T1R
-endif 
+endif
 
 ifeq ($(CONFIG_PLATFORM_I386_PC), y)
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
@@ -301,7 +301,7 @@ ifeq ($(CONFIG_PLATFORM_MIPS_RMI), y)
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
 ARCH:=mips
 CROSS_COMPILE:=mipsisa32r2-uclibc-
-KVER:= 
+KVER:=
 KSRC:= /root/work/kernel_realtek
 endif
 
@@ -309,7 +309,7 @@ ifeq ($(CONFIG_PLATFORM_MIPS_PLM), y)
 EXTRA_CFLAGS += -DCONFIG_BIG_ENDIAN
 ARCH:=mips
 CROSS_COMPILE:=mipsisa32r2-uclibc-
-KVER:= 
+KVER:=
 KSRC:= /root/work/kernel_realtek
 endif
 
@@ -340,7 +340,7 @@ ifeq ($(CONFIG_PLATFORM_RTK_DMP), y)
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN -DRTK_DMP_PLATFORM
 ARCH:=mips
 CROSS_COMPILE:=mipsel-linux-
-KVER:= 
+KVER:=
 KSRC ?= /usr/src/work/DMP_Kernel/jupiter/linux-2.6.12
 endif
 
@@ -359,7 +359,7 @@ CROSS_COMPILE := /opt/freescale/usr/local/gcc-4.1.2-glibc-2.5-nptl-3/arm-none-li
 KVER  := 2.6.31
 KSRC ?= /lib/modules/2.6.31-770-g0e46b52/source
 endif
- 
+
 ifeq ($(CONFIG_PLATFORM_ACTIONS_ATJ227X), y)
 EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN -DCONFIG_PLATFORM_ACTIONS_ATJ227X
 ARCH := mips
@@ -426,7 +426,7 @@ EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
 ARCH := arm
 CROSS_COMPILE := arm-none-linux-gnueabi-
 KVER  := 3.0.8
-KSRC ?= $(src) 
+KSRC ?= $(src)
 endif
 
 ifneq ($(KERNELRELEASE),)
@@ -452,7 +452,7 @@ rtk_core :=	core/rtw_cmd.o \
 		core/rtw_iol.o
 
 $(MODULE_NAME)-y += $(rtk_core)
-									
+
 $(MODULE_NAME)-y += core/efuse/rtw_efuse.o
 
 $(MODULE_NAME)-y += $(_HAL_INTFS_FILES)
@@ -485,12 +485,12 @@ install:
 uninstall:
 	rm -f $(MODDESTDIR)/$(MODULE_NAME).ko
 	/sbin/depmod -a ${KVER}
-	
-	
+
+
 config_r:
 	@echo "make config"
 	/bin/bash script/Configure script/config.in
-	
+
 .PHONY: modules clean
 
 clean:
@@ -498,11 +498,10 @@ clean:
 	rm .tmp_versions -fr ; rm Module.symvers -fr
 	rm -fr Module.markers ; rm -fr modules.order
 	cd core/efuse ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
-	cd core ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko 
-	cd hal/$(RTL871X)/$(HCI_NAME) ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko 
-	cd hal/$(RTL871X) ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko 
-	cd hal ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko 
-	cd os_dep/linux ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko 
-	cd os_dep ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko 
+	cd core ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	cd hal/$(RTL871X)/$(HCI_NAME) ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	cd hal/$(RTL871X) ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	cd hal ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	cd os_dep/linux ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
+	cd os_dep ; rm -fr *.mod.c *.mod *.o .*.cmd *.ko
 endif
-

@@ -20,4 +20,3 @@ $(srcdir)/pmc_proto.h: $(filter %.c, $(libpmc_a_SOURCES))
 	cd $(srcdir) && perl ../libnrx/make-proto.pl -o pmc_proto.h $(filter %.c, $(libpmc_a_SOURCES))
 
 HOSTDRIVER=$(top_srcdir)/../../..
-

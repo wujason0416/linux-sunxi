@@ -26,7 +26,7 @@ def pread(f, offset, len):
     buf = f.read(len)
     f.seek(pos)
     return buf
-    
+
 
 def pread_unpack(f, offset, data):
     len = struct.calcsize(data)
@@ -35,7 +35,7 @@ def pread_unpack(f, offset, data):
 def read_unpack(f, data):
     len = struct.calcsize(data)
     return struct.unpack(data, f.read(len))
-    
+
 
 def Elf32_Ehdr(f, offset):
     z = pread_unpack(f, offset, '<16sHHIIIIIHHHHHH')
@@ -73,7 +73,7 @@ def Elf32_Phdr(f, offset):
     r.p_align = z[7]
     return r
 
-SHT_NULL     = 0    
+SHT_NULL     = 0
 SHT_PROGBITS = 1
 SHT_SYMTAB   = 2
 SHT_STRTAB   = 3
@@ -184,7 +184,7 @@ except:
     script_name = 'axfbin.py'
     script_revision = '0'
 script_name = script_name.replace(',v','') ## fix for CVS
-    
+
 
 new_format = True
 do_byteswap = False
@@ -236,7 +236,7 @@ for o, a in opts:
 if not output:
     print >> sys.stderr, "please specify output filename (-o)"
     sys.exit(1)
-    
+
 base, ext = os.path.splitext(output)
 
 c_source = False
@@ -366,7 +366,7 @@ if product_version:
             var = m.group('var').split(',')
             if 'P' in var:
                 is_xtest = True
-        
+
 ## this is for the boilerplate
 tmp = ''
 if product_version:
@@ -388,7 +388,7 @@ if c_source:
         do_exit = True
     if do_exit:
         sys.exit(1)
-    
+
 
 def fix_version(s, code):
     if not s:
@@ -428,7 +428,7 @@ def make_data_header(f, addr, offset, data_len):
         addr += len
         data_len -= len
     return s
-        
+
 
 def is_dlm_segment(ehdr, phdr):
     return ehdr.e_machine == EM_ARM and phdr.p_paddr >= 0x1000000
@@ -445,14 +445,14 @@ DLM_ADDR_MASK   =  0x00ffffff
 
 def write_phdr_to_file(f, phdr, filename):
     global base
-    global mib_table_data 
+    global mib_table_data
     filename = base + '_' + filename
     print 'writing %u byte segment to "%s"' % (phdr.p_filesz, filename)
     data = pread(f, phdr.p_offset, phdr.p_filesz)
     open(filename, 'wb').write(data)
     mib_table_data = hexdump(data)
-    
-    
+
+
 for i in range(ehdr.e_phnum):
     phdr = Elf32_Phdr(f, ehdr.e_phoff + i * ehdr.e_phentsize)
     if is_dlm_segment(ehdr, phdr):
@@ -531,7 +531,7 @@ if dlm_groups:
             bin += make_data_header(f, phdr.p_paddr,
                                     phdr.p_offset, phdr.p_filesz)
 
-    
+
 bin += struct.pack('<HII', 4, use_descr.start_exec_addr, ehdr.e_entry)
 bin += struct.pack('<HII', 4, use_descr.trig_swi_addr, use_descr.trig_swi_data)
 
@@ -574,4 +574,3 @@ else:
     f = open(output, 'w')
     print >>f, template % globals()
     f.close()
-

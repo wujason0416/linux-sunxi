@@ -751,7 +751,7 @@ config  TOUCHSCREEN_ZT8031
        tristate  "ZT8031 touchscreen driver"
        help
           ZT8031 touchscreen driver
-          
+
 config  TOUCHSCREEN_COASIA
        tristate  "COASIA touchscreen driver"
        help

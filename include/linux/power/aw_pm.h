@@ -74,4 +74,3 @@ struct aw_pm_info{
 
 
 #endif /* __AW_PM_H__ */
-

@@ -14,7 +14,7 @@ struct nrx_iflist {
 TAILQ_HEAD(nrx_iflist_head, nrx_iflist);
 
 static void
-nrx_free_iflist(nrx_context context, struct nrx_iflist_head *head) 
+nrx_free_iflist(nrx_context context, struct nrx_iflist_head *head)
 {
    struct nrx_iflist *ifl;
    while((ifl = TAILQ_FIRST(head)) != NULL) {
@@ -30,9 +30,9 @@ struct find_ifname_data {
 };
 
 static int
-find_ifname_callback(nrx_context ctx, 
-                     int operation, 
-                     void *event_data, 
+find_ifname_callback(nrx_context ctx,
+                     int operation,
+                     void *event_data,
                      size_t event_data_size,
                      void *user_data)
 {
@@ -42,15 +42,15 @@ find_ifname_callback(nrx_context ctx,
    struct nlmsghdr *nh = event_data;
    struct nrx_iflist *ifl;
    struct find_ifname_data *fid = user_data;
-   
+
    if(operation == NRX_CB_CANCEL)
       return 0;
 
 #if 0
-   printf("%s: type = %d, pid = %d, seq = %d\n", 
+   printf("%s: type = %d, pid = %d, seq = %d\n",
           __func__,
-          nh->nlmsg_type, 
-          nh->nlmsg_pid, 
+          nh->nlmsg_type,
+          nh->nlmsg_pid,
           nh->nlmsg_seq);
 #endif
 
@@ -76,14 +76,14 @@ find_ifname_callback(nrx_context ctx,
                strncpy(ifl->ifname, ifname, sizeof(ifl->ifname));
                ifl->ifindex = ifi->ifi_index;
                TAILQ_INSERT_TAIL(&fid->ifs, ifl, next);
-            } 
+            }
             rta = RTA_NEXT(rta, rta_len);
          }
    }
    return 0;
 }
 
-static int 
+static int
 sendreq(nrx_context ctx, int request, uint32_t seq)
 {
    int sock;
@@ -93,7 +93,7 @@ sendreq(nrx_context ctx, int request, uint32_t seq)
 
    if((sock = nrx_event_connection_number(ctx)) < 0)
       return errno;
-   
+
    memset(&reqbuf, 0, sizeof(reqbuf));
    nh = (struct nlmsghdr *)reqbuf;
    rt = (struct rtgenmsg *)NLMSG_DATA(nh);
@@ -120,7 +120,7 @@ nrx_find_ifname(nrx_context ctx, char *ifname, size_t len)
 
    memset(&fid, 0, sizeof(fid));
    TAILQ_INIT(&fid.ifs);
-   handle = nrx_register_netlink_handler(ctx, 0, getpid(), seq, 
+   handle = nrx_register_netlink_handler(ctx, 0, getpid(), seq,
                                          find_ifname_callback, &fid);
    sendreq(ctx, RTM_GETLINK, seq);
    while(fid.done == 0) {
@@ -150,8 +150,7 @@ nrx_find_ifname(nrx_context ctx, char *ifname, size_t len)
       strlcpy(ifname, match->ifname, len);
    } else
       *ifname = '\0';
-   
+
    nrx_free_iflist(ctx, &fid.ifs);
    return 0;
 }
-

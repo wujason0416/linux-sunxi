@@ -66,7 +66,7 @@ void log_transid(uint32_t id)
    }
    transid_hist.trans_ids[transid_hist.idx] = id;
    DE_ASSERT(transid_hist.trans_ids[oidx] != transid_hist.trans_ids[transid_hist.idx]);
-                
+
    transid_hist.idx++;
    transid_hist.idx = transid_hist.idx % 32;
    transid_hist.trans_ids[transid_hist.idx] = 0xFFFFFFFF;

@@ -6,9 +6,9 @@
 #include "wifi_engine_internal.h"
 #include "we_cm.h"
 
-/* 
+/*
  * error codes returned from filter functions.
- * all are non 0 as to make it possible to eval errors as 
+ * all are non 0 as to make it possible to eval errors as
  *
  * s = we_filter_out_...(net);
  * if(s)
@@ -46,11 +46,11 @@ static int is_joinable(WiFiEngine_net_t* net)
 static int is_type(WiFiEngine_net_t* net)
 {
    if (net->bss_p->bss_description_p->capability_info & M80211_CAPABILITY_IBSS)
-   {    
+   {
       if (Infrastructure_BSS == registry.network.basic.connectionPolicy.defaultBssType)
       {
          return FALSE;
-      }      
+      }
    }
    else
    {
@@ -108,7 +108,7 @@ static int is_auth(WiFiEngine_net_t* net)
          return FALSE;
       }
    }
-   else 
+   else
    {
       int r;
       r = wei_is_encryption_mode_denied(wei_cipher_suite2encryption(best_pairwise_suite));
@@ -118,7 +118,7 @@ static int is_auth(WiFiEngine_net_t* net)
          return FALSE;
       }
    }
-   
+
    /* Validate the authentication mode */
    if (wifiEngineState.config.authenticationMode == Authentication_Shared
        && best_pairwise_suite != M80211_CIPHER_SUITE_WEP104)
@@ -134,11 +134,11 @@ static int is_channel(WiFiEngine_net_t* net)
 {
    int i;
 
-   /* Checking that the net we want to join is on a channel in the channel-list */ 
+   /* Checking that the net we want to join is on a channel in the channel-list */
    for(i=0; i < registry.network.basic.regionalChannels.no_channels; i++)
    {
-      if(net->bss_p->bss_description_p->ie.ds_parameter_set.channel == 
-         registry.network.basic.regionalChannels.channelList[i]) 
+      if(net->bss_p->bss_description_p->ie.ds_parameter_set.channel ==
+         registry.network.basic.regionalChannels.channelList[i])
          break;
    }
    if(i == registry.network.basic.regionalChannels.no_channels)
@@ -156,7 +156,7 @@ static int is_multidomain(WiFiEngine_net_t* net)
    /* Update our active channels list from the net */
    if (registry.network.basic.multiDomainCapabilityEnabled)
    {
-      if (registry.network.basic.multiDomainCapabilityEnforced 
+      if (registry.network.basic.multiDomainCapabilityEnforced
          && (wifiEngineState.active_channels_ref == NULL))
       {
          DE_TRACE_STATIC(TR_NET_FILTER, "Failing join, no country info in beacon and 802.11d is mandatory\n");
@@ -169,9 +169,9 @@ static int is_multidomain(WiFiEngine_net_t* net)
 }
 
 
-/* Compare ssid and bssid to registry 
+/* Compare ssid and bssid to registry
  *
- */ 
+ */
 int we_filter_out_ssid(WiFiEngine_net_t* net)
 {
    if (net == NULL)
@@ -194,7 +194,7 @@ int we_filter_out_net(WiFiEngine_net_t* net)
    DE_TRACE_STACK_USAGE;
 
    if (net == NULL)
-   {     
+   {
       return WIFI_NET_FILTER_NULL;
    }
 
@@ -214,7 +214,7 @@ int we_filter_out_net(WiFiEngine_net_t* net)
 
    if(!is_channel(net))
       return WIFI_NET_FILTER_CHANNEL;
-   
+
    // TODO: rate support
    // TODO: channel 14 and g rates
 
@@ -225,7 +225,7 @@ int we_filter_out_net(WiFiEngine_net_t* net)
 int we_filter_out_wps_configured(WiFiEngine_net_t* net)
 {
    m80211_ie_wps_parameter_set_t *ie;
-   
+
    ie = &net->bss_p->bss_description_p->ie.wps_parameter_set;
 
    if(ie->hdr.hdr.id == M80211_IE_ID_NOT_USED)
@@ -238,7 +238,7 @@ int we_filter_out_wps_configured(WiFiEngine_net_t* net)
 }
 
 
-WiFiEngine_net_t* 
+WiFiEngine_net_t*
 WiFiEngine_elect_net(net_filter_t filter_out, void *filter_priv, int use_standard_filters)
 {
    WiFiEngine_net_t* candidate_net;

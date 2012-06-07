@@ -75,16 +75,16 @@ Module Description :
 
      StateFunction_Ps_Disabled_Unconnected = ps_dis_unconnected:
      Not associated and power save is disabled.
-     
+
      StateFunction_Ps_Enabled_Unconnected = ps_en_unconnected:
      Not associated and unconnected power save is enabled.
-     
+
      StateFunction_Ps_Disabled_Connected = ps_dis_connected:
      Associated and power save is disabled.
-     
+
      StateFunction_Ps_Enabled_Connected = ps_en_connected:
      Associated and 802.11 power save is enabled.
-     
+
      ------------------------------------------------------------------------
      !  State function    ! Event                        ! New state
      ------------------------------------------------------------------------
@@ -97,17 +97,17 @@ Module Description :
      !                    ! INTSIG_ENABLE_PS             !   -
      !                    ! INTSIG_DEVICE_CONNECTED      ! ps_en_connected
      !                    ! INTSIG_DEVICE_DISCONNECTED   !   -
-     ------------------------------------------------------------------------- 
+     -------------------------------------------------------------------------
      !ps_dis_connected    ! INTSIG_DISABLE_PS            !   -
      !                    ! INTSIG_ENABLE_PS             ! ps_en_connected
      !                    ! INTSIG_DEVICE_CONNECTED      !   -
      !                    ! INTSIG_DEVICE_DISCONNECTED   ! ps_dis_unconnected
-     -------------------------------------------------------------------------   
+     -------------------------------------------------------------------------
      !ps_en_connected     ! INTSIG_DISABLE_PS            ! ps_dis_connected
      !                    ! INTSIG_ENABLE_PS             !   -
      !                    ! INTSIG_DEVICE_CONNECTED      !   -
      !                    ! INTSIG_DEVICE_DISCONNECTED   ! ps_en_unconnected
-     -------------------------------------------------------------------------      
+     -------------------------------------------------------------------------
 *****************************************************************************/
 
 
@@ -183,11 +183,11 @@ extern void* we_pm_request(ucos_msg_id_t sig);
 void HMG_init_ps(void)
 {
    /* Set the default state. */
-   stateVars.newState_fn = StateFunction_Init; 
+   stateVars.newState_fn = StateFunction_Init;
    stateVars.currentState_fn = StateFunction_Idle;
    stateVars.subState_fn = StateFunction_Idle;
-   stateVars.newSubState_fn = StateFunction_Idle; 
-   connected = FALSE; 
+   stateVars.newSubState_fn = StateFunction_Idle;
+   connected = FALSE;
    psStarted = FALSE;
 
    ucos_register_object(OBJID_MYSELF,
@@ -214,7 +214,7 @@ void HMG_entry_ps(ucos_msg_id_t msg, ucos_msg_param_t param)
    {
       if (stateVars.newState_fn != stateVars.currentState_fn)
       {
-         /* Make a state transition. 
+         /* Make a state transition.
             Note that the init and exit signals will be propagated to any substate.
          */
          EXIT_STATE(stateVars.currentState_fn);
@@ -230,15 +230,15 @@ void HMG_entry_ps(ucos_msg_id_t msg, ucos_msg_param_t param)
       {
          if (stateVars.newSubState_fn != stateVars.subState_fn)
          {
-            /* Make a state transition. 
+            /* Make a state transition.
                Note that the init and exit signals will be propagated to any substate.
-            */          
+            */
             EXIT_STATE(stateVars.subState_fn);
             INIT_STATE(stateVars.newSubState_fn);
             stateVars.subState_fn = stateVars.newSubState_fn;
          }
          else
-         {            
+         {
             stateVars.newSubState_fn = EXECUTE_STATE(stateVars.subState_fn);
          }
       } while (stateVars.newSubState_fn != stateVars.subState_fn);
@@ -250,16 +250,16 @@ void HMG_entry_ps(ucos_msg_id_t msg, ucos_msg_param_t param)
          WrapperFreeStructure(sm_param->p);
       }
       DriverEnvironment_Nonpaged_Free(sm_param);
-   }  
+   }
 }
 
 void HMG_Unplug_ps(void)
 {
-   stateVars.newState_fn = StateFunction_Init;    
-   stateVars.currentState_fn = StateFunction_Init; 
+   stateVars.newState_fn = StateFunction_Init;
+   stateVars.currentState_fn = StateFunction_Init;
    stateVars.subState_fn = StateFunction_Idle;
    stateVars.newSubState_fn = StateFunction_Idle;
-   connected = FALSE; 
+   connected = FALSE;
    psStarted = FALSE;
 
    we_ind_deregister_null(&ps_ctx.connected_h);
@@ -281,28 +281,28 @@ int HMG_GetState_ps()
    {
       return Idle;
    }
- 
+
    else if (stateVars.subState_fn == StateFunction_Init)
    {
       return PsInit;
-   }   
+   }
    else if (stateVars.subState_fn == StateFunction_Ps_Disabled_Unconnected)
    {
       return PsDisabledUnconnected;
-   }   
+   }
    else if (stateVars.subState_fn == StateFunction_Ps_Disabled_Connected)
    {
       return PsDisabledConnected;
-   }    
+   }
    else if (stateVars.subState_fn == StateFunction_Ps_Enabled_Unconnected)
    {
       return PsEnabledUnconnected;
-   }     
+   }
    else if (stateVars.subState_fn == StateFunction_Ps_Enabled_Connected)
    {
       return PsEnabledConnected;
-   } 
-   
+   }
+
    return Invalid;
 }
 
@@ -315,17 +315,17 @@ int HMG_GetSubState_ps()
 
 static void connected_cb(wi_msg_param_t param, void* priv)
 {
-   DE_TRACE_STATIC(TR_SM, "hmg_ps Device connected\n");     
-   connected = TRUE;  
-   
+   DE_TRACE_STATIC(TR_SM, "hmg_ps Device connected\n");
+   connected = TRUE;
+
    we_pm_request(INTSIG_DEVICE_CONNECTED);
 }
 
 static void disconnecting_cb(wi_msg_param_t param, void* priv)
 {
-   DE_TRACE_STATIC(TR_SM, "hmg_ps Device disconnected\n");  
+   DE_TRACE_STATIC(TR_SM, "hmg_ps Device disconnected\n");
    connected = FALSE;
-   we_pm_request(INTSIG_DEVICE_DISCONNECTED);   
+   we_pm_request(INTSIG_DEVICE_DISCONNECTED);
 }
 
 
@@ -352,11 +352,11 @@ DEFINE_STATE_FUNCTION(StateFunction_Idle)
 DEFINE_STATE_FUNCTION(StateFunction_Init)
 {
    StateFn_ref nextState_fn = (StateFn_ref)StateFunction_Init;
-      
+
    if( (msg != INTSIG_INIT) && (msg != INTSIG_EXIT)) {
       DE_TRACE_STATIC2(TR_SM, "handling msg %s\n", HMG_Signal_toToName(msg));
    }
-   
+
    switch(msg) {
       case INTSIG_CASE(INTSIG_INIT):
          break;
@@ -365,16 +365,16 @@ DEFINE_STATE_FUNCTION(StateFunction_Init)
          break;
 
       case INTSIG_CASE(INTSIG_EXECUTE):
-      {  
+      {
          if(!WiFiEngine_GetRegistryPowerFlag())
          {
             /* Power save is permanently disabled */
             WiFiEngine_DisablePowerSave(wifiEngineState.ps_state_machine_uid);
-            nextState_fn = (StateFn_ref)StateFunction_Ps_Disabled_Unconnected;             
+            nextState_fn = (StateFn_ref)StateFunction_Ps_Disabled_Unconnected;
          }
          else
          {
-            DriverEnvironment_enable_target_sleep();         
+            DriverEnvironment_enable_target_sleep();
             nextState_fn = (StateFn_ref)StateFunction_Ps_Enabled_Unconnected;
          }
       }
@@ -382,20 +382,20 @@ DEFINE_STATE_FUNCTION(StateFunction_Init)
 
       case INTSIG_CASE(INTSIG_POWER_UP):
       {
-         DE_TRACE_STATIC(TR_SM, "Enter State Init\n");  
+         DE_TRACE_STATIC(TR_SM, "Enter State Init\n");
          wifiEngineState.psMainState = PS_MAIN_INIT;
          ps_ctx.connected_h = we_ind_register(
                   WE_IND_80211_CONNECTED, "WE_IND_80211_CONNECTED",
-                  connected_cb, NULL, 0, NULL);   
+                  connected_cb, NULL, 0, NULL);
          DE_ASSERT(ps_ctx.connected_h != NULL);
 
          ps_ctx.disconnecting_h = we_ind_register(
                   WE_IND_80211_DISCONNECTED, "WE_IND_80211_DISCONNECTED",
-                  disconnecting_cb, NULL, 0, NULL);  
+                  disconnecting_cb, NULL, 0, NULL);
          DE_ASSERT(ps_ctx.disconnecting_h != NULL);
- 
+
          wei_sm_queue_sig(INTSIG_EXECUTE, OBJID_MYSELF, DUMMY, TRUE);
-         
+
       }
       break;
 
@@ -403,7 +403,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Init)
       case INTSIG_CASE(INTSIG_DEVICE_POWER_SLEEP):
       case INTSIG_CASE(INTSIG_DEVICE_DISCONNECTED):
          break;
-            
+
       default:
          DE_TRACE_INT(TR_WARN, "Unhandled message type %x\n",msg);
          DE_TRACE_STATIC2(TR_WARN, "msg %s\n", HMG_Signal_toToName(msg));
@@ -430,16 +430,16 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Disabled_Unconnected)
 
    switch(msg) {
       case INTSIG_CASE(INTSIG_INIT):
-      {  
-         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Enter State Ps_Disabled_Unconnected\n");          
+      {
+         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Enter State Ps_Disabled_Unconnected\n");
 
          if(psStarted)
-         {            
-            /* Request resource that prevents power save mechanism 
-               for hic interface to start */                 
+         {
+            /* Request resource that prevents power save mechanism
+               for hic interface to start */
             wei_request_resource_hic(RESOURCE_DISABLE_PS);
             psStarted = FALSE;
-            we_ind_send(WE_IND_PS_DISABLED, NULL );            
+            we_ind_send(WE_IND_PS_DISABLED, NULL );
          }
          else
          {
@@ -455,29 +455,29 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Disabled_Unconnected)
          break;
       }
       case INTSIG_CASE(INTSIG_EXIT):
-         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Exit State Ps_Disabled_Unconnected\n"); 
+         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Exit State Ps_Disabled_Unconnected\n");
          break;
 
       case INTSIG_CASE(INTSIG_DEVICE_CONNECTED):
-           nextState_fn = (StateFn_ref)StateFunction_Ps_Disabled_Connected;  
+           nextState_fn = (StateFn_ref)StateFunction_Ps_Disabled_Connected;
          break;
 
       case INTSIG_CASE(INTSIG_ENABLE_PS):
-         {     
+         {
             nextState_fn = (StateFn_ref)StateFunction_Ps_Enabled_Unconnected;
-         }         
+         }
          break;
 
       case INTSIG_CASE(INTSIG_DISABLE_PS):
          /* Should not happen */
          we_ind_send(WE_IND_PS_DISABLED, NULL );
-         DE_SM_ASSERT(FALSE);         
+         DE_SM_ASSERT(FALSE);
          break;
 
 
       case INTSIG_CASE(INTSIG_DEVICE_DISCONNECTED):
-         /* Connection  failed */         
-          we_ind_send(WE_IND_PS_DISCONNECT_COMPLETE, NULL);           
+         /* Connection  failed */
+          we_ind_send(WE_IND_PS_DISCONNECT_COMPLETE, NULL);
          break;
 
       case INTSIG_CASE(INTSIG_DISABLE_WMM_PS):
@@ -493,7 +493,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Disabled_Unconnected)
          we_ind_send(WE_IND_PS_WMM_REQ_COMPLETE, NULL);
          break;
       }
-      
+
       default:
          DE_TRACE_INT(TR_SM, "Unhandled message type %x\n",msg);
          DE_SM_ASSERT(FALSE);
@@ -509,7 +509,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Disabled_Unconnected)
 ** start of period.
 *****************************************************************************/
 DEFINE_STATE_FUNCTION(StateFunction_Ps_Disabled_Connected)
-{   
+{
    StateFn_ref nextState_fn = (StateFn_ref)StateFunction_Ps_Disabled_Connected;
    uint32_t result;
 
@@ -519,43 +519,43 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Disabled_Connected)
 
    switch(msg) {
       case INTSIG_CASE(INTSIG_INIT):
-      {  
-         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Enter State Ps_Disabled_Connected\n");          
-         wifiEngineState.psMainState = PS_MAIN_DISABLED_CONNECTED; 
+      {
+         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Enter State Ps_Disabled_Connected\n");
+         wifiEngineState.psMainState = PS_MAIN_DISABLED_CONNECTED;
          if(psStarted)
-         {           
-            /* Request resource that prevents power save mechanism 
-               for hic interface to start */            
-            wei_request_resource_hic(RESOURCE_DISABLE_PS);  
+         {
+            /* Request resource that prevents power save mechanism
+               for hic interface to start */
+            wei_request_resource_hic(RESOURCE_DISABLE_PS);
             psStarted = FALSE;
-            we_ind_send(WE_IND_PS_DISABLED, NULL );              
+            we_ind_send(WE_IND_PS_DISABLED, NULL );
          }
          else
          {
             /* A transit from StateFunction_Ps_Disabled_Unconnected
                has been performed. Inform power manager that the
                state change is complete. */
-            we_ind_send(WE_IND_PS_CONNECT_COMPLETE, NULL); 
+            we_ind_send(WE_IND_PS_CONNECT_COMPLETE, NULL);
          }
-    
+
          break;
       }
       case INTSIG_CASE(INTSIG_EXIT):
-         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Exit State Ps_Disabled_Connected\n"); 
+         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Exit State Ps_Disabled_Connected\n");
          break;
 
       case INTSIG_CASE(INTSIG_DEVICE_DISCONNECTED):
          nextState_fn = (StateFn_ref)StateFunction_Ps_Disabled_Unconnected;
          WiFiEngine_StopDelayPowerSaveTimer();
          break;
-           
+
       case INTSIG_CASE(INTSIG_ENABLE_PS):
          {
             DE_TRACE_STATIC(TR_SM, "Sleep device\n");
 
             /* Power save is enabled */
             if(connected )
-            {                  
+            {
                if(WiFiEngine_isAssocSupportingWmmPs() == WIFI_ENGINE_SUCCESS)
                {
                   if (!Mlme_Send(Mlme_CreateHICWMMPeriodStartReq, 0, wei_send_cmd))
@@ -572,14 +572,14 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Disabled_Connected)
                      DE_BUG_ON(1, "");
                   }
                }
-             }   
+             }
          }
          break;
 
       case MGMT_RX_CASE(MLME_POWER_MGMT_CFM):
          {
             if (Mlme_HandlePowerManagementConfirm((m80211_mlme_power_mgmt_cfm_t *)param->p))
-            {  
+            {
                nextState_fn = (StateFn_ref)StateFunction_Ps_Enabled_Connected;
             }
             else
@@ -593,7 +593,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Disabled_Connected)
 
       case MGMT_RX_CASE(NRP_MLME_WMM_PS_PERIOD_START_CFM):
          if (Mlme_HandleHICWMMPeriodStartCfm((m80211_nrp_mlme_wmm_ps_period_start_cfm_t *)param->p,&result ))
-         {  
+         {
             if (!Mlme_Send(Mlme_CreatePowerManagementRequest, M80211_PM_ENABLED, wei_send_cmd))
             {
                DE_TRACE_STATIC(TR_SM, "Failed to create power management request in state CloseWait\n");
@@ -620,18 +620,18 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Disabled_Connected)
          we_ind_send(WE_IND_PS_WMM_REQ_COMPLETE, NULL);
          break;
       }
-      
+
 
       case INTSIG_CASE(INTSIG_DEVICE_CONNECTED):
          /* Should not happen */
-         we_ind_send(WE_IND_PS_CONNECT_COMPLETE, NULL); 
+         we_ind_send(WE_IND_PS_CONNECT_COMPLETE, NULL);
          DE_SM_ASSERT(FALSE);
-         break;      
+         break;
 
       case INTSIG_CASE(INTSIG_DISABLE_PS):
          /* Should not happen */
          we_ind_send(WE_IND_PS_DISABLED, NULL );
-         DE_SM_ASSERT(FALSE);         
+         DE_SM_ASSERT(FALSE);
          break;
 
       default:
@@ -662,14 +662,14 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Unconnected)
    switch(msg) {
       case INTSIG_CASE(INTSIG_INIT):
       {
-         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Enter State Ps_Enabled_Unconnected\n");          
+         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Enter State Ps_Enabled_Unconnected\n");
          wifiEngineState.psMainState = PS_MAIN_ENABLED_UNCONNECTED;
 
          if(!psStarted)
-         {             
-            /* Release resource that prevents power save mechanism 
-               for hic interface to start */    
-            wei_release_resource_hic(RESOURCE_DISABLE_PS); 
+         {
+            /* Release resource that prevents power save mechanism
+               for hic interface to start */
+            wei_release_resource_hic(RESOURCE_DISABLE_PS);
             psStarted = TRUE;
             we_ind_send(WE_IND_PS_ENABLED, NULL );
          }
@@ -678,14 +678,14 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Unconnected)
             /* A transit from StateFunction_Ps_Enabled_Connected
                has been performed. Inform power manager that the
                state change is complete. */
-            we_ind_send(WE_IND_PS_DISCONNECT_COMPLETE, NULL); 
+            we_ind_send(WE_IND_PS_DISCONNECT_COMPLETE, NULL);
          }
 
-    
+
          break;
       }
       case INTSIG_CASE(INTSIG_EXIT):
-         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Exit State Ps_Enabled_Unconnected\n"); 
+         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Exit State Ps_Enabled_Unconnected\n");
          break;
 
       case INTSIG_CASE(INTSIG_DISABLE_PS):
@@ -696,14 +696,14 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Unconnected)
          /* Should not happen */
          we_ind_send(WE_IND_PS_ENABLED, NULL );
          DE_SM_ASSERT(FALSE);
-         break;         
+         break;
 
       case INTSIG_CASE(INTSIG_DEVICE_CONNECTED):
          {
             DE_TRACE_STATIC(TR_SM, "Device connected\n");
 
             if(connected )
-            {                  
+            {
                if(WiFiEngine_isAssocSupportingWmmPs() == WIFI_ENGINE_SUCCESS)
                {
                   if (!Mlme_Send(Mlme_CreateHICWMMPeriodStartReq, 0, wei_send_cmd))
@@ -722,12 +722,12 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Unconnected)
                }
             }
          }
-         break;  
+         break;
 
       case MGMT_RX_CASE(MLME_POWER_MGMT_CFM):
          {
             if (Mlme_HandlePowerManagementConfirm((m80211_mlme_power_mgmt_cfm_t *)param->p))
-            {  
+            {
                nextState_fn = (StateFn_ref)StateFunction_Ps_Enabled_Connected;
             }
             else
@@ -740,7 +740,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Unconnected)
 
       case MGMT_RX_CASE(NRP_MLME_WMM_PS_PERIOD_START_CFM):
          if (Mlme_HandleHICWMMPeriodStartCfm((m80211_nrp_mlme_wmm_ps_period_start_cfm_t *)param->p,&result ))
-         {  
+         {
             if (!Mlme_Send(Mlme_CreatePowerManagementRequest, M80211_PM_ENABLED, wei_send_cmd))
             {
                DE_TRACE_STATIC(TR_SM, "Failed to create power management request in state CloseWait\n");
@@ -755,8 +755,8 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Unconnected)
          break;
 
       case INTSIG_CASE(INTSIG_DEVICE_DISCONNECTED):
-         /* Connection  failed */         
-          we_ind_send(WE_IND_PS_DISCONNECT_COMPLETE, NULL);           
+         /* Connection  failed */
+          we_ind_send(WE_IND_PS_DISCONNECT_COMPLETE, NULL);
          break;
 
       case INTSIG_CASE(INTSIG_DISABLE_WMM_PS):
@@ -772,7 +772,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Unconnected)
          we_ind_send(WE_IND_PS_WMM_REQ_COMPLETE, NULL);
          break;
       }
-      
+
 
       default:
          DE_TRACE_INT(TR_SM, "Unhandled message type %x\n",msg);
@@ -786,7 +786,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Unconnected)
 /*****************************************************************************
 ** Substate StateFunction_PS_Enabled_Connected
 **
-** In this state the host driver will: 
+** In this state the host driver will:
 *****************************************************************************/
 DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Connected)
 {
@@ -799,33 +799,33 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Connected)
    switch(msg) {
       case INTSIG_CASE(INTSIG_INIT):
       {
-         DE_TRACE_STATIC(TR_SM_HIGH_RES, "StateFunction_Ps_Enabled_Connected\n");                    
+         DE_TRACE_STATIC(TR_SM_HIGH_RES, "StateFunction_Ps_Enabled_Connected\n");
          wifiEngineState.psMainState = PS_MAIN_ENABLED_CONNECTED;
          if(!psStarted)
-         {           
-            /* Release resource that prevents power save mechanism 
-               for hic interface to start */    
-            wei_release_resource_hic(RESOURCE_DISABLE_PS); 
+         {
+            /* Release resource that prevents power save mechanism
+               for hic interface to start */
+            wei_release_resource_hic(RESOURCE_DISABLE_PS);
             psStarted = TRUE;
-            we_ind_send(WE_IND_PS_ENABLED, NULL );            
+            we_ind_send(WE_IND_PS_ENABLED, NULL );
          }
          else
          {
             /* A transit from StateFunction_Ps_Enabled_Unconnected
                has been performed. Inform power manager that the
                state change is complete. */
-            we_ind_send(WE_IND_PS_CONNECT_COMPLETE, NULL);  
+            we_ind_send(WE_IND_PS_CONNECT_COMPLETE, NULL);
          }
          break;
       }
       case INTSIG_CASE(INTSIG_EXIT):
-         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Exit State Ps_Enabled_Connected\n");          
+         DE_TRACE_STATIC(TR_SM_HIGH_RES, "Exit State Ps_Enabled_Connected\n");
          break;
 
       case INTSIG_CASE(INTSIG_DISABLE_PS):
          DE_TRACE_STATIC(TR_SM, "Power save stopped \n");
          if (!Mlme_Send(Mlme_CreatePowerManagementRequest, M80211_PM_DISABLED, wei_send_cmd))
-         {              
+         {
             DE_TRACE_STATIC(TR_SM, "Failed to create power management request\n");
             DE_BUG_ON(1, "");
          }
@@ -836,10 +836,10 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Connected)
          we_ind_send(WE_IND_PS_ENABLED, NULL );
          DE_SM_ASSERT(FALSE);
          break;
-               
+
       case INTSIG_CASE(INTSIG_DEVICE_DISCONNECTED):
          DE_TRACE_STATIC(TR_SEVERE, "Device disconnected \n");
-         WiFiEngine_StopDelayPowerSaveTimer();            
+         WiFiEngine_StopDelayPowerSaveTimer();
          nextState_fn = (StateFn_ref)StateFunction_Ps_Enabled_Unconnected;
          break;
 
@@ -853,12 +853,12 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Connected)
             {
                DE_TRACE_STATIC(TR_SM, "Failed to create HIC_CTRL_WMM_PS_PERIOD_START_REQ in StateFunction_InitPowerSave\n");
                DE_BUG_ON(1, "");
-               
-            }            
+
+            }
          }
          else
          {
-            we_ind_send(WE_IND_PS_WMM_REQ_COMPLETE, NULL);  
+            we_ind_send(WE_IND_PS_WMM_REQ_COMPLETE, NULL);
             DE_TRACE_STATIC(TR_SM, "Not connected wmm will start next connect \n");
          }
          break;
@@ -866,7 +866,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Connected)
 
 
       case INTSIG_CASE(INTSIG_DISABLE_WMM_PS):
-      {  
+      {
          DE_TRACE_STATIC(TR_SM, "Disable wmm power save \n");
          if(connected)
          {
@@ -874,11 +874,11 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Connected)
             {
                DE_TRACE_STATIC(TR_SM, "Failed to create HIC_CTRL_WMM_PS_PERIOD_START_REQ in StateFunction_InitPowerSave\n");
                DE_BUG_ON(1, "");
-            }            
+            }
          }
          else
          {
-            we_ind_send(WE_IND_PS_WMM_REQ_COMPLETE, NULL); 
+            we_ind_send(WE_IND_PS_WMM_REQ_COMPLETE, NULL);
             DE_TRACE_STATIC(TR_SM, "Not connected update registry only \n");
          }
          break;
@@ -886,16 +886,16 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Connected)
       case INTSIG_CASE(INTSIG_LEGACY_PS_CONFIGURATION_CHANGED):
          DE_TRACE_STATIC(TR_SM, "Legacy power save re-configured \n");
          /* Not used anymore - use assert to find old users */
-         DE_SM_ASSERT(FALSE); 
-         break;            
+         DE_SM_ASSERT(FALSE);
+         break;
 
       case MGMT_RX_CASE(MLME_POWER_MGMT_CFM):
          if (Mlme_HandlePowerManagementConfirm((m80211_mlme_power_mgmt_cfm_t *)param->p))
-         {  
+         {
             DE_TRACE_STATIC(TR_SM, "PS disabled - succees\n");
             nextState_fn = (StateFn_ref)StateFunction_Ps_Disabled_Connected;
          }
-         else 
+         else
          {
             /* Failed to disable power save */
             DE_TRACE_STATIC(TR_SM, "PS disabled - failed\n");
@@ -904,15 +904,15 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Connected)
          break;
 
       case MGMT_RX_CASE(NRP_MLME_WMM_PS_PERIOD_START_CFM):
-         {           
+         {
             uint32_t result;
             if (!Mlme_HandleHICWMMPeriodStartCfm((m80211_nrp_mlme_wmm_ps_period_start_cfm_t *)param->p,&result ))
-            {  
+            {
                DE_TRACE_STATIC(TR_SM, "Failed to start wmm period\n");
             }
-            we_ind_send(WE_IND_PS_WMM_REQ_COMPLETE, NULL);  
+            we_ind_send(WE_IND_PS_WMM_REQ_COMPLETE, NULL);
          }
-         break;   
+         break;
 
       default:
          DE_TRACE_INT(TR_SM, "Unhandled message type %x\n",msg);
@@ -927,7 +927,7 @@ DEFINE_STATE_FUNCTION(StateFunction_Ps_Enabled_Connected)
 #ifdef WIFI_DEBUG_ON
 static char* HMG_Signal_toToName(int msg)
 {
-   
+
    #define INTSIG_DEBUG_CASE(name) case INTSIG_CASE(name): return #name
    #define CTRL_DEBUG_CASE(name)   case CTRL_RX_CASE(name): return #name
    #define MGMT_RX_DEBUG_CASE(name)   case MGMT_RX_CASE(name): return #name
@@ -959,7 +959,7 @@ static char* HMG_Signal_toToName(int msg)
       MGMT_RX_DEBUG_CASE(NRP_MLME_WMM_PS_PERIOD_START_CFM);
 
       MGMT_TX_DEBUG_CASE(MLME_POWER_MGMT_REQ);
-            
+
       MGMT_RX_DEBUG_CASE(MLME_POWER_MGMT_CFM);
 
       default:

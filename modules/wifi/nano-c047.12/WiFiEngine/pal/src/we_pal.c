@@ -52,7 +52,7 @@ int WiFiEngine_PAL_RegisterHCIInterface (net_rx_cb_t HCI_response_fn)
 
    HCI_response_cb = HCI_response_fn;
 
-	
+
    return TRUE;
 }
 
@@ -68,7 +68,7 @@ int WiFiEngine_PAL_HCIRequest(char* data_buf, int size)
                                          SYSDEF_OBJID_HOST_MANAGER_PAL,
                                          (wei_sm_queue_param_s*) data_buf,
                                          FALSE);
-	
+
 	wei_sm_execute();
    return TRUE;
 }
@@ -90,8 +90,8 @@ static int wei_pal_data_receive(mac_api_net_id_t net_id, char* data_buf, int dat
 	char *HCI_Packet;
 #ifdef WE_PAL
 		int i;
-#endif		
-	
+#endif
+
 	HCI_Packet =(char*)DriverEnvironment_Malloc(256+14);
 	DE_TRACE_STATIC(TR_AMP, "Data ind\n");
 #ifdef WE_PAL
@@ -101,13 +101,13 @@ static int wei_pal_data_receive(mac_api_net_id_t net_id, char* data_buf, int dat
 		DE_TRACE_INT(TR_AMP, "rec data = %02x\n",data_buf[i]);
    }
 	DE_TRACE_INT(TR_AMP, "HCI legnth = %02x\n",data_buf[17]);
-#endif		
+#endif
 	DE_TRACE_INT(TR_AMP, "net_id: %d\n", net_id);
 	DBG_PRINTBUF("PAL data: ", (unsigned char *)data_buf, data_len);
-	
+
 	//Problem with Length filed, related to !byte alignment?
 	//Expected 6+6+2 (MAC+MAC+Prio)
-	//HCI length used instead, 
+	//HCI length used instead,
 	memcpy(HCI_Packet, (data_buf+14), (5+data_buf[17]+(data_buf[18]*0x100)));
 	HCI_response_cb(net_id, HCI_Packet, (5+data_buf[17]+(data_buf[18]*0x100)));
    DriverEnvironment_Free(HCI_Packet);
@@ -145,4 +145,3 @@ static int wei_pal_default_HCI_response_fn(mac_api_net_id_t net_id, char* data_b
    DE_BUG_ON(1 , "No HCI response function has been registered");
    return TRUE;
 }
-

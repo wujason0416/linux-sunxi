@@ -52,4 +52,3 @@ SOURCES=					\
 	we_multi_net.c				\
 	we_dlm.c				\
 	we_dlm_dynamic.c
-

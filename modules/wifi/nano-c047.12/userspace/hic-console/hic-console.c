@@ -89,7 +89,7 @@ int get_reply(const char *ifname, int count, void *reply, size_t *len)
    s = socket(AF_INET, SOCK_DGRAM, 0);
    if(s < 0)
       err(1, "socket");
-   
+
    strcpy(ifr.ifr_name, ifname);
    ifr.ifr_data = (void*)&nr;
    memset(&nr, 0, sizeof(nr));
@@ -147,7 +147,7 @@ int send_command(const char *ifname, char *command)
    s = socket(AF_INET, SOCK_DGRAM, 0);
    if(s < 0)
       err(1, "socket");
-   
+
    strcpy(ifr.ifr_name, ifname);
    ifr.ifr_data = (void*)&nr;
    memset(&nr, 0, sizeof(nr));
@@ -158,7 +158,7 @@ int send_command(const char *ifname, char *command)
       nr.length += snprintf(cmd + nr.length, sizeof(cmd) - nr.length, "%s\n", command);
    else
       nr.length += snprintf(cmd + nr.length, sizeof(cmd) - nr.length, "%s", command);
-   
+
    *(uint16_t*)cmd = nr.length - 2;
    memcpy(nr.data, cmd, nr.length);
    if(debuglevel)

@@ -7,45 +7,45 @@
 
 __s32 Image_init(__u32 sel)
 {
-    
+
     image_clk_init(sel);
 	image_clk_on(sel);	//when access image registers, must open MODULE CLOCK of image
 	DE_BE_Reg_Init(sel);
-	
+
     BSP_disp_sprite_init(sel);
     BSP_disp_set_output_csc(sel, DISP_OUTPUT_TYPE_LCD);
-    
+
     Image_open(sel);
 
     DE_BE_EnableINT(sel, DE_IMG_REG_LOAD_FINISH);
     DE_BE_reg_auto_load_en(sel, 0);
-	
+
     return DIS_SUCCESS;
 }
-      
+
 __s32 Image_exit(__u32 sel)
-{    
+{
     DE_BE_DisableINT(sel, DE_IMG_REG_LOAD_FINISH);
     BSP_disp_sprite_exit(sel);
     image_clk_exit(sel);
-        
+
     return DIS_SUCCESS;
 }
 
 __s32 Image_open(__u32  sel)
 {
    DE_BE_Enable(sel);
-      
+
    return DIS_SUCCESS;
 }
-      
+
 
 __s32 Image_close(__u32 sel)
 {
    DE_BE_Disable(sel);
-   
+
    gdisp.screen[sel].status &= IMAGE_USED_MASK;
-   
+
    return DIS_SUCCESS;
 }
 
@@ -117,7 +117,7 @@ __s32 BSP_disp_get_enhance_enable(__u32 sel)
 
 
 __s32 BSP_disp_set_screen_size(__u32 sel, __disp_rectsz_t * size)
-{    
+{
     DE_BE_set_display_size(sel, size->width, size->height);
 
     gdisp.screen[sel].screen_width = size->width;
@@ -135,7 +135,7 @@ __s32 BSP_disp_set_output_csc(__u32 sel, __disp_output_type_t type)
     {
         __s32 ret = 0;
         __s32 value = 0;
-        
+
         out_color_range = DISP_COLOR_RANGE_16_255;
 
         ret = OSAL_Script_FetchParser_Data("disp_init", "screen0_out_color_range", &value, 1);
@@ -153,7 +153,7 @@ __s32 BSP_disp_set_output_csc(__u32 sel, __disp_output_type_t type)
     {
         bout_yuv = TRUE;
     }
-   
+
     DE_BE_Output_Cfg_Csc_Coeff(sel, bout_yuv, out_color_range);
 
     gdisp.screen[sel].bout_yuv = bout_yuv;
@@ -162,7 +162,7 @@ __s32 BSP_disp_set_output_csc(__u32 sel, __disp_output_type_t type)
 }
 
 __s32 BSP_disp_de_flicker_enable(__u32 sel, __bool b_en)
-{   
+{
 	if(b_en)
 	{
 		gdisp.screen[sel].de_flicker_status |= DE_FLICKER_REQUIRED;
@@ -180,7 +180,7 @@ __s32 Disp_set_out_interlace(__u32 sel)
 	__u32 i;
 	__bool b_cvbs_out = 0;
 
-	if(gdisp.screen[sel].output_type==DISP_OUTPUT_TYPE_TV && 
+	if(gdisp.screen[sel].output_type==DISP_OUTPUT_TYPE_TV &&
 	    (gdisp.screen[sel].tv_mode==DISP_TV_MOD_PAL || gdisp.screen[sel].tv_mode==DISP_TV_MOD_PAL_M ||
 	    gdisp.screen[sel].tv_mode==DISP_TV_MOD_PAL_NC || gdisp.screen[sel].tv_mode==DISP_TV_MOD_NTSC))
 	{
@@ -222,4 +222,3 @@ __s32 Disp_set_out_interlace(__u32 sel)
     BSP_disp_cfg_finish(sel);
 	return DIS_SUCCESS;
 }
-

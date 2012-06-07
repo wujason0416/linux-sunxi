@@ -68,7 +68,7 @@ int nano_scan_wait;
 static int nano_download_firmware = 1;
 static int nrx_debug_wait = 0;
 
-static int nrx_open(struct net_device *dev) 
+static int nrx_open(struct net_device *dev)
 {
    struct nrx_softc *sc = netdev_priv(dev);
    KDEBUG(TRACE, "ENTRY: %s", dev->name);
@@ -105,7 +105,7 @@ int nrx_enter_shutdown(struct net_device *dev)
    int status;
 
    KDEBUG(TRACE, "ENTRY: %s", dev->name);
-  
+
    /* If already in shutdown, do nothing.
     * If we're going away, there is also no point in trying anything new.
     */
@@ -128,8 +128,8 @@ int nrx_enter_shutdown(struct net_device *dev)
    }
 
    /* Stop default scan job and connection manager scan job */
-   WiFiEngine_SetScanJobState(0, 0, NULL); 
-   WiFiEngine_SetScanJobState(1, 0, NULL);     
+   WiFiEngine_SetScanJobState(0, 0, NULL);
+   WiFiEngine_SetScanJobState(1, 0, NULL);
 
    status = WiFiEngine_SoftShutdown();
    if(status != WIFI_ENGINE_SUCCESS) {
@@ -145,7 +145,7 @@ int nrx_enter_shutdown(struct net_device *dev)
    else
       status = -ETIME;
 #else
-   status = wait_event_interruptible(sc->mib_wait_queue, 
+   status = wait_event_interruptible(sc->mib_wait_queue,
                                      nrx_test_flag(sc, NRX_FLAG_SHUTDOWN));
 #endif
    if (status) {
@@ -272,25 +272,25 @@ int nrx_get_mib(struct net_device *dev, const char *id, void *data, size_t *len)
       KDEBUG(TRACE, "EXIT EIO");
       return -EIO;
    }
-   
+
    tid = cbc->trans_id;
    preempt_enable();
    while(1) {
       int ret;
 
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,5,48)
-      ret = wait_event_interruptible_timeout(sc->mib_wait_queue, 
+      ret = wait_event_interruptible_timeout(sc->mib_wait_queue,
                                      (status = WiFiEngine_GetMIBResponse(tid, data, len)) != WIFI_ENGINE_FAILURE_NOT_ACCEPTED, HZ);
       if(ret == 0)
-	return -EIO;      
+	return -EIO;
 #else
-      ret = wait_event_interruptible(sc->mib_wait_queue, 
+      ret = wait_event_interruptible(sc->mib_wait_queue,
                                      (status = WiFiEngine_GetMIBResponse(tid, data, len)) != WIFI_ENGINE_FAILURE_NOT_ACCEPTED);
 #endif
 
       if(ret == -ERESTARTSYS)
          return ret;
-      
+
       if(status == WIFI_ENGINE_FAILURE_NOT_ACCEPTED)
          status = WiFiEngine_GetMIBResponse(tid, data, len);
       switch(status) {
@@ -382,7 +382,7 @@ int nrx_send_buf(struct sk_buff *skb)
 {
    struct net_device *dev = skb->dev;
    struct nrx_softc *sc = netdev_priv(dev);
- 
+
    KDEBUG(PRINTBUF, "ENTRY: %s", dev->name);
    KDEBUG_DO(PRINTBUF, print_pkt_hdr(skb->data, skb->len));
    KDEBUG_BUF(PRINTBUF, skb->data, skb->len, "TX");
@@ -396,7 +396,7 @@ int nrx_send_buf(struct sk_buff *skb)
 #endif
    if ((*sc->transport->send)(skb, sc->transport_data) == 0) {
       return 0;
-   } 
+   }
 
    KDEBUG(ERROR, "Failed send");
    return 0;
@@ -405,7 +405,7 @@ int nrx_send_buf(struct sk_buff *skb)
 int nrx_wmm_association;
 
 /* priority for even numbers in lower nybble, and for odd number in
- * high nybble 
+ * high nybble
  */
 
 /* Default map provides a linear mapping between DSCP Class Selector
@@ -499,7 +499,7 @@ i8021d_priority(struct sk_buff *skb)
 {
    if(!nrx_wmm_association)
       return 0;
-   
+
    return i8021d_priority_raw(skb);
 }
 
@@ -520,8 +520,8 @@ static void nrx_tx_queue_manage(struct net_device *dev, int extra_packet)
    unsigned int max_frames; /* max fw frames/ac */
    unsigned int active_queues; /* number of fw queues with frames */
    unsigned int q;
-   
-   WiFiEngine_GetDataRequestByAccess(&qlen[1], &qlen[0], 
+
+   WiFiEngine_GetDataRequestByAccess(&qlen[1], &qlen[0],
                                      &qlen[2], &qlen[3]);
 
    active_queues = (qlen[0] > 0) + (qlen[1] > 0)
@@ -548,9 +548,9 @@ static void nrx_tx_queue_manage(struct net_device *dev, int extra_packet)
    }
    KDEBUG(TRACE, "QUEUE active = %u, be=%u/%u, bk=%u/%u, vi=%u/%u, vo=%u/%u",
           active_queues,
-          qlen[0], qs[0], 
-          qlen[1], qs[1], 
-          qlen[2], qs[2], 
+          qlen[0], qs[0],
+          qlen[1], qs[1],
+          qlen[2], qs[2],
           qlen[3], qs[3]);
 #else /* !USE_MULTIQUEUE */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,27)
@@ -604,7 +604,7 @@ static inline int
 fixup_skb(struct sk_buff *skb)
 {
    unsigned int padding_bytes;
-   
+
 /* #define NRX_DATA_ALIGNMENT 4 */
    /* XXX this won't work as various parts of WiFiEngine assume
     * that packets have HIC_PAYLOAD_OFFSET bytes padding, and
@@ -612,14 +612,14 @@ fixup_skb(struct sk_buff *skb)
     * the case */
 #ifdef NRX_DATA_ALIGNMENT
    int fix_length = 0;
-   /* try to fixup unaligned packets 
+   /* try to fixup unaligned packets
       XXX will not work if headroom < x bytes */
    if(((uintptr_t)skb->data % NRX_DATA_ALIGNMENT) != 0) {
       uint8_t hdr[6];
       size_t bytes = (uintptr_t)skb->data % NRX_DATA_ALIGNMENT;
-      
+
       memcpy(hdr, skb->data, sizeof(hdr));
-      
+
       if(HIC_MESSAGE_HDR_SIZE(hdr) >= NRX_DATA_ALIGNMENT - bytes + 1) {
          /* decrease internal padding */
          skb_pull(skb, NRX_DATA_ALIGNMENT - bytes);
@@ -644,7 +644,7 @@ fixup_skb(struct sk_buff *skb)
        * WiFiEngine_DataFrameDropped. This could be worked around with
        * skb_get, except that pskb_expand_head explicitly test for
        * this scenario. The only workaround seems to be to inline
-       * skb_pad here. 
+       * skb_pad here.
        */
       if(skb_tailroom(skb) < padding_bytes) {
          int err;
@@ -679,7 +679,7 @@ fixup_skb(struct sk_buff *skb)
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,38)
 static spinlock_t tx_lock = SPIN_LOCK_UNLOCKED;
 #else
-DEFINE_SPINLOCK(tx_lock); 
+DEFINE_SPINLOCK(tx_lock);
 #endif
 #endif
 
@@ -717,10 +717,10 @@ static int nrx_hard_start_xmit(struct sk_buff *skb, struct net_device *dev)
    spin_lock(&tx_lock);
 #endif
 
-   if (skb->len < ETH_HLEN || 
+   if (skb->len < ETH_HLEN ||
        skb->len > dev->mtu + dev->hard_header_len) {
-      KDEBUG(ERROR, "%s: invalid packet size %d, dropping", 
-	     dev->name, 
+      KDEBUG(ERROR, "%s: invalid packet size %d, dropping",
+	     dev->name,
 	     skb->len);
       goto drop_pkt;
    }
@@ -729,7 +729,7 @@ static int nrx_hard_start_xmit(struct sk_buff *skb, struct net_device *dev)
       /* There's no space left, so we need to reallocate. This typically
        * happens with SOCK_PACKET. */
       KDEBUG(TRACE, "REALLOC");
-      printk("realloc: Need %zu extra bytes of headroom\n", 
+      printk("realloc: Need %zu extra bytes of headroom\n",
              sc->tx_hlen - skb_headroom(skb));
       skb_org = skb;
       skb = skb_realloc_headroom(skb, sc->tx_hlen);
@@ -803,7 +803,7 @@ static int nrx_hard_start_xmit(struct sk_buff *skb, struct net_device *dev)
             spin_unlock(&tx_lock);
 #endif
             return NETDEV_TX_BUSY;
-            
+
          case WIFI_ENGINE_FAILURE_NOT_ACCEPTED:
 	   KDEBUG(TRACE, "Tried to transmit packet that is not accepted");
 	   goto drop_pkt;
@@ -864,7 +864,7 @@ static int nrx_hard_start_xmit(struct sk_buff *skb, struct net_device *dev)
 /* In linux 2.4, eth_type_trans only works properly for ethernet
  * devices without extra framing, so in our case it will pull back too
  * many bytes (hard_header_len instead of ETH_HLEN). So we need to
- * provide our own working copy. 
+ * provide our own working copy.
  * Implementation from linux 2.4.32.
  */
 static unsigned short
@@ -872,11 +872,11 @@ nano_eth_type_trans(struct sk_buff *skb, struct net_device *dev)
 {
    struct ethhdr *eth;
    unsigned char *rawp;
-        
+
    skb->mac.raw = skb->data;
    skb_pull(skb, ETH_HLEN);
    eth = skb->mac.ethernet;
-        
+
    if(*eth->h_dest & 1)
    {
       if(memcmp(eth->h_dest, dev->broadcast, ETH_ALEN) == 0)
@@ -884,7 +884,7 @@ nano_eth_type_trans(struct sk_buff *skb, struct net_device *dev)
       else
          skb->pkt_type = PACKET_MULTICAST;
    }
-        
+
    /*
     *      This ALLMULTI check should be redundant by 1.4
     *      so don't forget to remove it.
@@ -892,18 +892,18 @@ nano_eth_type_trans(struct sk_buff *skb, struct net_device *dev)
     *      Seems, you forgot to remove it. All silly devices
     *      seems to set IFF_PROMISC.
     */
-         
+
    else if(1 /*dev->flags&IFF_PROMISC*/)
    {
       if(memcmp(eth->h_dest, dev->dev_addr, ETH_ALEN))
          skb->pkt_type = PACKET_OTHERHOST;
    }
-        
+
    if (ntohs(eth->h_proto) >= 1536)
       return eth->h_proto;
-                
+
    rawp = skb->data;
-        
+
    /*
     *      This is a magic hack to spot IPX packets. Older Novell breaks
     *      the protocol design and runs IPX over 802.3 without an 802.2 LLC
@@ -912,7 +912,7 @@ nano_eth_type_trans(struct sk_buff *skb, struct net_device *dev)
     */
    if (*(unsigned short *)rawp == 0xFFFF)
       return htons(ETH_P_802_3);
-                
+
    /*
     *      Real 802.2 LLC
     */
@@ -933,7 +933,7 @@ void ns_net_rx(struct sk_buff *skb, struct net_device *dev)
    apkt     = skb->data;
    apkt_len = skb->len;
 
-   KDEBUG_DO(PRINTBUF, print_pkt_hdr(apkt, apkt_len));  
+   KDEBUG_DO(PRINTBUF, print_pkt_hdr(apkt, apkt_len));
    KDEBUG_BUF(PRINTBUF, apkt, apkt_len, "RX");
 
    if(nrx_test_flag(sc, NRX_FLAG_DESTROY)) {
@@ -960,7 +960,7 @@ process_rx_packet(struct net_device *dev, struct sk_buff *skb)
    apkt = skb->data;
    apkt_len = skb->len;
    r = WiFiEngine_ProcessReceivedPacket(apkt, apkt_len,
-                                        &spkt, &spkt_len, 
+                                        &spkt, &spkt_len,
                                         &vlan,
                                         NULL);
    switch (r)
@@ -1006,14 +1006,14 @@ process_rx_packet(struct net_device *dev, struct sk_buff *skb)
 
             process_rx_packet(dev, new_skb);
             skb_pull(skb, qsize);
-         }     
+         }
          dev_kfree_skb(skb);
          break;
       default:
          DE_TRACE_STATIC(TR_DATA,"Malformed HIC header. Rx failed.\n");
          dev_kfree_skb(skb);
          break;
-   }		
+   }
 }
 
 
@@ -1028,7 +1028,7 @@ int nrx_raw_tx(struct net_device * dev, char * data, size_t len)
    if(nrx_test_flag(sc, NRX_FLAG_DESTROY))
       return -ENODEV;
 
-   if(!nrx_test_flag(sc, NRX_FLAG_UNPLUGGED)) 
+   if(!nrx_test_flag(sc, NRX_FLAG_UNPLUGGED))
       return -EINVAL;
 
    re = kmalloc(sizeof(*re), GFP_KERNEL);
@@ -1055,12 +1055,12 @@ int nrx_raw_tx(struct net_device * dev, char * data, size_t len)
          nrx_dev_unlock(sc);
          kfree(re);
          return 0;
-      } 
+      }
       sc->rawio_console_entry = re;
-   } 
+   }
    WEI_TQ_INSERT_TAIL(&sc->rawio_head, re, next);
    nrx_dev_unlock(sc);
-   
+
    return 0;
 }
 
@@ -1072,11 +1072,11 @@ int nrx_raw_rx(struct net_device * dev, char * data, size_t * max_len)
    int status;
    struct rawio_entry *re;
    int retval = -ENOENT;
-   
+
    if(nrx_test_flag(sc, NRX_FLAG_DESTROY))
       return -ENODEV;
-   
-   if(!nrx_test_flag(sc, NRX_FLAG_UNPLUGGED)) 
+
+   if(!nrx_test_flag(sc, NRX_FLAG_UNPLUGGED))
       return -EINVAL;
 
    nrx_dev_lock(sc);
@@ -1126,7 +1126,7 @@ void nanonet_attach(struct net_device *dev, void *data)
    wake_lock(&sc->nrx_wake_lock);
    KDEBUG(TRACE, "Acquired nrx_wake_lock");
 #endif
-   
+
    nrx_set_flag(sc, NRX_FLAG_ATTACHED);
    nrx_set_state(sc, NRX_STATE_UNPLUG);
    nrx_schedule_event(sc, 0); /* kick state machine */
@@ -1167,9 +1167,9 @@ static void rawio_flush(struct nrx_softc *sc)
 void
 nanonet_destroy(struct net_device *dev)
 {
-   
+
    struct nrx_softc *sc = netdev_priv(dev);
-   
+
    KDEBUG(TRACE, "ENTRY: %s", dev->name);
 
    nrx_set_flag(sc, NRX_FLAG_DESTROY);
@@ -1177,7 +1177,7 @@ nanonet_destroy(struct net_device *dev)
    nrx_cancel_event(sc);
 
    rawio_flush(sc);
-     
+
    if (nrx_test_flag(sc, NRX_FLAG_HAVE_REGISTER)) {
       nrx_tx_queue_stop(dev);
       unregister_netdev(dev);
@@ -1189,7 +1189,7 @@ nanonet_destroy(struct net_device *dev)
    sc->ps_control = NULL;
 
    nrx_trsp_ctrl(dev, NANONET_SHUTDOWN, 0);
-   
+
    WiFiEngine_Shutdown(0);
 
    nrx_proc_cleanup(dev);
@@ -1211,8 +1211,8 @@ nanonet_destroy(struct net_device *dev)
    KDEBUG(TRACE, "Destroyed nrx_wake_lock");
    if (wake_lock_active(&sc->nrx_scan_wake_lock))
    	  wake_unlock(&sc->nrx_scan_wake_lock);
-   wake_lock_destroy(&sc->nrx_scan_wake_lock);	
-   KDEBUG(TRACE, "Destroyed nrx_scan_wake_lock");  
+   wake_lock_destroy(&sc->nrx_scan_wake_lock);
+   KDEBUG(TRACE, "Destroyed nrx_scan_wake_lock");
 #endif
 
    KDEBUG(TRACE, "EXIT:");
@@ -1297,7 +1297,7 @@ macaddr_valid(uint8_t *data, size_t data_len)
 {
    if(data == NULL || data_len != 6)
       return FALSE;
-   
+
    if(data[0] & 0x1)
       return FALSE;
 
@@ -1418,7 +1418,7 @@ nrx_event_work(
             nrx_schedule_event(sc, 0);
          }
          break;
-         
+
       case NRX_STATE_WAIT_DEBUGGER:
          if(nrx_debug_wait) {
             nrx_schedule_event(sc, HZ);
@@ -1432,11 +1432,11 @@ nrx_event_work(
 
       case NRX_STATE_PLUG:
          WiFiEngine_Plug();
-         if(WiFiEngine_GetRegistryPowerFlag() == PowerSave_Enabled_Deactivated_From_Start) 
-         { 
-            WiFiEngine_PSControlInhibit(sc->ps_control); 
-         } 
-         
+         if(WiFiEngine_GetRegistryPowerFlag() == PowerSave_Enabled_Deactivated_From_Start)
+         {
+            WiFiEngine_PSControlInhibit(sc->ps_control);
+         }
+
          nrx_set_state(sc, NRX_STATE_CONFIGURE);
          nrx_schedule_event(sc, 0);
          break;
@@ -1498,16 +1498,16 @@ nrx_event_work(
                nrx_set_state(sc, NRX_STATE_DEFUNCT);
                break;
             }
-            if(sc->pdev != NULL) 
+            if(sc->pdev != NULL)
               //dev_info(sc->pdev, "Registered interface %s\n", sc->dev->name);
               printk("%s, Registered interface %s\n", dev_name(sc->pdev), sc->dev->name);
          }
-         
+
          nrx_set_flag(sc, NRX_FLAG_HAVE_REGISTER);
 
          if (!nrx_test_flag(sc, NRX_FLAG_IF_ATTACHED)) {
             netif_device_attach(dev);
-            netif_carrier_on(dev);           	
+            netif_carrier_on(dev);
             nrx_set_flag(sc, NRX_FLAG_IF_ATTACHED);
 #ifdef CONFIG_HAS_WAKELOCK
             wake_unlock(&sc->nrx_wake_lock);
@@ -1517,7 +1517,7 @@ nrx_event_work(
 
       // nrx_wxevent_device_reset(dev); // useless
          nrx_wxevent_ap(dev);
-         
+
          nrx_set_state(sc, NRX_STATE_RUN);
          nrx_clear_flag(sc, NRX_FLAG_SHUTDOWN);
          wake_up(&sc->mib_wait_queue);
@@ -1601,7 +1601,7 @@ nanonet_create(struct device *pdev, void *data, struct nanonet_create_param *par
       printk(KERN_ERR "nano_if: Failed to allocate ns device struct. Bailing out.\n");
       return NULL;
    }
-    
+
    if(nrx_ifname != NULL && strlen(nrx_ifname) < sizeof(dev->name))
       strcpy(dev->name, nrx_ifname);
 
@@ -1645,14 +1645,14 @@ nanonet_create(struct device *pdev, void *data, struct nanonet_create_param *par
    sc->maxcorecount = 32;
    sc->coreindex = 0;
    WEI_TQ_INIT(&sc->corefiles);
-   
+
    memset(sc->cwin, 0xFF, sizeof(sc->cwin));
 
 #ifdef CONFIG_HAS_WAKELOCK
    wake_lock_init(&sc->nrx_wake_lock, WAKE_LOCK_SUSPEND, "nrx");
    KDEBUG(TRACE, "Created nrx_wake_lock, type WAKE_LOCK_SUSPEND");
    wake_lock_init(&sc->nrx_scan_wake_lock, WAKE_LOCK_SUSPEND, "nrx-scan");
-   KDEBUG(TRACE, "Created nrx_scan_wake_lock, type WAKE_LOCK_SUSPEND");    
+   KDEBUG(TRACE, "Created nrx_scan_wake_lock, type WAKE_LOCK_SUSPEND");
 #endif
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,8)
@@ -1661,22 +1661,22 @@ nanonet_create(struct device *pdev, void *data, struct nanonet_create_param *par
    sc->event_timer.function = nrx_event_timer;
    sc->event_timer.data = (unsigned long)sc;
 #elif LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,20)
-   INIT_DELAYED_WORK(&sc->event_work, 
+   INIT_DELAYED_WORK(&sc->event_work,
 		     nrx_event_work);
 #else
    INIT_WORK(&sc->event_work, nrx_event_work, dev);
 #endif
- 
+
    WiFiEngine_Initialize(dev);
-   WiFiEngine_SetMsgSizeAlignment(param->min_size, 
-                                  param->size_align, 
+   WiFiEngine_SetMsgSizeAlignment(param->min_size,
+                                  param->size_align,
                                   param->header_size,
                                   param->header_size,
                                   param->host_attention,
                                   param->byte_swap_mode,
                                   param->host_wakeup,
                                   param->force_interval);
-   
+
    sc->ps_control = WiFiEngine_PSControlAlloc("LINUX");
 
    sc->tx_hlen = WiFiEngine_GetDataHeaderSize();
@@ -1712,7 +1712,7 @@ nanonet_create(struct device *pdev, void *data, struct nanonet_create_param *par
    add_mib_call(MIB_dot11OperationalRatesSet, rates_callback);
 
    rawio_init(sc);
-   
+
    if(nrx_unplug) {
 	  KDEBUG(TRACE, "Started in unplugged mode");
       nrx_set_flag(sc,NRX_FLAG_UNPLUGGED);
@@ -1729,7 +1729,7 @@ nanonet_create(struct device *pdev, void *data, struct nanonet_create_param *par
       	 printk("[nano] nrx_schedule_event\n"); // XXXXXXXXXXXXXXXX possibly wrong syntax
          nrx_schedule_event(sc, 0);
    }
-   
+
    nrx_set_flag(sc, NRX_FLAG_ATTACHED);
    nrx_set_flag(sc, NRX_FLAG_IF_ATTACHED);
    KDEBUG(TRACE, "registered if %s", dev->name);
@@ -1742,7 +1742,7 @@ static unsigned int priomap[8];
 SYSCTL_FUNCTION(nano_doreg)
 {
    int status;
-   
+
    if(write) {
       status = SYSCTL_CALL(proc_dointvec);
       if(status)
@@ -1778,7 +1778,7 @@ SYSCTL_FUNCTION(nano_doreg)
    }
    if(!write && status == 0) {
       status = SYSCTL_CALL(proc_dointvec);
-   }	
+   }
    return status;
 }
 
@@ -1826,4 +1826,3 @@ static void __exit nanonet_cleanup(void)
 
 module_init(nanonet_init);
 module_exit(nanonet_cleanup);
-

@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-            Copyright (c) 2004 by Nanoradio AB 
+            Copyright (c) 2004 by Nanoradio AB
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
  All rights, title, ownership, or other interests in the
@@ -33,7 +33,7 @@ Thing are coming in and things are coming out, bla bla bla.
 #ifndef MAC_API_DLM_H
 #define MAC_API_DLM_H
 #include "mac_api_defs.h"
- 
+
 /* E X P O R T E D  D E F I N E S ********************************************/
 
 /******************************************************************************/
@@ -86,7 +86,7 @@ typedef struct
 
 typedef struct
 {
-   mac_api_transid_t  transid;           
+   mac_api_transid_t  transid;
    uint32_t           address;            /* Start address of the next page to load */
    uint32_t           size;               /* Size of the next page to load */
    uint32_t           remaining_size;     /* Remaing size of the DLM */
@@ -95,7 +95,7 @@ typedef struct
 
 typedef union
 {
-   mac_api_transid_t    transid;           
+   mac_api_transid_t    transid;
    hic_dlm_load_req_t   hic_dlm_load_req;
    hic_dlm_load_cfm_t   hic_dlm_load_cfm;
    hic_dlm_swap_ind_t   hic_dlm_swap_ind;

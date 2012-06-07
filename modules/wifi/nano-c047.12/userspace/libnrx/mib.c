@@ -21,9 +21,9 @@
  * <!-- NRX_API_FOR_TESTING -->
  */
 int
-nrx_get_mib_val(nrx_context ctx, 
-                const char *mib_id, 
-                void *buf, 
+nrx_get_mib_val(nrx_context ctx,
+                const char *mib_id,
+                void *buf,
                 size_t *len)
 {
    int ret;
@@ -38,7 +38,7 @@ nrx_get_mib_val(nrx_context ctx,
       return ret;
 
    *len = param.mib_param_size;
-   
+
    return 0;
 }
 
@@ -60,9 +60,9 @@ nrx_get_mib_val(nrx_context ctx,
  * <!-- NRX_API_FOR_TESTING -->
  */
 int
-nrx_set_mib_val(nrx_context ctx, 
-                const char *mib_id, 
-                const void *buf, 
+nrx_set_mib_val(nrx_context ctx,
+                const char *mib_id,
+                const void *buf,
                 size_t len)
 {
    struct nrx_ioc_mib_value param;
@@ -72,7 +72,6 @@ nrx_set_mib_val(nrx_context ctx,
    strlcpy(param.mib_id, mib_id, sizeof(param.mib_id));
    param.mib_param = (void*)buf;
    param.mib_param_size = len;
-   
+
    return nrx_nrxioctl(ctx, NRXIOWSETMIB, &param.ioc);
 }
-

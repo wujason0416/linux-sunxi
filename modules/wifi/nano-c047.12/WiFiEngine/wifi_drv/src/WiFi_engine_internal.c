@@ -54,7 +54,7 @@ struct signal_container
    WEI_TQ_ENTRY(signal_container) next;
 };
 
-static WEI_TQ_HEAD(, signal_container) sig_queue = 
+static WEI_TQ_HEAD(, signal_container) sig_queue =
    WEI_TQ_HEAD_INITIALIZER(sig_queue);
 
 struct queue_s cmd_queue; /* Queue of unsent commands */
@@ -62,14 +62,14 @@ struct queue_s cmd_queue; /* Queue of unsent commands */
 #define chk_rsn_ie(x) ((x) && ((x)->hdr.id != 0xFF))
 #define chk_wpa_ie(x) ((x) && ((x)->hdr.hdr.id != 0xFF))
 
-void init_queue(struct queue_s *q) 
+void init_queue(struct queue_s *q)
 {
    q->head = q->tail = 0;
 }
 
-int enqueue(struct queue_s *q, void *el, int s) 
+int enqueue(struct queue_s *q, void *el, int s)
 {
-   if (QUEUE_FULL(q)) 
+   if (QUEUE_FULL(q))
       return 0;
    q->v[q->head] = el;
    q->s[q->head] = s;
@@ -77,17 +77,17 @@ int enqueue(struct queue_s *q, void *el, int s)
    return 1;
 }
 
-void *dequeue(struct queue_s *q, int* s) 
+void *dequeue(struct queue_s *q, int* s)
 {
    void *el;
-   
+
    if (QUEUE_EMPTY(q))
       return NULL;
    el = q->v[q->tail];
    *s = q->s[q->tail];
    q->v[q->tail] = NULL; /* Ease debugging */
    q->tail = (q->tail + 1) % QUEUE_SIZE;
-   
+
    return el;
 }
 
@@ -96,17 +96,17 @@ static void dump_queue(struct queue_s *q)
    int i;
    int count = 0;
    int last = (q->head + QUEUE_SIZE - 1) % QUEUE_SIZE;
-   
+
    for (i = 0; i < QUEUE_SIZE; i++)
    {
       if(q->v[i] != NULL)
          count++;
    }
-   
+
    /* tail is really first message on queue */
-   DE_TRACE_INT5(TR_WEI, "Command queue: tail %d (" TR_FPTR "), head %d (" TR_FPTR "), count %d\n", 
-                 (int)q->tail, TR_APTR(q->v[q->tail]), 
-                 last, TR_APTR(q->v[last]), 
+   DE_TRACE_INT5(TR_WEI, "Command queue: tail %d (" TR_FPTR "), head %d (" TR_FPTR "), count %d\n",
+                 (int)q->tail, TR_APTR(q->v[q->tail]),
+                 last, TR_APTR(q->v[last]),
                  count);
    (void) last; /* Just mute compiler warning in case DE_TRACE_INT5 does nothing */
 }
@@ -123,7 +123,7 @@ char* wei_printSSID(m80211_ie_ssid_t *ssid, char *str, size_t len)
       l = len - 1;
    else
       l = ssid->hdr.len;
-   
+
    DE_STRNCPY(str, ssid->ssid, l);
    str[l] = '\0';
    return str;
@@ -134,7 +134,7 @@ char* wei_print_mac(m80211_mac_addr_t *mac_addr, char *str, size_t len)
 #if M80211_ADDRESS_SIZE != 6
 #error fixme
 #endif
-   DE_SNPRINTF(str, len, "%02x-%02x-%02x-%02x-%02x-%02x", 
+   DE_SNPRINTF(str, len, "%02x-%02x-%02x-%02x-%02x-%02x",
                (unsigned char)mac_addr->octet[0],
                (unsigned char)mac_addr->octet[1],
                (unsigned char)mac_addr->octet[2],
@@ -167,9 +167,9 @@ bool_t wei_is_any_ac_set(void)
    properties = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
 
    return ((properties->QoSInfoElements.ac_be)||(properties->QoSInfoElements.ac_bk)||
-      
+
            (properties->QoSInfoElements.ac_vi)||(properties->QoSInfoElements.ac_vo));
-           
+
 }
 
 
@@ -177,7 +177,7 @@ bool_t wei_is_any_ac_set(void)
 /*!
  * @brief Checks if hmg is running i auto mode
  *
- * @return TRUE if auto mode is set, else FALSE 
+ * @return TRUE if auto mode is set, else FALSE
  */
 bool_t wei_is_hmg_auto_mode(void)
 {
@@ -186,17 +186,17 @@ bool_t wei_is_hmg_auto_mode(void)
    properties = (rHostDriverProperties *)Registry_GetProperty(ID_hostDriver);
 
    return (properties->hmgAutoMode);
-           
+
 }
 
 /*!
  * @brief Checks if wmm power is is enabled.
  *
- * @return TRUE if WMM power save is enabled, else FALSE 
+ * @return TRUE if WMM power save is enabled, else FALSE
  */
 bool_t wei_is_wmm_ps_enabled(void)
 {
-   rBasicWiFiProperties *properties;  
+   rBasicWiFiProperties *properties;
 
    properties = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
 
@@ -223,7 +223,7 @@ uint16_t wei_qos_get_ac_value(uint16_t prio)
    uint16_t ac;
 
    properties = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
-   
+
    switch(prio)
    {
       case 1:
@@ -241,7 +241,7 @@ uint16_t wei_qos_get_ac_value(uint16_t prio)
 
       case 4:
       case 5:
-      {  
+      {
          ac = properties->QoSInfoElements.ac_vi;
       }
       break;
@@ -267,14 +267,14 @@ uint16_t wei_qos_get_ac_value(uint16_t prio)
  * @return 1 if associated or if association is ongoing,
  * 0 otherwise.
  */
-int wei_network_status_busy() 
+int wei_network_status_busy()
 {
    return (1 && wei_netlist_get_current_net());
 }
 
 /*!
  * \brief Send a command to the hardware device
- * 
+ *
  * This function is called internally by WiFiEngine.  It sends the
  * current command on to the bus driver send function.  The context
  * that is passed to this function should be allocated with
@@ -287,14 +287,14 @@ int wei_network_status_busy()
  * try the send again later.
  * WIFI_ENGINE_FAILURE if the send failed (such as when no hardware is present).
  */
-int wei_send_cmd(hic_message_context_t *ctx) 
+int wei_send_cmd(hic_message_context_t *ctx)
 {
    char *cmd;
    int size;
 
    DE_TRACE_STACK_USAGE;
 
-   if(!WES_TEST_FLAG(WES_FLAG_HW_PRESENT)) 
+   if(!WES_TEST_FLAG(WES_FLAG_HW_PRESENT))
    {
       return WIFI_ENGINE_FAILURE_DEFER;
    }
@@ -305,7 +305,7 @@ int wei_send_cmd(hic_message_context_t *ctx)
    if(WiFiEngine_isCoredumpEnabled())
    {
       return WIFI_ENGINE_SUCCESS;
-   } 
+   }
 
 
    if (! packer_HIC_Pack(ctx))
@@ -322,7 +322,7 @@ int wei_send_cmd(hic_message_context_t *ctx)
 
 /*!
  * \brief Unconditionally send a command to the hardware device
- * 
+ *
  * This function is called internally by WiFiEngine.  It sends the
  * current command on to the bus driver send function regardless of
  * the sleep state of the device. The command is not queued.  The
@@ -333,18 +333,18 @@ int wei_send_cmd(hic_message_context_t *ctx)
  * @param ctx The message context describing the message to send.
  * @return WIFI_ENGINE_SUCCESS or WIFI_ENGINE_FAILURE.
  */
-int wei_unconditional_send_cmd(hic_message_context_t *ctx) 
+int wei_unconditional_send_cmd(hic_message_context_t *ctx)
 {
    char *cmd;
    int size;
    DE_TRACE_STATIC(TR_CMD, "============> wei_unconditional_send_cmd\n");
-   
+
    if (! packer_HIC_Pack(ctx))
    {
       /* Silent discard */
       return WIFI_ENGINE_SUCCESS;
    }
-   
+
    cmd = ctx->packed;
    size = ctx->packed_size;
    ctx->packed = NULL;
@@ -354,14 +354,14 @@ int wei_unconditional_send_cmd(hic_message_context_t *ctx)
    WEI_ACTIVITY();
 #endif
    if(!(ctx->msg_id & MAC_API_PRIMITIVE_TYPE_RSP))
-   {   
+   {
        wifiEngineState.cmdReplyPending = 1;
    }
-   
+
    if (DriverEnvironment_HIC_Send(cmd, size)
-       != DRIVERENVIRONMENT_SUCCESS) 
+       != DRIVERENVIRONMENT_SUCCESS)
    {
-      wifiEngineState.cmdReplyPending = 0;      
+      wifiEngineState.cmdReplyPending = 0;
       return WIFI_ENGINE_FAILURE;
    }
 /*   DE_TRACE_INT2("Sent cmd %d [%d]\n", (int)cmd[3], size); */
@@ -373,7 +373,7 @@ int wei_unconditional_send_cmd(hic_message_context_t *ctx)
 
 /*!
  * \brief Send a command to the hardware device
- * 
+ *
  * This function is called internally by WiFiEngine.
  * It sends the current command on to the bus driver send function.
  * The buffer that is passed to this function should be allocated
@@ -383,23 +383,23 @@ int wei_unconditional_send_cmd(hic_message_context_t *ctx)
  * The command is queued in cmd_queue
  * @param cmd The command to send.
  * @param size The length of the cmd in bytes.
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS
  * - WIFI_ENGINE_FAILURE_DEFER if the queue is full, try the send again later.
  */
-int wei_send_cmd_raw(char *cmd, int size) 
-{  
+int wei_send_cmd_raw(char *cmd, int size)
+{
    DE_TRACE_STATIC(TR_CMD_DEBUG, "============> wei_send_cmd_raw\n");
-   
+
    DE_TRACE_STACK_USAGE;
 
    WIFI_LOCK();
-   if (cmd) 
+   if (cmd)
    {
-      if (!enqueue(&cmd_queue, cmd, size)) 
+      if (!enqueue(&cmd_queue, cmd, size))
       {
          DE_TRACE_STATIC(TR_SEVERE, "Cmd queue full\n");
-         WIFI_UNLOCK();         
+         WIFI_UNLOCK();
          if(!wifiEngineState.forceRestart)
          {
             /* This will force a restart */
@@ -410,12 +410,12 @@ int wei_send_cmd_raw(char *cmd, int size)
 
          return WIFI_ENGINE_FAILURE_DEFER;
       }
-      DE_TRACE3(TR_WEI, "Queued cmd (SendCmdRaw) %p when cmdReplyPending is %d\n", 
+      DE_TRACE3(TR_WEI, "Queued cmd (SendCmdRaw) %p when cmdReplyPending is %d\n",
       cmd,
       wifiEngineState.cmdReplyPending);
       dump_queue(&cmd_queue);
    }
- 
+
    if (wifiEngineState.cmdReplyPending)
    {
       /* very chatty */
@@ -443,7 +443,7 @@ int wei_send_cmd_raw(char *cmd, int size)
          if(!wei_request_resource_hic(RESOURCE_USER_CMD_PATH))
          {
             /* Wait for wakeup indication */
-            DriverEnvironment_release_trylock(&wifiEngineState.cmd_lock);           
+            DriverEnvironment_release_trylock(&wifiEngineState.cmd_lock);
             WIFI_UNLOCK();
             return WIFI_ENGINE_SUCCESS;
          }
@@ -451,18 +451,18 @@ int wei_send_cmd_raw(char *cmd, int size)
       }
    }
 
-   
+
    cmd = (char*)dequeue(&cmd_queue, &size);
-   
+
    if ((cmd == NULL))
    {
-      /* Last command in queue - release resource */       
+      /* Last command in queue - release resource */
       if(!WiFiEngine_isCoredumpEnabled())
       {
          DE_TRACE_STATIC(TR_CMD, "Command queue empty\n");
-         wei_release_resource_hic(RESOURCE_USER_CMD_PATH);  
+         wei_release_resource_hic(RESOURCE_USER_CMD_PATH);
       }
-      
+
       DriverEnvironment_release_trylock(&wifiEngineState.cmd_lock);
       /* There is no confirm on hic_ctrl_interface_down
       as a consequence command queue will not be scheduled. */
@@ -472,7 +472,7 @@ int wei_send_cmd_raw(char *cmd, int size)
       {
          wei_request_resource_hic(RESOURCE_USER_CMD_PATH);
       }
-      
+
       return WIFI_ENGINE_SUCCESS;
    }
 
@@ -482,15 +482,15 @@ int wei_send_cmd_raw(char *cmd, int size)
    WEI_ACTIVITY();
 #endif
    WEI_CMD_TX();
-   wifiEngineState.cmdReplyPending = 1; 
+   wifiEngineState.cmdReplyPending = 1;
    DriverEnvironment_release_trylock(&wifiEngineState.cmd_lock);
-   DE_TRACE_PTR(TR_CMD, "Sending cmd %p\n", cmd); 
+   DE_TRACE_PTR(TR_CMD, "Sending cmd %p\n", cmd);
    if(!WiFiEngine_isCoredumpEnabled()) {
       wifiEngineState.last_sent_msg_type = HIC_MESSAGE_TYPE(cmd);
       wifiEngineState.last_sent_msg_id = HIC_MESSAGE_ID(cmd);
    }
    if (DriverEnvironment_HIC_Send(cmd, size)
-       != DRIVERENVIRONMENT_SUCCESS) 
+       != DRIVERENVIRONMENT_SUCCESS)
    {
       wifiEngineState.cmdReplyPending = 0;
       DE_TRACE_STATIC(TR_SEVERE, "Setting cmdReplyPending to 0\n");
@@ -500,11 +500,11 @@ int wei_send_cmd_raw(char *cmd, int size)
    }
 
 
-// DriverEnvironment_release_trylock(&wifiEngineState.cmd_lock);    
+// DriverEnvironment_release_trylock(&wifiEngineState.cmd_lock);
    if(registry.network.basic.cmdTimeout)
       WiFiEngine_CommandTimeoutStart();
    DE_TRACE_STATIC(TR_CMD_DEBUG, "<============ wei_send_cmd_raw\n");
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -523,7 +523,7 @@ struct cmd_cb_info
 int blocking_cmd_send_callback(we_cb_container_t *cbc)
 {
    struct cmd_cb_info *ci;
-   
+
    if ( WIFI_ENGINE_FAILURE_ABORT == cbc->status )
    {
       DE_TRACE_STATIC(TR_WEI, "CMD Send callback received ABORT status\n");
@@ -553,14 +553,14 @@ int blocking_cmd_send_callback(we_cb_container_t *cbc)
          DE_TRACE_STATIC(TR_NOISE, "No context \n");
       }
    }
-   
+
    return 1;
 }
 
 /*!
  * \brief Send a command to the hardware device and return when the
  *        result has arrives.
- * 
+ *
  * This function is called internally by WiFiEngine.  It sends the
  * current command on to the bus driver send function.  The context
  * that is passed to this function should be allocated with
@@ -574,14 +574,14 @@ int blocking_cmd_send_callback(we_cb_container_t *cbc)
  * try the send again later.
  * WIFI_ENGINE_FAILURE if the send failed (such as when no hardware is present).
  */
-int wei_send_cmd_blocking(hic_message_context_t *ctx, hic_message_context_t *rsp) 
+int wei_send_cmd_blocking(hic_message_context_t *ctx, hic_message_context_t *rsp)
 {
    char *cmd;
    int size;
 
    DE_TRACE_STACK_USAGE;
 
-   if(!WES_TEST_FLAG(WES_FLAG_HW_PRESENT)) 
+   if(!WES_TEST_FLAG(WES_FLAG_HW_PRESENT))
    {
       return WIFI_ENGINE_FAILURE_DEFER;
    }
@@ -714,7 +714,7 @@ int wei_is_net_joinable(WiFiEngine_net_t *net)
 int wei_equal_ssid(m80211_ie_ssid_t ssid1, m80211_ie_ssid_t ssid2)
 {
    DE_TRACE_STACK_USAGE;
-   
+
    if ( (ssid2.hdr.id  != ssid1.hdr.id)
      || (ssid2.hdr.len != ssid1.hdr.len) )
    {
@@ -729,8 +729,8 @@ int wei_equal_ssid(m80211_ie_ssid_t ssid1, m80211_ie_ssid_t ssid2)
 int wei_desired_ssid(m80211_ie_ssid_t ssid)
 {
    rBasicWiFiProperties *basic;
-   
-   basic = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);  
+
+   basic = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
 
    return wei_equal_ssid(ssid, basic->desiredSSID);
 }
@@ -779,7 +779,7 @@ wei_cipher_suite2encryption(m80211_cipher_suite_t suite)
          return Encryption_TKIP;
       case M80211_CIPHER_SUITE_CCMP:
          return Encryption_CCMP;
-      case M80211_CIPHER_SUITE_WPI: 
+      case M80211_CIPHER_SUITE_WPI:
 	return Encryption_SMS4;
       case M80211_CIPHER_SUITE_NONE:
          return Encryption_Disabled;
@@ -879,7 +879,7 @@ int wei_is_encryption_mode_denied(WiFiEngine_Encryption_t encType)
          }
 	break;
    }
-   
+
    return FALSE;
 }
 
@@ -902,7 +902,7 @@ int wei_encryption_mode_allowed(WiFiEngine_Encryption_t encType)
  * Return the AKM suite (if applicable) and the source type for the suite.
  *
  * @param akm The AKM suite that matches the current authentication mode.
- *            The value of this parameter is only valid if the type 
+ *            The value of this parameter is only valid if the type
  *            parameter is different from WEI_IE_TYPE_CAP.
  * @param type The IE/CAP type that matches the current authentication mode.
  * @param net The net that have the right authentication mode
@@ -930,10 +930,10 @@ int  wei_filter_net_by_authentication(m80211_akm_suite_t *akm,
    {
       return WIFI_ENGINE_FAILURE;
    }
-   
+
    rsn_ie = &(*net)->bss_p->bss_description_p->ie.rsn_parameter_set;
    wpa_ie = &(*net)->bss_p->bss_description_p->ie.wpa_parameter_set;
-   
+
    /* Get the current suite */
    switch(wifiEngineState.config.authenticationMode)
    {
@@ -943,7 +943,7 @@ int  wei_filter_net_by_authentication(m80211_akm_suite_t *akm,
          *type = WEI_IE_TYPE_CAP;
          return WIFI_ENGINE_SUCCESS;
       }
-      
+
       case Authentication_Shared:
       {
          if ((*net)->bss_p->bss_description_p->capability_info & M80211_CAPABILITY_PRIVACY)
@@ -973,7 +973,7 @@ int  wei_filter_net_by_authentication(m80211_akm_suite_t *akm,
                       DE_TRACE_STATIC(TR_AUTH, "Allowed AKM suite is WPA 802.1x \n");
 #if (DE_CCX == CFG_INCLUDED)
 		      FoundAuthType = TRUE;
-#else                     
+#else
 		      return WIFI_ENGINE_SUCCESS;
 #endif
                    }
@@ -1048,11 +1048,11 @@ int  wei_filter_net_by_authentication(m80211_akm_suite_t *akm,
                       DE_TRACE_STATIC(TR_AUTH, "Allowed AKM suite is RSN 802.1x \n");
 #if (DE_CCX == CFG_INCLUDED)
 		      FoundAuthType = TRUE;
-#else  
+#else
                       return WIFI_ENGINE_SUCCESS;
 #endif
 #if (DE_CCX == CFG_INCLUDED)
-		   } 
+		   }
 		   else if (M80211_AKM_SUITE_802X_CCKM ==
 			    M80211_IE_RSN_PARAMETER_SET_GET_AKM_SELECTORS(rsn_ie)[i].type)
 		     {
@@ -1062,7 +1062,7 @@ int  wei_filter_net_by_authentication(m80211_akm_suite_t *akm,
 		       return WIFI_ENGINE_SUCCESS;
 #endif
                    } else
-                      DE_TRACE_INT2(TR_AUTH,"net rsn type = %d net = " TR_FPTR "\n", 
+                      DE_TRACE_INT2(TR_AUTH,"net rsn type = %d net = " TR_FPTR "\n",
                                     M80211_IE_RSN_PARAMETER_SET_GET_AKM_SELECTORS(rsn_ie)[i].type, TR_APTR(net));
                 }
 #if (DE_CCX == CFG_INCLUDED)
@@ -1084,7 +1084,7 @@ int  wei_filter_net_by_authentication(m80211_akm_suite_t *akm,
                    {
                       *akm = M80211_AKM_SUITE_PSK;
                       *type = WEI_IE_TYPE_RSN;
-                      DE_TRACE_STATIC(TR_AUTH, "Allowed AKM suite is RSN PSK \n");   
+                      DE_TRACE_STATIC(TR_AUTH, "Allowed AKM suite is RSN PSK \n");
                       return WIFI_ENGINE_SUCCESS;
                    }
                 }
@@ -1112,7 +1112,7 @@ int  wei_filter_net_by_authentication(m80211_akm_suite_t *akm,
          DE_TRACE_STATIC(TR_AUTH, "Unknown authenticationMode \n");
          break;
    }
-   
+
    return WIFI_ENGINE_FAILURE;
 }
 
@@ -1131,10 +1131,10 @@ int wei_build_rsn_ie(void* context_p,
    int size;
    unsigned char *pmkid_dst;
    unsigned int i;
-   
+
    dst->hdr.id = M80211_IE_ID_RSN;
    dst->hdr.len = 20;
-   
+
 #if (DE_CCX == CFG_INCLUDED)
    nUsePMKID = 0; // DIPA XXX Avoid using PMKIDs for now.
 #endif
@@ -1154,31 +1154,31 @@ int wei_build_rsn_ie(void* context_p,
    size = sizeof(m80211_akm_suite_selector_t) + sizeof(m80211_cipher_suite_selector_t)
         + sizeof(m80211_pmkid_value) * nUsePMKID;
 #else
-   /* macWrapper.c uses WrapperCopy_default for copying data. 
-    * That code is broken and we must therefor allocate more 
-    * data then nessesary to counter that. 
+   /* macWrapper.c uses WrapperCopy_default for copying data.
+    * That code is broken and we must therefor allocate more
+    * data then nessesary to counter that.
     * This is a workaround. */
    size = dst->hdr.len;
 #endif
    dst->rsn_pool = (char*)WrapperAttachStructure(context_p, size);
 
-   DE_MEMCPY(&(M80211_IE_RSN_PARAMETER_SET_GET_PAIRWISE_CIPHER_SELECTORS(dst)[0].id.octet), 
+   DE_MEMCPY(&(M80211_IE_RSN_PARAMETER_SET_GET_PAIRWISE_CIPHER_SELECTORS(dst)[0].id.octet),
              M80211_RSN_OUI, 3);
-   M80211_IE_RSN_PARAMETER_SET_GET_PAIRWISE_CIPHER_SELECTORS(dst)[0].type 
+   M80211_IE_RSN_PARAMETER_SET_GET_PAIRWISE_CIPHER_SELECTORS(dst)[0].type
       = pairwise_suite;
 
 #if (DE_CCX == CFG_INCLUDED)
-   if (akm_suite == M80211_AKM_SUITE_802X_CCKM) 
-     DE_MEMCPY(&(M80211_IE_RSN_PARAMETER_SET_GET_AKM_SELECTORS(dst)[0].id.octet), 
+   if (akm_suite == M80211_AKM_SUITE_802X_CCKM)
+     DE_MEMCPY(&(M80211_IE_RSN_PARAMETER_SET_GET_AKM_SELECTORS(dst)[0].id.octet),
 	       M80211_CCX_OUI, 3);
-   else 
+   else
 #endif
-     DE_MEMCPY(&(M80211_IE_RSN_PARAMETER_SET_GET_AKM_SELECTORS(dst)[0].id.octet), 
+     DE_MEMCPY(&(M80211_IE_RSN_PARAMETER_SET_GET_AKM_SELECTORS(dst)[0].id.octet),
 	       M80211_RSN_OUI, 3);
    M80211_IE_RSN_PARAMETER_SET_GET_AKM_SELECTORS(dst)[0].type = akm_suite;
 
-   dst->rsn_capabilities = 
-      M80211_RSN_CAPABILITY_PTKSA_4_REPLAY_COUNTER 
+   dst->rsn_capabilities =
+      M80211_RSN_CAPABILITY_PTKSA_4_REPLAY_COUNTER
       | M80211_RSN_CAPABILITY_GTKSA_4_REPLAY_COUNTER;
 
 
@@ -1262,11 +1262,11 @@ int wei_build_wpa_ie(
    m80211_cipher_suite_t pairwise_suite,
    m80211_akm_suite_t akm_suite)
 {
-   m80211_ie_wpa_parameter_set_t *scan_ind_wpa = 
+   m80211_ie_wpa_parameter_set_t *scan_ind_wpa =
       &wei_netlist_get_current_net()->bss_p->bss_description_p->ie.wpa_parameter_set;
    int size;
    int alloc_size;
-   
+
    dst->hdr.hdr.id = M80211_IE_ID_VENDOR_SPECIFIC;
    dst->hdr.hdr.len = 0x16;
    dst->hdr.OUI_1 = 0x00;
@@ -1284,32 +1284,32 @@ int wei_build_wpa_ie(
    /* Allocate a pool for one pairwise and on akm selector. */
    size = sizeof(m80211_akm_suite_selector_t) + sizeof(m80211_cipher_suite_selector_t);
 
-   /* macWrapper.c uses WrapperCopy_default for copying data. 
-    * That code is broken and we must therefor allocate more 
-    * data then nessesary to counter that. 
+   /* macWrapper.c uses WrapperCopy_default for copying data.
+    * That code is broken and we must therefor allocate more
+    * data then nessesary to counter that.
     * This is a workaround. */
    alloc_size = dst->hdr.hdr.len;
    dst->rsn_pool = (char*)WrapperAttachStructure(context_p, alloc_size);
 
-   DE_MEMCPY(&(M80211_IE_WPA_PARAMETER_SET_GET_PAIRWISE_CIPHER_SELECTORS(dst)[0].id.octet), 
+   DE_MEMCPY(&(M80211_IE_WPA_PARAMETER_SET_GET_PAIRWISE_CIPHER_SELECTORS(dst)[0].id.octet),
              M80211_WPA_OUI, 3);
-   M80211_IE_WPA_PARAMETER_SET_GET_PAIRWISE_CIPHER_SELECTORS(dst)[0].type 
+   M80211_IE_WPA_PARAMETER_SET_GET_PAIRWISE_CIPHER_SELECTORS(dst)[0].type
       = pairwise_suite;
 
 #if (DE_CCX == CFG_INCLUDED)
-   if (akm_suite == M80211_AKM_SUITE_802X_CCKM) 
-     DE_MEMCPY(&(M80211_IE_WPA_PARAMETER_SET_GET_AKM_SELECTORS(dst)[0].id.octet), 
+   if (akm_suite == M80211_AKM_SUITE_802X_CCKM)
+     DE_MEMCPY(&(M80211_IE_WPA_PARAMETER_SET_GET_AKM_SELECTORS(dst)[0].id.octet),
 	       M80211_CCX_OUI, 3);
    // M80211_IE_WPA_PARAMETER_SET_GET_AKM_SELECTORS(dst)[0].type = 0;
-   else 
+   else
 #endif
-     DE_MEMCPY(&(M80211_IE_WPA_PARAMETER_SET_GET_AKM_SELECTORS(dst)[0].id.octet), 
+     DE_MEMCPY(&(M80211_IE_WPA_PARAMETER_SET_GET_AKM_SELECTORS(dst)[0].id.octet),
              M80211_WPA_OUI, 3);
    M80211_IE_WPA_PARAMETER_SET_GET_AKM_SELECTORS(dst)[0].type = akm_suite;
 
    /* calculate if wpa ie in the scan ind is padded, if so do the same here */
-   size = 14 
-      + scan_ind_wpa->pairwise_cipher_suite_count*4 
+   size = 14
+      + scan_ind_wpa->pairwise_cipher_suite_count*4
       + scan_ind_wpa->akm_suite_count*4;
 
    if(scan_ind_wpa->hdr.hdr.len == size+2)
@@ -1416,7 +1416,7 @@ int wei_compare_cipher_suites(m80211_cipher_suite_t a, m80211_cipher_suite_t b)
  */
 int wei_cipher_suite_to_val(m80211_cipher_suite_t a)
 {
-   
+
    switch (a)
    {
       case M80211_CIPHER_SUITE_WEP40:
@@ -1443,7 +1443,7 @@ int wei_cipher_suite_to_val(m80211_cipher_suite_t a)
          return 0;
 
    }
-   
+
 }
 
 /*!
@@ -1453,7 +1453,7 @@ int wei_cipher_suite_to_val(m80211_cipher_suite_t a)
  * @param suite Output buffer.
  * @param net Input buffer.
  * @param ie_type INPUT: Specifices the source of the cipher suite.
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS if a suite was found.
  * - WIFI_ENGINE_FAILURE otherwise.
  */
@@ -1478,7 +1478,7 @@ int wei_get_highest_pairwise_suite_from_net(m80211_cipher_suite_t *suite,
 
       case WEI_IE_TYPE_RSN:
       {
-         if (rsn_ie->hdr.id != 0xFF) 
+         if (rsn_ie->hdr.id != 0xFF)
          {
             for (i = 0; i < rsn_ie->pairwise_cipher_suite_count; i++)
             {
@@ -1496,7 +1496,7 @@ int wei_get_highest_pairwise_suite_from_net(m80211_cipher_suite_t *suite,
       break;
       case WEI_IE_TYPE_WPA:
       {
-         if (wpa_ie->hdr.hdr.id != 0xFF) 
+         if (wpa_ie->hdr.hdr.id != 0xFF)
          {
             for (i = 0; i < wpa_ie->pairwise_cipher_suite_count; i++)
             {
@@ -1531,7 +1531,7 @@ int wei_get_highest_pairwise_suite_from_net(m80211_cipher_suite_t *suite,
 
       default:
          DE_TRACE_INT(TR_SEVERE, "ERROR: Unknown IE type %d returned from wei_get_highest_pairwise_suite_from_net()\n", ie_type);
-         
+
    }
 
    return WIFI_ENGINE_FAILURE;
@@ -1546,7 +1546,7 @@ void wei_sm_init(void)
 void wei_sm_drain_sig_q(void)
 {
    struct signal_container *c;
-   
+
    WIFI_LOCK();
    while ((c = WEI_TQ_FIRST(&sig_queue)) != NULL) {
       WEI_TQ_REMOVE(&sig_queue, c, next);
@@ -1569,16 +1569,16 @@ void wei_sm_execute(void)
          ucos_send_msg(c->msg, c->dest, c->param);
          DriverEnvironment_Nonpaged_Free(c);
          WIFI_LOCK();
-      }    
+      }
       WIFI_UNLOCK();
-      
+
       /* Do what ever is in the pipe for UCOS processes. */
       if (DriverEnvironment_acquire_trylock(&wifiEngineState.sm_lock) == LOCK_UNLOCKED)
-      {      
+      {
          ucos_executive(UCOS_MODE_UNTIL_EMPTY);
          DriverEnvironment_release_trylock(&wifiEngineState.sm_lock);
       }
-      else 
+      else
       {
          DE_TRACE_STATIC(TR_WEI, "ucos_executive is busy, thread abstains.\n");
       }
@@ -1586,7 +1586,7 @@ void wei_sm_execute(void)
       WIFI_UNLOCK();
    }
 
-   DE_TRACE_STATIC(TR_SM_HIGH_RES, "<=== wei_sm_execute\n"); 
+   DE_TRACE_STATIC(TR_SM_HIGH_RES, "<=== wei_sm_execute\n");
 }
 
 wei_sm_queue_param_s*
@@ -1632,13 +1632,13 @@ void wei_sm_queue_sig(ucos_msg_id_t sig,
       }
 
       c->msg = sig;
-      c->dest = dest; 
-      c->param = (ucos_msg_param_t)p;   
+      c->dest = dest;
+      c->param = (ucos_msg_param_t)p;
       WIFI_LOCK();
       WEI_TQ_INSERT_TAIL(&sig_queue, c, next);
       WIFI_UNLOCK();
    }
- 
+
 }
 
 int wei_channel_list_from_country_ie(channel_list_t *cl, m80211_ie_country_t *ie)
@@ -1647,16 +1647,16 @@ int wei_channel_list_from_country_ie(channel_list_t *cl, m80211_ie_country_t *ie
    unsigned int idx;
    int  channel_info_count;
 
-   channel_info_count = (ie->hdr.len - M80211_IE_LEN_COUNTRY_STRING) / M80211_IE_CHANNEL_INFO_TRIPLET_SIZE; 
+   channel_info_count = (ie->hdr.len - M80211_IE_LEN_COUNTRY_STRING) / M80211_IE_CHANNEL_INFO_TRIPLET_SIZE;
 
    if (channel_info_count > M80211_CHANNEL_LIST_MAX_LENGTH)
-      channel_info_count = M80211_CHANNEL_LIST_MAX_LENGTH;   
+      channel_info_count = M80211_CHANNEL_LIST_MAX_LENGTH;
    idx = 0;
    for (i = 0; i < channel_info_count; i++)
    {
-      if (ie->channel_info[i].first_channel == 0xFF) 
-         continue; 
-      for (chan = ie->channel_info[i].first_channel; chan < (ie->channel_info[i].first_channel + 
+      if (ie->channel_info[i].first_channel == 0xFF)
+         continue;
+      for (chan = ie->channel_info[i].first_channel; chan < (ie->channel_info[i].first_channel +
                                                              ie->channel_info[i].num_channels);
            chan++)
       {
@@ -1686,7 +1686,7 @@ we_ch_bitmask_t wei_channels2bitmask(channel_list_t *src)
    {
       dst |= (1<<(src->channelList[i] - 1));
    }
-   
+
    return dst;
 }
 
@@ -1831,7 +1831,7 @@ int wei_htoper2mask(uint32_t *rate_mask,
 
 #endif /* DE_ENABLE_HT_RATES == CFG_ON */
 
-int wei_ie2ratelist(rRateList *rrates, m80211_ie_supported_rates_t *sup, 
+int wei_ie2ratelist(rRateList *rrates, m80211_ie_supported_rates_t *sup,
                     m80211_ie_ext_supported_rates_t *ext)
 {
    int i;
@@ -1878,10 +1878,10 @@ void wei_prune_nonbasic_ratelist(rRateList *rates)
 
 void wei_init_wmm_ie(m80211_ie_WMM_information_element_t *ie, int wmm_ps_enable)
 {
-   rBasicWiFiProperties*         basicWiFiProperties; 
+   rBasicWiFiProperties*         basicWiFiProperties;
 
    basicWiFiProperties = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
-   
+
    ie->WMM_QoS_Info             = 0x00;
    ie->WMM_hdr.hdr.hdr.id       = M80211_IE_ID_VENDOR_SPECIFIC;
    ie->WMM_hdr.hdr.hdr.len      = 7;
@@ -1914,13 +1914,13 @@ void wei_init_wmm_ie(m80211_ie_WMM_information_element_t *ie, int wmm_ps_enable)
       ie->WMM_QoS_Info |= basicWiFiProperties->qosMaxServicePeriodLength << 4;
    }
 
-      
+
 }
 /*!
  * @brief Schedule a callback with a data buffer and a result code.
  *
  * @param trans_id Id that identifies the callback.
- * @param data The data buffer. It must be allocated with 
+ * @param data The data buffer. It must be allocated with
  *             DriverEnvironment_Nonpaged_Free(). Can be NULL.
  * @param len Data buffer length in bytes. Ignored if data is NULL.
  * @param result Status code to be passed to the callback.
@@ -1928,11 +1928,11 @@ void wei_init_wmm_ie(m80211_ie_WMM_information_element_t *ie, int wmm_ps_enable)
  * - WIFI_ENGINE_SUCCESS
  * - WIFI_ENGINE_FAILURE_NOT_ACCEPTED if no matching callback was found.
  */
-int wei_schedule_data_cb_with_status(uint32_t trans_id, void *data, 
+int wei_schedule_data_cb_with_status(uint32_t trans_id, void *data,
                                      size_t len, uint8_t result)
 {
    we_cb_container_t *cbc;
- 
+
    cbc = wei_cb_find_pending_callback(trans_id);
    if (cbc == NULL)
    {
@@ -1962,7 +1962,7 @@ int wei_schedule_data_cb_with_status(uint32_t trans_id, void *data,
    }
 
    return WIFI_ENGINE_SUCCESS;
-}   
+}
 
 /*!
  * @brief Handle a trans_id wrap.
@@ -2035,22 +2035,22 @@ void wei_enable_aggregation(we_aggr_type_t type, uint32_t aggr_max_size)
          DE_MEMSET(aggr, 0, sizeof(aggr));
          WE_SET_BIT(aggr, BITNUM(HIC_MESSAGE_TYPE_DATA, HIC_MAC_DATA_CFM));
          WE_SET_BIT(aggr, BITNUM(HIC_MESSAGE_TYPE_DATA, HIC_MAC_DATA_IND));
-         break;      
+         break;
       default:
          DE_BUG_ON(TRUE,"Unknown type supplied to wei_enable_aggregation");
    }
 
-   if (WiFiEngine_SendMIBSet(MIB_dot11AggregationFilter, 
-                             NULL, 
-                             aggr, 
+   if (WiFiEngine_SendMIBSet(MIB_dot11AggregationFilter,
+                             NULL,
+                             aggr,
                              sizeof(aggr)) != WIFI_ENGINE_SUCCESS){
       DE_TRACE_STATIC(TR_WARN, "MIBSET AGGR FILTER FAILED\n");
       return;
    }
 
-   if (WiFiEngine_SendMIBSet(MIB_dot11Aggregation, 
-                             NULL, 
-                             &aggr_max_size, 
+   if (WiFiEngine_SendMIBSet(MIB_dot11Aggregation,
+                             NULL,
+                             &aggr_max_size,
                              sizeof(aggr_max_size)) != WIFI_ENGINE_SUCCESS) {
       DE_TRACE_STATIC(TR_WARN, "MIBSET AGGR FAILED\n");
       return;

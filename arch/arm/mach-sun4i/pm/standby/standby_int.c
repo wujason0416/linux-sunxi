@@ -140,4 +140,3 @@ __s32 standby_query_int(enum interrupt_source_e src)
 
     return result? 0:-1;
 }
-

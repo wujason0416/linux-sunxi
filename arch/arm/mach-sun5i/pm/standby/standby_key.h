@@ -36,4 +36,3 @@ extern __s32 standby_query_key(void);
 
 
 #endif  /* __STANDBY_KEY_H__ */
-

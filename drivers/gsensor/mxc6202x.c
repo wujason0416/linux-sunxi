@@ -95,7 +95,7 @@ static int mxc6202x_i2c_tx_data(char *buf, int len)
 			.buf	= buf,
 		}
 	};
-	
+
 	for (i = 0; i < MXC6202X_RETRY_COUNT; i++) {
 		if (i2c_transfer(this_client->adapter, msg, 1) > 0) {
 			break;
@@ -184,7 +184,7 @@ static int mxc6202x_ioctl(struct inode *inode, struct file *file,
 		vec[1] = data[2] << 8 | data[3];
 		vec[2] = data[4] << 8 | data[5];
 	#if DEBUG
-		printk("[X - %04x] [Y - %04x] [Z - %04x]\n", 
+		printk("[X - %04x] [Y - %04x] [Z - %04x]\n",
 			vec[0], vec[1], vec[2]);
 	#endif
 		if (copy_to_user(pa, vec, sizeof(vec))) {
@@ -304,4 +304,3 @@ module_exit(mxc6202x_exit);
 MODULE_AUTHOR("Robbie Cao<hjcao@memsic.com>");
 MODULE_DESCRIPTION("MEMSIC MXC6202X Accelerometer Sensor Driver");
 MODULE_LICENSE("GPL");
-

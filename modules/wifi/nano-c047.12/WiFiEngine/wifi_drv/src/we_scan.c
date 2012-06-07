@@ -74,30 +74,30 @@ print_scan_job(const struct scan_job_t *sj,
 	       char *buf, size_t len)
 {
    m80211_ie_ssid_t ssid;
-   char ssid_str[M80211_IE_MAX_LENGTH_SSID+1]; 
+   char ssid_str[M80211_IE_MAX_LENGTH_SSID+1];
 
    DE_ASSERT(sj->ss.ssid_len < sizeof(ssid_str));
 
    ssid.hdr.len = sj->ss.ssid_len;
    ssid.hdr.id = sj->ss.ssid_id;
    DE_MEMCPY(ssid.ssid, sj->ss.ssid, sj->ss.ssid_len);
-   
-   DE_SNPRINTF(buf, len, 
-	       "job_id %u %s chan %x mode %d %s fid %u ssid %s", 
-	       sj->ss.job_id, 
+
+   DE_SNPRINTF(buf, len,
+	       "job_id %u %s chan %x mode %d %s fid %u ssid %s",
+	       sj->ss.job_id,
 	       sj->state ? "RUNNING" : "SUSPENDED",
-	       sj->ss.channels, 
-	       sj->ss.scan_mode, 
-	       sj->ss.scan_type ? "ACTIVE" : "PASSIVE", 
-	       sj->ss.filter_id, 
+	       sj->ss.channels,
+	       sj->ss.scan_mode,
+	       sj->ss.scan_type ? "ACTIVE" : "PASSIVE",
+	       sj->ss.filter_id,
 	       wei_printSSID(&ssid, ssid_str, sizeof(ssid_str)));
 }
 
 static void
-print_scan_filter(const m80211_nrp_mlme_add_scanfilter_req_t *sf, 
+print_scan_filter(const m80211_nrp_mlme_add_scanfilter_req_t *sf,
 		  char *buf, size_t len)
 {
-   DE_SNPRINTF(buf, len, 
+   DE_SNPRINTF(buf, len,
 	       "filter_id %u rssi %d snr %d type %s",
 	       sf->filter_id,
 	       sf->rssi_threshold,
@@ -178,7 +178,7 @@ static int cache_get_scan_job_state(struct scan_job_t* sj)
 {
    return sj->state;
 }
- 
+
 static void cache_set_scan_job_state(struct scan_job_t* sj, uint8_t state)
 {
    sj->state = state;
@@ -190,7 +190,7 @@ static struct scan_job_t*
 cache_find_job(uint32_t sj_id)
 {
    int i;
-   
+
    for(i = 0; i < MAX_SCAN_JOBS; i++) {
       if(JOBID(&scan_state.sj[i]) == sj_id) {
 	 if(sj_id == UNUSEDID)
@@ -206,15 +206,15 @@ static struct scan_job_t*
 cache_add_scan_job(m80211_ie_ssid_t ssid,
 		   m80211_mac_addr_t bssid,
 		   uint8_t scan_type,
-		   channel_list_t ch_list, 
+		   channel_list_t ch_list,
 		   int flags,
-		   uint8_t prio, 
-		   uint8_t ap_exclude, 
+		   uint8_t prio,
+		   uint8_t ap_exclude,
 		   const m80211_nrp_mlme_add_scanfilter_req_t *sf,
 		   uint8_t run_every_nth_period)
 {
    struct scan_job_t* sj;
-   
+
    sj = cache_find_job(UNUSEDID);
    if(sj == NULL)
       return NULL;
@@ -232,13 +232,13 @@ cache_add_scan_job(m80211_ie_ssid_t ssid,
       sj->ss.filter_id = (uint32_t)-1;
    else
       sj->ss.filter_id = sf->filter_id;
-      
+
    sj->ss.run_every_nth_period = run_every_nth_period;
-   
+
    sj->state = 0;
 
    TRACE_SCAN_JOB(sj);
-      
+
    return sj;
 }
 
@@ -253,7 +253,7 @@ static m80211_nrp_mlme_add_scanfilter_req_t*
 cache_find_filter(uint32_t sf_id)
 {
    int i;
-   
+
    for(i = 0; i < MAX_SCAN_FILTERS; i++)
       if(scan_state.sf[i].filter_id == sf_id) {
 	 if(sf_id == UNUSEDID)
@@ -261,7 +261,7 @@ cache_find_filter(uint32_t sf_id)
 	    scan_state.sf[i].filter_id = i;
 	 return &scan_state.sf[i];
       }
-   
+
    return NULL;
 }
 
@@ -272,7 +272,7 @@ cache_add_scan_filter(uint8_t bss_type,
 		      uint16_t threshold_type)
 {
    m80211_nrp_mlme_add_scanfilter_req_t *sf;
-   
+
    sf = cache_find_filter(UNUSEDID);
    if(sf == NULL)
       return NULL;
@@ -283,7 +283,7 @@ cache_add_scan_filter(uint8_t bss_type,
    sf->threshold_type = threshold_type;
 
    TRACE_SCAN_FILTER(sf);
-      
+
    return sf;
 }
 
@@ -298,13 +298,13 @@ static void cache_del_scan_filter(m80211_nrp_mlme_add_scanfilter_req_t *sf)
 /************************************************************/
 
 /*!
- * @brief Scan the network for BSSs. 
- * 
+ * @brief Scan the network for BSSs.
+ *
  * Internals
  * If the NIC is associated with a SSID not in the scan
  * results, the currently associated network should be appended
  * to the scan results.
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success
  * - WIFI_ENGINE_FAILURE_DEFER if a directed scan was already in progress
  * - WIFI_ENGINE_FAILURE on other failures.
@@ -334,15 +334,15 @@ int WiFiEngine_TriggerScanJob(uint32_t job_id, uint16_t channel_interval)
  *
  * @param job_id           Identifies the scan job to trigger.
  * @param channel_interval Channel interval in kTU's.
- * @param probe_delay      Probe delay in kTU's (if zero default will be used) 
- * @param min_ch_time      Min channel time in kTU's (if zero default will be used) 
- * @param max_ch_time      Max channel time in kTU's (if zero default will be used) 
+ * @param probe_delay      Probe delay in kTU's (if zero default will be used)
+ * @param min_ch_time      Min channel time in kTU's (if zero default will be used)
+ * @param max_ch_time      Max channel time in kTU's (if zero default will be used)
  * @return
  * - WIFI_ENGINE_SUCCESS on success
  * - WIFI_ENGINE_FAILURE_DEFER if a directed scan was already in progress
  * - WIFI_ENGINE_FAILURE on other failures.
  */
-int WiFiEngine_TriggerScanJobEx(uint32_t job_id, uint16_t channel_interval, 
+int WiFiEngine_TriggerScanJobEx(uint32_t job_id, uint16_t channel_interval,
                                 uint32_t probe_delay, uint16_t min_ch_time, uint16_t max_ch_time)
 {
    return wei_send_scan_req(job_id,channel_interval, probe_delay, min_ch_time, max_ch_time);
@@ -354,12 +354,12 @@ int WiFiEngine_TriggerScanJobEx(uint32_t job_id, uint16_t channel_interval,
  * Get the list of scan results. Note that this is a functional replica
  * of WiFiEngine_GetBSSIDList() in we_assoc.c. The functions perform the
  * same job but this one takes a list of referencies rather than requiring
- * one consecutive area to store all the nets in. 
+ * one consecutive area to store all the nets in.
  *
  * @param list Pointer to a allocated array of net referencies. Can be null, in
- *             which case entries will be filled in with the required 
+ *             which case entries will be filled in with the required
  *             number of entries needed.
- * @param entries IN: Number of entries available in list. 
+ * @param entries IN: Number of entries available in list.
  *               OUT: Number of entries used or needed in list.
  *               Note that the number of entries needed may change
  *               from call to call as stations/access points come and go.
@@ -396,7 +396,7 @@ int WiFiEngine_GetScanList(WiFiEngine_net_t **list, int *entries)
          {
             pnet = net;
             net = WEI_GET_NEXT_LIST_ENTRY_NAMED(net, WiFiEngine_net_t, active_list);
-            if (wei_netlist_expire_net(pnet, 
+            if (wei_netlist_expire_net(pnet,
 #ifdef USE_NEW_AGE
                                        wifiEngineState.scan_count,
                                        cp->scanResultLifetime
@@ -416,7 +416,7 @@ int WiFiEngine_GetScanList(WiFiEngine_net_t **list, int *entries)
                {
                   avail_entries--;
                   /* Increase reference count for the net when adding it to the list. */
-                  /* This to avoid the net beeing removed 
+                  /* This to avoid the net beeing removed
                      before WiFiEngine_ReleaseScanListis called */
                   wei_netlist_add_reference(p, pnet);
                   p++;
@@ -433,10 +433,10 @@ int WiFiEngine_GetScanList(WiFiEngine_net_t **list, int *entries)
 /*!
  * @brief Release the current list of known networks.
  *
- * Release all references to nets retrieved with WiFiEngine_GetScanList. 
+ * Release all references to nets retrieved with WiFiEngine_GetScanList.
  *
  * @param list Pointer to an array of net referencies retrieved with WiFiEngine_GetScanList.
- * @param entries Number of entries available in list. 
+ * @param entries Number of entries available in list.
  * @return WIFI_ENGINE_SUCCESS on success.
  *         WIFI_ENGINE_FAILURE_INVALID_LENGTH if the list array was too small.
  *         WIFI_ENGINE_SUCCESS will always be returned if list was NULL
@@ -447,7 +447,7 @@ int WiFiEngine_ReleaseScanList(WiFiEngine_net_t **list, int entries)
    WiFiEngine_net_t **p = list;
 
    BAIL_IF_UNPLUGGED;
-   DE_ASSERT(list != NULL);  
+   DE_ASSERT(list != NULL);
 
    for (;entries>0;entries--)
    {
@@ -457,7 +457,7 @@ int WiFiEngine_ReleaseScanList(WiFiEngine_net_t **list, int entries)
    return WIFI_ENGINE_SUCCESS;
 }
 
-int wei_configure_scan(m80211_nrp_mlme_scan_config_t *sp, 
+int wei_configure_scan(m80211_nrp_mlme_scan_config_t *sp,
 		       we_cb_container_t *cbc)
 {
    hic_message_context_t   msg_ref;
@@ -475,7 +475,7 @@ int wei_configure_scan(m80211_nrp_mlme_scan_config_t *sp,
       wei_send_cmd(&msg_ref);
       status = WIFI_ENGINE_SUCCESS;
    }
-   else 
+   else
    {
       DE_TRACE_STATIC(TR_ASSOC, "Failed to create SetScanParamRequest\n");
       status = WIFI_ENGINE_FAILURE;
@@ -511,7 +511,7 @@ int wei_configure_scan(m80211_nrp_mlme_scan_config_t *sp,
  * @param scan_period Time in ms between scans. If this parameter is 0
  *                    the device will never scan by itself. Otherwise it
  *                    will periodically initiate a new scan when this
- *                    period has passed since the last scan was completed. 
+ *                    period has passed since the last scan was completed.
  *                    This parameter is not used when the device is associated.
  *                    The maximum value is 2^32 ms.
  * @param probe_delay Time in us spent on the channel before sending the first
@@ -551,7 +551,7 @@ int wei_configure_scan(m80211_nrp_mlme_scan_config_t *sp,
  *                    value is 2^16 kus.  The value must be larger than
  *                    min_ch_time.
  * @param as_scan_period Time in ms between scans when the device is
- *                    associated. 
+ *                    associated.
  *                    If this parameter is 0 the device will never scan when
  *                    associated. Otherwise it will periodically initiate a
  *                    new scan when this period has passed since the last scan
@@ -559,10 +559,10 @@ int wei_configure_scan(m80211_nrp_mlme_scan_config_t *sp,
  *                    This parameter affects traffic throughput and latency,
  *                    shorter times degrade performance more.
  *                    This parameter is only used when the device is associated.
- *                    The maximum value is 2^32 ms. 
+ *                    The maximum value is 2^32 ms.
  * @param as_min_ch_time The minimum time in kus (1 kus = 1.024 ms) spent on
  *                    each channel when the device is associated. The channel
- *                    will be changed when this amount of time 
+ *                    will be changed when this amount of time
  *                    has passed and beacons/probe responses have been received.
  *                    This parameter is only used when the device is associated.
  *                    The minimum value is 0. The maximum value is 2^16 kus.
@@ -575,14 +575,14 @@ int wei_configure_scan(m80211_nrp_mlme_scan_config_t *sp,
  *                    associated.
  *                    The minimum value is 0. The maximum value is 2^16 kus.
  *                    The value must be larger than as_min_ch_time.
- * @param max_scan_period Maximum time in ms between scan periods when disconnected. 
- *                    This parameter is used as a limitation(>=) of the scan period when 
+ * @param max_scan_period Maximum time in ms between scan periods when disconnected.
+ *                    This parameter is used as a limitation(>=) of the scan period when
  *                    the nominal scan period doubles after every period_repetition.
- *                    The maximum value is 2^32-1 ms. 
- * @param max_as_scan_period Maximum time in ms between scan periods when connected. 
- *                    This parameter is used as a limitation(>=) of the scan period when 
+ *                    The maximum value is 2^32-1 ms.
+ * @param max_as_scan_period Maximum time in ms between scan periods when connected.
+ *                    This parameter is used as a limitation(>=) of the scan period when
  *                    the nominal scan period doubles after every period_repetition.
- *                    The maximum value is 2^32-1 ms. 
+ *                    The maximum value is 2^32-1 ms.
  * @param period_repetition Number of repetitions of a scan period before it is doubled.
  * @param cbc Pointer to a caller-allocated callback-container (can be NULL).
  *            This should be completely filled out and the
@@ -597,7 +597,7 @@ int wei_configure_scan(m80211_nrp_mlme_scan_config_t *sp,
  *            In all other cases the caller is responsible for freeing
  *            the cbc and the data buffer. Use WiFiEngine_BuildCBC()
  *            to construct the cbc properly.
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success.
  * - WIFI_ENGINE_FAILURE otherwise.
  */
@@ -629,7 +629,7 @@ int WiFiEngine_ConfigureScan(
 			as_min_ch_time, as_max_ch_time,
 			max_scan_period, max_as_scan_period,
 			period_repetition);
-   
+
    if(!WES_TEST_FLAG(WES_FLAG_HW_PRESENT)) {
       if(cbc != NULL) {
 	 cbc->status = 0; /* XXX zero means success */
@@ -637,7 +637,7 @@ int WiFiEngine_ConfigureScan(
       }
       return WIFI_ENGINE_SUCCESS;
    }
-   
+
    return wei_configure_scan(&scan_state.sp, cbc);
 }
 
@@ -697,7 +697,7 @@ wei_add_scan_filter(m80211_nrp_mlme_add_scanfilter_req_t *sf,
    hic_message_context_t   msg_ref;
    int r = WIFI_ENGINE_SUCCESS;
    uint32_t trans_id;
-   
+
    TRACE_SCAN_FILTER(sf);
 
    Mlme_CreateMessageContext(msg_ref);
@@ -711,14 +711,14 @@ wei_add_scan_filter(m80211_nrp_mlme_add_scanfilter_req_t *sf,
       wei_send_cmd(&msg_ref);
       r = WIFI_ENGINE_SUCCESS;
    }
-   else 
+   else
    {
       DE_TRACE_STATIC(TR_ASSOC, "Failed to create addscanfilter_req\n");
       r = WIFI_ENGINE_FAILURE;
    }
    Mlme_ReleaseMessageContext(msg_ref);
 
-   
+
    return r;
 }
 
@@ -768,7 +768,7 @@ int WiFiEngine_AddScanFilter(uint32_t *sf_id,
 
    if(sf_id != NULL)
       *sf_id = sf->filter_id;
-   
+
    if(!WES_TEST_FLAG(WES_FLAG_HW_PRESENT)) {
       if(cbc != NULL) {
 	 cbc->status = 0; /* XXX zero means success */
@@ -780,8 +780,8 @@ int WiFiEngine_AddScanFilter(uint32_t *sf_id,
    return wei_add_scan_filter(sf, cbc);
 }
 
-static int 
-wei_remove_scan_filter(m80211_nrp_mlme_add_scanfilter_req_t *sf, 
+static int
+wei_remove_scan_filter(m80211_nrp_mlme_add_scanfilter_req_t *sf,
 		       we_cb_container_t *cbc)
 {
    m80211_nrp_mlme_remove_scanfilter_req_t req;
@@ -804,14 +804,14 @@ wei_remove_scan_filter(m80211_nrp_mlme_add_scanfilter_req_t *sf,
      wei_send_cmd(&msg_ref);
      r = WIFI_ENGINE_SUCCESS;
    }
-   else 
+   else
    {
       DE_TRACE_STATIC(TR_SCAN, "Failed to create removescanfilter_req\n");
       r = WIFI_ENGINE_FAILURE;
    }
    Mlme_ReleaseMessageContext(msg_ref);
 
-   
+
    return r;
 }
 
@@ -846,7 +846,7 @@ int WiFiEngine_RemoveScanFilter(uint32_t sf_id,
       DE_TRACE_INT(TR_SCAN, "no scan filter with id %u present\n", sf_id);
       return WIFI_ENGINE_FAILURE;
    }
-   
+
    if(!WES_TEST_FLAG(WES_FLAG_HW_PRESENT)) {
       if(cbc != NULL) {
 	 cbc->status = 0; /* XXX zero means success */
@@ -873,7 +873,7 @@ wei_add_scan_job(struct scan_job_t *sj, we_cb_container_t *cbc)
    uint32_t channel_mask = ~0;
 
    TRACE_SCAN_JOB(sj);
-      
+
    /* filter channels with regional channel list */
    req = sj->ss;
    status = WiFiEngine_GetRegionalChannels(&channels);
@@ -893,7 +893,7 @@ wei_add_scan_job(struct scan_job_t *sj, we_cb_container_t *cbc)
       wei_send_cmd(&msg_ref);
       status = WIFI_ENGINE_SUCCESS;
 }
-   else 
+   else
    {
       DE_TRACE_STATIC(TR_ASSOC, "Failed to create addscanjob_req\n");
       status = WIFI_ENGINE_FAILURE;
@@ -904,13 +904,13 @@ wei_add_scan_job(struct scan_job_t *sj, we_cb_container_t *cbc)
 }
 
 
-/*! 
+/*!
  * @brief Add a scan job to the device.
  *
- * @param sj_id The scan job id output buffer (can be NULL). This 
- *              identifies the scan job so that several scan jobs can be defined. 
+ * @param sj_id The scan job id output buffer (can be NULL). This
+ *              identifies the scan job so that several scan jobs can be defined.
  *              The ID value is filled in by this function call.
- * @param ssid Defines the SSID that the scan job should look for. 
+ * @param ssid Defines the SSID that the scan job should look for.
  *             A zero-length SSID counts as a "broadcast" SSID
  *             which will cause all SSIDs to be scanned for.
  * @param bssid A BSSID to scan for. If this is set to the broadcast BSSID
@@ -918,9 +918,9 @@ wei_add_scan_job(struct scan_job_t *sj, we_cb_container_t *cbc)
  *              to the SSID parameter). BSSID-specific scan can be performed
  *              be using zero-length SSID. Otherwise the results have to match
  *              both ssid and bssid.
- * @param scan_type 1 for active scan. 0 for passive scan. The device will 
- *             always perform active scans when it is associated. To prevent 
- *             execution of a job when association the flags parameter should be 
+ * @param scan_type 1 for active scan. 0 for passive scan. The device will
+ *             always perform active scans when it is associated. To prevent
+ *             execution of a job when association the flags parameter should be
  *             used.
  * @param ch_list Defines the channels to scan. The channel list is subject
  *                to further filtering due to 802.11d restrictions.
@@ -967,7 +967,7 @@ int WiFiEngine_AddScanJob(uint32_t *sj_id,
 {
    m80211_nrp_mlme_add_scanfilter_req_t *sf = NULL;
    struct scan_job_t *sj;
-   
+
    /* XXX a way to add hidden SSID jobs is missing from this */
 
    if(sf_id != -1 && sf_id != (int)UNUSEDID) {
@@ -978,7 +978,7 @@ int WiFiEngine_AddScanJob(uint32_t *sj_id,
       }
    }
 
-   sj = cache_add_scan_job(ssid, bssid, scan_type, ch_list, flags, 
+   sj = cache_add_scan_job(ssid, bssid, scan_type, ch_list, flags,
 			   prio, ap_exclude, sf, run_every_nth_period);
    if(sj == NULL) {
       DE_TRACE_STATIC(TR_SCAN, "failed to add scan job\n");
@@ -1006,9 +1006,9 @@ wei_remove_scan_job(struct scan_job_t *sj, we_cb_container_t *cbc)
    hic_message_context_t   msg_ref;
    uint32_t trans_id;
    int status;
-   
+
    TRACE_SCAN_JOB(sj);
-   
+
    req.job_id = JOBID(sj);
    req.trans_id = 0;
 
@@ -1023,13 +1023,13 @@ wei_remove_scan_job(struct scan_job_t *sj, we_cb_container_t *cbc)
       wei_send_cmd(&msg_ref);
       status = WIFI_ENGINE_SUCCESS;
    }
-   else 
+   else
    {
       DE_TRACE_STATIC(TR_SCAN, "Failed to create removescanjob_req\n");
       status = WIFI_ENGINE_FAILURE;
    }
    Mlme_ReleaseMessageContext(msg_ref);
-   
+
    return status;
 }
 
@@ -1060,7 +1060,7 @@ int WiFiEngine_RemoveScanJob(uint32_t sj_id,
 {
    struct scan_job_t *sj;
    int status;
-   
+
    sj = cache_find_job(sj_id);
    if(sj == NULL) {
       DE_TRACE_INT(TR_SCAN, "no scan job with id %u present\n", sj_id);
@@ -1085,7 +1085,7 @@ int WiFiEngine_RemoveScanJob(uint32_t sj_id,
 int WiFiEngine_RemoveAllScanJobs(void)
 {
    unsigned int i;
-   
+
    for(i = 0; i < MAX_SCAN_JOBS; i++)
       WiFiEngine_RemoveScanJob(i, NULL);
 
@@ -1094,17 +1094,17 @@ int WiFiEngine_RemoveAllScanJobs(void)
 
 
 static int
-wei_set_scan_job_state(struct scan_job_t *sj, 
+wei_set_scan_job_state(struct scan_job_t *sj,
 		       we_cb_container_t *cbc)
 {
    m80211_nrp_mlme_set_scanjobstate_req_t req;
    hic_message_context_t   msg_ref;
    int status;
    uint32_t trans_id;
-   
+
    TRACE_SCAN_JOB(sj);
 
-   DE_MEMSET(&req, 0, sizeof(req));   
+   DE_MEMSET(&req, 0, sizeof(req));
 
    req.job_id   = JOBID(sj);
    req.state    = sj->state;
@@ -1124,7 +1124,7 @@ wei_set_scan_job_state(struct scan_job_t *sj,
      wei_send_cmd(&msg_ref);
      status = WIFI_ENGINE_SUCCESS;
    }
-   else 
+   else
    {
       DE_TRACE_STATIC(TR_SCAN, "Failed to create setscanjobstate_req\n");
       status = WIFI_ENGINE_FAILURE;
@@ -1167,13 +1167,13 @@ wei_set_scan_job_state(struct scan_job_t *sj,
  *
  * @return
  */
-int WiFiEngine_SetScanJobState(uint32_t sj_id, 
+int WiFiEngine_SetScanJobState(uint32_t sj_id,
                                uint8_t state,
                                we_cb_container_t *cbc)
 {
    struct scan_job_t *sj;
    uint8_t old_state;
-   
+
    sj = cache_find_job(sj_id);
    if(sj == NULL) {
       DE_TRACE_INT(TR_SCAN, "no scan job with id %u present\n", sj_id);
@@ -1228,7 +1228,7 @@ int WiFiEngine_SetScanJobState(uint32_t sj_id,
  *
  * @return
  */
-int WiFiEngine_GetScanFilter(uint32_t sf_id, 
+int WiFiEngine_GetScanFilter(uint32_t sf_id,
 			     WiFiEngine_scan_filter_t *filter)
 {
    m80211_nrp_mlme_add_scanfilter_req_t *sf;
@@ -1239,7 +1239,7 @@ int WiFiEngine_GetScanFilter(uint32_t sf_id,
       return WIFI_ENGINE_FAILURE;
    }
    if(filter != NULL) {
-      
+
       filter->filter_id = sf->filter_id;
       filter->bss_type = (WiFiEngine_bss_type_t)sf->bss_type;
       filter->rssi_thr = sf->rssi_threshold;
@@ -1284,11 +1284,11 @@ int wei_send_scan_req(uint32_t job_id, uint16_t channel_interval, uint32_t probe
    int r = WIFI_ENGINE_SUCCESS;
 
    BAIL_IF_UNPLUGGED;
-  
+
    basic = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
-   
+
    Mlme_CreateMessageContext(msg_ref);
-   
+
    DE_TRACE_INT2(TR_SCAN, "trig scan job %d channel intervall %d \n", job_id, channel_interval);
 
    if (Mlme_CreateScanRequest(&msg_ref, basic->activeScanMode, job_id, channel_interval, probe_delay, min_ch_time, max_ch_time))
@@ -1296,7 +1296,7 @@ int wei_send_scan_req(uint32_t job_id, uint16_t channel_interval, uint32_t probe
       wei_send_cmd(&msg_ref);
       r = WIFI_ENGINE_SUCCESS;
    }
-   else 
+   else
    {
       DE_TRACE_STATIC(TR_SCAN, "Failed to create ScanRequest\n");
       r = WIFI_ENGINE_FAILURE;
@@ -1333,7 +1333,7 @@ int wei_send_set_scancountryinfo_req(m80211_ie_country_t *ci)
       wei_send_cmd(&msg_ref);
       r = WIFI_ENGINE_SUCCESS;
    }
-   else 
+   else
    {
       DE_TRACE_STATIC(TR_SCAN, "Failed to create ScanCountryInfoRequest\n");
       r = WIFI_ENGINE_FAILURE;
@@ -1374,7 +1374,7 @@ int wei_handle_scan_cfm(hic_message_context_t *msg_ref)
    if (cfm->result == SCAN_FAILURE)
    {
       DE_TRACE_STATIC(TR_SCAN, "SCAN CFM is marked as failed\n");
-      
+
       DriverEnvironment_indicate(WE_IND_SCAN_COMPLETE, NULL, 0);
       /* Notify roaming agent that trigscan failed */
       wei_roam_notify_scan_failed();
@@ -1483,7 +1483,7 @@ int wei_handle_scan_notification_ind(hic_message_context_t *msg_ref)
    char msg[128];
    size_t len = 0;
    m80211_nrp_mlme_scannotification_ind_t *ind;
-   ind = HIC_GET_RAW_FROM_CONTEXT(msg_ref, 
+   ind = HIC_GET_RAW_FROM_CONTEXT(msg_ref,
                                   m80211_nrp_mlme_scannotification_ind_t);
    if(TRACE_ENABLED(TR_SCAN)) {
       len += DE_SNPRINTF(msg + len, sizeof(msg) - len, "job %u", ind->job_id);
@@ -1527,7 +1527,7 @@ int wei_handle_scan_notification_ind(hic_message_context_t *msg_ref)
       }
 #ifdef USE_NEW_AGE
       wifiEngineState.scan_count++;
-#endif      
+#endif
    }
    DE_TRACE_STRING(TR_SCAN, "SCANNOTIFICATION_IND: %s\n", msg);
 
@@ -1546,8 +1546,8 @@ int wei_handle_scan_notification_ind(hic_message_context_t *msg_ref)
 
       /* Reset scan indication filter. */
       last_scan_channel = 0;
-      
-      /* Notify roaming agent that a trig scan is complete */ 
+
+      /* Notify roaming agent that a trig scan is complete */
       wei_roam_notify_scan_complete();
 
       DriverEnvironment_indicate(WE_IND_SCAN_COMPLETE, ind, sizeof(*ind));
@@ -1558,14 +1558,14 @@ int wei_handle_scan_notification_ind(hic_message_context_t *msg_ref)
 int wei_reinitialize_scan(void)
 {
    rConnectionPolicy* c;
-   rBasicWiFiProperties*   basic;   
+   rBasicWiFiProperties*   basic;
 
    basic = (rBasicWiFiProperties*) Registry_GetProperty(ID_basic);
    c = (rConnectionPolicy*) &basic->connectionPolicy;
 
-   cache_configure_scan(SHORT_PREAMBLE, 11, c->probesPerChannel, 
+   cache_configure_scan(SHORT_PREAMBLE, 11, c->probesPerChannel,
                         basic->scanNotificationPolicy,
-                        c->disconnectedScanInterval, 
+                        c->disconnectedScanInterval,
                         c->probeDelay, c->passiveScanTimeouts.minChannelTime,
                         c->passiveScanTimeouts.maxChannelTime,
                         c->activeScanTimeouts.minChannelTime,
@@ -1574,9 +1574,9 @@ int wei_reinitialize_scan(void)
                         c->connectedScanTimeouts.minChannelTime,
                         c->connectedScanTimeouts.maxChannelTime,
                         c->max_disconnectedScanInterval,
-                        c->max_connectedScanPeriod, 
+                        c->max_connectedScanPeriod,
                         (uint8_t) c->periodicScanRepetition);
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -1591,19 +1591,19 @@ int wei_initialize_scan(void)
    rConnectionPolicy* c;
    rScanPolicy * s;
    struct scan_job_t *sj;
-   m80211_nrp_mlme_add_scanfilter_req_t *sf = NULL;   
+   m80211_nrp_mlme_add_scanfilter_req_t *sf = NULL;
 
    basic = (rBasicWiFiProperties*) Registry_GetProperty(ID_basic);
    c = (rConnectionPolicy*) &basic->connectionPolicy;
    s = (rScanPolicy*) &basic->scanPolicy;
-   
+
    DE_MEMSET(&bcast_ssid, 0, sizeof bcast_ssid); /* IE id for ssid is 0 */
    DE_MEMSET(&bcast_bssid, 0xFF, sizeof bcast_bssid);
 
    cache_clear_scan();
-   cache_configure_scan(SHORT_PREAMBLE, 11, c->probesPerChannel, 
+   cache_configure_scan(SHORT_PREAMBLE, 11, c->probesPerChannel,
                         basic->scanNotificationPolicy,
-                        c->disconnectedScanInterval, 
+                        c->disconnectedScanInterval,
                         c->probeDelay, c->passiveScanTimeouts.minChannelTime,
                         c->passiveScanTimeouts.maxChannelTime,
                         c->activeScanTimeouts.minChannelTime,
@@ -1612,12 +1612,12 @@ int wei_initialize_scan(void)
                         c->connectedScanTimeouts.minChannelTime,
                         c->connectedScanTimeouts.maxChannelTime,
                         c->max_disconnectedScanInterval,
-                        c->max_connectedScanPeriod, 
+                        c->max_connectedScanPeriod,
                         (uint8_t) c->periodicScanRepetition);
 
    if(basic->defaultScanJobDisposition)
-   {   
-      if (s->bssType == 1 || s->bssType == 2) 
+   {
+      if (s->bssType == 1 || s->bssType == 2)
       {
          DE_TRACE_STRING(TR_NOISE, "Filter on bss type in default scan job. Keep %s only.\n", s->bssType == 2 ? "IBSS" : "BSS");
          sf = cache_add_scan_filter(s->bssType,
@@ -1627,7 +1627,7 @@ int wei_initialize_scan(void)
       }
 
       sj = cache_add_scan_job(bcast_ssid, bcast_bssid, basic->activeScanMode,
-   			   basic->regionalChannels, ANY_MODE, 1, 0, 
+   			   basic->regionalChannels, ANY_MODE, 1, 0,
    			   sf, 1);
       cache_set_scan_job_state(sj, 0);
    }
@@ -1646,15 +1646,15 @@ int wei_reconfigure_scan(void)
    rBasicWiFiProperties*   basic;
 
    basic = (rBasicWiFiProperties*) Registry_GetProperty(ID_basic);
-   
+
    wei_configure_scan(&scan_state.sp, NULL);
 
    if(basic->defaultScanJobDisposition)
-   {  
+   {
       /* Add scan filters first since they're referenced by the scan jobs */
       for(i = 0; i < MAX_SCAN_FILTERS; i++) {
          m80211_nrp_mlme_add_scanfilter_req_t* sf = &scan_state.sf[i];
-         
+
          /* Empty slot, then continue */
          if(sf->filter_id == UNUSEDID)
             continue;
@@ -1663,15 +1663,15 @@ int wei_reconfigure_scan(void)
          if(status != WIFI_ENGINE_SUCCESS)
             DE_TRACE_INT(TR_NOISE, "wei_add_scan_filter=%d\n",  status);
       }
-      
+
       /* Add scan jobs and set state */
       for(i = 0; i < MAX_SCAN_JOBS; i++) {
          struct scan_job_t* sj = &scan_state.sj[i];
-         
+
          /* Empty slot, then continue */
          if(JOBUNUSED(sj))
             continue;
-         
+
          status = wei_add_scan_job(sj, NULL);
 
          if(status != WIFI_ENGINE_SUCCESS)
@@ -1682,9 +1682,9 @@ int wei_reconfigure_scan(void)
           */
          if(!sj->state)
             continue;
-         
+
          status = wei_set_scan_job_state(sj, NULL);
-         
+
          if(status != WIFI_ENGINE_SUCCESS)
             DE_TRACE_INT(TR_NOISE, "wei_set_scan_job_state=%d\n",  status);
       }
@@ -1723,7 +1723,7 @@ static bool_t m80211_identical_ie(m80211_ie_format_t * a, m80211_ie_format_t * b
 #if DE_PROTECT_FROM_DUP_SCAN_INDS == CFG_ON
 int wei_exclude_from_scan(m80211_mac_addr_t* bssid_p, m80211_ie_ssid_t* ssid_p, int current_channel)
 {
-   #define WRAP_MASK (sizeof(duplicate_filter)/sizeof(duplicate_filter[0]) - 1) 
+   #define WRAP_MASK (sizeof(duplicate_filter)/sizeof(duplicate_filter[0]) - 1)
 
    typedef struct
    {
@@ -1732,7 +1732,7 @@ int wei_exclude_from_scan(m80211_mac_addr_t* bssid_p, m80211_ie_ssid_t* ssid_p, 
    } duplicate_filter_entry_t;
 
    /* Number of filter entries must be 2^x */
-   static duplicate_filter_entry_t duplicate_filter[1<<5];  
+   static duplicate_filter_entry_t duplicate_filter[1<<5];
    static int filter_wr_idx;
    static int filter_rd_idx;
 
@@ -1750,14 +1750,14 @@ int wei_exclude_from_scan(m80211_mac_addr_t* bssid_p, m80211_ie_ssid_t* ssid_p, 
    for(i=filter_rd_idx; i!=filter_wr_idx; i=(WRAP_MASK & (i+1)))
    {
       if ((MEMCMP(&duplicate_filter[i].bssid, bssid_p, sizeof(duplicate_filter[0].bssid)) == 0)
-        && m80211_identical_ie((m80211_ie_format_t*)&duplicate_filter[i].ssid, 
+        && m80211_identical_ie((m80211_ie_format_t*)&duplicate_filter[i].ssid,
                                (m80211_ie_format_t*)ssid_p) )
       {
          /* We have already seen the ap on this channel. */
          return TRUE;
       }
    }
-   
+
    /* Save this AP. */
    MEMCPY(&duplicate_filter[filter_wr_idx].bssid, bssid_p, sizeof(duplicate_filter[0].bssid));
    MEMCPY(&duplicate_filter[filter_wr_idx].ssid,  ssid_p,  sizeof(duplicate_filter[0].ssid));
@@ -1775,5 +1775,3 @@ int wei_exclude_from_scan(m80211_mac_addr_t* bssid_p, m80211_ie_ssid_t* ssid_p, 
 
 
 /** @} */ /* End of we_scan group */
-
-

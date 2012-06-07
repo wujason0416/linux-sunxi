@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // <copyright file="hif.c" company="Atheros">
 //    Copyright (c) 2004-2010 Atheros Corporation.  All rights reserved.
-// 
+//
 //
 // Permission to use, copy, modify, and/or distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -42,8 +42,8 @@
 
 #if HIF_USE_DMA_BOUNCE_BUFFER
 /* macro to check if DMA buffer is WORD-aligned and DMA-able.  Most host controllers assume the
- * buffer is DMA'able and will bug-check otherwise (i.e. buffers on the stack).  
- * virt_addr_valid check fails on stack memory.  
+ * buffer is DMA'able and will bug-check otherwise (i.e. buffers on the stack).
+ * virt_addr_valid check fails on stack memory.
  */
 #define BUFFER_NEEDS_BOUNCE(buffer)  (((unsigned long)(buffer) & 0x3) || !virt_addr_valid((buffer)))
 #else
@@ -100,7 +100,7 @@ static struct sdio_driver ar6k_driver = {
 static struct dev_pm_ops ar6k_device_pm_ops = {
 #else
 static struct pm_ops ar6k_device_pm_ops = {
-#endif 
+#endif
 	.suspend = hifDeviceSuspend,
 	.resume = hifDeviceResume,
 };
@@ -128,7 +128,7 @@ ATH_DEBUG_INSTANTIATE_MODULE_VAR(hif,
                                  ATH_DEBUG_MASK_DEFAULTS,
                                  0,
                                  NULL);
-                                 
+
 #endif
 
 
@@ -169,7 +169,7 @@ static int __HIFCheckR1Ready(HIF_DEVICE *device, unsigned timeout)
 {
     AR_DEBUG_ASSERT(device != NULL);
     AR_DEBUG_ASSERT(device->func != NULL);
-    
+
     while (!sunximmc_check_r1_ready(device->func->card->host)) {
 //        AR_DEBUG_PRINTF(ATH_DEBUG_ERROR, ("wait...\n"));
         if (timeout==0) {
@@ -178,7 +178,7 @@ static int __HIFCheckR1Ready(HIF_DEVICE *device, unsigned timeout)
         }
         timeout--;
     }
-    
+
     return timeout ? 1 : 0;
 }
 #endif
@@ -200,7 +200,7 @@ __HIFReadWrite(HIF_DEVICE *device,
     AR_DEBUG_ASSERT(device != NULL);
     AR_DEBUG_ASSERT(device->func != NULL);
 
-    AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: Device: 0x%p, buffer:0x%p (addr:0x%X)\n", 
+    AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: Device: 0x%p, buffer:0x%p (addr:0x%X)\n",
                     device, buffer, address));
 
     do {
@@ -242,9 +242,9 @@ __HIFReadWrite(HIF_DEVICE *device,
             if ((address >= HIF_MBOX_START_ADDR(0)) &&
                 (address <= HIF_MBOX_END_ADDR(3)))
             {
-    
+
                 AR_DEBUG_ASSERT(length <= HIF_MBOX_WIDTH);
-    
+
                 /*
                  * Mailbox write. Adjust the address so that the last byte
                  * falls on the EOM address.
@@ -276,7 +276,7 @@ __HIFReadWrite(HIF_DEVICE *device,
                 memcpy(tbuffer, buffer, length);
                 bounced = TRUE;
             } else {
-                tbuffer = buffer;    
+                tbuffer = buffer;
             }
 #else
 	        tbuffer = buffer;
@@ -304,7 +304,7 @@ __HIFReadWrite(HIF_DEVICE *device,
                 tbuffer = device->dma_buffer;
                 bounced = TRUE;
             } else {
-                tbuffer = buffer;    
+                tbuffer = buffer;
             }
 #else
             tbuffer = buffer;
@@ -337,7 +337,7 @@ __HIFReadWrite(HIF_DEVICE *device,
             status = A_ERROR;
         }
     } while (FALSE);
-	
+
     return status;
 }
 
@@ -346,7 +346,7 @@ void AddToAsyncList(HIF_DEVICE *device, BUS_REQUEST *busrequest)
     unsigned long flags;
     BUS_REQUEST *async;
     BUS_REQUEST *active;
-    
+
     spin_lock_irqsave(&device->asynclock, flags);
     active = device->asyncreq;
     if (active == NULL) {
@@ -383,15 +383,15 @@ HIFReadWrite(HIF_DEVICE *device,
 
     AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: Device: %p addr:0x%X\n", device,address));
 
-    do {            
+    do {
         if ((request & HIF_ASYNCHRONOUS) || (request & HIF_SYNCHRONOUS)){
             /* serialize all requests through the async thread */
-            AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: Execution mode: %s\n", 
+            AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: Execution mode: %s\n",
                         (request & HIF_ASYNCHRONOUS)?"Async":"Synch"));
             busrequest = hifAllocateBusRequest(device);
             if (busrequest == NULL) {
-                AR_DEBUG_PRINTF(ATH_DEBUG_ERROR, 
-                    ("AR6000: no async bus requests available (%s, addr:0x%X, len:%d) \n", 
+                AR_DEBUG_PRINTF(ATH_DEBUG_ERROR,
+                    ("AR6000: no async bus requests available (%s, addr:0x%X, len:%d) \n",
                         request & HIF_READ ? "READ":"WRITE", address, length));
                 return A_ERROR;
             }
@@ -400,9 +400,9 @@ HIFReadWrite(HIF_DEVICE *device,
             busrequest->length = length;
             busrequest->request = request;
             busrequest->context = context;
-            
+
             AddToAsyncList(device, busrequest);
-            
+
             if (request & HIF_SYNCHRONOUS) {
                 AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: queued sync req: 0x%lX\n", (unsigned long)busrequest));
 
@@ -413,7 +413,7 @@ HIFReadWrite(HIF_DEVICE *device,
                     return A_ERROR;
                 } else {
                     A_STATUS status = busrequest->status;
-                    AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: sync return freeing 0x%lX: 0x%X\n", 
+                    AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: sync return freeing 0x%lX: 0x%X\n",
 						      (unsigned long)busrequest, busrequest->status));
                     AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: freeing req: 0x%X\n", (unsigned int)request));
                     hifFreeBusRequest(device, busrequest);
@@ -469,14 +469,14 @@ static int async_task(void *param)
             }
             spin_unlock_irqrestore(&device->asynclock, flags);
             AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: async_task processing req: 0x%lX\n", (unsigned long)request));
-            
+
             if (request->pScatterReq != NULL) {
                 A_ASSERT(device->scatter_enabled);
                     /* this is a queued scatter request, pass the request to scatter routine which
                      * executes it synchronously, note, no need to free the request since scatter requests
                      * are maintained on a separate list */
                 status = DoHifReadWriteScatter(device,request);
-            } else {                
+            } else {
                     /* call HIFReadWrite in sync mode to do the work */
                 status = __HIFReadWrite(device, request->address, request->buffer,
                                       request->length, request->request & ~HIF_SYNCHRONOUS, NULL);
@@ -536,7 +536,7 @@ A_STATUS ReinitSDIO(HIF_DEVICE *device)
     func = device->func;
     card = func->card;
     host = card->host;
-   
+
     AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: +ReinitSDIO \n"));
     sdio_claim_host(func);
 
@@ -583,15 +583,15 @@ A_STATUS ReinitSDIO(HIF_DEVICE *device)
             host->use_spi_crc = 0;
 
             if (err) {
-                AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD0 failed : %d \n",err));    
+                AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD0 failed : %d \n",err));
                 break;
-            }        
+            }
 
             if (!host->ocr) {
                 /* Issue CMD5, arg = 0 */
                 err = IssueSDCommand(device, SD_IO_SEND_OP_COND, 0, (MMC_RSP_R4 | MMC_CMD_BCR), &resp);
                 if (err) {
-                    AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD5 failed : %d \n",err));    
+                    AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD5 failed : %d \n",err));
                     break;
                 }
                 host->ocr = resp;
@@ -601,7 +601,7 @@ A_STATUS ReinitSDIO(HIF_DEVICE *device)
             for (i=0;i<100;i++) {
                 err = IssueSDCommand(device, SD_IO_SEND_OP_COND, host->ocr, (MMC_RSP_R4 | MMC_CMD_BCR), &resp);
                 if (err) {
-                    AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD5 failed : %d \n",err));    
+                    AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD5 failed : %d \n",err));
                     break;
                 }
                 if (resp & MMC_CARD_BUSY) {
@@ -611,14 +611,14 @@ A_STATUS ReinitSDIO(HIF_DEVICE *device)
             }
 
             if ((i == 100) || (err)) {
-                AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: card in not ready : %d %d \n",i,err));    
+                AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: card in not ready : %d %d \n",i,err));
                 break;
             }
 
             /* Issue CMD3, get RCA */
             err = IssueSDCommand(device, SD_SEND_RELATIVE_ADDR, 0, MMC_RSP_R6 | MMC_CMD_BCR, &resp);
             if (err) {
-                AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD3 failed : %d \n",err));    
+                AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD3 failed : %d \n",err));
                 break;
             }
             rca = resp >> 16;
@@ -628,23 +628,23 @@ A_STATUS ReinitSDIO(HIF_DEVICE *device)
             /* Issue CMD7, select card  */
             err = IssueSDCommand(device, MMC_SELECT_CARD, (rca << 16), MMC_RSP_R1 | MMC_CMD_AC, NULL);
             if (err) {
-                AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD7 failed : %d \n",err));    
+                AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD7 failed : %d \n",err));
                 break;
             }
         }
-        
+
         /* Enable high speed */
         if (card->host->caps & MMC_CAP_SD_HIGHSPEED) {
-            AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("ReinitSDIO: Set high speed mode\n"));    
+            AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("ReinitSDIO: Set high speed mode\n"));
             err = Func0_CMD52ReadByte(card, SDIO_CCCR_SPEED, &cmd52_resp);
             if (err) {
-                AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD52 read to CCCR speed register failed  : %d \n",err));    
+                AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD52 read to CCCR speed register failed  : %d \n",err));
                 card->state &= ~MMC_STATE_HIGHSPEED;
                 /* no need to break */
             } else {
                 err = Func0_CMD52WriteByte(card, SDIO_CCCR_SPEED, (cmd52_resp | SDIO_SPEED_EHS));
                 if (err) {
-                    AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD52 write to CCCR speed register failed  : %d \n",err));    
+                    AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD52 write to CCCR speed register failed  : %d \n",err));
                     break;
                 }
                 mmc_card_set_highspeed(card);
@@ -659,19 +659,19 @@ A_STATUS ReinitSDIO(HIF_DEVICE *device)
         } else {
             clock = card->cis.max_dtr;
         }
-        
+
         if (clock > host->f_max) {
             clock = host->f_max;
         }
         host->ios.clock = clock;
         host->ops->set_ios(host, &host->ios);
-        
+
 
         if (card->host->caps & MMC_CAP_4_BIT_DATA) {
             /* CMD52: Set bus width & disable card detect resistor */
             err = Func0_CMD52WriteByte(card, SDIO_CCCR_IF, SDIO_BUS_CD_DISABLE | SDIO_BUS_WIDTH_4BIT);
             if (err) {
-                AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD52 to set bus mode failed : %d \n",err));    
+                AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("ReinitSDIO: CMD52 to set bus mode failed : %d \n",err));
                 break;
             }
             host->ios.bus_width = MMC_BUS_WIDTH_4;
@@ -685,12 +685,12 @@ A_STATUS ReinitSDIO(HIF_DEVICE *device)
     return (err) ? A_ERROR : A_OK;
 }
 
-/* 
+/*
  * Setup IRQ mode for deep sleep and WoW
- * Switch back to 1 bits mode when we suspend for WoW in order to 
- * detect SDIO irq without clock. 
+ * Switch back to 1 bits mode when we suspend for WoW in order to
+ * detect SDIO irq without clock.
  * Re-enable async 4-bit irq mode for some host controllers after resume
- */ 
+ */
 static int SdioEnable4bits(HIF_DEVICE *device,  int enable)
 {
     int ret = 0;
@@ -715,7 +715,7 @@ static int SdioEnable4bits(HIF_DEVICE *device,  int enable)
 
     sdio_claim_host(func);
     do {
-        /* 2.6.34 will setup 1bits automatically. No need to setup */ 
+        /* 2.6.34 will setup 1bits automatically. No need to setup */
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,34)
         ret = Func0_CMD52ReadByte(card, SDIO_CCCR_IF, &ctrl);
         if (ret) {
@@ -733,7 +733,7 @@ static int SdioEnable4bits(HIF_DEVICE *device,  int enable)
 
         ret = Func0_CMD52WriteByte(card, SDIO_CCCR_IF, ctrl);
         if (ret) {
-            AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("%s: Fail to write CCCR_IF : %d \n", __func__, ret));    
+            AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("%s: Fail to write CCCR_IF : %d \n", __func__, ret));
              break;
         }
         host->ios.bus_width = width;
@@ -794,7 +794,7 @@ PowerStateChangeNotify(HIF_DEVICE *device, HIF_DEVICE_POWER_CHANGE_TYPE config)
                 status = (ret==0) ? A_OK : A_ERROR;
             }
             break;
-    } 
+    }
     device->powerConfig = config;
 
     AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: -PowerStateChangeNotify\n"));
@@ -808,7 +808,7 @@ HIFConfigureDevice(HIF_DEVICE *device, HIF_DEVICE_CONFIG_OPCODE opcode,
 {
     A_UINT32 count;
     A_STATUS status = A_OK;
-    
+
     switch(opcode) {
         case HIF_DEVICE_GET_MBOX_BLOCK_SIZE:
             ((A_UINT32 *)config)[0] = HIF_MBOX0_BLOCK_SIZE;
@@ -821,12 +821,12 @@ HIFConfigureDevice(HIF_DEVICE *device, HIF_DEVICE_CONFIG_OPCODE opcode,
             for (count = 0; count < 4; count ++) {
                 ((A_UINT32 *)config)[count] = HIF_MBOX_START_ADDR(count);
             }
-            
-            if (configLen >= sizeof(HIF_DEVICE_MBOX_INFO)) {    
+
+            if (configLen >= sizeof(HIF_DEVICE_MBOX_INFO)) {
                 SetExtendedMboxWindowInfo((A_UINT16)device->func->device,
                                           (HIF_DEVICE_MBOX_INFO *)config);
             }
-                        
+
             break;
         case HIF_DEVICE_GET_PENDING_EVENTS_FUNC:
             AR_DEBUG_PRINTF(ATH_DEBUG_INFO,
@@ -843,17 +843,17 @@ HIFConfigureDevice(HIF_DEVICE *device, HIF_DEVICE_CONFIG_OPCODE opcode,
             break;
         case HIF_CONFIGURE_QUERY_SCATTER_REQUEST_SUPPORT:
             if (!device->scatter_enabled) {
-                return A_ENOTSUP;    
+                return A_ENOTSUP;
             }
             status = SetupHIFScatterSupport(device, (HIF_DEVICE_SCATTER_SUPPORT_INFO *)config);
             if (A_FAILED(status)) {
-                device->scatter_enabled = FALSE;           
+                device->scatter_enabled = FALSE;
             }
-            break; 
+            break;
         case HIF_DEVICE_GET_OS_DEVICE:
                 /* pass back a pointer to the SDIO function's "dev" struct */
             ((HIF_DEVICE_OS_DEVICE_INFO *)config)->pOSDevice = &device->func->dev;
-            break; 
+            break;
         case HIF_DEVICE_POWER_STATE_CHANGE:
             status = PowerStateChangeNotify(device, *(HIF_DEVICE_POWER_CHANGE_TYPE *)config);
             break;
@@ -898,7 +898,7 @@ HIFShutDownDevice(HIF_DEVICE *device)
 
         for (i=0; i<MAX_HIF_DEVICES; ++i) {
             if (hif_devices[i] && hif_devices[i]->func == NULL) {
-                AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, 
+                AR_DEBUG_PRINTF(ATH_DEBUG_TRACE,
                                 ("AR6000: Remove pending hif_device %p\n", hif_devices[i]));
                 delHifDevice(hif_devices[i]);
                 hif_devices[i] = NULL;
@@ -948,10 +948,10 @@ static int enable_task(void *param)
     AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: call  from resume_task\n"));
 
         /* start  up inform DRV layer */
-    if (device && 
-        device->claimedContext && 
+    if (device &&
+        device->claimedContext &&
         osdrvCallbacks.devicePowerChangeHandler &&
-        osdrvCallbacks.devicePowerChangeHandler(device->claimedContext, HIF_DEVICE_POWER_UP) != A_OK) 
+        osdrvCallbacks.devicePowerChangeHandler(device->claimedContext, HIF_DEVICE_POWER_UP) != A_OK)
     {
         AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: Device rejected\n"));
     }
@@ -963,14 +963,14 @@ static int enable_task(void *param)
 static void hifAssignTargetHeaders(A_UINT16 SDIO_ID)
 {
      switch (SDIO_ID) {
-         case MANUFACTURER_ID_AR6003_BASE: 
+         case MANUFACTURER_ID_AR6003_BASE:
              hif_register_tbl_attach(HIF_TYPE_AR6003);
          break;
 
-         case MANUFACTURER_ID_MCKINLEY_BASE: 
+         case MANUFACTURER_ID_MCKINLEY_BASE:
              hif_register_tbl_attach(HIF_TYPE_MCKINLEY);
          break;
-         default: 
+         default:
              hif_register_tbl_attach(HIF_TYPE_AR6003);
          break;
     }
@@ -1081,7 +1081,7 @@ void HIFMaskInterrupt(HIF_DEVICE *device)
 
     /* Mask our function IRQ */
     sdio_claim_host(device->func);
-    while (atomic_read(&device->irqHandling)) {        
+    while (atomic_read(&device->irqHandling)) {
         sdio_release_host(device->func);
         schedule_timeout_interruptible(HZ/10);
         sdio_claim_host(device->func);
@@ -1090,7 +1090,7 @@ void HIFMaskInterrupt(HIF_DEVICE *device)
     sdio_release_host(device->func);
     if (ret) {
         if (ret == -ETIMEDOUT) {
-            AR_DEBUG_PRINTF(ATH_DEBUG_WARN,  
+            AR_DEBUG_PRINTF(ATH_DEBUG_WARN,
                        ("AR6000: Timeout to mask interrupt. Card removed?\n"));
         } else {
             AR_DEBUG_PRINTF(ATH_DEBUG_ERROR,
@@ -1159,21 +1159,21 @@ static A_STATUS hifDisableFunc(HIF_DEVICE *device, struct sdio_func *func)
     ret = sdio_disable_func(device->func);
     if (ret) {
         status = A_ERROR;
-    } 
+    }
 
     if (reset_sdio_on_unload && status == A_OK) {
         /* reset the SDIO interface.  This is useful in automated testing where the card
-         * does not need to be removed at the end of the test.  It is expected that the user will 
+         * does not need to be removed at the end of the test.  It is expected that the user will
          * also unload/reload the host controller driver to force the bus driver to re-enumerate the slot */
         AR_DEBUG_PRINTF(ATH_DEBUG_INFO, ("AR6000: reseting SDIO card back to uninitialized state \n"));
-        
+
         /* NOTE : sdio_f0_writeb() cannot be used here, that API only allows access
          *        to undefined registers in the range of: 0xF0-0xFF */
-         
-        ret = Func0_CMD52WriteByte(device->func->card, SDIO_CCCR_ABORT, (1 << 3)); 
+
+        ret = Func0_CMD52WriteByte(device->func->card, SDIO_CCCR_ABORT, (1 << 3));
         if (ret) {
             status = A_ERROR;
-            AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("AR6000: reset failed : %d \n",ret));    
+            AR_DEBUG_PRINTF(ATH_DEBUG_ERR, ("AR6000: reset failed : %d \n",ret));
         }
     }
 
@@ -1194,7 +1194,7 @@ static A_STATUS hifEnableFunc(HIF_DEVICE *device, struct sdio_func *func)
     const char *taskName = NULL;
     int (*taskFunc)(void *) = NULL;
     int ret = A_OK;
-    
+
     AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: +hifEnableFunc\n"));
     device = getHifDevice(func);
 
@@ -1242,7 +1242,7 @@ static A_STATUS hifEnableFunc(HIF_DEVICE *device, struct sdio_func *func)
                 return A_ERROR;
            }
            AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: start async task\n"));
-           wake_up_process(device->async_task );    
+           wake_up_process(device->async_task );
         }
     }
 
@@ -1321,7 +1321,7 @@ static int hifDeviceResume(struct device *dev)
 {
     struct sdio_func *func=dev_to_sdio_func(dev);
     A_STATUS status = A_OK;
-    HIF_DEVICE *device;   
+    HIF_DEVICE *device;
 
     device = getHifDevice(func);
     AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: +hifDeviceResume\n"));
@@ -1343,7 +1343,7 @@ static void hifDeviceRemoved(struct sdio_func *func)
 
     AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: +hifDeviceRemoved\n"));
     device = getHifDevice(func);
-    
+
     if (device->powerConfig == HIF_DEVICE_POWER_CUT) {
         device->func = NULL; /* func will be free by mmc stack */
         return; /* Just return for cut-off mode */
@@ -1368,7 +1368,7 @@ static void hifDeviceRemoved(struct sdio_func *func)
 
     delHifDevice(device);
     if (status != A_OK) {
-        AR_DEBUG_PRINTF(ATH_DEBUG_WARN, 
+        AR_DEBUG_PRINTF(ATH_DEBUG_WARN,
             ("AR6000: Unable to disable sdio func. Card removed?\n"));
     }
     AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: -hifDeviceRemoved\n"));
@@ -1383,7 +1383,7 @@ A_STATUS hifWaitForPendingRecv(HIF_DEVICE *device)
     A_UINT8 host_int_status;
     A_STATUS status = A_OK;
 
-    do {            		    
+    do {
         while (atomic_read(&device->irqHandling)) {
 	        /* wait until irq handler finished all the jobs */
 			schedule_timeout(HZ/10);
@@ -1400,13 +1400,13 @@ A_STATUS hifWaitForPendingRecv(HIF_DEVICE *device)
 	} while (host_int_status && --cnt > 0);
 
     if (host_int_status && cnt == 0) {
-         AR_DEBUG_PRINTF(ATH_DEBUG_ERROR, 
+         AR_DEBUG_PRINTF(ATH_DEBUG_ERROR,
                             ("AR6000: %s(), Unable clear up pending IRQ before the system suspended\n", __FUNCTION__));
      }
 
     return A_OK;
 }
-    
+
 
 static HIF_DEVICE *
 addHifDevice(struct sdio_func *func)
@@ -1414,7 +1414,7 @@ addHifDevice(struct sdio_func *func)
     HIF_DEVICE *hifdevice;
     AR_DEBUG_PRINTF(ATH_DEBUG_TRACE, ("AR6000: addHifDevice\n"));
     AR_DEBUG_ASSERT(func != NULL);
-    hifdevice = (HIF_DEVICE *)A_MALLOC(sizeof(HIF_DEVICE));    
+    hifdevice = (HIF_DEVICE *)A_MALLOC(sizeof(HIF_DEVICE));
     AR_DEBUG_ASSERT(hifdevice != NULL);
     A_MEMZERO(hifdevice, sizeof(*hifdevice));
 #if HIF_USE_DMA_BOUNCE_BUFFER
@@ -1483,23 +1483,23 @@ void HIFDetachHTC(HIF_DEVICE *device)
             (((address) & 0x1FFFF) << 9) | \
             (1 << 8)                     | \
             ((writedata) & 0xFF)
-            
+
 #define SDIO_SET_CMD52_READ_ARG(arg,func,address) \
     SDIO_SET_CMD52_ARG(arg,0,(func),0,address,0x00)
 #define SDIO_SET_CMD52_WRITE_ARG(arg,func,address,value) \
     SDIO_SET_CMD52_ARG(arg,1,(func),0,address,value)
-    
+
 static int Func0_CMD52WriteByte(struct mmc_card *card, unsigned int address, unsigned char byte)
 {
     struct mmc_command ioCmd;
     unsigned long      arg;
-    
+
     memset(&ioCmd,0,sizeof(ioCmd));
     SDIO_SET_CMD52_WRITE_ARG(arg,0,address,byte);
     ioCmd.opcode = SD_IO_RW_DIRECT;
     ioCmd.arg = arg;
     ioCmd.flags = MMC_RSP_R5 | MMC_CMD_AC;
-    
+
     return mmc_wait_for_cmd(card->host, &ioCmd, 0);
 }
 
@@ -1508,7 +1508,7 @@ static int Func0_CMD52ReadByte(struct mmc_card *card, unsigned int address, unsi
     struct mmc_command ioCmd;
     unsigned long      arg;
     A_INT32 err;
-    
+
     memset(&ioCmd,0,sizeof(ioCmd));
     SDIO_SET_CMD52_READ_ARG(arg,0,address);
     ioCmd.opcode = SD_IO_RW_DIRECT;

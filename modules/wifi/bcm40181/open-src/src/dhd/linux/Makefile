@@ -2,13 +2,13 @@
 # GNU Makefile for Broadcom Dongle Host Driver
 #
 # Copyright (C) 1999-2011, Broadcom Corporation
-# 
+#
 #         Unless you and Broadcom execute a separate written software license
 # agreement governing use of this software, this software is licensed to you
 # under the terms of the GNU General Public License version 2 (the "GPL"),
 # available at http://www.broadcom.com/licenses/GPLv2.php, with the
 # following added to such license:
-# 
+#
 #      As a special exception, the copyright holders of this software give you
 # permission to link this software with independent modules, and to copy and
 # distribute the resulting executable under terms of your choice, provided that
@@ -16,7 +16,7 @@
 # the license of that module.  An independent module is a module which is not
 # derived from this software.  The special exception does not apply to any
 # modifications of the software.
-# 
+#
 #      Notwithstanding the above, under no circumstances may you combine this
 # software in any way with any other Broadcom software provided under a license
 # other than the GPL, without Broadcom's express prior written consent.
@@ -104,18 +104,18 @@ ifneq ($(findstring arm,$(TARGET)),)
 endif
 
 # First include from linux kernel dirs
-IFLAGS := -I$(LINUXDIR)/include 
-IFLAGS += -I$(LINUXDIR)/include/asm/mach-default 
+IFLAGS := -I$(LINUXDIR)/include
+IFLAGS += -I$(LINUXDIR)/include/asm/mach-default
 # Followed by 2.6.29+ specific paths
 IFLAGS += -I$(LINUXDIR)/arch/$(DHDARCH)/include
 IFLAGS += -I$(LINUXDIR)/arch/$(DHDARCH)/include/asm/mach-default
 
 # From current workspace
-IFLAGS += -I. 
-IFLAGS += -I$(SRCBASE)/include 
-IFLAGS += -I$(SRCBASE)/shared 
-IFLAGS += -I$(SRCBASE)/dhd/sys 
-IFLAGS += -I$(SRCBASE)/dongle 
+IFLAGS += -I.
+IFLAGS += -I$(SRCBASE)/include
+IFLAGS += -I$(SRCBASE)/shared
+IFLAGS += -I$(SRCBASE)/dhd/sys
+IFLAGS += -I$(SRCBASE)/dongle
 IFLAGS += -I$(SRCBASE)/wl/sys
 IFLAGS += -I$(SRCBASE)/wl/phy
 
@@ -129,10 +129,10 @@ endif
 CONFIG_WIRELESS_EXT=y
 DFLAGS += -DCONFIG_WIRELESS_EXT
 
-ifeq ($(CONFIG_MMC_MSM7X00A),y) 
+ifeq ($(CONFIG_MMC_MSM7X00A),y)
 DFLAGS += -Dlinux
-DFLAGS += -DDHD_SDALIGN=64 -DMAX_HDR_READ=64 -DDHD_FIRSTREAD=64 
-endif 
+DFLAGS += -DDHD_SDALIGN=64 -DMAX_HDR_READ=64 -DDHD_FIRSTREAD=64
+endif
 
 WFLAGS := -Wall -Wstrict-prototypes
 ifeq (,$(findstring 2.4.18,$(LINUXVER)))
@@ -199,7 +199,7 @@ IFLAGS += -I$(SRCBASE)/dongle/rte/wl/builds/$(DNGL_IMAGE_NAME)
 endif
 
 ifneq ($(findstring -cdc-,-$(TARGET)-),)
-DFLAGS += -DBDC -DTOE 
+DFLAGS += -DBDC -DTOE
 DFLAGS += -DDHD_BCMEVENTS -DSHOW_EVENTS
 CFILES += dhd_cdc.c
 endif
@@ -207,7 +207,7 @@ ifneq ($(findstring -rndis-,-$(TARGET)-),)
 DFLAGS += -DRNDIS
 CFILES += dhd_rndis.c
 endif
-		  
+
 ifneq ($(findstring -dbususb-,-$(TARGET)-),)
 DFLAGS += -DBCMDHDUSB -DBCMDBUS
 CFILES += dbus.c dbus_usb.c dbus_usb_linux.c
@@ -258,7 +258,7 @@ DFLAGS += -DCONFIG_MACH_MAHIMAHI
 DFLAGS += -DCUSTOM_OOB_GPIO_NUM=299
 DFLAGS += -DOOB_INTR_ONLY
 DFLAGS += -DMMC_SDIO_ABORT
-DFLAGS += -DBCMSDIO -DDHD_GPL -DBCMLXSDMMC -DBCMPLATFORM_BUS 
+DFLAGS += -DBCMSDIO -DDHD_GPL -DBCMLXSDMMC -DBCMPLATFORM_BUS
 CFILES += dhd_sdio.c bcmsdh_sdmmc.c bcmsdh.c bcmsdh_linux.c bcmsdh_sdmmc_linux.c
 else
 ifneq ($(findstring -oob-,-$(TARGET)-),)
@@ -281,11 +281,11 @@ CFILES += dhd_sdio.c bcmsdh_fd.c bcmsdh.c bcmsdh_linux.c bcmsdh_fd_linux.c
 endif
 ifneq ($(findstring -sdspi-,$(TARGET)-),)
 DFLAGS += -DBCMSDIO -DBCMSDIOH_SPI -DTESTDONGLE # -DBCMSDYIELD
-CFILES += dhd_sdio.c bcmsdh.c bcmsdspi.c bcmsdspi_linux.c bcmsdh_linux.c 
+CFILES += dhd_sdio.c bcmsdh.c bcmsdspi.c bcmsdspi_linux.c bcmsdh_linux.c
 endif
 ifneq ($(findstring -gspi-,$(TARGET)-),)
 DFLAGS += -DBCMSDIO -DBCMSDIOH_SPI -DTESTDONGLE -DBCMSPI
-CFILES += dhd_sdio.c bcmsdh.c bcmspibrcm.c bcmsdspi_linux.c bcmsdh_linux.c 
+CFILES += dhd_sdio.c bcmsdh.c bcmspibrcm.c bcmsdspi_linux.c bcmsdh_linux.c
 endif
 ifneq ($(findstring -gspibcm,$(TARGET)-),)
 DFLAGS += -DBCMSDIO -DBCMSDIOH_SPI -DTESTDONGLE -DBCMSPI
@@ -360,7 +360,7 @@ TARGETS += \
 	dhd-cdc-sdstd-n2dbg-debug-nothread \
 	dhd-cdc-sdstd-debug-nothread \
 	dhd-cdc-sdstd-largemtu \
-	dhd-cdc-sdstd-debug-largemtu 
+	dhd-cdc-sdstd-debug-largemtu
 
 #ifdef RNDIS
 TARGETS += dhd-rndis-usb

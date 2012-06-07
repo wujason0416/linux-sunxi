@@ -66,8 +66,8 @@ static nrwifi_auto_connect_cb callback = NULL;
 
 /*!
  * @brief Automaticlay finds and connect to a network.
- * 
- * Connects to a network with a minimum of input. It is assumed that only 
+ *
+ * Connects to a network with a minimum of input. It is assumed that only
  * "normal" encryption/authentication settings are used.
  *
  * @param ssid          Pointer to the SSID as a null-terminated string.
@@ -85,7 +85,7 @@ int nrwifi_auto_connect(const char* ssid,
                         nrwifi_auto_connect_cb callback_fn)
 {
    int wep_key_len = 5; //40bit
-   
+
    WiFiEngine_sac_stop();
 
    callback = callback_fn;
@@ -103,14 +103,14 @@ int nrwifi_auto_connect(const char* ssid,
       case WLAN_SECURITY_WEP40:
          {
             m80211_mac_addr_t bssid = {{ 0xff,0xff,0xff,0xff,0xff,0xff}};
-      
+
             WiFiEngine_SetAuthenticationMode(Authentication_Open);
             WiFiEngine_SetEncryptionMode(Encryption_WEP);
             WiFiEngine_AddKey(0, wep_key_len, security_key, M80211_KEY_TYPE_GROUP, M80211_PROTECT_TYPE_RX_TX, 1, &bssid, NULL, 1);
             WiFiEngine_AddKey(1, wep_key_len, security_key, M80211_KEY_TYPE_GROUP, M80211_PROTECT_TYPE_RX_TX, 1, &bssid, NULL, 0);
             WiFiEngine_AddKey(2, wep_key_len, security_key, M80211_KEY_TYPE_GROUP, M80211_PROTECT_TYPE_RX_TX, 1, &bssid, NULL, 0);
             WiFiEngine_AddKey(3, wep_key_len, security_key, M80211_KEY_TYPE_GROUP, M80211_PROTECT_TYPE_RX_TX, 1, &bssid, NULL, 0);
-            
+
             WiFiEngine_SetDefaultKeyIndex(0);
             WiFiEngine_SetProtectedFrameBit(1);
          }
@@ -174,7 +174,7 @@ int nrwifi_auto_connect(const char* ssid,
                                              NULL, /* release */
                                              RELEASE_IND_AFTER_EVENT | RELEASE_IND_ON_UNPLUG,
                                              NULL);
-   
+
    we_ind_cond_register(&s_connected_event, WE_IND_CM_CONNECTED,
                                              (char*)NULL,
                                              connected_cb,
@@ -183,11 +183,11 @@ int nrwifi_auto_connect(const char* ssid,
                                              NULL);
 
    curr_state = CONNECTING;
-   
+
    WiFiEngine_sac_start();
 
    return WIFI_ENGINE_SUCCESS;
-   
+
 }
 
 
@@ -208,7 +208,7 @@ static int connect_timeout_cb(void* ptr, size_t len)
       if(callback != NULL)
          callback(WLAN_CONNECT_TIMEOUT);
    }
-   
+
    return 0;
 }
 
@@ -225,7 +225,7 @@ static void connect_failed_cb(wi_msg_param_t param, void* priv)
 
    if(s_connected_event != NULL)
       we_ind_deregister_null(&s_connected_event);
-      
+
 
    if(callback != NULL)
       callback(WLAN_CONNECT_FAILED);
@@ -248,7 +248,7 @@ static void connected_cb(wi_msg_param_t param, void* priv)
                                           NULL, /* release */
                                           RELEASE_IND_AFTER_EVENT | RELEASE_IND_ON_UNPLUG,
                                           NULL);
-   
+
    if(callback != NULL)
       callback(WLAN_CONNECTED);
 }
@@ -267,7 +267,7 @@ static void disconnected_cb(wi_msg_param_t param, void* priv)
 
    if(callback != NULL)
       callback(WLAN_CONNECT_DISCONNECTED);
- 
+
 }
 
 
@@ -300,4 +300,3 @@ connect_status nrwifi_get_connection_status(void)
    }
    return WLAN_DISCONNECTED;
 }
-

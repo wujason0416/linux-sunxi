@@ -2,7 +2,7 @@
 
 /*****************************************************************************
 
-Copyright (c) 2004 by Nanoradio AB      
+Copyright (c) 2004 by Nanoradio AB
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
 All rights, title, ownership, or other interests in the
@@ -66,14 +66,14 @@ G L O B A L   C O N S T A N T S / V A R I A B L E S
 G L O B A L   F U N C T I O N S (Hand Coded)
 *****************************************************************************/
 /*!
- * @brief Initialize a context for packing and unpacking of messages (HIC or MAC) 
+ * @brief Initialize a context for packing and unpacking of messages (HIC or MAC)
  * using wrapper functions
  *
  * Reset all context variables and set the buffer and length members
  * to point at a buffer with a message in packed/binary format.
- * 
+ *
  * @param [in] _blob Adress of the context to be initialized.
- * @param [in] _ptr  Adress of the packed message (e.g. MAC in binary format according to 802.11 specifications) 
+ * @param [in] _ptr  Adress of the packed message (e.g. MAC in binary format according to 802.11 specifications)
  * @param [in] _len  Length of the packed message
  *
  * @return void.
@@ -89,7 +89,7 @@ void INIT_BLOB(Blob_t * _blob, char * _ptr, uint16_t _len)
 /*!
  * @brief Allocate a buffer for C-structure to be used with wrapper functions
  *
- * 
+ *
  * @param [in]       blob  Adress of the context which will be used when packing
  *                         the allocated C structure to binary format.
  * @param [in]       size  Number of byte to alloc
@@ -135,7 +135,7 @@ void* WrapperAttachStructure(void* context_p, int size)
 #endif /*  SUPPORT_STRUCTURE_COPY */
 
    attached_buf_hdr->next_in_chain = main_buf_hdr->next_in_chain;
-   main_buf_hdr->next_in_chain     = attached_buf_hdr; 
+   main_buf_hdr->next_in_chain     = attached_buf_hdr;
 
    /* Return a pointer to the attached structure. */
    new_buffer = (void*)((char*)attached_buf_hdr + sizeof(struct wrapper_alloc_buf));
@@ -161,7 +161,7 @@ void* WrapperCopyStructure(void* source_structure_p)
 
    /* Copy the complete chain of buffers. */
    while (source_buf_hdr != NULL)
-   {  
+   {
       if (tmp_buf == NULL)
       {
          tmp_buf = dst_buf;
@@ -180,10 +180,10 @@ void* WrapperCopyStructure(void* source_structure_p)
       /* Copy the buffer data. */
       src_buf = ((char*)source_buf_hdr + sizeof(struct wrapper_alloc_buf));
       DE_MEMCPY(tmp_buf, src_buf, dest_buf_hdr->this_buf_size);
-      
+
       source_buf_hdr = (struct wrapper_alloc_buf*)source_buf_hdr->next_in_chain;
    }
-   
+
    return (void*)dst_buf;
 }
 #endif /*  SUPPORT_STRUCTURE_COPY */
@@ -196,7 +196,7 @@ void  WrapperFreeStructure(void*  structure_ref)
    if (structure_ref != NULL && structure_ref != NIL)
    {
       buf_hdr = &((struct wrapper_alloc_buf*)structure_ref)[-1];
-   
+
 
       /* Release the complete chain of buffers. */
       while (buf_hdr != NULL)
@@ -216,7 +216,7 @@ void*  WrapperNextInChain(void*  structure_ref)
 
    HIC_ASSERT(structure_ref != NIL);
    HIC_ASSERT(structure_ref != NULL);
-   
+
    buf_hdr  = (struct wrapper_alloc_buf*)((char*)structure_ref - sizeof(struct wrapper_alloc_buf));
    next_buf = (char*)buf_hdr->next_in_chain;
    if (next_buf != NULL)
@@ -234,7 +234,7 @@ void*  WrapperLastInChain(void*  structure_ref)
 
    HIC_ASSERT(structure_ref != NIL);
    HIC_ASSERT(structure_ref != NULL);
-   
+
    buf_hdr  = (struct wrapper_alloc_buf*)((char*)structure_ref - sizeof(struct wrapper_alloc_buf));
    while (buf_hdr->next_in_chain != NULL)
    {
@@ -251,7 +251,7 @@ static bool_t MacWrapper_m80211_ie_hdr_t_indexed(m80211_ie_hdr_t* object_p, Blob
    switch (action)
    {
       case  ACTION_UNPACK:
-      {        
+      {
          if (BLOB_IS_FIRST_IE(blob))
          {
             /* Store the index of the first information element. */
@@ -275,13 +275,13 @@ static bool_t MacWrapper_m80211_ie_hdr_t_indexed(m80211_ie_hdr_t* object_p, Blob
          {
             /* Strore an index to the currently processed IE. */
             BLOB_SET_CURRENT_IE(blob);
-            
-            /* Read the id and length fields and continue. */ 
+
+            /* Read the id and length fields and continue. */
             MacWrapper_uint8_t(&object_p->id, blob, action);
-            MacWrapper_uint8_t(&object_p->len, blob, action); 
+            MacWrapper_uint8_t(&object_p->len, blob, action);
             if (object_p->id == id)
             {
-               /* The IE is the requested one. */ 
+               /* The IE is the requested one. */
                if (object_p->len <= BLOB_REMAINING_SIZE(blob))
                {
                   blob->ie_map |= (1 << *ie_index);
@@ -295,8 +295,8 @@ static bool_t MacWrapper_m80211_ie_hdr_t_indexed(m80211_ie_hdr_t* object_p, Blob
             }
             if ( object_p->len > BLOB_REMAINING_SIZE(blob) )
             {
-               /* Corrupt indata, like in probe responses from Open WRT on linksys. 
-                  Discard this and all following IE's. 
+               /* Corrupt indata, like in probe responses from Open WRT on linksys.
+                  Discard this and all following IE's.
                */
                object_p->id  = M80211_IE_ID_NOT_USED;
                object_p->len = 0;
@@ -318,11 +318,11 @@ static bool_t MacWrapper_m80211_ie_hdr_t_indexed(m80211_ie_hdr_t* object_p, Blob
       {
          /* Strore an index to the currently processed IE. */
          BLOB_SET_CURRENT_IE(blob);
-   
+
          if (object_p->id != M80211_IE_ID_NOT_USED)
          {
             MacWrapper_uint8_t(&object_p->id,  blob, action);
-            MacWrapper_uint8_t(&object_p->len, blob, action); 
+            MacWrapper_uint8_t(&object_p->len, blob, action);
          }
       }
    }
@@ -335,16 +335,16 @@ static bool_t MacWrapper_m80211_ie_hdr_t_indexed(m80211_ie_hdr_t* object_p, Blob
    }
 
    /* Assert that the length parameter is within range. */
-   if ( (object_p->len > max) 
+   if ( (object_p->len > max)
      || (object_p->len < min) )
    {
       /* The element was erronoeus. */
-      object_p->id  = M80211_IE_ID_NOT_USED;      
+      object_p->id  = M80211_IE_ID_NOT_USED;
       object_p->len = 0;
       return FALSE;
    }
    return TRUE;
-} /* MacWrapper_m80211_ie_hdr_t */ 
+} /* MacWrapper_m80211_ie_hdr_t */
 
 /* workaround for broken ie_map in ..._ie_hdr_t(...); can't handle more then one ie of same id */
 /* FIXME: refactor this */
@@ -354,11 +354,11 @@ bool_t MacWrapper_m80211_ie_hdr_t(m80211_ie_hdr_t* object_p, Blob_t* blob, Wrapp
 }
 
 
-void MacWrapper_m80211_ie_ssid_t(m80211_ie_ssid_t* object_p, Blob_t* blob, WrapperAction_t action) 
-{ 
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+void MacWrapper_m80211_ie_ssid_t(m80211_ie_ssid_t* object_p, Blob_t* blob, WrapperAction_t action)
+{
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_SSID, 0, M80211_IE_MAX_LENGTH_SSID))
-   { 
+   {
       switch (action)
       {
          case ACTION_PACK:
@@ -373,13 +373,13 @@ void MacWrapper_m80211_ie_ssid_t(m80211_ie_ssid_t* object_p, Blob_t* blob, Wrapp
       }
       blob->index += object_p->hdr.len;
    }
-} /* MacWrapper_m80211_ie_ssid_t */ 
+} /* MacWrapper_m80211_ie_ssid_t */
 
-void MacWrapper_m80211_ie_supported_rates_t(m80211_ie_supported_rates_t* object_p, Blob_t* blob, WrapperAction_t action) 
-{ 
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+void MacWrapper_m80211_ie_supported_rates_t(m80211_ie_supported_rates_t* object_p, Blob_t* blob, WrapperAction_t action)
+{
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_SUPPORTED_RATES, 1, M80211_IE_MAX_LENGTH_SUPPORTED_RATES))
-   { 
+   {
       switch (action)
       {
          case ACTION_PACK:
@@ -402,14 +402,14 @@ void MacWrapper_m80211_ie_supported_rates_t(m80211_ie_supported_rates_t* object_
       }
    }
    blob->index += object_p->hdr.len;
-} /* MacWrapper_m80211_ie_supported_rates_t */ 
+} /* MacWrapper_m80211_ie_supported_rates_t */
 
 
-void MacWrapper_m80211_ie_ext_supported_rates_t(m80211_ie_ext_supported_rates_t* object_p, Blob_t* blob, WrapperAction_t action) 
-{ 
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+void MacWrapper_m80211_ie_ext_supported_rates_t(m80211_ie_ext_supported_rates_t* object_p, Blob_t* blob, WrapperAction_t action)
+{
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_EXTENDED_SUPPORTED_RATES, 1, M80211_IE_MAX_LENGTH_EXT_SUPPORTED_RATES))
-   { 
+   {
       switch (action)
       {
          case ACTION_PACK:
@@ -432,7 +432,7 @@ void MacWrapper_m80211_ie_ext_supported_rates_t(m80211_ie_ext_supported_rates_t*
       }
    }
    blob->index += object_p->hdr.len;
-} /* MacWrapper_m80211_ie_ext_supported_rates_t */ 
+} /* MacWrapper_m80211_ie_ext_supported_rates_t */
 
 
 bool_t MacWrapper_m80211_ie_vendor_specific_hdr_t(m80211_ie_vendor_specific_hdr_t* object_p, Blob_t* blob, WrapperAction_t action, uint8_t OUI_type, int *ie_index)
@@ -455,15 +455,15 @@ bool_t MacWrapper_m80211_ie_vendor_specific_hdr_t(m80211_ie_vendor_specific_hdr_
       break;
       case  ACTION_UNPACK:
       {
-         /* There is a type field in this IE. 
+         /* There is a type field in this IE.
             To be able to find the IE with the rigth type field we must be able to iterate through
-            the present IE information elements. 
+            the present IE information elements.
             Facilitate this by using a temporary blob.
          */
          Blob_t org_blob = *blob;
          int blob_ie_index;
 
-         while (MacWrapper_m80211_ie_hdr_t_indexed(&object_p->hdr, blob, action, 
+         while (MacWrapper_m80211_ie_hdr_t_indexed(&object_p->hdr, blob, action,
                                            M80211_IE_ID_VENDOR_SPECIFIC, 1, M80211_IE_MAX_LEN, &blob_ie_index))
          {
             if(vendor_ie_index<0) {
@@ -505,7 +505,7 @@ bool_t MacWrapper_m80211_ie_vendor_specific_hdr_t(m80211_ie_vendor_specific_hdr_
                }
             }
 #endif
-            /* Update the blob to skip this information element in next round. 
+            /* Update the blob to skip this information element in next round.
                Note that we need to add two octets for the IE header.
              */
             BLOB_SKIP_IE(blob, object_p->hdr.len + 2);
@@ -515,7 +515,7 @@ bool_t MacWrapper_m80211_ie_vendor_specific_hdr_t(m80211_ie_vendor_specific_hdr_
           *blob = org_blob;
         vendor_ie_index = -1;
 //	DE_TRACE_STATIC(TR_SM_HIGH_RES, "cpl - look for cisco proprietary oui\n");
-	while (MacWrapper_m80211_ie_hdr_t_indexed(&object_p->hdr, blob, action, 
+	while (MacWrapper_m80211_ie_hdr_t_indexed(&object_p->hdr, blob, action,
                                            M80211_IE_ID_CISCO_VENDOR_SPECIFIC, 1, M80211_IE_MAX_LEN, &blob_ie_index))
          {
 //	    DE_TRACE_STATIC(TR_SM_HIGH_RES, "cpl - inside while...\n");
@@ -561,7 +561,7 @@ bool_t MacWrapper_m80211_ie_vendor_specific_hdr_t(m80211_ie_vendor_specific_hdr_
                }
             }
 
-            /* Update the blob to skip this information element in next round. 
+            /* Update the blob to skip this information element in next round.
                Note that we need to add two octets for the IE header.
              */
             BLOB_SKIP_IE(blob, object_p->hdr.len + 2);
@@ -573,14 +573,14 @@ bool_t MacWrapper_m80211_ie_vendor_specific_hdr_t(m80211_ie_vendor_specific_hdr_
          /* Assure that the IE id and len is set up correctly. */
          object_p->hdr.id  = M80211_IE_ID_NOT_USED;
          object_p->hdr.len = 0;
-         
+
          return FALSE;
       }
       break;
 
       case ACTION_PACK:
       {
-         if (MacWrapper_m80211_ie_hdr_t(&object_p->hdr, blob, action, 
+         if (MacWrapper_m80211_ie_hdr_t(&object_p->hdr, blob, action,
                                     M80211_IE_ID_VENDOR_SPECIFIC, 1, M80211_IE_MAX_LEN))
          {
             MacWrapper_uint8_t(&object_p->OUI_1, blob, action);
@@ -588,7 +588,7 @@ bool_t MacWrapper_m80211_ie_vendor_specific_hdr_t(m80211_ie_vendor_specific_hdr_
             MacWrapper_uint8_t(&object_p->OUI_3, blob, action);
             MacWrapper_uint8_t(&object_p->OUI_type, blob, action);
          }
-         else 
+         else
          {
             return FALSE;
          }
@@ -599,11 +599,11 @@ bool_t MacWrapper_m80211_ie_vendor_specific_hdr_t(m80211_ie_vendor_specific_hdr_
 
 #if (DE_CCX == CFG_INCLUDED)
 #if 0
-bool_t MacWrapper_m80211_ie_ccx_adj_vendor_specific_hdr_t(m80211_ie_ccx_adj_parameter_set_t* object_p, 
-                              						       Blob_t* blob, 
+bool_t MacWrapper_m80211_ie_ccx_adj_vendor_specific_hdr_t(m80211_ie_ccx_adj_parameter_set_t* object_p,
+                              						       Blob_t* blob,
                               						       WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_CISCO_ADJ_VENDOR_SPECIFIC, 4, M80211_IE_MAX_LEN))
    {
 //   	DE_TRACE_STATIC(TR_SM_HIGH_RES, "ok\n");
@@ -616,11 +616,11 @@ bool_t MacWrapper_m80211_ie_ccx_adj_vendor_specific_hdr_t(m80211_ie_ccx_adj_para
 #endif
 
 
-bool_t MacWrapper_m80211_ie_wapi_vendor_specific_hdr_t(m80211_ie_wapi_vendor_specific_hdr_t* object_p, 
-                              						       Blob_t* blob, 
+bool_t MacWrapper_m80211_ie_wapi_vendor_specific_hdr_t(m80211_ie_wapi_vendor_specific_hdr_t* object_p,
+                              						       Blob_t* blob,
                               						       WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_WAPI_VENDOR_SPECIFIC, 4, M80211_IE_MAX_LEN))
    {
       MacWrapper_uint16_t(&object_p->version, blob, action);
@@ -637,9 +637,9 @@ bool_t MacWrapper_m80211_ie_WMM_header_t(m80211_ie_WMM_header_t* object_p, Blob_
    {
       case  ACTION_UNPACK:
       {
-         /* There is a subtype field in this IE. 
+         /* There is a subtype field in this IE.
             To be able to find the IE with the rigth subtype field we must be able to iterate through
-            the present IEinformation elements. 
+            the present IEinformation elements.
             Facilitate this by using a temporary blob.
          */
          Blob_t org_blob = *blob;
@@ -663,11 +663,11 @@ bool_t MacWrapper_m80211_ie_WMM_header_t(m80211_ie_WMM_header_t* object_p, Blob_
                blob->ie_map |= (1 << wmm_ie_index);
                return TRUE;
             }
-            /* Update the blob to skip this information element in next round. 
+            /* Update the blob to skip this information element in next round.
                Note that we need to add two octets for the IE header.
              */
             BLOB_SKIP_IE(blob, object_p->hdr.hdr.len + 2);
-         }  
+         }
           /* Restore the blob! */
          *blob = org_blob;
          return FALSE;
@@ -690,8 +690,8 @@ bool_t MacWrapper_m80211_ie_WMM_header_t(m80211_ie_WMM_header_t* object_p, Blob_
    return TRUE;
 } /* MacWrapper_m80211_ie_WMM_header_t */
 
-void* WrapperCopy_default(void* context_p, 
-                          m80211_ie_hdr_t* dest_hdr, 
+void* WrapperCopy_default(void* context_p,
+                          m80211_ie_hdr_t* dest_hdr,
                           m80211_ie_hdr_t* source_hdr,
                           void* source_p, int size)
 {
@@ -701,10 +701,10 @@ void* WrapperCopy_default(void* context_p,
       if ( (source_p != NULL) && (size > 0) )
       {
          dest_p = (void*)WrapperAttachStructure(context_p, size);
-         
+
          if (dest_p != NULL)
          {
-            DE_MEMCPY(dest_p, source_p, size);  
+            DE_MEMCPY(dest_p, source_p, size);
          }
          else
          {
@@ -727,7 +727,7 @@ void WrapperCopy_m80211_ie_tim_t(void* context_p, m80211_ie_tim_t* dest, m80211_
 
 void MacWrapper_m80211_ie_tim_t(m80211_ie_tim_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_TIM, 4, 254))
    {
       int tim_element_size = object_p->hdr.len - 3;
@@ -773,7 +773,7 @@ void MacWrapper_m80211_ie_rsn_parameter_set_t(m80211_ie_rsn_parameter_set_t* obj
       }
       return;
    }
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_RSN, 0, 255))
    {
       Blob_t   tmp_blob;
@@ -783,23 +783,23 @@ void MacWrapper_m80211_ie_rsn_parameter_set_t(m80211_ie_rsn_parameter_set_t* obj
       tmp_blob = *blob;
       BLOB_POP_CURRENT_IE(&tmp_blob);
 
-      /* According to 802.11i spec all fields after version may be omitted in the coded IE 
+      /* According to 802.11i spec all fields after version may be omitted in the coded IE
          if its count or value is zero. We need to know the limits of this IE to honor that.
-       */      
+       */
       /* Before unpacking the elements of this IE, clear all items from version and onwards. */
       if (action == ACTION_UNPACK)
       {
          DE_MEMSET(&object_p->version, 0x00, ((char*)&object_p->rsn_pool - (char*)&object_p->version));
          /* To be safe, allocate the whole size of this IE. */
-         object_p->rsn_pool = (char*)WrapperAttachStructure(blob->structure, object_p->hdr.len);         
+         object_p->rsn_pool = (char*)WrapperAttachStructure(blob->structure, object_p->hdr.len);
       }
 
       index_for_next_ie = BLOB_CURRENT_SIZE(&tmp_blob) + object_p->hdr.len + 2;
-      
+
       /* Handle the elements. */
       MacWrapper_uint16_t(&object_p->version, blob, action);
       if (BLOB_CURRENT_SIZE(blob) < index_for_next_ie)
-      {      
+      {
          MacWrapper_m80211_cipher_suite_selector_t(&object_p->group_cipher_suite, blob, action);
 
          if (BLOB_CURRENT_SIZE(blob) < index_for_next_ie)
@@ -808,7 +808,7 @@ void MacWrapper_m80211_ie_rsn_parameter_set_t(m80211_ie_rsn_parameter_set_t* obj
             cipher_selectors = M80211_IE_RSN_PARAMETER_SET_GET_PAIRWISE_CIPHER_SELECTORS(object_p);
             for (i=0; i<object_p->pairwise_cipher_suite_count; i++) {
                MacWrapper_m80211_cipher_suite_selector_t(&cipher_selectors[i], blob, action);
-            } 
+            }
 
             if (BLOB_CURRENT_SIZE(blob) < index_for_next_ie)
             {
@@ -817,8 +817,8 @@ void MacWrapper_m80211_ie_rsn_parameter_set_t(m80211_ie_rsn_parameter_set_t* obj
                for (i=0; i<object_p->akm_suite_count; i++)
                {
                   MacWrapper_m80211_akm_suite_selector_t(&akm_selectors[i], blob, action);
-               } 
-            
+               }
+
                if (BLOB_CURRENT_SIZE(blob) < index_for_next_ie)
                {
                   MacWrapper_uint16_t(&object_p->rsn_capabilities, blob, action);
@@ -830,7 +830,7 @@ void MacWrapper_m80211_ie_rsn_parameter_set_t(m80211_ie_rsn_parameter_set_t* obj
                      for (i=0; i<object_p->pmkid_count; i++)
                      {
                         MacWrapper_m80211_pmkid_selector_t(&pmkid_selectors[i], blob, action);
-                     } 
+                     }
                   }
 
                }
@@ -853,7 +853,7 @@ void MacWrapper_m80211_ie_wpa_parameter_set_t(m80211_ie_wpa_parameter_set_t* obj
    int i;
    m80211_cipher_suite_selector_t*  cipher_selectors;
    m80211_akm_suite_selector_t*     akm_selectors;
-   
+
    if (ACTION_GET_SIZE == action)
    {
       if (object_p->hdr.hdr.id != M80211_IE_ID_NOT_USED)
@@ -875,9 +875,9 @@ void MacWrapper_m80211_ie_wpa_parameter_set_t(m80211_ie_wpa_parameter_set_t* obj
       tmp_blob = *blob;
       BLOB_POP_CURRENT_IE(&tmp_blob);
 
-      /* According to 802.11i spec all fields after version may be omitted in the coded IE 
+      /* According to 802.11i spec all fields after version may be omitted in the coded IE
          if its count or value is zero. We need to know the limits of this IE to honor that.
-       */      
+       */
       /* Before unpacking the elements of this IE, clear all items from version and onwards. */
       if (action == ACTION_UNPACK)
       {
@@ -891,7 +891,7 @@ void MacWrapper_m80211_ie_wpa_parameter_set_t(m80211_ie_wpa_parameter_set_t* obj
       /* Handle the elements. */
       MacWrapper_uint16_t(&object_p->version, blob, action);
       if (BLOB_CURRENT_SIZE(blob) < index_for_next_ie)
-      {      
+      {
          MacWrapper_m80211_cipher_suite_selector_t(&object_p->group_cipher_suite, blob, action);
 
          if (BLOB_CURRENT_SIZE(blob) < index_for_next_ie)
@@ -900,7 +900,7 @@ void MacWrapper_m80211_ie_wpa_parameter_set_t(m80211_ie_wpa_parameter_set_t* obj
             cipher_selectors = M80211_IE_WPA_PARAMETER_SET_GET_PAIRWISE_CIPHER_SELECTORS(object_p);
             for (i=0; i<object_p->pairwise_cipher_suite_count; i++) {
                MacWrapper_m80211_cipher_suite_selector_t(&cipher_selectors[i], blob, action);
-            } 
+            }
 
             if (BLOB_CURRENT_SIZE(blob) < index_for_next_ie)
             {
@@ -909,8 +909,8 @@ void MacWrapper_m80211_ie_wpa_parameter_set_t(m80211_ie_wpa_parameter_set_t* obj
                for (i=0; i<object_p->akm_suite_count; i++)
                {
                   MacWrapper_m80211_akm_suite_selector_t(&akm_selectors[i], blob, action);
-               } 
-            
+               }
+
                if (BLOB_CURRENT_SIZE(blob) < index_for_next_ie)
                {
                   MacWrapper_uint16_t(&object_p->rsn_capabilities, blob, action);
@@ -948,7 +948,7 @@ void MacWrapper_m80211_ie_wapi_parameter_set_t(m80211_ie_wapi_parameter_set_t* o
    if (MacWrapper_m80211_ie_wapi_vendor_specific_hdr_t(&object_p->hdr, blob, action))
    {
       int wapi_element_size = object_p->hdr.hdr.len - WAPI_VERSION_SIZE;
-      
+
       if (action == ACTION_UNPACK)
       {
          object_p->wapi_pool = (char*)WrapperAttachStructure(blob->structure, wapi_element_size);
@@ -959,55 +959,55 @@ void MacWrapper_m80211_ie_wapi_parameter_set_t(m80211_ie_wapi_parameter_set_t* o
 } /* MacWrapper_m80211_ie_wapi_parameter_set_t */
 
 
-static void 
-MacWrapper_supported_mcs_set_t(m80211_supported_mcs_set_t *object_p, 
-                               Blob_t *blob, 
+static void
+MacWrapper_supported_mcs_set_t(m80211_supported_mcs_set_t *object_p,
+                               Blob_t *blob,
                                WrapperAction_t action)
 {
-   MacWrapper_array_t((char*)object_p->rx_mcs_bitmap, 
+   MacWrapper_array_t((char*)object_p->rx_mcs_bitmap,
                       sizeof(object_p->rx_mcs_bitmap), blob, action);
    MacWrapper_uint8_t(&object_p->rx_highest_supp_data_rate_low_byte,
                       blob, action);
-                      
+
    MacWrapper_uint8_t(&object_p->rx_highest_supp_data_rate_high_byte,
                       blob, action);
    MacWrapper_uint8_t(&object_p->tx_mcs_flags, blob, action);
-   MacWrapper_array_t((char*)object_p->reserved, 
+   MacWrapper_array_t((char*)object_p->reserved,
                       sizeof(object_p->reserved), blob, action);
 }
 
 void
-MacWrapper_m80211_ie_ht_capabilities_t(m80211_ie_ht_capabilities_t *object_p, 
-                                       Blob_t* blob, 
+MacWrapper_m80211_ie_ht_capabilities_t(m80211_ie_ht_capabilities_t *object_p,
+                                       Blob_t* blob,
                                        WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_HT_CAPABILITIES, 26, 26))
-   { 
-      MacWrapper_array_t((char*)object_p->ht_capabilities_info, 2, 
+   {
+      MacWrapper_array_t((char*)object_p->ht_capabilities_info, 2,
                          blob, action);
       MacWrapper_uint8_t(&object_p->a_mpdu_parameters, blob, action);
-      MacWrapper_supported_mcs_set_t(&object_p->supported_mcs_set, 
+      MacWrapper_supported_mcs_set_t(&object_p->supported_mcs_set,
                                      blob, action);
-      MacWrapper_array_t((char*)object_p->ht_extended_capabilities, 2, 
+      MacWrapper_array_t((char*)object_p->ht_extended_capabilities, 2,
                          blob, action);
-      MacWrapper_array_t((char*)object_p->transmit_beamforming_capabilities, 4, 
+      MacWrapper_array_t((char*)object_p->transmit_beamforming_capabilities, 4,
                          blob, action);
-      MacWrapper_uint8_t(&object_p->asel_capabilities, 
+      MacWrapper_uint8_t(&object_p->asel_capabilities,
                          blob, action);
    }
 } /* MacWrapper_m80211_ie_ht_capabilities_t */
 
 void
-MacWrapper_m80211_ie_ht_operation_t(m80211_ie_ht_operation_t* object_p, 
-                                    Blob_t* blob, 
+MacWrapper_m80211_ie_ht_operation_t(m80211_ie_ht_operation_t* object_p,
+                                    Blob_t* blob,
                                     WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_HT_OPERATION, 22, 22))
-   { 
+   {
       MacWrapper_uint8_t(&object_p->primary_channel, blob, action);
-      MacWrapper_array_t((char*)object_p->bitfield, 5, 
+      MacWrapper_array_t((char*)object_p->bitfield, 5,
                          blob, action);
       MacWrapper_array_t((char*)object_p->basic_mcs_set, 16,
                          blob, action);
@@ -1039,7 +1039,7 @@ void MacWrapper_m80211_ie_wps_parameter_set_t(m80211_ie_wps_parameter_set_t* obj
       return;
    }
 
-   /* FIXME: work with OUI done by MacWrapper_m80211_ie_vendor_specific_hdr_t(...,ACTION_PACK,...) 
+   /* FIXME: work with OUI done by MacWrapper_m80211_ie_vendor_specific_hdr_t(...,ACTION_PACK,...)
     * will be overwritten by MacWrapper_array_t (wps_pool contain vendor header) */
    if (MacWrapper_m80211_ie_vendor_specific_hdr_t(&object_p->hdr, blob, action, WPS_IE_OUI_TYPE,NULL))
    {
@@ -1064,7 +1064,7 @@ void WrapperCopy_m80211_ie_ccx_parameter_set_t(void * context_p, m80211_ie_ccx_p
 
 
    *dest = *source;
-	
+
     dest->ccx_version=4;
 }
 
@@ -1083,7 +1083,7 @@ void WrapperCopy_m80211_ie_ccx_rm_parameter_set_t(void * context_p, m80211_ie_cc
 	return;
 
    *dest = *source;
-	
+
     dest->ccx_rm_status=4;
 }
 
@@ -1107,7 +1107,7 @@ void WrapperCopy_m80211_ie_ccx_cpl_parameter_set_t(void * context_p, m80211_ie_c
 void MacWrapper_m80211_ie_ccx_cpl_parameter_set_t(m80211_ie_ccx_cpl_parameter_set_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
 //   DE_TRACE_STATIC(TR_SM_HIGH_RES, "\n\n\n\n\nLOOK FOR CCX CPL OUI TYPE\n");
-   /* FIXME: work with OUI done by MacWrapper_m80211_ie_vendor_specific_hdr_t(...,ACTION_PACK,...) 
+   /* FIXME: work with OUI done by MacWrapper_m80211_ie_vendor_specific_hdr_t(...,ACTION_PACK,...)
     * will be overwritten by MacWrapper_array_t (ccx_version contain vendor header) */
    if (MacWrapper_m80211_ie_vendor_specific_hdr_t(&object_p->hdr, blob, action, 0x00, NULL))
    {
@@ -1125,7 +1125,7 @@ void MacWrapper_m80211_ie_ccx_cpl_parameter_set_t(m80211_ie_ccx_cpl_parameter_se
 	if(WiFiEngine_is_in_joining_state())
 	{
 		DE_TRACE_STATIC2(TR_SM_HIGH_RES, "store cpl value (%d)\n", object_p->cpl);
-		
+
 		WiFiEngine_store_cpl_state(1, object_p->cpl);
 	}
 	else
@@ -1135,7 +1135,7 @@ void MacWrapper_m80211_ie_ccx_cpl_parameter_set_t(m80211_ie_ccx_cpl_parameter_se
    }
    else
    {
- 	DE_TRACE_STATIC(TR_SM_HIGH_RES, "Did not find cpl\n");	
+ 	DE_TRACE_STATIC(TR_SM_HIGH_RES, "Did not find cpl\n");
    }
 
 } /* MacWrapper_m80211_ie_ccx_cpl_parameter_set_t */
@@ -1153,7 +1153,7 @@ void MacWrapper_m80211_ie_ccx_tsm_parameter_set_t(m80211_ie_ccx_tsm_parameter_se
 {
 
 //   DE_TRACE_STATIC(TR_SM_HIGH_RES, "\n\n\n\n\nLOOK FOR CCX CPL OUI TYPE\n");
-   /* FIXME: work with OUI done by MacWrapper_m80211_ie_vendor_specific_hdr_t(...,ACTION_PACK,...) 
+   /* FIXME: work with OUI done by MacWrapper_m80211_ie_vendor_specific_hdr_t(...,ACTION_PACK,...)
     * will be overwritten by MacWrapper_array_t (ccx_version contain vendor header) */
    if (MacWrapper_m80211_ie_vendor_specific_hdr_t(&object_p->hdr, blob, action, 0x00, NULL))
    {
@@ -1195,7 +1195,7 @@ void WrapperCopy_m80211_ie_ccx_reassoc_req_parameter_set_t(void* context_p, m802
 	int ccx_element_size = source->hdr.hdr.len - M80211_IE_ID_VENDOR_SPECIFIC_HDR_SIZE;
 	if (ccx_element_size != 20)
 		return;
-		
+
    *dest = *source;
 }
 
@@ -1213,11 +1213,11 @@ void   MacWrapper_m80211_ie_ccx_reassoc_req_parameter_set_t(m80211_ie_ccx_reasso
       }
       return;
    }
-	
+
 	/* Update the IE header. */
 	if ( action == ACTION_PACK )
 	{
-		if(MacWrapper_m80211_ie_hdr_t(&object_p->hdr.hdr, blob, action, 
+		if(MacWrapper_m80211_ie_hdr_t(&object_p->hdr.hdr, blob, action,
                                     M80211_IE_ID_CISCO_CCKM_VENDOR_SPECIFIC, 24, 24))
         {
 			DE_TRACE_STATIC(TR_SM_HIGH_RES, "found 0x9c header\n");
@@ -1225,7 +1225,7 @@ void   MacWrapper_m80211_ie_ccx_reassoc_req_parameter_set_t(m80211_ie_ccx_reasso
 			MacWrapper_uint8_t(&object_p->hdr.OUI_2, blob, action);
 			MacWrapper_uint8_t(&object_p->hdr.OUI_3, blob, action);
 			MacWrapper_uint8_t(&object_p->hdr.OUI_type, blob, action);
-		 
+
 			MacWrapper_array_t((char*)&object_p->timestamp, 8, blob, action);
 			MacWrapper_array_t((char*)&object_p->request_number, 4, blob, action);
 			//MacWrapper_uint32_t(&object_p->request_number, blob, action);
@@ -1241,15 +1241,15 @@ void   MacWrapper_m80211_ie_ccx_reassoc_req_parameter_set_t(m80211_ie_ccx_reasso
 void WrapperCopy_m80211_ie_ccx_reassoc_rsp_parameter_set_t(void* context_p, m80211_ie_ccx_reassoc_rsp_parameter_set_t* dest, m80211_ie_ccx_reassoc_rsp_parameter_set_t* source)
 {
 	int ccx_element_size = source->hdr.hdr.len - M80211_IE_ID_VENDOR_SPECIFIC_HDR_SIZE;
-	
+
 	if (source->hdr.hdr.id != 0x9c) {
 		if (source->hdr.hdr.id != M80211_IE_ID_NOT_USED)
 		return;
 	}
-			
+
   *dest = *source;
 
-   dest->body_p = (char*)WrapperCopy_default(context_p, &dest->hdr.hdr, &source->hdr.hdr, 
+   dest->body_p = (char*)WrapperCopy_default(context_p, &dest->hdr.hdr, &source->hdr.hdr,
 							(void*)source->body_p, ccx_element_size);
 }
 
@@ -1267,27 +1267,27 @@ void   MacWrapper_m80211_ie_ccx_reassoc_rsp_parameter_set_t(m80211_ie_ccx_reasso
       }
       return;
    }
-	
+
 	/* Update the IE header, length should be greater than 24 which the length of the cckm request IE */
-	if(MacWrapper_m80211_ie_hdr_t(&object_p->hdr.hdr, blob, action, 
+	if(MacWrapper_m80211_ie_hdr_t(&object_p->hdr.hdr, blob, action,
                                     M80211_IE_ID_CISCO_CCKM_VENDOR_SPECIFIC, 28, 128))
     {
 		int ccx_element_size = object_p->hdr.hdr.len - M80211_IE_ID_VENDOR_SPECIFIC_HDR_SIZE;
-		
+
 		MacWrapper_uint8_t(&object_p->hdr.OUI_1, blob, action);
 		MacWrapper_uint8_t(&object_p->hdr.OUI_2, blob, action);
 		MacWrapper_uint8_t(&object_p->hdr.OUI_3, blob, action);
 		MacWrapper_uint8_t(&object_p->hdr.OUI_type, blob, action);
-			
+
 		if (action == ACTION_PACK ) {
 			DE_TRACE_STATIC(TR_SM_HIGH_RES, "found 0x9c header for CCX RSP PACK ???\n");
         }
-		
+
         if (action == ACTION_UNPACK)
         {
 			object_p->body_p = (char*)WrapperAttachStructure(blob->structure, ccx_element_size);
 		}
-		
+
 		MacWrapper_array_t((char*)object_p->body_p, ccx_element_size, blob, action);
 	}
 }
@@ -1296,7 +1296,7 @@ void   MacWrapper_m80211_ie_ccx_reassoc_rsp_parameter_set_t(m80211_ie_ccx_reasso
 
 void MacWrapper_m80211_ie_challenge_text_t(m80211_ie_challenge_text_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_CHALLENGE_TEXT, 0, 255))
    {
       /* The length member is implicitly set by MacWrapper_m80211_ie_hdr_t. */
@@ -1307,7 +1307,7 @@ void MacWrapper_m80211_ie_challenge_text_t(m80211_ie_challenge_text_t* object_p,
 
 void MacWrapper_m80211_ie_ibss_par_set_t(m80211_ie_ibss_par_set_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_IBSS_PAR_SET, 2, 2))
    {
       MacWrapper_uint16_t(&object_p->atim_window, blob, action);
@@ -1317,7 +1317,7 @@ void MacWrapper_m80211_ie_ibss_par_set_t(m80211_ie_ibss_par_set_t* object_p, Blo
 
 void MacWrapper_m80211_ie_request_info_t(m80211_ie_request_info_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_REQUEST, 1, 1))
    {
       MacWrapper_uint8_t(&object_p->requested_element_id, blob, action);
@@ -1330,7 +1330,7 @@ void WrapperCopy_m80211_ie_country_t(void* context_p, m80211_ie_country_t* dest,
 
    *dest = *source;
 
-   if ( (source->hdr.id != M80211_IE_ID_NOT_USED) 
+   if ( (source->hdr.id != M80211_IE_ID_NOT_USED)
      && (source->hdr.len >= M80211_IE_LEN_COUNTRY_STRING + M80211_IE_CHANNEL_INFO_TRIPLET_SIZE) )
    {
       int  channel_info_count;
@@ -1350,42 +1350,42 @@ void MacWrapper_m80211_ie_country_t(m80211_ie_country_t* object_p, Blob_t* blob,
 {
    int i;
 
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_COUNTRY, 6, 46))
    {
       int  channel_info_count;
       int  channel_info_size;
-      
-      
-      MacWrapper_m80211_country_string_t(&object_p->country_string, blob, action);     
+
+
+      MacWrapper_m80211_country_string_t(&object_p->country_string, blob, action);
 
       if (object_p->hdr.len >= M80211_IE_LEN_COUNTRY_STRING + M80211_IE_CHANNEL_INFO_TRIPLET_SIZE)
       {
          channel_info_count = (object_p->hdr.len - M80211_IE_LEN_COUNTRY_STRING) / M80211_IE_CHANNEL_INFO_TRIPLET_SIZE;
          channel_info_size  = channel_info_count * M80211_IE_CHANNEL_INFO_TRIPLET_SIZE;
-         
-         /* The channel info is encoded as a dynamic number of triplets. 
-            Clear the channel info field and copy the codes present in the IE. 
+
+         /* The channel info is encoded as a dynamic number of triplets.
+            Clear the channel info field and copy the codes present in the IE.
           */
          if (action == ACTION_UNPACK)
          {
             /* Before unpacking the elements of this IE, allocate a buffer for it. */
-            object_p->channel_info = (m80211_country_channels_t*)WrapperAttachStructure(blob->structure, 
-                                                                     channel_info_size);         
+            object_p->channel_info = (m80211_country_channels_t*)WrapperAttachStructure(blob->structure,
+                                                                     channel_info_size);
             DE_MEMSET((char*)object_p->channel_info, 0, channel_info_size);
          }
          for (i=0; i<channel_info_count; i++)
          {
             MacWrapper_array_t((char*)&object_p->channel_info[i], M80211_IE_CHANNEL_INFO_TRIPLET_SIZE, blob, action);
          }
-      } 
+      }
       else
       {
          if (action == ACTION_UNPACK)
          {
             object_p->channel_info = NULL;
          }
-      }        
+      }
    }
 } /* MacWrapper_m80211_ie_country_t */
 
@@ -1409,7 +1409,7 @@ void MacWrapper_m80211_ie_qbss_load_t(m80211_ie_qbss_load_t* object_p, Blob_t* b
 
 void MacWrapper_m80211_ie_cf_par_set_t(m80211_ie_cf_par_set_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_CF_PAR_SET, 6, 6))
    {
       MacWrapper_uint8_t(&object_p->cf_timing.count, blob, action);
@@ -1422,7 +1422,7 @@ void MacWrapper_m80211_ie_cf_par_set_t(m80211_ie_cf_par_set_t* object_p, Blob_t*
 
 void MacWrapper_m80211_ie_ds_par_set_t(m80211_ie_ds_par_set_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_DS_PAR_SET, 1, 1))
    {
       MacWrapper_uint8_t(&object_p->channel, blob, action);
@@ -1432,7 +1432,7 @@ void MacWrapper_m80211_ie_ds_par_set_t(m80211_ie_ds_par_set_t* object_p, Blob_t*
 
 void MacWrapper_m80211_ie_fh_par_set_t(m80211_ie_fh_par_set_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_FH_PAR_SET, 5, 5))
    {
       MacWrapper_uint16_t(&object_p->dwell_time, blob, action);
@@ -1445,7 +1445,7 @@ void MacWrapper_m80211_ie_fh_par_set_t(m80211_ie_fh_par_set_t* object_p, Blob_t*
 
 void MacWrapper_m80211_ie_erp_t(m80211_ie_erp_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_ERP, 1, 1))
    {
       MacWrapper_uint8_t(&object_p->info, blob, action);
@@ -1466,7 +1466,7 @@ void MacWrapper_m80211_ie_WMM_information_element_t(m80211_ie_WMM_information_el
       }
       return;
    }
-   
+
    if (MacWrapper_m80211_ie_WMM_header_t(&object_p->WMM_hdr, blob, action, WMM_IE_OUI_SUBTYPE_INFORMATION))
    {
       MacWrapper_uint8_t(&object_p->WMM_Protocol_Version, blob, action);
@@ -1479,7 +1479,7 @@ void MacWrapper_m80211_ie_WMM_information_element_t(m80211_ie_WMM_information_el
          Blob_t tmp_blob = *blob;
          BLOB_POP_CURRENT_IE(&tmp_blob);
          object_p->WMM_hdr.hdr.hdr.len = BLOB_CURRENT_SIZE(blob) - BLOB_CURRENT_SIZE(&tmp_blob) - 2;
-         MacWrapper_m80211_ie_hdr_t(&object_p->WMM_hdr.hdr.hdr, &tmp_blob, action, 
+         MacWrapper_m80211_ie_hdr_t(&object_p->WMM_hdr.hdr.hdr, &tmp_blob, action,
                                     M80211_IE_ID_VENDOR_SPECIFIC, 1, M80211_IE_MAX_LEN);
       }
    }
@@ -1488,7 +1488,7 @@ void MacWrapper_m80211_ie_WMM_information_element_t(m80211_ie_WMM_information_el
 void MacWrapper_m80211_ie_WMM_parameter_element_t(m80211_ie_WMM_parameter_element_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
    if (MacWrapper_m80211_ie_WMM_header_t(&object_p->WMM_hdr, blob, action, WMM_IE_OUI_SUBTYPE_PARAMETERS))
-   {    
+   {
       MacWrapper_uint8_t(&object_p->WMM_Protocol_Version, blob, action);
       MacWrapper_uint8_t(&object_p->WMM_QoS_Info, blob, action);
       MacWrapper_uint8_t(&object_p->reserved, blob, action);
@@ -1496,7 +1496,7 @@ void MacWrapper_m80211_ie_WMM_parameter_element_t(m80211_ie_WMM_parameter_elemen
       MacWrapper_AC_parameters_t(&object_p->AC_BK, blob, action);
       MacWrapper_AC_parameters_t(&object_p->AC_VI, blob, action);
       MacWrapper_AC_parameters_t(&object_p->AC_VO, blob, action);
-      
+
       /* Update the IE header. */
       if ( (action == ACTION_PACK) || (action == ACTION_GET_SIZE) )
       {
@@ -1504,7 +1504,7 @@ void MacWrapper_m80211_ie_WMM_parameter_element_t(m80211_ie_WMM_parameter_elemen
          Blob_t tmp_blob = *blob;
          BLOB_POP_CURRENT_IE(&tmp_blob);
          object_p->WMM_hdr.hdr.hdr.len = BLOB_CURRENT_SIZE(blob) - BLOB_CURRENT_SIZE(&tmp_blob) - 2;
-         MacWrapper_m80211_ie_hdr_t(&object_p->WMM_hdr.hdr.hdr, &tmp_blob, action, 
+         MacWrapper_m80211_ie_hdr_t(&object_p->WMM_hdr.hdr.hdr, &tmp_blob, action,
                                     M80211_IE_ID_VENDOR_SPECIFIC, 1, M80211_IE_MAX_LEN);
       }
    }
@@ -1512,7 +1512,7 @@ void MacWrapper_m80211_ie_WMM_parameter_element_t(m80211_ie_WMM_parameter_elemen
 
 void MacWrapper_m80211_ie_qos_capability_t(m80211_ie_qos_capability_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_QOS_CAPABILITY, 1, 1))
    {
       MacWrapper_uint8_t(&object_p->qos_info, blob, action);
@@ -1534,7 +1534,7 @@ void WrapperCopy_m80211_remaining_IEs_t(void* context_p, m80211_remaining_IEs_t*
    dest_p->buffer_ref  = NULL;
 
    /* Wrapper structures are always set to M80211_IE_ID_NOT_USED when created. */
-   if (source_p->count <= 0) 
+   if (source_p->count <= 0)
    {
       *dest_p = *source_p;
 
@@ -1544,7 +1544,7 @@ void WrapperCopy_m80211_remaining_IEs_t(void* context_p, m80211_remaining_IEs_t*
 
    /* Get first IE. */
    source_ref = (ie_ref_t)source_p->buffer_ref;
-   
+
    /* Copy IE objects one by one... */
    for (enumeration = 0; enumeration < source_p->count; enumeration++)
    {
@@ -1554,8 +1554,8 @@ void WrapperCopy_m80211_remaining_IEs_t(void* context_p, m80211_remaining_IEs_t*
    }
 }
 
-ie_ref_t MacWrapper_m80211_remaining_IEs_t_Insert(void* context_p, 
-                                                  m80211_remaining_IEs_t* dest_p, 
+ie_ref_t MacWrapper_m80211_remaining_IEs_t_Insert(void* context_p,
+                                                  m80211_remaining_IEs_t* dest_p,
                                                   ie_ref_t                ie_p)
 {
    ie_ref_t dest_ref;
@@ -1574,13 +1574,13 @@ ie_ref_t MacWrapper_m80211_remaining_IEs_t_Insert(void* context_p,
       dest_ref = (ie_ref_t)WrapperAttachStructure(context_p, ie_length);
       dest_p->count = 0;
       dest_p->acc_size = 0;
-      dest_p->buffer_ref = dest_ref;         
+      dest_p->buffer_ref = dest_ref;
    }
    else
    {
       dest_ref = (ie_ref_t)WrapperAttachStructure(dest_p->buffer_ref, ie_length);
-   }      
-   
+   }
+
    if (dest_ref != NULL)
    {
       dest_p->count++;
@@ -1591,23 +1591,23 @@ ie_ref_t MacWrapper_m80211_remaining_IEs_t_Insert(void* context_p,
    return dest_ref;
 }
 
-ie_ref_t MacWrapper_m80211_remaining_IEs_t_InsertNew(void* context_p, 
-                                                     m80211_remaining_IEs_t* dest_p, 
+ie_ref_t MacWrapper_m80211_remaining_IEs_t_InsertNew(void* context_p,
+                                                     m80211_remaining_IEs_t* dest_p,
                                                      m80211_ie_id_t id, int ie_length)
 {
    ie_ref_t dest_ref;
-   char     source_ref[2]; 
+   char     source_ref[2];
 
    IE_ID(source_ref)       = id;
    IE_LENGTH(source_ref)   = ie_length;
-   
+
    dest_ref = MacWrapper_m80211_remaining_IEs_t_Insert(context_p, dest_p, (ie_ref_t)&source_ref);
 
    return dest_ref;
 }
 
-ie_ref_t MacWrapper_m80211_remaining_IEs_t_LocateNext(ie_ref_t           ie_ref, 
-                                                      bool_t             skip_current,  
+ie_ref_t MacWrapper_m80211_remaining_IEs_t_LocateNext(ie_ref_t           ie_ref,
+                                                      bool_t             skip_current,
                                                       m80211_ie_id_t     id,
                                                       int                vendor_specific_oui,
                                                       int                oui_sub_type)
@@ -1618,7 +1618,7 @@ ie_ref_t MacWrapper_m80211_remaining_IEs_t_LocateNext(ie_ref_t           ie_ref,
    {
       ie_ref = (ie_ref_t)WrapperNextInChain(ie_ref);
    }
- 
+
    /* Search IE objects one by one... */
    while ( (ie_ref != NULL) && ( ie_ref != NIL) )
    {
@@ -1632,9 +1632,9 @@ ie_ref_t MacWrapper_m80211_remaining_IEs_t_LocateNext(ie_ref_t           ie_ref,
             return ie_ref;
          }
          if ( (vendor_specific_oui == IE_VENDOR_SPECIFIC_HEADER(ie_ref)->OUI_type)
-             && (IE_VENDOR_SPECIFIC_HEADER(ie_ref)->OUI_1 == 0x00) 
-             && (IE_VENDOR_SPECIFIC_HEADER(ie_ref)->OUI_2 == 0x50) 
-             && (IE_VENDOR_SPECIFIC_HEADER(ie_ref)->OUI_3 == 0xf2) 
+             && (IE_VENDOR_SPECIFIC_HEADER(ie_ref)->OUI_1 == 0x00)
+             && (IE_VENDOR_SPECIFIC_HEADER(ie_ref)->OUI_2 == 0x50)
+             && (IE_VENDOR_SPECIFIC_HEADER(ie_ref)->OUI_3 == 0xf2)
             )
          {
             if (vendor_specific_oui == WMM_IE_OUI_TYPE)
@@ -1658,7 +1658,7 @@ ie_ref_t MacWrapper_m80211_remaining_IEs_t_LocateNext(ie_ref_t           ie_ref,
 
 ie_ref_t MacWrapper_m80211_remaining_IEs_t_Locate(m80211_remaining_IEs_t* remaining_ies, m80211_ie_id_t id, int vendor_specific_oui, int oui_sub_type)
 {
-   return MacWrapper_m80211_remaining_IEs_t_LocateNext(remaining_ies->buffer_ref, FALSE, id, vendor_specific_oui, oui_sub_type);   
+   return MacWrapper_m80211_remaining_IEs_t_LocateNext(remaining_ies->buffer_ref, FALSE, id, vendor_specific_oui, oui_sub_type);
 }
 
 void MacWrapper_m80211_remaining_IEs_t_Remove(m80211_remaining_IEs_t* remaining_ies, m80211_ie_id_t id)
@@ -1667,7 +1667,7 @@ void MacWrapper_m80211_remaining_IEs_t_Remove(m80211_remaining_IEs_t* remaining_
    m80211_ie_id_t       current_id;
    ie_ref_t             ie_ref;
    struct wrapper_alloc_buf* previous_buf_hdr;
- 
+
    /* Wrapper structures are always set to M80211_IE_ID_NOT_USED when created. */
    if ( (remaining_ies == NULL) || ( remaining_ies->count <=  0) )
    {
@@ -1679,7 +1679,7 @@ void MacWrapper_m80211_remaining_IEs_t_Remove(m80211_remaining_IEs_t* remaining_
    ie_ref = remaining_ies->buffer_ref;
 
    previous_buf_hdr = NULL;
-   
+
    /* Search IE objects one by one... */
    for (enumeration = 0; enumeration < remaining_ies->count; enumeration++)
    {
@@ -1709,11 +1709,11 @@ void MacWrapper_m80211_remaining_IEs_t(m80211_remaining_IEs_t* object_p, Blob_t*
    int      enumeration;
    int      ie_length;
    ie_ref_t buffer_ref;
-   
+
    switch (action)
    {
       case  ACTION_UNPACK:
-      {        
+      {
          if (blob->ie_first_index == 0)
          {
             /* Store the index of the first information element. */
@@ -1732,7 +1732,7 @@ void MacWrapper_m80211_remaining_IEs_t(m80211_remaining_IEs_t* object_p, Blob_t*
          object_p->count      = 0;
          object_p->acc_size   = 0;
          object_p->buffer_ref = NULL;
- 
+
          /* Scan through all information elements to find the current one. */
          while ( blob->index < blob->length )
          {
@@ -1754,9 +1754,9 @@ void MacWrapper_m80211_remaining_IEs_t(m80211_remaining_IEs_t* object_p, Blob_t*
 
                   MacWrapper_m80211_remaining_IEs_t_Insert(blob->structure, object_p, (ie_ref_t)BLOB_CURRENT_POS(blob));
                }
-               
+
                BLOB_SKIP(blob, ie_length);
-               
+
                enumeration++;
                HIC_ASSERT(enumeration < 32);
             }
@@ -1770,9 +1770,9 @@ void MacWrapper_m80211_remaining_IEs_t(m80211_remaining_IEs_t* object_p, Blob_t*
             BLOB_SKIP(blob, object_p->acc_size);
          }
          break;
-       
+
       case ACTION_PACK:
-      {  
+      {
          char* pos;
          buffer_ref = object_p->buffer_ref;
 
@@ -1783,8 +1783,8 @@ void MacWrapper_m80211_remaining_IEs_t(m80211_remaining_IEs_t* object_p, Blob_t*
             pos = &blob->buffer[blob->index + object_p->acc_size];
             for (enumeration = 0; enumeration < object_p->count; enumeration++)
             {
-               DE_TRACE_INT4(TR_SCAN, "inserting unmaped IE (%d/%d), id: %d len: %d\n", 
-                  enumeration , object_p->count, 
+               DE_TRACE_INT4(TR_SCAN, "inserting unmaped IE (%d/%d), id: %d len: %d\n",
+                  enumeration , object_p->count,
                   buffer_ref[0], buffer_ref[1]);
 
                /* Step back the size of the IE. */
@@ -1810,13 +1810,13 @@ void MacWrapper_radio_meas_req_hdr_t(radio_meas_req_hdr_t* object_p, Blob_t* blo
 
 void MacWrapper_m80211_ie_measurement_report_t(m80211_ie_measurement_report_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_MEASUREMENT_REPORT, 0, 64))
-   {   
+   {
       MacWrapper_uint8_t(&object_p->token, blob, action);
       MacWrapper_uint8_t(&object_p->mode, blob, action);
       MacWrapper_m80211_measurement_types_t(&object_p->type, blob, action);
-      switch (object_p->type) 
+      switch (object_p->type)
       {
       case M80211_MEASUREMENT_CHANNEL_LOAD_REP:
          MacWrapper_channel_load_rep_t(&object_p->rep.channel_load_rep, blob, action);
@@ -1831,16 +1831,16 @@ void MacWrapper_m80211_ie_measurement_report_t(m80211_ie_measurement_report_t* o
          break;
 
       }
-       
+
    }
-} /* MacWrapper_m80211_ie_measurement_report_t */ 
+} /* MacWrapper_m80211_ie_measurement_report_t */
 
 void MacWrapper_m80211_ie_measurement_request_t(m80211_ie_measurement_request_t* object_p, Blob_t* blob, WrapperAction_t action)
 {
-   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action, 
+   if (MacWrapper_m80211_ie_hdr_t((m80211_ie_hdr_t*)object_p, blob, action,
                                   M80211_IE_ID_MEASUREMENT_REQUEST, 0, 64))
-   {   
-      MacWrapper_uint8_t(&object_p->token, blob, action); 
+   {
+      MacWrapper_uint8_t(&object_p->token, blob, action);
       MacWrapper_uint8_t(&object_p->mode, blob, action);
       MacWrapper_m80211_measurement_types_t(&object_p->type, blob, action);
       switch (object_p->type)
@@ -1862,9 +1862,9 @@ void MacWrapper_m80211_ie_measurement_request_t(m80211_ie_measurement_request_t*
          break;
 
       }
-      
+
    }
-} /* MacWrapper_m80211_ie_measurement_request_t */ 
+} /* MacWrapper_m80211_ie_measurement_request_t */
 
 /*****************************************************************************
 G L O B A L   C A C H E   F U N C T I O N S
@@ -2129,5 +2129,3 @@ G L O B A L   A C C E S S   F U N C T I O N S
 *****************************************************************************/
 
 /******************************* END OF FILE ********************************/
-
-

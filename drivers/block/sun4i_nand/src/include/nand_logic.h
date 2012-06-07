@@ -578,4 +578,3 @@ __u32 NAND_GetDiskSize(void);
 
 
 #endif  //ifndef __NAND_LOGIC_H__
-

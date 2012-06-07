@@ -3,7 +3,7 @@
  * and tail of a list, inserting before and after certain entries,
  * removing entries, and looping over lists.
  *
- * This implementation is derived from 
+ * This implementation is derived from
  * the TAILQ implementation in 4.4BSD.
  */
 
@@ -12,12 +12,12 @@
 #ifndef __wei_tailq_h__
 #define __wei_tailq_h__
 
-/*! Evaluates to the first entry on the list or NULL if empty 
+/*! Evaluates to the first entry on the list or NULL if empty
  *  @param head A pointer to the list head.
  */
 #define WEI_TQ_FIRST(head) ((head)->tqh_first)
 
-/*! Evaluates to the last entry on the list or NULL if empty 
+/*! Evaluates to the last entry on the list or NULL if empty
  *  @param head A pointer to the list head.
  *  @param headname The name of the head struct (~typeof(head), if that had existed in C).
  */

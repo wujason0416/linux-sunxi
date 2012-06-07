@@ -25,11 +25,11 @@ static int hwmw269_bt_on = 0;
 static int hwmw269_gpio_ctrl(char* name, int level)
 {
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
-    char* gpio_cmd[5] = {"hw_mw269x_wl_pwr", "hw_mw269x_wl_enb", "hw_mw269x_wl_wake", 
+    char* gpio_cmd[5] = {"hw_mw269x_wl_pwr", "hw_mw269x_wl_enb", "hw_mw269x_wl_wake",
                          "hw_mw269x_bt_enb", "hw_mw269x_bt_wake"};
     int i = 0;
     int ret = 0;
-    
+
     for (i=0; i<5; i++) {
         if (strcmp(name, gpio_cmd[i])==0)
             break;
@@ -38,7 +38,7 @@ static int hwmw269_gpio_ctrl(char* name, int level)
         hw_msg("No gpio %s for %s module\n", name, SDIO_MODULE_NAME);
         return -1;
     }
-    
+
     hw_msg("Set GPIO %s to %d !\n", name, level);
     if (strcmp(name, "hw_mw269x_wl_enb") == 0) {
         if ((level && !hwmw269_bt_on)
@@ -75,9 +75,9 @@ gpio_state_change:
         hw_msg("Failed to set gpio %s to %d !\n", name, level);
         return -1;
     }
-    
+
     return 0;
-    
+
 power_change:
     ret = gpio_write_one_pin_value(ops->pio_hdle, level, "hw_mw269x_wl_pwr");
     if (ret) {
@@ -85,33 +85,33 @@ power_change:
         return -1;
     }
     udelay(500);
-    
+
 state_change:
     if (strcmp(name, "hw_mw269x_wl_enb")==0)
         hwmw269_wl_on = level;
     if (strcmp(name, "hw_mw269x_bt_enb")==0)
         hwmw269_bt_on = level;
     hw_msg("%s power state change: wifi %d, bt %d !!\n", SDIO_MODULE_NAME, hwmw269_wl_on, hwmw269_bt_on);
-    
+
     goto gpio_state_change;
 }
 
 static int hwmw269_get_gpio_value(char* name)
 {
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
-    
+
     if (strcmp(name, "hw_mw269x_wl_hostwake") || strcmp(name, "hw_mw269x_bt_hostwake")) {
         hw_msg("No gpio %s for %s\n", name, SDIO_MODULE_NAME);
         return -1;
     }
-    
+
     return gpio_read_one_pin_value(ops->pio_hdle, name);
 }
 
 void hwmw269_power(int mode, int* updown)
 {
     struct mmc_pm_ops *ops = &mmc_card_pm_ops;
-    
+
     if (mode) {
         if (*updown) {
             hw_msg("power up module %s\n", ops->mod_name);

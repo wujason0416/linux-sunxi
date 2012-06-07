@@ -46,7 +46,7 @@ typedef struct {
             m80211_mac_data_ind_header_t   mac_data_ind;
             m80211_mac_data_cfm_t   mac_data_cfm;
       } mac_data_body;
-      
+
 } mac_data_body_t;
 
 typedef union
@@ -54,7 +54,7 @@ typedef union
       mac_data_body_t               mac_data;
       mlme_mgmt_body_t              mac_mgmt;
       mac_mib_body_t                mac_mib;
-      hic_ctrl_msg_body_t           mac_ctrl;    
+      hic_ctrl_msg_body_t           mac_ctrl;
 } mac_msg_t;
 
 #ifdef WITH_LOST_SCAN_WORKAROUND
@@ -97,7 +97,7 @@ enum {
    driverStarting,
    driverAuthenticating,
    driverAssociating,
-   driverAssociated,   
+   driverAssociated,
    driverConnected,
    driverDisassociating,
    driverDeauthenticating,
@@ -106,17 +106,17 @@ enum {
 
 
 typedef int traffic_mode_t;
-enum { 
+enum {
    TRAFFIC_AUTO_CONNECT,
-   TRAFFIC_TRANSPARENT 
+   TRAFFIC_TRANSPARENT
 };
 typedef int ps_main_states_t;
-enum { 
+enum {
    PS_MAIN_INIT,
    PS_MAIN_DISABLED_UNCONNECTED,
-   PS_MAIN_DISABLED_CONNECTED,      
+   PS_MAIN_DISABLED_CONNECTED,
    PS_MAIN_ENABLED_UNCONNECTED,
-   PS_MAIN_ENABLED_CONNECTED  
+   PS_MAIN_ENABLED_CONNECTED
 };
 
 
@@ -141,24 +141,24 @@ typedef enum
 } wifi_core_dump_state_t;
 
 /* Dynamic driver configuration */
-/*! 
+/*!
  * About the encryption configuration:
  * The encryptionLimit specifies the highest encryption mode allowed in the driver.
  * The encryptionMode specifies the currently configured encryption mode.
  *
- */ 
+ */
 typedef struct
 {
    WiFiEngine_Encryption_t encryptionLimit;    /**< The highest allowed encryption mode */
    WiFiEngine_Encryption_t encryptionMode;     /**< The current encryption mode */
-   WiFiEngine_Auth_t       authenticationMode; /**< The required authentication mode. */ 
+   WiFiEngine_Auth_t       authenticationMode; /**< The required authentication mode. */
    uint16_t                min_pdu_size;       /**< Minimum PDU size to be indicated by the device */
    uint16_t                pdu_size_alignment; /**< PDU size alignment from target */
    uint8_t                 rx_hic_hdr_size;    /**< HIC header size for RX data */
    uint8_t                 tx_hic_hdr_size;    /**< HIC header size for TX data */
    uint8_t                 host_attention;     /**< interrupt mode */
    uint8_t                 byte_swap_mode;     /**< Enable/disable byte swapping to support 8bit and 16bit SPI transfers */
-   uint8_t                 host_wakeup;        /**< Set host wakeup interrupt pin, set to 0xFF to disable host wakeup */ 
+   uint8_t                 host_wakeup;        /**< Set host wakeup interrupt pin, set to 0xFF to disable host wakeup */
    uint8_t                 force_interval;     /**< Force an interval between HIC messages from target [unit 1/10th msec] */
    uint8_t                 tx_window_size;     /**< Set tx_windows_size, six is default on linux and windows */
 } wifi_config_t;
@@ -181,7 +181,7 @@ typedef enum
 }wifi_chip_type_t;
 
 typedef int data_path_states_t;
-enum 
+enum
 {
    DATA_PATH_OPENED,
    DATA_PATH_CLOSED
@@ -191,7 +191,7 @@ enum
 typedef uint32_t wifi_state_flags;
 #define WES_FLAG_SCAN_IN_PROGRESS            1    /**< Waiting for scan results */
 #define WES_FLAG_HW_PRESENT                  1<<1 /**< 0 if no hardware is present, 1 if hardware is present */
-#define WES_FLAG_HW_NO_TRAFFIC_RCVD          1<<2 
+#define WES_FLAG_HW_NO_TRAFFIC_RCVD          1<<2
 #define WES_FLAG_8021X_PORT_OPEN             1<<4 /**< 802.1X port state (open or closed) */
 #define WES_FLAG_MIC_FAILURE_RCVD            1<<5 /**< Michael MIC failure detected within the last 60 seconds */
 #define WES_FLAG_ASSOC_BLOCKED               1<<6 /**< Association not allowed */
@@ -231,17 +231,17 @@ typedef struct
 {
    m80211_mac_addr_t   MacAddress;
    uint16_t      ChannelNumber;
-   uint16_t      ssid_len; 
+   uint16_t      ssid_len;
    char          ssid[32];
-   uint16_t      Disassociation_Timestamp;   
+   uint16_t      Disassociation_Timestamp;
 }Last_Associated_Net_Info_t;
 
 typedef struct
 {
    uint8_t  dialog_token;
    uint8_t  admission_state;
-   uint8_t  active;  
-   char     TSPEC_body[55]; 
+   uint8_t  active;
+   char     TSPEC_body[55];
    char     tsm_state;
    uint16_t    tsm_interval;
 }Admission_Control_State_t;
@@ -285,7 +285,7 @@ typedef struct
    char measurement_token[2];
    driver_timer_id_t ccx_radio_measurement_timer_id;
    driver_timer_id_t ccx_traffic_stream_metrics_id;
-   Last_Associated_Net_Info_t LastAssociatedNetInfo; 
+   Last_Associated_Net_Info_t LastAssociatedNetInfo;
    Admission_Control_State_t addts_state[8];
    int cpl_enabled;
    int cpl_value;
@@ -309,8 +309,8 @@ typedef struct
  * \brief Container for the dynamic WiFiEngine state */
 typedef struct
 {
-   uint8_t                dataReqPending;                  /**< Pending data req counter     */   
-   uint8_t                dataReqByPrio[8];                /**< Pending data req counter by prio */   
+   uint8_t                dataReqPending;                  /**< Pending data req counter     */
+   uint8_t                dataReqByPrio[8];                /**< Pending data req counter by prio */
    data_path_states_t     dataPathState;                   /**< Used when power save is enabled to open/close data path */
    uint8_t                txPktWindowMax;                  /**< Max size of the tx pkt window*/
    uint8_t                cmdReplyPending;                 /**< Cmd reply pending flag */
@@ -321,15 +321,15 @@ typedef struct
    driver_trylock_t       sm_lock;                         /**< WiFiEngine state machine lock */
    driver_trylock_t       send_lock;                       /**< WiFiEngine send process lock */
    driver_trylock_t       cmd_lock;                       /**< WiFiEngine send process lock */
-   driver_lock_t          resource_hic_lock;               /**< WiFiEngine hic interface release lock */   
+   driver_lock_t          resource_hic_lock;               /**< WiFiEngine hic interface release lock */
    uint32_t               flags;                           /**< Configuration flags */
    uint32_t               pkt_cnt;                         /**< Used as transaction ID for data. Only the lower 31 bits are used, the high bit is reserved. */
    uint32_t               last_eapol_trans_id;             /**< Transid for last sent EAPOL frame */
    uint32_t               prof_event_flags;                /**< Event flags for the hw profiler */
    ps_main_states_t       psMainState;                     /**< Power save main states */
-   
+
    /* Sequence numbers for keeping track of MIB-request-confirm pairs */
-   uint16_t               current_seq_num;    
+   uint16_t               current_seq_num;
    uint16_t               last_seq_num;
    main_states_t          main_state;                      /**< Operation in progress */
    connected_states_t     connected_state;                 /**< Either of BSS or IBSS */
@@ -340,9 +340,9 @@ typedef struct
    mlme_rssi_dbm_t        snr;                             /**< The last fetched RSSI value (measured on beacons, may be old) */
    mlme_rssi_dbm_t        data_snr;                        /**< The last fetched RSSI value (measured on data-frames, may be old) */
    mlme_rssi_dbm_t        rssi;                            /**< The last fetched RSSI value (measured on beacons, may be old) */
-   struct iobject*        rssi_beacon_h; 
+   struct iobject*        rssi_beacon_h;
    mlme_rssi_dbm_t        data_rssi;                       /**< The last fetched RSSI value (measured on data-frames, may be old) */
-   struct iobject*        rssi_data_h; 
+   struct iobject*        rssi_data_h;
    uint16_t               rts_thres;                       /**< Current RTS threshold  */
   struct {
       uint8_t qpsk_index;
@@ -356,7 +356,7 @@ typedef struct
    driver_timer_id_t      mic_cm_detect_timer_id;          /**< Id of mic countermeasures detect timer */
    driver_timer_id_t      mic_cm_assoc_holdoff_timer_id;   /**< Id of mic countermeasures hold off timer */
    driver_timer_id_t      monitor_traffic_timer_id;        /**< Id of monitor traffic timer (used in power save forest mode) */
-#ifdef USE_IF_REINIT 
+#ifdef USE_IF_REINIT
    driver_timer_id_t      inactivity_timer_id;             /**< Id of driver inactivity timer */
 #endif
    driver_timer_id_t      cmd_timer_id;                    /**< Id of command timeout timer */
@@ -368,20 +368,20 @@ typedef struct
 
    driver_tick_t          hb_rx_ts;                        /**< Timestamp of last received heartbeat ind. Used to detect a hung firmware. */
    uint32_t               periodic_scan_interval;          /**< Interval between periodic scans */
-   uint16_t               ps_queue_cnt;                    /**< Total number of data packets in queue (from upper layer) */  
-   uint16_t               ps_data_ind_received;            /**< Set if a data ind is recieved - cleared if when no activity on tx data path*/  
+   uint16_t               ps_queue_cnt;                    /**< Total number of data packets in queue (from upper layer) */
+   uint16_t               ps_data_ind_received;            /**< Set if a data ind is recieved - cleared if when no activity on tx data path*/
    WiFiEngine_PowerMode_t power_mode;                      /**< Temporary holds power mode to change to */
    int                    is80211PowerSaveInhibit;         /**< Set to inhibit power save during critical sequences */
-   int                    ps_inhibit_state;                /**< Bitmask used when inhibiy or allow power save */  
-   int                    users;                           /**< Bitmask used when request/release hic interface */   
-                                                        
-   wei_netlist_state_t    net_state;      
+   int                    ps_inhibit_state;                /**< Bitmask used when inhibiy or allow power save */
+   int                    users;                           /**< Bitmask used when request/release hic interface */
+
+   wei_netlist_state_t    net_state;
    wifi_config_t          config;                          /**< Dynamic driver configuration */
    wifi_key_state_t       key_state;                       /**< Encryption key params */
    wifi_core_dump_state_t core_dump_state;                 /**< If core dump is enabled or not */
-   char                   x_mac_version[X_MAC_VERSION_SIZE];  /**< ASCII-coded x_mac version */ 
-   uint32_t               fw_capabilities;                 /**< Firmware capabilities */ 
-   m80211_ie_country_t*   active_channels_ref;             /**< Channels allowed to send on with 
+   char                   x_mac_version[X_MAC_VERSION_SIZE];  /**< ASCII-coded x_mac version */
+   uint32_t               fw_capabilities;                 /**< Firmware capabilities */
+   m80211_ie_country_t*   active_channels_ref;             /**< Channels allowed to send on with
                                                              802.11d. Used to limit active scans. */
    wifi_chip_type_t       chip_type;                       /**< chip type either module or chip on board */
    char                   fpga_version[4];                 /**< Version of fpga in a null terminated ascii string */
@@ -395,19 +395,19 @@ typedef struct
    int                    (*eapol_handler)(const void*, size_t); /**< Handler for EAPOL frames */
    void*                  cm_priv;
    void*                  pm_priv;
-   
+
    we_con_failed_s        last_con_failed_ind;
    we_con_lost_s          last_con_lost_ind;
    we_ps_control_t        *delay_ps_uid;
    we_ps_control_t        *dhcp_ps_uid;
    we_ps_control_t        *ibss_ps_uid;
-   we_ps_control_t        *ps_state_machine_uid;   
-   
+   we_ps_control_t        *ps_state_machine_uid;
+
    /* rate table that maps firmware bit fields, to IEEE rate codes */
    uint32_t               rate_table[32];
    unsigned int           rate_table_len;
    uint32_t               rate_bmask;  /* B rates as mask */
-   uint32_t               rate_gmask;  /* G rates as mask */   
+   uint32_t               rate_gmask;  /* G rates as mask */
 #if (DE_ENABLE_HT_RATES == CFG_ON)
    uint32_t               rate_htmask; /* supported HT rate mask */
    uint32_t               enabled_ht_rates;
@@ -489,7 +489,7 @@ typedef struct wei_sm_queue_param {
       if (!WES_TEST_FLAG(WES_FLAG_HW_PRESENT)                           \
           || wifiEngineState.core_dump_state == WEI_CORE_DUMP_ENABLED)  \
          return WIFI_ENGINE_FAILURE;                                    \
-   } while (0) 
+   } while (0)
 #define WEI_SET_TRANSID(x) \
  do { WIFI_LOCK(); (x) = wifiEngineState.pkt_cnt; \
       wifiEngineState.pkt_cnt =  \
@@ -662,8 +662,8 @@ wei_sm_queue_param_s* wei_wrapper2param(void *p);
 void wei_sm_init(void);
 void wei_sm_drain_sig_q(void);
 void wei_sm_execute(void);
-void wei_sm_queue_sig(ucos_msg_id_t sig, 
-                      SYSDEF_ObjectType dest, 
+void wei_sm_queue_sig(ucos_msg_id_t sig,
+                      SYSDEF_ObjectType dest,
                       wei_sm_queue_param_s* p,
                       bool_t internal);
 
@@ -681,10 +681,10 @@ typedef int (*wei_update_transform)(char *dst, size_t dst_len);
 
 int wei_send_mib_get_next(bool_t get_first, uint32_t *trans_id);
 
-int wei_get_mib_with_update(const char *id, 
-                            void *dst, 
-                            size_t dstlen, 
-                            wei_update_transform transform, 
+int wei_get_mib_with_update(const char *id,
+                            void *dst,
+                            size_t dstlen,
+                            wei_update_transform transform,
                             we_indication_t we_ind);
 
 int wei_channel_list_from_country_ie(channel_list_t *cl, m80211_ie_country_t *ie);
@@ -694,10 +694,10 @@ int wei_get_number_of_ptksa_replay_counters_from_net(WiFiEngine_net_t *net);
 
 int wei_ratelist2mask(uint32_t  *rate_mask,
                       rRateList *rrates);
-int wei_ratelist2ie(m80211_ie_supported_rates_t *sup_rates, 
+int wei_ratelist2ie(m80211_ie_supported_rates_t *sup_rates,
                     m80211_ie_ext_supported_rates_t *ext_rates,
                     rRateList *rrates);
-int wei_ie2ratelist(rRateList *rrates, m80211_ie_supported_rates_t *sup, 
+int wei_ie2ratelist(rRateList *rrates, m80211_ie_supported_rates_t *sup,
                     m80211_ie_ext_supported_rates_t *ext);
 void wei_prune_nonbasic_ratelist(rRateList *rates);
 
@@ -725,7 +725,7 @@ int wei_get_mib_object(const mib_id_t*, mib_object_entry_t*);
 int wei_have_mibtable(void);
 void wei_free_mibtable(void);
 
-int wei_schedule_data_cb_with_status(uint32_t trans_id, void *data, 
+int wei_schedule_data_cb_with_status(uint32_t trans_id, void *data,
                                      size_t len, uint8_t result);
 unsigned int wei_transid_wrap(void);
 int wei_jobid_wrap(void);
@@ -823,7 +823,7 @@ int m80211_ie_is_wps_configured(m80211_ie_wps_parameter_set_t *ie);
 void wei_handle_dlm_pkt(hic_message_context_t *msg_ref);
 
 void wei_pm_shutdown(void *priv);
-void wei_pm_initialize(void **priv); 
+void wei_pm_initialize(void **priv);
 
 void wei_interface_init(void);
 void wei_interface_shutdown(void);

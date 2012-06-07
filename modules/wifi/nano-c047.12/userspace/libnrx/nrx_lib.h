@@ -59,7 +59,7 @@ typedef int (*nrx_callback_t)(nrx_context context,
                               int operation,
                               void *event_data,
                               size_t event_data_size,
-                              void *user_data); 
+                              void *user_data);
 
 /*! callback handle, obtained by registering a callback, its main
  *  purpose is for cancelling callbacks */
@@ -85,13 +85,13 @@ typedef enum
    NRX_SSID_ADD = 0,
    NRX_SSID_REMOVE = 1
 }nrx_ssid_action_t;
- 
+
 typedef enum
 {
    NRX_ENCR_DISABLED,
-   NRX_ENCR_WEP,            
-   NRX_ENCR_TKIP,           
-   NRX_ENCR_CCMP            
+   NRX_ENCR_WEP,
+   NRX_ENCR_TKIP,
+   NRX_ENCR_CCMP
 } nrx_encryption_t;    /* Must agree with WiFiEngin definition */
 
 typedef enum
@@ -222,7 +222,7 @@ typedef struct
    char octet[NRX_MAC_ADDR_LEN];
 } nrx_mac_addr_t;
 
-typedef struct 
+typedef struct
 {
    size_t len;
    nrx_mac_addr_t mac_addr[NRX_MAX_MAC_ADDR_LIST_LEN];
@@ -248,12 +248,12 @@ typedef uint16_t nrx_channel_t;
 typedef struct
 {
       /*! Number of valid channels in the chs[] array. */
-      int len; 
+      int len;
       /*! The lower byte is used for the channel number. The higher
        *  byte must be zero for the default channel numbering scheme.
        *  A non-zero high byte indicates a different channel-frequency
        *  mapping. */
-        nrx_channel_t channel[NRX_MAX_CHAN_LIST_LEN]; 
+        nrx_channel_t channel[NRX_MAX_CHAN_LIST_LEN];
 } nrx_ch_list_t;
 
 struct nrx_conn_lost_data {
@@ -268,7 +268,7 @@ struct nrx_conn_lost_data {
 /*! Trigger event information. Sent to callback. */
 typedef struct nrx_event_mibtrigger {
    uint32_t id;        /*! Id of trigger/threshold that was activated */
-   uint32_t value;     /*! The MIB's value at the particular instance 
+   uint32_t value;     /*! The MIB's value at the particular instance
                         *  the trigger/threshold was set off */
 } nrx_event_mibtrigger_t;
 
@@ -286,7 +286,7 @@ typedef struct {
 typedef struct {
       /*! Number of valid entries in the retries[] array. */
       int len;
-      /*! 
+      /*!
        * Vector with number of retries, each corresponding to a
        * rate in a nrx_rate_list_t */
       uint8_t retries[NRX_MAX_RATE_LIST_LEN];

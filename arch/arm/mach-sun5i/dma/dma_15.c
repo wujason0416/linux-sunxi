@@ -149,12 +149,12 @@ static struct sw_dma_map __initdata sw_dma_mappings[DMACH_MAX] = {
 		.name		= "usb0",
 		.channels = {0,0,0,0,0,0,0,0,
 			DMA_CH_VALID, DMA_CH_VALID, DMA_CH_VALID, DMA_CH_VALID, DMA_CH_VALID, DMA_CH_VALID, DMA_CH_VALID, DMA_CH_VALID},
-		},			
+		},
 	[DMACH_DEMACR] = {
 		.name		= "EMACRX_DMA",
 		.channels = {0,0,0,0,0,0,0,0,
 			DMA_CH_VALID, DMA_CH_VALID, DMA_CH_VALID, DMA_CH_VALID, DMA_CH_VALID, DMA_CH_VALID, DMA_CH_VALID, DMA_CH_VALID},
-	},	
+	},
 	[DMACH_DEMACT] = {
 		.name		= "EMACTX_DMA",
 		.channels = {0,0,0,0,0,0,0,0,
@@ -259,5 +259,3 @@ static int __init sw_dma_drvinit(void)
 }
 
 arch_initcall(sw_dma_drvinit);
-
-

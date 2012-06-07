@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
  *
  *
- 
+
 ******************************************************************************/
 #ifndef __RTW_MLME_EXT_H_
 #define __RTW_MLME_EXT_H_
@@ -45,7 +45,7 @@
 #define REASSOC_LIMIT	(2)
 #define READDBA_LIMIT	(2)
 
-//#define	IOCMD_REG0		0x10250370		 	
+//#define	IOCMD_REG0		0x10250370
 //#define	IOCMD_REG1		0x10250374
 //#define	IOCMD_REG2		0x10250378
 
@@ -84,12 +84,12 @@
 
 //
 // Channel Plan Type.
-// Note: 
-//	We just add new channel plan when the new channel plan is different from any of the following 
-//	channel plan. 
+// Note:
+//	We just add new channel plan when the new channel plan is different from any of the following
+//	channel plan.
 //	If you just wnat to customize the acitions(scan period or join actions) about one of the channel plan,
 //	customize them in RT_CHANNEL_INFO in the RT_CHANNEL_LIST.
-// 
+//
 typedef enum _RT_CHANNEL_DOMAIN
 {
 	RT_CHANNEL_DOMAIN_FCC = 0,
@@ -167,7 +167,7 @@ struct action_handler {
 	unsigned int (*func)(_adapter *padapter, union recv_frame *precv_frame);
 };
 
-struct	ss_res	
+struct	ss_res
 {
 	int	state;
 	int	bss_cnt;
@@ -245,7 +245,7 @@ struct mlme_ext_info
 	u8	ERP_enable;
 	u8	ERP_IE;
 	u8	HT_enable;
-	u8	HT_caps_enable;	
+	u8	HT_caps_enable;
 	u8	HT_info_enable;
 	u8	HT_protection;
 	u8	turboMode_cts2self;
@@ -300,19 +300,19 @@ struct mlme_ext_priv
 	u8	mlmeext_init;
 	ATOMIC_T		event_seq;
 	u16	mgnt_seq;
-	
+
 	//struct fw_priv 	fwpriv;
-	
+
 	unsigned char	cur_channel;
 	unsigned char	cur_bwmode;
 	unsigned char	cur_ch_offset;//PRIME_CHNL_OFFSET
-	unsigned char	cur_wireless_mode;	
+	unsigned char	cur_wireless_mode;
 	unsigned char	max_chan_nums;
 	RT_CHANNEL_INFO		channel_set[MAX_CHANNEL_NUM];
 	unsigned char	basicrate[NumRates];
 	unsigned char	datarate[NumRates];
-	
-	struct ss_res		sitesurvey_res;		
+
+	struct ss_res		sitesurvey_res;
 	struct mlme_ext_info	mlmext_info;//for sta/adhoc mode, including current scanning/connecting/connected related info.
                                                      //for ap mode, network includes ap's cap_info
 	_timer		survey_timer;
@@ -322,14 +322,14 @@ struct mlme_ext_priv
 
 	u32	linked_to;//linked timeout
 	u32	retry; //retry for issue probereq
-	
+
 	u64 TSFValue;
 
 #ifdef CONFIG_TDLS
 	_workitem TDLS_restore_workitem;
 #endif
-	
-#ifdef CONFIG_AP_MODE	
+
+#ifdef CONFIG_AP_MODE
 	unsigned char bstart_bss;
 #endif
 
@@ -543,7 +543,7 @@ void init_mlme_ap_info(_adapter *padapter);
 void free_mlme_ap_info(_adapter *padapter);
 //void update_BCNTIM(_adapter *padapter);
 void update_beacon(_adapter *padapter, u8 ie_id, u8 *oui, u8 tx);
-void expire_timeout_chk(_adapter *padapter);	
+void expire_timeout_chk(_adapter *padapter);
 void update_sta_info_apmode(_adapter *padapter, struct sta_info *psta);
 int rtw_check_beacon_data(_adapter *padapter, u8 *pbuf,  int len);
 #ifdef CONFIG_NATIVEAP_MLME
@@ -559,7 +559,7 @@ void stop_ap_mode(_adapter *padapter);
 
 struct cmd_hdl {
 	uint	parmsize;
-	u8 (*h2cfuns)(struct _ADAPTER *padapter, u8 *pbuf);	
+	u8 (*h2cfuns)(struct _ADAPTER *padapter, u8 *pbuf);
 };
 
 
@@ -576,7 +576,7 @@ u8 join_cmd_hdl(_adapter *padapter, u8 *pbuf);
 u8 disconnect_hdl(_adapter *padapter, u8 *pbuf);
 u8 createbss_hdl(_adapter *padapter, u8 *pbuf);
 u8 setopmode_hdl(_adapter *padapter, u8 *pbuf);
-u8 sitesurvey_cmd_hdl(_adapter *padapter, u8 *pbuf);	
+u8 sitesurvey_cmd_hdl(_adapter *padapter, u8 *pbuf);
 u8 setauth_hdl(_adapter *padapter, u8 *pbuf);
 u8 setkey_hdl(_adapter *padapter, u8 *pbuf);
 u8 set_stakey_hdl(_adapter *padapter, u8 *pbuf);
@@ -596,7 +596,7 @@ u8 set_csa_hdl(_adapter *padapter, unsigned char *pbuf);	//Kurt: Handling DFS ch
 
 #ifdef _RTW_CMD_C_
 
-struct cmd_hdl wlancmds[] = 
+struct cmd_hdl wlancmds[] =
 {
 	GEN_DRV_CMD_HANDLER(0, NULL) /*0*/
 	GEN_DRV_CMD_HANDLER(0, NULL)
@@ -611,7 +611,7 @@ struct cmd_hdl wlancmds[] =
 	GEN_MLME_EXT_HANDLER(0, NULL) /*10*/
 	GEN_MLME_EXT_HANDLER(0, NULL)
 	GEN_MLME_EXT_HANDLER(0, NULL)
-	GEN_MLME_EXT_HANDLER(0, NULL)		
+	GEN_MLME_EXT_HANDLER(0, NULL)
 	GEN_MLME_EXT_HANDLER(sizeof (struct joinbss_parm), join_cmd_hdl) /*14*/
 	GEN_MLME_EXT_HANDLER(sizeof (struct disconnect_parm), disconnect_hdl)
 	GEN_MLME_EXT_HANDLER(sizeof (struct createbss_parm), createbss_hdl)
@@ -643,7 +643,7 @@ struct cmd_hdl wlancmds[] =
 	GEN_MLME_EXT_HANDLER(0, NULL)
 	GEN_MLME_EXT_HANDLER(0, NULL)
 	GEN_MLME_EXT_HANDLER(0, NULL)
-	GEN_MLME_EXT_HANDLER(sizeof(struct addBaReq_parm), add_ba_hdl)	
+	GEN_MLME_EXT_HANDLER(sizeof(struct addBaReq_parm), add_ba_hdl)
 	GEN_MLME_EXT_HANDLER(0, NULL)
 	GEN_MLME_EXT_HANDLER(0, NULL)
 	GEN_MLME_EXT_HANDLER(0, NULL)
@@ -652,7 +652,7 @@ struct cmd_hdl wlancmds[] =
 	GEN_MLME_EXT_HANDLER(0, NULL)
 	GEN_MLME_EXT_HANDLER(0, NULL)
 	GEN_MLME_EXT_HANDLER(0, NULL)
-	GEN_MLME_EXT_HANDLER(0, NULL) 
+	GEN_MLME_EXT_HANDLER(0, NULL)
 	GEN_MLME_EXT_HANDLER(sizeof(struct Tx_Beacon_param), tx_beacon_hdl) /*55*/
 
 	GEN_MLME_EXT_HANDLER(0, mlme_evt_hdl) /*56*/
@@ -674,13 +674,13 @@ struct C2HEvent_Header
 	unsigned int len:16;
 	unsigned int ID:8;
 	unsigned int seq:8;
-	
+
 #elif defined(CONFIG_BIG_ENDIAN)
 
 	unsigned int seq:8;
 	unsigned int ID:8;
 	unsigned int len:16;
-	
+
 #else
 
 #  error "Must be LITTLE or BIG Endian"
@@ -702,33 +702,33 @@ enum rtw_c2h_event
  	GEN_EVT_CODE(_Read_EEPROM),
  	GEN_EVT_CODE(_Read_EFUSE),
 	GEN_EVT_CODE(_Read_CAM),			/*5*/
- 	GEN_EVT_CODE(_Get_BasicRate),  
- 	GEN_EVT_CODE(_Get_DataRate),   
+ 	GEN_EVT_CODE(_Get_BasicRate),
+ 	GEN_EVT_CODE(_Get_DataRate),
  	GEN_EVT_CODE(_Survey),	 /*8*/
  	GEN_EVT_CODE(_SurveyDone),	 /*9*/
- 	
+
  	GEN_EVT_CODE(_JoinBss) , /*10*/
  	GEN_EVT_CODE(_AddSTA),
  	GEN_EVT_CODE(_DelSTA),
  	GEN_EVT_CODE(_AtimDone) ,
- 	GEN_EVT_CODE(_TX_Report),  
+ 	GEN_EVT_CODE(_TX_Report),
 	GEN_EVT_CODE(_CCX_Report),			/*15*/
  	GEN_EVT_CODE(_DTM_Report),
  	GEN_EVT_CODE(_TX_Rate_Statistics),
- 	GEN_EVT_CODE(_C2HLBK), 
+ 	GEN_EVT_CODE(_C2HLBK),
  	GEN_EVT_CODE(_FWDBG),
 	GEN_EVT_CODE(_C2HFEEDBACK),               /*20*/
 	GEN_EVT_CODE(_ADDBA),
 	GEN_EVT_CODE(_C2HBCN),
-	GEN_EVT_CODE(_ReportPwrState),		//filen: only for PCIE, USB	
+	GEN_EVT_CODE(_ReportPwrState),		//filen: only for PCIE, USB
 	GEN_EVT_CODE(_CloseRF),				//filen: only for PCIE, work around ASPM
  	MAX_C2HEVT
 };
 
 
-#ifdef _RTW_MLME_EXT_C_		
+#ifdef _RTW_MLME_EXT_C_
 
-static struct fwevent wlanevents[] = 
+static struct fwevent wlanevents[] =
 {
 	{0, rtw_dummy_event_callback}, 	/*0*/
 	{0, NULL},
@@ -740,10 +740,10 @@ static struct fwevent wlanevents[] =
 	{0, NULL},
 	{0, &rtw_survey_event_callback},		/*8*/
 	{sizeof (struct surveydone_event), &rtw_surveydone_event_callback},	/*9*/
-		
+
 	{0, &rtw_joinbss_event_callback},		/*10*/
 	{sizeof(struct stassoc_event), &rtw_stassoc_event_callback},
-	{sizeof(struct stadel_event), &rtw_stadel_event_callback},	
+	{sizeof(struct stadel_event), &rtw_stadel_event_callback},
 	{0, &rtw_atimdone_event_callback},
 	{0, rtw_dummy_event_callback},
 	{0, NULL},	/*15*/
@@ -753,11 +753,10 @@ static struct fwevent wlanevents[] =
 	{0, rtw_fwdbg_event_callback},
 	{0, NULL},	 /*20*/
 	{0, NULL},
-	{0, NULL},	
+	{0, NULL},
 	{0, &rtw_cpwm_event_callback},
 };
 
 #endif//_RTL8192C_CMD_C_
 
 #endif
-

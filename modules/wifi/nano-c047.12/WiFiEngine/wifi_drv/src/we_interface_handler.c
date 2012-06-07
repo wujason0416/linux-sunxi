@@ -31,7 +31,7 @@ This module implements a generic transport layer.
  *
  * @brief The generic transport handels generic transport issues. The main task
  *        is to coordinate interface handling(cmd52) with upper layer.
- *        
+ *
  *
  *  @{
  */
@@ -81,16 +81,16 @@ do { if(ok_to_send == TRUE) \
 typedef enum {
    INTERFACE_PS_DISABLED,
    INTERFACE_PS_OPEN,
-   INTERFACE_PS_CLOSED_WAIT,      
+   INTERFACE_PS_CLOSED_WAIT,
    INTERFACE_PS_CLOSED,
    INTERFACE_PS_OPEN_WAIT,
    INTERFACE_PS_NMB_STATES
-} interface_state_t; 
+} interface_state_t;
 
 static int connected;
 static interface_state_t state;
 static int ok_to_send;
-const char *state_name[] = { 
+const char *state_name[] = {
                              "INTERFACE_PS_DISABLED",
                              "INTERFACE_PS_OPEN",
                              "INTERFACE_PS_CLOSED_WAIT",
@@ -107,27 +107,27 @@ const char *state_name[] = {
  */
 
 static int ps_traffic_timeout_cb(void *data, size_t len)
-{  
-   rPowerManagementProperties *powerManagementProperties = NULL; 
+{
+   rPowerManagementProperties *powerManagementProperties = NULL;
 
    powerManagementProperties = (rPowerManagementProperties *)Registry_GetProperty(ID_powerManagement);
-   
+
    DE_TRACE_STATIC(TR_PS, "====> ps_traffic_timeout_cb\n");
 
    if (state == INTERFACE_PS_DISABLED)
    {
       /*  power save has been disabled */
       WIFI_LOCK();
-      WES_CLEAR_FLAG(WES_FLAG_PS_TRAFFIC_TIMEOUT_RUNNING);  
+      WES_CLEAR_FLAG(WES_FLAG_PS_TRAFFIC_TIMEOUT_RUNNING);
       WIFI_UNLOCK();
-      wei_release_resource_hic(RESOURCE_USER_TX_TRAFFIC_TMO);      
+      wei_release_resource_hic(RESOURCE_USER_TX_TRAFFIC_TMO);
       return 0;
    }
-   
+
    if(WES_TEST_FLAG(WES_FLAG_PS_TRAFFIC_TIMEOUT_RUNNING))
    {
       WIFI_LOCK();
-      WES_CLEAR_FLAG(WES_FLAG_PS_TRAFFIC_TIMEOUT_RUNNING);  
+      WES_CLEAR_FLAG(WES_FLAG_PS_TRAFFIC_TIMEOUT_RUNNING);
       WIFI_UNLOCK();
       if(wifiEngineState.ps_queue_cnt == 0 && wifiEngineState.ps_data_ind_received == 0)
       {
@@ -136,12 +136,12 @@ static int ps_traffic_timeout_cb(void *data, size_t len)
          if (wifiEngineState.dataReqPending == 0)
          {
             /* No pending data cfm - close data path */
-            wifiEngineState.dataPathState = DATA_PATH_CLOSED;  
+            wifiEngineState.dataPathState = DATA_PATH_CLOSED;
             WIFI_UNLOCK();
          }
          else
          {
-            /* Let datapath continue until all cfm:s has been received */ 
+            /* Let datapath continue until all cfm:s has been received */
             WIFI_UNLOCK();
          }
          wei_release_resource_hic(RESOURCE_USER_TX_TRAFFIC_TMO);
@@ -149,15 +149,15 @@ static int ps_traffic_timeout_cb(void *data, size_t len)
       else
       {
          DE_TRACE_STATIC(TR_PS, "restart the timer\n");
-         if (DriverEnvironment_RegisterTimerCallback(powerManagementProperties->psTxTrafficTimeout, 
-                  wifiEngineState.ps_traffic_timeout_timer_id, 
-                  ps_traffic_timeout_cb,0) 
+         if (DriverEnvironment_RegisterTimerCallback(powerManagementProperties->psTxTrafficTimeout,
+                  wifiEngineState.ps_traffic_timeout_timer_id,
+                  ps_traffic_timeout_cb,0)
                != 1)
          {
              DE_TRACE_STATIC(TR_SEVERE,"No command to callback registered, DE was busy\n");
              /* Not possible to continue - go to sleep */
              WIFI_LOCK();
-             wifiEngineState.dataPathState = DATA_PATH_CLOSED; 
+             wifiEngineState.dataPathState = DATA_PATH_CLOSED;
              WIFI_UNLOCK();
              wei_release_resource_hic(RESOURCE_USER_TX_TRAFFIC_TMO);
          }
@@ -168,11 +168,11 @@ static int ps_traffic_timeout_cb(void *data, size_t len)
             wifiEngineState.ps_data_ind_received = 0;
             WiFiEngine_PsCheckQueues();
          }
-         
+
       }
    }
 
-   DE_TRACE_STATIC(TR_PS, "<==== ps_traffic_timeout_cb\n");   
+   DE_TRACE_STATIC(TR_PS, "<==== ps_traffic_timeout_cb\n");
 
    return 0;
 }
@@ -183,8 +183,8 @@ static bool_t isLegacyPsNoPsPoll(void)
    int net_status;
 
    /* Check if we are using legacy power save no ps poll */
-   WiFiEngine_GetNetworkStatus(&net_status); 
-   
+   WiFiEngine_GetNetworkStatus(&net_status);
+
    if((net_status)&&(!WiFiEngine_LegacyPsPollPowerSave())&&(WiFiEngine_isAssocSupportingWmmPs() != WIFI_ENGINE_SUCCESS))
    {
       return TRUE;
@@ -195,39 +195,39 @@ static bool_t isLegacyPsNoPsPoll(void)
 
 
 static void wakeup_ind_cb(wi_msg_param_t param, void* priv)
-{  
+{
    wifiEngineState.cmdReplyPending = 0;
 
-   DE_TRACE_STATIC(TR_PS, "Wakeup ind \n"); 
+   DE_TRACE_STATIC(TR_PS, "Wakeup ind \n");
 
    DE_TRACE_STRING(TR_PS_DEBUG,"State is: %s \n",state_name[state]);
-   
+
    if(state == INTERFACE_PS_OPEN_WAIT)
    {
-      DriverEnvironment_enable_target_sleep();      
-      state = INTERFACE_PS_OPEN;  
+      DriverEnvironment_enable_target_sleep();
+      state = INTERFACE_PS_OPEN;
       if(wifiEngineState.users & RESOURCE_DISABLE_PS)
-      {  
+      {
          /* Power save mechansim for hic interface has been disabled */
-         state = INTERFACE_PS_DISABLED; 
-         we_ind_send(WE_IND_HIC_PS_INTERFACE_DISABLED, NULL);           
+         state = INTERFACE_PS_DISABLED;
+         we_ind_send(WE_IND_HIC_PS_INTERFACE_DISABLED, NULL);
       }
-      WiFiEngine_PsCheckQueues();    
+      WiFiEngine_PsCheckQueues();
    }
     DE_TRACE_STRING(TR_PS_DEBUG,"State is: %s \n",state_name[state]);
 }
-  
+
 static void connected_cb(wi_msg_param_t param, void* priv)
 {
    DE_TRACE_STATIC(TR_PS, "Device connected\n");
    connected = TRUE;
-  
+
 }
-  
+
 static void disconnecting_cb(wi_msg_param_t param, void* priv)
 {
-   DE_TRACE_STATIC(TR_PS, "Device disconnected\n");  
-   connected = FALSE;   
+   DE_TRACE_STATIC(TR_PS, "Device disconnected\n");
+   connected = FALSE;
 }
 
 static struct interface_ctx_t {
@@ -254,7 +254,7 @@ void wei_interface_plug(void)
 {
    connected = FALSE;
    ok_to_send = TRUE;
-   state = INTERFACE_PS_DISABLED; 
+   state = INTERFACE_PS_DISABLED;
 
    interface_ctx.wakeup_ind_h = we_ind_register(
             WE_IND_PS_WAKEUP_IND,
@@ -262,9 +262,9 @@ void wei_interface_plug(void)
             wakeup_ind_cb,
             NULL,
             0,
-            NULL); 
+            NULL);
    DE_ASSERT(interface_ctx.wakeup_ind_h != NULL);
-   
+
    interface_ctx.disconnecting_h = we_ind_register(
             WE_IND_80211_DISCONNECTING,
             "WE_IND_80211_DISCONNECTING",
@@ -273,7 +273,7 @@ void wei_interface_plug(void)
             0,
             NULL);
    DE_ASSERT(interface_ctx.disconnecting_h != NULL);
-   
+
    interface_ctx.connected_h = we_ind_register(
             WE_IND_80211_CONNECTED,
             "WE_IND_80211_CONNECTED",
@@ -301,21 +301,21 @@ void wei_interface_plug(void)
  */
 int wei_request_resource_hic(int id)
 {
-   DE_TRACE_STATIC(TR_PS, "===========> wei_request_resource_hic\n"); 
+   DE_TRACE_STATIC(TR_PS, "===========> wei_request_resource_hic\n");
    DE_TRACE_STRING(TR_PS_DEBUG,"State is: %s \n",state_name[state]);
 
    WIFI_RESOURCE_HIC_LOCK();
-   
+
    if(wifiEngineState.core_dump_state == WEI_CORE_DUMP_ENABLED)
    {
       SET_OK_TO_SEND(" coredump_enabled");
       WIFI_RESOURCE_HIC_UNLOCK();
       return ok_to_send;
    }
-   
+
    /* Or in new user bit */
    OR_USERS_WITH(id);
-   
+
    switch(state)
    {
       case INTERFACE_PS_DISABLED:
@@ -323,24 +323,24 @@ int wei_request_resource_hic(int id)
             always ok to send */
          SET_OK_TO_SEND(" power save mechanism for hic interface disabled");
          break;
-      
+
       case INTERFACE_PS_OPEN:
-         /* Interface is open ok to send command/data */  
+         /* Interface is open ok to send command/data */
          if(wifiEngineState.users & RESOURCE_DISABLE_PS)
-         {  
+         {
             /* Power save handling of hic interface has been disabled */
             state = INTERFACE_PS_DISABLED;
-            we_ind_send(WE_IND_HIC_PS_INTERFACE_DISABLED, NULL);          
+            we_ind_send(WE_IND_HIC_PS_INTERFACE_DISABLED, NULL);
          }
          SET_OK_TO_SEND(" interface is temporary open to send data");
          break;
 
       case INTERFACE_PS_CLOSED:
          /* Interface is closed and someone requests to use it.
-            Notify firmware that we want to use the interface. 
-            The interface is ready for use when wakeup_ind_cb() 
+            Notify firmware that we want to use the interface.
+            The interface is ready for use when wakeup_ind_cb()
             is called
-         */  
+         */
          UNSET_OK_TO_SEND(" interface ps closed");
 
          state = INTERFACE_PS_OPEN_WAIT;
@@ -348,7 +348,7 @@ int wei_request_resource_hic(int id)
          /* Activate timer to supervise wakeup ind */
          wifiEngineState.cmdReplyPending = 1;
          if(registry.network.basic.cmdTimeout)
-           WiFiEngine_CommandTimeoutStart();         
+           WiFiEngine_CommandTimeoutStart();
 
          /* Request to wakeup fw */
          DriverEnvironment_disable_target_sleep();
@@ -364,9 +364,9 @@ int wei_request_resource_hic(int id)
       default:
          DE_ASSERT(FALSE);
    }
-   
+
    WIFI_RESOURCE_HIC_UNLOCK();
-   DE_TRACE_STATIC(TR_PS, "<=========== wei_request_resource_hic\n");    
+   DE_TRACE_STATIC(TR_PS, "<=========== wei_request_resource_hic\n");
    return ok_to_send;
 
 }
@@ -382,10 +382,10 @@ void wei_release_resource_hic(int id)
 {
    int users;
    int thisUser;
-   DE_TRACE_STATIC(TR_PS, "===========> wei_release_resource_hic\n"); 
-   DE_TRACE_STRING(TR_PS_DEBUG,"State is: %s \n",state_name[state]);   
-   WIFI_RESOURCE_HIC_LOCK(); 
-   
+   DE_TRACE_STATIC(TR_PS, "===========> wei_release_resource_hic\n");
+   DE_TRACE_STRING(TR_PS_DEBUG,"State is: %s \n",state_name[state]);
+   WIFI_RESOURCE_HIC_LOCK();
+
    if((wifiEngineState.users & id) == 0)
    {
       /* nothing to release */
@@ -398,13 +398,13 @@ void wei_release_resource_hic(int id)
    wifiEngineState.users &= ~id;
 
    /* trace this only while ps_enabled==TRUE */
-   DE_TRACE_INT3(TR_PS, "id: %d users: %d=>%d \n",id, users,wifiEngineState.users);      
+   DE_TRACE_INT3(TR_PS, "id: %d users: %d=>%d \n",id, users,wifiEngineState.users);
 
    if((id == RESOURCE_DISABLE_PS)&&(state == INTERFACE_PS_DISABLED))
    {
       /* The resource to disable power save mechansim for hic
          interface is released */
-      state = INTERFACE_PS_OPEN; 
+      state = INTERFACE_PS_OPEN;
       we_ind_send(WE_IND_HIC_PS_INTERFACE_ENABLED, NULL );
    }
 
@@ -420,20 +420,20 @@ void wei_release_resource_hic(int id)
    {
       case INTERFACE_PS_DISABLED:
       {;
-         /* Interface has been disabled now it is time to enable it again */       
+         /* Interface has been disabled now it is time to enable it again */
          state = INTERFACE_PS_CLOSED_WAIT;
          /* Inform firmware that ps hic interface is not used anymore */
          WiFiEngine_PsSendInterface_Down();
-         state = INTERFACE_PS_CLOSED;  
+         state = INTERFACE_PS_CLOSED;
       }
-      break; 
+      break;
 
       case INTERFACE_PS_OPEN:
       {
-         rPowerManagementProperties *powerManagementProperties = NULL; 
+         rPowerManagementProperties *powerManagementProperties = NULL;
          powerManagementProperties = (rPowerManagementProperties *)Registry_GetProperty(ID_powerManagement);
-         
-         /* Interface is temporary open - close it */   
+
+         /* Interface is temporary open - close it */
          if(isLegacyPsNoPsPoll() && (thisUser == RESOURCE_USER_DATA_PATH) && (powerManagementProperties->psTxTrafficTimeout > 0))
 
          {
@@ -448,9 +448,9 @@ void wei_release_resource_hic(int id)
 
             WIFI_RESOURCE_HIC_UNLOCK();
             wei_request_resource_hic(RESOURCE_USER_TX_TRAFFIC_TMO);
-            WIFI_RESOURCE_HIC_LOCK();            
-            
-            if (DriverEnvironment_RegisterTimerCallback(powerManagementProperties->psTxTrafficTimeout, 
+            WIFI_RESOURCE_HIC_LOCK();
+
+            if (DriverEnvironment_RegisterTimerCallback(powerManagementProperties->psTxTrafficTimeout,
                      wifiEngineState.ps_traffic_timeout_timer_id,ps_traffic_timeout_cb,0) != 1)
             {
                 DE_TRACE_STATIC(TR_SEVERE,"Failed to register timer callback\n");
@@ -460,34 +460,34 @@ void wei_release_resource_hic(int id)
                 state = INTERFACE_PS_CLOSED_WAIT;
                 /* Inform firmware that ps hic interface is not used anymore */
                 WiFiEngine_PsSendInterface_Down();
-                state = INTERFACE_PS_CLOSED; 
+                state = INTERFACE_PS_CLOSED;
             }
             else
             {
                WES_SET_FLAG(WES_FLAG_PS_TRAFFIC_TIMEOUT_RUNNING);
-            }          
+            }
 
          }
          else
-         { 
+         {
             wifiEngineState.dataPathState = DATA_PATH_CLOSED;
             state = INTERFACE_PS_CLOSED_WAIT;
             /* Inform firmware that ps hic interface is not used anymore */
             WiFiEngine_PsSendInterface_Down();
             state = INTERFACE_PS_CLOSED;
          }
-      }      
+      }
       break;
 
       case INTERFACE_PS_CLOSED:
-         DE_TRACE_STATIC(TR_PS, "State is closed no action\n"); 
+         DE_TRACE_STATIC(TR_PS, "State is closed no action\n");
       break;
 
       case INTERFACE_PS_OPEN_WAIT:
-         DE_TRACE_STATIC(TR_PS, "Transit to OPEN state no action\n"); 
-      break;         
+         DE_TRACE_STATIC(TR_PS, "Transit to OPEN state no action\n");
+      break;
       case INTERFACE_PS_CLOSED_WAIT:
-         DE_TRACE_STATIC(TR_PS, "Transit to CLOSE state no action\n");          
+         DE_TRACE_STATIC(TR_PS, "Transit to CLOSE state no action\n");
       break;
 
       default:
@@ -499,7 +499,7 @@ void wei_release_resource_hic(int id)
 
    WIFI_RESOURCE_HIC_UNLOCK();
    DE_TRACE_STRING(TR_PS_DEBUG,"State is: %s \n",state_name[state]);
-   DE_TRACE_STATIC(TR_PS, "<=========== wei_release_resource_hic\n");    
+   DE_TRACE_STATIC(TR_PS, "<=========== wei_release_resource_hic\n");
 }
 
 
@@ -530,22 +530,22 @@ void WiFiEngine_PsCheckQueues(void)
       {
          DE_TRACE_STATIC(TR_PS, "wifiEngineState.ps_queue_cnt > 0\n");
          if(connected)
-         {       
-            wifiEngineState.dataPathState = DATA_PATH_OPENED; 
-            DriverEnvironment_handle_driver_wakeup();       
+         {
+            wifiEngineState.dataPathState = DATA_PATH_OPENED;
+            DriverEnvironment_handle_driver_wakeup();
          }
          else
          {
             DE_TRACE_STATIC(TR_PS, "WifiEngine main state not driverConnected ignore queue count\n");
             DE_TRACE_INT(TR_PS, "WifiEngine main state: %d \n", wifiEngineState.main_state );
          }
-      }     
+      }
       if(!QUEUE_EMPTY(&cmd_queue))
       {
          DE_TRACE_STATIC(TR_PS, "!QUEUE_EMPTY(&cmd_queue)\n");
          /* Send a queued cmd if one is ready */
          wei_send_cmd_raw(NULL, 0);
-      }     
+      }
    }
 }
 
@@ -572,16 +572,16 @@ void WiFiEngine_IndicateTXQueueLength(uint16_t length)
 void WiFiEngine_PsSendInterface_Down(void)
 {
    if (!WES_TEST_FLAG(WES_FLAG_HW_PRESENT)) return;
-   
-   DE_TRACE_STATIC(TR_PS_DEBUG, "====> WiFiEngine_PsSendInterface_Down\n");  
+
+   DE_TRACE_STATIC(TR_PS_DEBUG, "====> WiFiEngine_PsSendInterface_Down\n");
 
    if (!Mlme_Send(Mlme_CreateHICInterfaceDown, 0, wei_unconditional_send_cmd))
    {
       DE_TRACE_STATIC(TR_WARN, "Failed to create hic interface down\n");
       DE_ASSERT(FALSE);
-   } 
+   }
 
-   DE_TRACE_STATIC(TR_PS_DEBUG, "<==== WiFiEngine_PsSendInterface_Down\n");  
+   DE_TRACE_STATIC(TR_PS_DEBUG, "<==== WiFiEngine_PsSendInterface_Down\n");
 }
 
 
@@ -591,8 +591,8 @@ bool_t WiFiEngine_IsReasonHost(hic_ctrl_wakeup_ind_t *ind)
    {
       return TRUE;
    }
-   
-   return FALSE;   
+
+   return FALSE;
 }
 
 bool_t WiFiEngine_IsInterfaceDown(char* cmd)
@@ -606,8 +606,8 @@ bool_t WiFiEngine_IsInterfaceDown(char* cmd)
    type = (uint8_t)*p;
    p++;
    id = (uint8_t)*p;
-   
-   
+
+
    if(type == HIC_MESSAGE_TYPE_CTRL)
    {
       if(id == HIC_CTRL_INTERFACE_DOWN)
@@ -615,8 +615,8 @@ bool_t WiFiEngine_IsInterfaceDown(char* cmd)
          return TRUE;
       }
    }
-   
-   return FALSE;   
+
+   return FALSE;
 }
 
 void wei_interface_init(void)
@@ -628,4 +628,3 @@ void wei_interface_shutdown(void)
 {
    inf_free_handlers();
 }
-

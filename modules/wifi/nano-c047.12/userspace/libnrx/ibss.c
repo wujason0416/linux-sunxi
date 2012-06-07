@@ -19,7 +19,7 @@
  * @param period The beacon period in TU (1 TU = 1024 microseconds). This
  *        cannot be 0; Maximum value is 2^16-1.
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -86,7 +86,7 @@ nrx_get_ibss_dtim_period(nrx_context ctx, uint8_t *period)
  * @brief <b>Set IBSS ATIM period</b>
  *
  * The ATIM parameter defines the window size for sending ATIM frames.
- * This parameter is only used for IBSS power save. 
+ * This parameter is only used for IBSS power save.
  * Setting the ATIM window will only take effect when starting a
  * new IBSS.
  *
@@ -94,7 +94,7 @@ nrx_get_ibss_dtim_period(nrx_context ctx, uint8_t *period)
  * @param window The ATIM window length in TU (1 TU = 1024 microseconds).
  * The maximum value is 2^16.
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  */
@@ -124,4 +124,3 @@ nrx_get_ibss_atim_window(nrx_context ctx, uint16_t *window)
       *window = param.value;
    return ret;
 }
-

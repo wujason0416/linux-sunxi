@@ -10,7 +10,7 @@
 *
 * Author 		: javen
 *
-* Description 	: USB π‹¿Ì≥Ã–Ú
+* Description 	: USB ÁÆ°ÁêÜÁ®ãÂ∫è
 *
 * History 		:
 *      <author>    		<time>       	<version >    		<desc>
@@ -28,5 +28,3 @@
 #endif
 
 #endif   //__USB_MANAGER_H__
-
-

@@ -159,7 +159,7 @@ struct nanoioctl {
    NRXIOW  -> void func(type)
    NRXIOWR -> type func(type)
 */
-   
+
 
 #define NRXVOID         0U
 #define NRXIN           1U
@@ -268,7 +268,7 @@ struct nrx_ioc_power_index {
 
 struct nrx_ioc_heartbeat {
    struct nrx_ioc ioc;
-   int enabled;                 
+   int enabled;
    uint32_t interval;           /*< interval in msecs */
 };
 

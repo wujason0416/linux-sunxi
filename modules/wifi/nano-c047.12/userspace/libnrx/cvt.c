@@ -12,8 +12,8 @@
 #define F11a(C) { (C), F(5000 + (C) * 5) }
 #define F11j(C) { (C), F(4000 + (C) * 5) }
 
-static struct ftable { 
-   uint16_t channel; 
+static struct ftable {
+   uint16_t channel;
    uint32_t khz;
 } ftable[] = {
    /* 802.11b/g */
@@ -69,7 +69,7 @@ static struct ftable {
 };
 
 
-/*! 
+/*!
  * @internal
  * @brief Convert a channel number to a frequency
  *
@@ -80,8 +80,8 @@ static struct ftable {
  * @retval EINVAL if channel could not be converted
  */
 int
-nrx_convert_channel_to_frequency(nrx_context ctx, 
-                                 nrx_channel_t channel, 
+nrx_convert_channel_to_frequency(nrx_context ctx,
+                                 nrx_channel_t channel,
                                  uint32_t *frequency)
 {
    int i;
@@ -92,11 +92,11 @@ nrx_convert_channel_to_frequency(nrx_context ctx,
          return 0;
       }
    }
-   
+
    return EINVAL;
 }
 
-/*! 
+/*!
  * @internal
  * @brief Convert a frequency to a channel number
  *
@@ -108,11 +108,11 @@ nrx_convert_channel_to_frequency(nrx_context ctx,
  */
 int
 nrx_convert_frequency_to_channel(nrx_context ctx,
-                                 uint32_t frequency, 
+                                 uint32_t frequency,
                                  nrx_channel_t *channel)
 {
    int i;
-   
+
    for(i = 0; i < NRX_ARRAY_SIZE(ftable); i++) {
       if(frequency == ftable[i].khz) {
          *channel = ftable[i].channel;

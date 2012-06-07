@@ -26,7 +26,7 @@ struct pcap_event {
    unsigned char data[0];
 };
 
-static WEI_TQ_HEAD(, pcap_event) 
+static WEI_TQ_HEAD(, pcap_event)
      pcap_free = WEI_TQ_HEAD_INITIALIZER(pcap_free),
    pcap_active = WEI_TQ_HEAD_INITIALIZER(pcap_active);
 static spinlock_t pcap_free_lock = SPIN_LOCK_UNLOCKED;
@@ -57,7 +57,7 @@ nrx_pcap_write(struct pcap_event *pe)
       return 0;
 
    len = pe->used + sizeof(flags);
-   
+
    hdr.tv_sec = pe->time.tv_sec;
    hdr.tv_usec = pe->time.tv_usec;
    hdr.caplen = max((unsigned long)len, pcap_snaplen);
@@ -141,7 +141,7 @@ static int
 pcap_close(void)
 {
    KDEBUG(TRACE, "ENTRY");
-   
+
    if(pcap_stream != NULL) {
       nrx_stream_flush(pcap_stream);
       nrx_stream_close(pcap_stream);
@@ -174,15 +174,15 @@ pcap_kthread(void *context)
    daemonize();
    strcpy(current->comm, "pcap");
 #endif
-    
+
    set_bit(1, &kthread_flags);
    while(test_bit(0, &kthread_flags)) {
       pcap_process();
-      wait_event(kthread_wq, 
+      wait_event(kthread_wq,
 		 test_bit(0, &kthread_flags) == 0 ||
 		 WEI_TQ_FIRST(&pcap_active) != NULL);
    }
-	
+
    clear_bit(1, &kthread_flags);
    return 1;
 }
@@ -191,7 +191,7 @@ SYSCTL_FUNCTION(nrx_pcap_handler)
 {
    int status;
    char *p;
-   
+
    KDEBUG(TRACE, "ENTRY file = %s, write = %d", pcap_filename, write);
 
    if(write) {
@@ -208,9 +208,9 @@ SYSCTL_FUNCTION(nrx_pcap_handler)
       }
 
       for(p = pcap_filename; *p != '\0'; p++) {
-         if(!isalnum(*p) && 
-            *p != '_' && 
-            *p != '.' && 
+         if(!isalnum(*p) &&
+            *p != '_' &&
+            *p != '.' &&
             *p != '/') {
             return 0;
          }
@@ -239,7 +239,7 @@ SYSCTL_FUNCTION(nrx_pcap_handler)
 
 static ctl_table nrx_pcap_ctable[] = {
   { SYSCTLENTRY(pcap_file, pcap_filename, nrx_pcap_handler) },
-  { SYSCTLENTRY(pcap_snaplen, pcap_snaplen, proc_doulongvec_minmax), 
+  { SYSCTLENTRY(pcap_snaplen, pcap_snaplen, proc_doulongvec_minmax),
     .extra1 = &pcap_snaplen_min, .extra2 = &pcap_snaplen_max },
   { SYSCTLEND }
 };
@@ -263,7 +263,7 @@ int nrx_pcap_cleanup(void)
    KDEBUG(TRACE, "ENTRY");
 
    pcap_close();
-   
+
    spin_lock(&pcap_free_lock);
    while((pe = WEI_TQ_FIRST(&pcap_free)) != NULL) {
       WEI_TQ_REMOVE(&pcap_free, pe, next);
@@ -279,7 +279,7 @@ int nrx_pcap_cleanup(void)
       kfree(pe);
    }
    spin_unlock(&pcap_active_lock);
-   
+
    nano_util_unregister_sysctl(nrx_pcap_ctable);
 #endif
    return 0;
@@ -292,7 +292,7 @@ int nrx_pcap_cleanup(void)
 static struct pcap_event *pcap_new_event(size_t size)
 {
    struct pcap_event *pe;
-   
+
    size += sizeof(*pe);
    if(size < 2048)
       size = 2048;
@@ -379,7 +379,7 @@ nrx_pcap_append(uint16_t flags, const void *pkt, size_t len)
    pe = pcap_get_event(len);
    if(pe == NULL)
       return -ENOMEM;
-   
+
    memcpy(pe->data, pkt, len);
    pe->used = len;
    pe->flags = flags;
@@ -396,7 +396,7 @@ EXPORT_SYMBOL(nrx_pcap_append);
 
 void nrx_pcap_log_add(uint32_t id)
 {
-#if DE_ENABLE_PCAPLOG >= CFG_ON 
+#if DE_ENABLE_PCAPLOG >= CFG_ON
    unsigned char buf[] = { 0x08, 0x00, 0x03, 0x00, 0x06, 0x00, 0x00, 0x00,
 			   0x00, 0x00 };
    struct pcap_event *pe;
@@ -411,7 +411,7 @@ void nrx_pcap_log_add(uint32_t id)
 
    memcpy(pe->data + 6, &id, sizeof(id));
    cpu_to_le32s(pe->data + 6);
-   
+
    spin_lock(&pcap_active_lock);
    WEI_TQ_INSERT_TAIL(&pcap_active, pe, next);
    spin_unlock(&pcap_active_lock);
@@ -419,4 +419,3 @@ void nrx_pcap_log_add(uint32_t id)
 #endif
 }
 EXPORT_SYMBOL(nrx_pcap_log_add);
-

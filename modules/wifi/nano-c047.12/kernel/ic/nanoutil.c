@@ -15,7 +15,7 @@ unsigned int nrx_debug = DEBUG_TRACE | DEBUG_ERROR;
 EXPORT_SYMBOL(nrx_debug);
 #endif
 
-/* Workaround for freescale 2.6.24 */ 
+/* Workaround for freescale 2.6.24 */
 #if defined(FORCE_SYSCTL_SYSCALL_CHECK) && (LINUX_VERSION_CODE == KERNEL_VERSION(2, 6, 24))
 #define CONFIG_SYSCTL_SYSCALL_CHECK
 #endif

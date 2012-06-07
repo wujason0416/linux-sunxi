@@ -71,7 +71,7 @@ static void wpa_connect(wi_msg_param_t param, void* priv)
 		data.assoc_info.req_ies = buf;
 		data.assoc_info.req_ies_len = buf_len;
 	}
-	
+
 	wpa_supplicant_event(global->ifaces, EVENT_ASSOC, &data);
 
 	return;
@@ -88,7 +88,7 @@ static int
 wpa_eapol_handler(const void *pkt, size_t len)
 {
 	const u8 *p = pkt;
-	wpa_supplicant_rx_eapol(global->ifaces, 
+	wpa_supplicant_rx_eapol(global->ifaces,
 				p + 6, p + 14, len - 14);
 	return TRUE;
 }
@@ -126,7 +126,7 @@ static void wpa_driver_WE_pmkid_candidate(wi_msg_param_t param, void* priv)
 	if((c->flag & M80211_RSN_CAPABILITY_PREAUTHENTICATION) == 0) {
 		return;
 	}
-	
+
 	memset(&data, 0, sizeof(data));
 	os_memcpy(&data.pmkid_candidate.bssid, c->bssId.octet, 6);
 	data.pmkid_candidate.index = -c->rssi_info;
@@ -144,20 +144,20 @@ int wpa_init(void)
 {
 	struct wpa_interface iface;
 	struct wpa_params params;
-   
+
 	memset(&params, 0, sizeof(params));
 	params.wpa_debug_level = MSG_MSGDUMP;
 	params.wpa_debug_show_keys = 1;
 
    wpa_ps_control = WiFiEngine_PSControlAlloc("WPA");
-	
+
 	DE_ASSERT(global == NULL);
 	global = wpa_supplicant_init(&params);
 	if (global == NULL) {
 		DE_TRACE_STATIC(TR_WPA, "Failed to initialise supplicant\n");
 		return WIFI_ENGINE_FAILURE;
 	}
-	
+
 	memset(&iface, 0, sizeof(iface));
 	iface.ifname = "nrwifi";
 	iface.confname = "default";
@@ -172,24 +172,24 @@ int wpa_init(void)
 	WiFiEngine_RegisterEAPOLHandler(wpa_eapol_handler);
 
 
-	we_ind_cond_register(&wpa_handlers.wpa_disconnect, 
-			WE_IND_80211_DISCONNECTED, "WE_IND_80211_DISCONNECTED", 
+	we_ind_cond_register(&wpa_handlers.wpa_disconnect,
+			WE_IND_80211_DISCONNECTED, "WE_IND_80211_DISCONNECTED",
 			wpa_disconnect, NULL,0,NULL);
 
-	we_ind_cond_register(&wpa_handlers.wpa_connect, 
-			WE_IND_80211_CONNECTED, "WE_IND_80211_CONNECTED", 
+	we_ind_cond_register(&wpa_handlers.wpa_connect,
+			WE_IND_80211_CONNECTED, "WE_IND_80211_CONNECTED",
 			wpa_connect, NULL,0,NULL);
 
-	we_ind_cond_register(&wpa_handlers.wpa_pw_fail, 
-			WE_IND_PAIRWISE_MIC_ERROR, "WE_IND_PAIRWISE_MIC_ERROR", 
+	we_ind_cond_register(&wpa_handlers.wpa_pw_fail,
+			WE_IND_PAIRWISE_MIC_ERROR, "WE_IND_PAIRWISE_MIC_ERROR",
 			wpa_driver_WE_pairwise_mic_failure,NULL,0,NULL);
 
-	we_ind_cond_register(&wpa_handlers.wpa_gw_fail, 
-			WE_IND_GROUP_MIC_ERROR, "WE_IND_GROUP_MIC_ERROR", 
+	we_ind_cond_register(&wpa_handlers.wpa_gw_fail,
+			WE_IND_GROUP_MIC_ERROR, "WE_IND_GROUP_MIC_ERROR",
 			wpa_driver_WE_group_mic_failure, NULL,0,NULL);
 
-	we_ind_cond_register(&wpa_handlers.wpa_pmkid, 
-			WE_IND_CANDIDATE_LIST, "WE_IND_CANDIDATE_LIST", 
+	we_ind_cond_register(&wpa_handlers.wpa_pmkid,
+			WE_IND_CANDIDATE_LIST, "WE_IND_CANDIDATE_LIST",
 			wpa_driver_WE_pmkid_candidate, NULL,0,NULL);
 
 	return WIFI_ENGINE_SUCCESS;
@@ -200,7 +200,7 @@ int wpa_exit(void)
 	DE_ASSERT(global != NULL);
 
 	we_ind_deregister(wpa_handlers.wpa_pmkid);
-	we_ind_deregister(wpa_handlers.wpa_gw_fail); 
+	we_ind_deregister(wpa_handlers.wpa_gw_fail);
 	we_ind_deregister(wpa_handlers.wpa_pw_fail);
 	we_ind_deregister(wpa_handlers.wpa_connect);
 	we_ind_deregister(wpa_handlers.wpa_disconnect);
@@ -209,7 +209,7 @@ int wpa_exit(void)
 
 	wpa_supplicant_deinit(global);
 	global = NULL;
-   
+
    WiFiEngine_PSControlFree(wpa_ps_control);
 	wpa_ps_control = NULL;
 

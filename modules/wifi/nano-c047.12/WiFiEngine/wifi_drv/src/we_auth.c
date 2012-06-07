@@ -49,14 +49,14 @@ This module implements the WiFiEngine authentication and encryption interface
 #include "pkt_debug.h"
 #include "state_trace.h"
 
-static int cache_add_key(uint32_t key_idx, size_t key_len, const void *key, 
+static int cache_add_key(uint32_t key_idx, size_t key_len, const void *key,
                             m80211_key_type_t key_type,
                             m80211_protect_type_t prot,
                             int authenticator_configured,
-                            m80211_mac_addr_t *bssid, 
+                            m80211_mac_addr_t *bssid,
                             receive_seq_cnt_t *rsc, int tx_key);
 
-static int cache_del_key(uint32_t key_idx, m80211_key_type_t key_type, 
+static int cache_del_key(uint32_t key_idx, m80211_key_type_t key_type,
                               m80211_mac_addr_t *bssid);
 
 static void cache_new_tx_key(unsigned int index);
@@ -73,7 +73,7 @@ static int open_8021x_port_cb(we_cb_container_t *cbc)
    }
 
    WiFiEngine_8021xPortOpen();
-   
+
    return 1;
 }
 
@@ -84,7 +84,7 @@ static int open_8021x_port_cb(we_cb_container_t *cbc)
  * @param cb Pointer to a callback function that will be executed when
  *           the RSNA cfm arrives.
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success
  * - WIFI_ENGINE_FAILURE on error
  */
@@ -100,7 +100,7 @@ static int set_rsna_enable_with_cb(uint8_t mode, we_callback_t cb)
    {
       return WIFI_ENGINE_FAILURE;
    }
-   
+
    if ( WiFiEngine_SetMIBAsynch(MIB_dot11RSNAEnable,
                          NULL, (char *)&mode, sizeof mode, cbc)
         == WIFI_ENGINE_SUCCESS)
@@ -124,20 +124,20 @@ static int set_rsna_enable_with_cb(uint8_t mode, we_callback_t cb)
  * @param key Key input buffer.
  * @param key_type Key type (group, sta or pairwise)
  * @param prot Key protection mode (rx or rx_tx)
- * @param authenticator_configured Flag that indicates wether the key was 
+ * @param authenticator_configured Flag that indicates wether the key was
  *        configured by a 802.1X authenticator (1) or supplicant (0).
  *        The impact of this flag is how the last half of a TKIP key will
  *        be used for MIC calculations. If the key set is the "raw" key
  *        then this flag makes the device extract the proper fields from
- *        the key for Rx and Tx MIC calculations. However, if the key 
+ *        the key for Rx and Tx MIC calculations. However, if the key
  *        is "preswapped"; if the Rx and Tx MIC part has been swapped if
  *        the entity generating the key is a supplicant (wpa_supplicant does this),
- *        then this bit should always be 1 (authenticator) to prevent 
+ *        then this bit should always be 1 (authenticator) to prevent
  *        swapping in the device.
  * @param bssid BSSID that the key applies to.
  * @param rsc Receive sequence counter value to use.
  * @param tx_key Flag indicating if the key is a tx/default key.
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success.
  * - WIFI_ENGINE_FAILURE_INVALID_LENGTH if the key length is larger than the
  *         device allows.
@@ -145,9 +145,9 @@ static int set_rsna_enable_with_cb(uint8_t mode, we_callback_t cb)
  *         suite for the net is disallowed.
  * - WIFI_ENGINE_FAILURE on other failures.
  */
-int WiFiEngine_AddKey(uint32_t key_idx, size_t key_len, const void *key, 
+int WiFiEngine_AddKey(uint32_t key_idx, size_t key_len, const void *key,
                       m80211_key_type_t key_type, m80211_protect_type_t prot,
-                      int authenticator_configured, m80211_mac_addr_t *bssid, 
+                      int authenticator_configured, m80211_mac_addr_t *bssid,
                       receive_seq_cnt_t *rsc, int tx_key)
 {
    hic_message_context_t     msg_ref;
@@ -163,7 +163,7 @@ int WiFiEngine_AddKey(uint32_t key_idx, size_t key_len, const void *key,
    {
       return WIFI_ENGINE_FAILURE_INVALID_LENGTH;
    }
-   if (key_idx > WIFI_ENGINE_MAX_WEP_KEYS) 
+   if (key_idx > WIFI_ENGINE_MAX_WEP_KEYS)
    {
       return WIFI_ENGINE_FAILURE_NOT_ACCEPTED;
    }
@@ -173,7 +173,7 @@ int WiFiEngine_AddKey(uint32_t key_idx, size_t key_len, const void *key,
      DE_TRACE_STATIC(TR_AUTH, "ERROR Getting Encryption Mode!\n");
      return WIFI_ENGINE_FAILURE;
    }
-   
+
    if(enc != Encryption_SMS4) {
      /* 802.11i-2004 specify that Key ID subfield shall be set to 0 on */
      /* transmit and ignored on receive. Cisco Aironet 1200 however ignore */
@@ -222,16 +222,16 @@ int WiFiEngine_AddKey(uint32_t key_idx, size_t key_len, const void *key,
 
    enc = wei_cipher_suite2encryption(cipher_suite);
    if (Mlme_CreateSetKeyRequest(&msg_ref, key_idx, key_len, key, cipher_suite, key_type,
-                                authenticator_configured, bssid, rsc)) 
-   { 
-      DE_TRACE_STATIC(TR_AUTH, "Sending AddKey message\n"); 
+                                authenticator_configured, bssid, rsc))
+   {
+      DE_TRACE_STATIC(TR_AUTH, "Sending AddKey message\n");
       status = wei_send_cmd(&msg_ref);
       Mlme_ReleaseMessageContext(msg_ref);
-      if (status != WIFI_ENGINE_SUCCESS) 
-      { 
-         return WIFI_ENGINE_FAILURE; 
-      } 
-   } 
+      if (status != WIFI_ENGINE_SUCCESS)
+      {
+         return WIFI_ENGINE_FAILURE;
+      }
+   }
    else
    {
       DE_TRACE_STATIC(TR_AUTH, "Failed to build AddKey message!\n");
@@ -251,7 +251,7 @@ int WiFiEngine_AddKey(uint32_t key_idx, size_t key_len, const void *key,
    if (enc > Encryption_Disabled)
    {
       /* WAPI group key handshake is also unecrypted so the pairwise protection
-       *   should be set after group key installation. 
+       *   should be set after group key installation.
        */
       if(enc == Encryption_SMS4)
       {
@@ -281,9 +281,9 @@ int WiFiEngine_AddKey(uint32_t key_idx, size_t key_len, const void *key,
    if(WES_TEST_FLAG(WES_DEVICE_CONFIGURED))
       cache_add_key(key_idx, key_len, key, key_type, prot,
                     authenticator_configured, bssid, rsc, tx_key);
-   
-   
-   return WIFI_ENGINE_SUCCESS; 
+
+
+   return WIFI_ENGINE_SUCCESS;
 }
 
 /*!
@@ -293,31 +293,31 @@ int WiFiEngine_AddKey(uint32_t key_idx, size_t key_len, const void *key,
  * @param key_type Key type (group or pairwise)
  * @param bssid BSSID for the key (for pairwise keys, otherwise this should be
  *              the broadcast BSSID).
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success.
  * - WIFI_ENGINE_FAILURE_NOT_ACCEPTED if key_idx is too large.
  * - WIFI_ENGINE_FAILURE otherwise.
  */
-int WiFiEngine_DeleteKey(uint32_t key_idx, m80211_key_type_t key_type, 
+int WiFiEngine_DeleteKey(uint32_t key_idx, m80211_key_type_t key_type,
                          m80211_mac_addr_t *bssid)
 {
    hic_message_context_t msg_ref;
    int status;
 
    BAIL_IF_UNPLUGGED;
-   if (key_idx > WIFI_ENGINE_MAX_WEP_KEYS && key_idx != 0xFF) 
+   if (key_idx > WIFI_ENGINE_MAX_WEP_KEYS && key_idx != 0xFF)
    {
       return WIFI_ENGINE_FAILURE_NOT_ACCEPTED;
    }
 
 /*    WiFiEngine_SetRSNProtection(bssid, M80211_PROTECT_TYPE_NONE, M80211_KEY_TYPE_PAIRWISE);  */
    Mlme_CreateMessageContext(msg_ref);
-   if (Mlme_CreateDeleteKeyRequest(&msg_ref, key_idx, key_type, bssid)) 
-   { 
-      DE_TRACE_STATIC(TR_AUTH, "Sending DeleteKey message\n"); 
+   if (Mlme_CreateDeleteKeyRequest(&msg_ref, key_idx, key_type, bssid))
+   {
+      DE_TRACE_STATIC(TR_AUTH, "Sending DeleteKey message\n");
       status = wei_send_cmd(&msg_ref);
       Mlme_ReleaseMessageContext(msg_ref);
-      if (status == WIFI_ENGINE_SUCCESS) 
+      if (status == WIFI_ENGINE_SUCCESS)
       {
          /* Skip touching the cache if we are currently reconfiguring the
           * device.
@@ -325,21 +325,21 @@ int WiFiEngine_DeleteKey(uint32_t key_idx, m80211_key_type_t key_type,
          if(WES_TEST_FLAG(WES_DEVICE_CONFIGURED))
             cache_del_key(key_idx, key_type, bssid);
 
-         return WIFI_ENGINE_SUCCESS; 
-      } 
-      return WIFI_ENGINE_FAILURE; 
-   } 
-   else 
-   { 
-      return WIFI_ENGINE_FAILURE; 
-   } 
+         return WIFI_ENGINE_SUCCESS;
+      }
+      return WIFI_ENGINE_FAILURE;
+   }
+   else
+   {
+      return WIFI_ENGINE_FAILURE;
+   }
 }
 
 /*!
  * @brief Delete a group (multicast) key.
  * @param key_idx 0-based key index to delete.
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS
  * - WIFI_ENGINE_FAILURE_DEFER if the send queue is full,
  * try the send again later.
@@ -363,14 +363,14 @@ int WiFiEngine_DeleteGroupKey(int key_idx)
     */
    if(WES_TEST_FLAG(WES_DEVICE_CONFIGURED))
       cache_del_key(key_idx, M80211_KEY_TYPE_GROUP, &bcast_bssid);
-   
+
    return status;
 }
 
 /*!
  * @brief Delete all encryption keys in the device.
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_DeleteAllKeys(void)
@@ -388,11 +388,11 @@ int WiFiEngine_DeleteAllKeys(void)
    net = wei_netlist_get_current_net();
    if (net)
    {
-      WiFiEngine_SetRSNProtection(&net->bssId_AP, M80211_PROTECT_TYPE_NONE, M80211_KEY_TYPE_ALL); 
+      WiFiEngine_SetRSNProtection(&net->bssId_AP, M80211_PROTECT_TYPE_NONE, M80211_KEY_TYPE_ALL);
    }
    else
    {
-      WiFiEngine_SetRSNProtection(&bcast_bssid, M80211_PROTECT_TYPE_NONE, M80211_KEY_TYPE_ALL); 
+      WiFiEngine_SetRSNProtection(&bcast_bssid, M80211_PROTECT_TYPE_NONE, M80211_KEY_TYPE_ALL);
    }
    WiFiEngine_DeleteGroupKey(1);
 
@@ -413,8 +413,8 @@ int WiFiEngine_DeleteAllKeys(void)
 /*!
  * @brief Set the index of the default key for the associated net (if any).
  *
- * @param index Output buffer. 
- * @return 
+ * @param index Output buffer.
+ * @return
  * - WIFI_ENGINE_SUCCESS on success.
  * - WIFI_ENGINE_FAILURE_NOT_ACCEPTED if no key is currently in use.
  */
@@ -423,7 +423,7 @@ int WiFiEngine_SetDefaultKeyIndex(int8_t index)
    int              status;
 
    BAIL_IF_UNPLUGGED;
-   if (index >= WIFI_ENGINE_MAX_WEP_KEYS) 
+   if (index >= WIFI_ENGINE_MAX_WEP_KEYS)
    {
       return WIFI_ENGINE_FAILURE_NOT_ACCEPTED;
    }
@@ -444,32 +444,32 @@ int WiFiEngine_SetDefaultKeyIndex(int8_t index)
 
 /*!
  * @brief Get the ExcludeUnencrypted flag
- * 
+ *
  * Gets the ExcludeUnencrypted MIB variable state. Note that the target
  * always (should) let through 802.1x EAPOL packets even if they are
  * unencrypted and the ExludeUnencrypted flag is set.
  *
  * @param i Output buffer. 0 means the flag is disabled. 1 means the flag is enabled.
- * @return 
+ * @return
  * - Always returns WIFI_ENGINE_SUCCESS.
  */
 int WiFiEngine_GetExcludeUnencryptedFlag(int *i)
 {
    BAIL_IF_UNPLUGGED;
    *i = wifiEngineState.excludeUnencryptedFlag;
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
 /*!
  * @brief Set the ExcludeUnencrypted flag
- * 
+ *
  * Sets the ExcludeUnencrypted MIB variable state. Note that the target
  * always (should) let through 802.1x EAPOL packets even if they are
  * unencrypted and the ExludeUnencrypted flag is set.
  *
  * @param i Input buffer. 1 to enabled the flag. 0 to disable it.
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success
  * - WIFI_ENGINE_FAILURE otherwise.
  */
@@ -497,7 +497,7 @@ int WiFiEngine_SetExcludeUnencryptedFlag(int i)
  * used for data and management frames.
  *
  * @param mode Protected frame bit value. 1 to set the bit, 0 to clear it.
- * @return 
+ * @return
  * - Always returns WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_SetProtectedFrameBit(uint8_t mode)
@@ -526,7 +526,7 @@ int WiFiEngine_GetProtectedFrameBit(uint8_t *mode)
  * @brief Set the RSNA Enable mode
  *
  * @param mode RSNA Enable mode. 1 to enable, 0 to disable.
- * @return 
+ * @return
  * - Always returns WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_SetRSNAEnable(uint8_t mode)
@@ -552,11 +552,11 @@ int WiFiEngine_SetRSNAEnable(uint8_t mode)
  * @param bssid    The bssid for which to set the protection status.
  * @param prot     The protection type (None, RX, TX or RX_TX).
  * @param key_type The key type (Group, Pairwise or STA).
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success,
  * - WIFI_ENGINE_FAILURE on transmission failure.
  */
-int WiFiEngine_SetRSNProtection(m80211_mac_addr_t *bssid, m80211_protect_type_t prot, 
+int WiFiEngine_SetRSNProtection(m80211_mac_addr_t *bssid, m80211_protect_type_t prot,
                                 m80211_key_type_t key_type)
 {
    int success = WIFI_ENGINE_FAILURE;
@@ -578,33 +578,33 @@ int WiFiEngine_SetRSNProtection(m80211_mac_addr_t *bssid, m80211_protect_type_t 
    {
       return WIFI_ENGINE_FAILURE;
    }
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
 /*!
- * @brief Open the 802.1x port 
+ * @brief Open the 802.1x port
  *
- * @return 
+ * @return
  * - Return the previous value.
  */
 int WiFiEngine_8021xPortOpen(void)
 {
    int r;
-   
+
    BAIL_IF_UNPLUGGED;
    WIFI_LOCK();
    r = WES_TEST_FLAG(WES_FLAG_8021X_PORT_OPEN);
    WES_SET_FLAG(WES_FLAG_8021X_PORT_OPEN);
    WIFI_UNLOCK();
-   
+
    return r;
 }
 
 /*!
  * @brief Close the 802.1x port
  *
- * @return 
+ * @return
  * - Return the previous value.
  */
 int WiFiEngine_8021xPortClose(void)
@@ -624,7 +624,7 @@ int WiFiEngine_8021xPortClose(void)
 /*!
  * @brief Return the state of the 802.1x port
  *
- * @return 
+ * @return
  * - 1 if the port is closed.
  * - 0 otherwise.
 int WiFiEngine_Is8021xPortClosed(void)
@@ -637,8 +637,8 @@ int WiFiEngine_Is8021xPortClosed(void)
 /*!
  * @brief Check if a Tx encryption key has been set
  *
- * @return 
- * - 1 if a Tx key has been set. 
+ * @return
+ * - 1 if a Tx key has been set.
  * - 0 otherwise.
  */
 int WiFiEngine_IsTxKeyPresent(void)
@@ -658,7 +658,7 @@ int WiFiEngine_IsTxKeyPresent(void)
  * @brief Get the current encryption mode
  *
  * @param encryptionMode Output buffer.
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_GetEncryptionMode(WiFiEngine_Encryption_t* encryptionMode)
@@ -669,13 +669,13 @@ int WiFiEngine_GetEncryptionMode(WiFiEngine_Encryption_t* encryptionMode)
 }
 
 /*!
- * @brief Set the encryption mode to use 
+ * @brief Set the encryption mode to use
  *
- * This will enable encryption in the device if a key is already present 
+ * This will enable encryption in the device if a key is already present
  * (and the encryption mode is different from Encryption_Disabled).
  *
  * @param encryptionMode Input buffer.
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_SetEncryptionMode(WiFiEngine_Encryption_t encryptionMode)
@@ -683,7 +683,7 @@ int WiFiEngine_SetEncryptionMode(WiFiEngine_Encryption_t encryptionMode)
    WiFiEngine_bss_type_t bssType;
 
    BAIL_IF_UNPLUGGED;
-   WiFiEngine_GetBSSType(&bssType);  
+   WiFiEngine_GetBSSType(&bssType);
 
 #if 0
    if((bssType == Independent_BSS) && (encryptionMode > Encryption_WEP))
@@ -694,7 +694,7 @@ int WiFiEngine_SetEncryptionMode(WiFiEngine_Encryption_t encryptionMode)
 
    if(wifiEngineState.config.encryptionLimit != encryptionMode)
    {
-      DE_TRACE_INT2(TR_AUTH, "encryption mode change %d=>%d\n", 
+      DE_TRACE_INT2(TR_AUTH, "encryption mode change %d=>%d\n",
             wifiEngineState.config.encryptionLimit,
             encryptionMode);
    }
@@ -703,8 +703,8 @@ int WiFiEngine_SetEncryptionMode(WiFiEngine_Encryption_t encryptionMode)
 
    if (wifiEngineState.key_state.used)
    {
-      WiFiEngine_SetRSNProtection(&wifiEngineState.key_state.bssid, 
-                                  wifiEngineState.key_state.prot, 
+      WiFiEngine_SetRSNProtection(&wifiEngineState.key_state.bssid,
+                                  wifiEngineState.key_state.prot,
                                   wifiEngineState.key_state.key_type);
       wifiEngineState.key_state.used = 0;
    }
@@ -717,7 +717,7 @@ int WiFiEngine_SetEncryptionMode(WiFiEngine_Encryption_t encryptionMode)
  *
  * @param authenticationMode Output buffer.
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_GetAuthenticationMode(WiFiEngine_Auth_t* authenticationMode)
@@ -732,16 +732,16 @@ int WiFiEngine_GetAuthenticationMode(WiFiEngine_Auth_t* authenticationMode)
  *
  * @param authenticationMode Input buffer.
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_SetAuthenticationMode(WiFiEngine_Auth_t authenticationMode)
 {
    BAIL_IF_UNPLUGGED;
-   
+
    if(wifiEngineState.config.authenticationMode != authenticationMode)
    {
-      DE_TRACE_INT2(TR_ASSOC, "auth mode change %d=>%d\n", 
+      DE_TRACE_INT2(TR_ASSOC, "auth mode change %d=>%d\n",
             wifiEngineState.config.authenticationMode,
             authenticationMode);
    }
@@ -774,7 +774,7 @@ int mic_failure_cb(void *data, size_t len)
  * Handle a Michael MIC failure. Trigger countermeasures if appropriate.
  *
  * @param key_type Key type (pairwise of group).
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_HandleMICFailure(m80211_michael_mic_failure_ind_descriptor_t *ind_p)
@@ -797,7 +797,7 @@ int WiFiEngine_HandleMICFailure(m80211_michael_mic_failure_ind_descriptor_t *ind
       DE_TRACE_STATIC(TR_AUTH, "Closing 8021x port\n");
       WiFiEngine_8021xPortClose();
       ind_p->count = 2;
-      
+
       /* Deauth after next EAPOL message && refuse auth for 60 secs */
       WES_SET_FLAG(WES_FLAG_ASSOC_BLOCKED);
       if (DriverEnvironment_RegisterTimerCallback(MIC_CM_TIMEOUT, wifiEngineState.mic_cm_assoc_holdoff_timer_id, assoc_holdoff_cb, 0) != 1)
@@ -819,13 +819,13 @@ int WiFiEngine_HandleMICFailure(m80211_michael_mic_failure_ind_descriptor_t *ind
    switch (ind_p->key_type)
    {
       case M80211_KEY_TYPE_GROUP:
-         DriverEnvironment_indicate(WE_IND_GROUP_MIC_ERROR, 
-                &net->bssId_AP, 
+         DriverEnvironment_indicate(WE_IND_GROUP_MIC_ERROR,
+                &net->bssId_AP,
                 sizeof(net->bssId_AP));
          break;
       case M80211_KEY_TYPE_PAIRWISE:
-         DriverEnvironment_indicate(WE_IND_PAIRWISE_MIC_ERROR, 
-                &net->bssId_AP, 
+         DriverEnvironment_indicate(WE_IND_PAIRWISE_MIC_ERROR,
+                &net->bssId_AP,
                 sizeof(net->bssId_AP));
          break;
       default:
@@ -855,24 +855,24 @@ static struct auth_state_t auth_state;
  * Get the index of the default key for the associated net (if any).
  *
  * @param index Output buffer.
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success.
  * - WIFI_ENGINE_FAILURE_NOT_ACCEPTED if no key is currently in use.
  */
 int WiFiEngine_GetDefaultKeyIndex(int8_t *index)
 {
    unsigned int i;
-   
+
    for(i = 0; i < DE_ARRAY_SIZE(auth_state.keys); i++)
    {
-      if(auth_state.keys[i].valid && 
+      if(auth_state.keys[i].valid &&
          auth_state.keys[i].tx_key)
       {
          *index = i;
          return WIFI_ENGINE_SUCCESS;
       }
    }
-   
+
    return WIFI_ENGINE_FAILURE_NOT_ACCEPTED;
 }
 
@@ -898,7 +898,7 @@ int WiFiEngine_GetKey(uint32_t key_idx, char* key, size_t* key_len)
 
    if(*key_len < auth_state.keys[key_idx].desc.key_len)
       return WIFI_ENGINE_FAILURE;
-      
+
    *key_len = auth_state.keys[key_idx].desc.key_len;
    if(key)
       DE_MEMCPY(key, auth_state.keys[key_idx].desc.key.part, *key_len);
@@ -925,7 +925,7 @@ int wei_initialize_auth(void)
 /*
  * Reconfigure any static WEP keys and auth state
  *
- * This function should typically be called from WiFiEngine_Plug(). 
+ * This function should typically be called from WiFiEngine_Plug().
  * All static WEP keys that were previously set will be restored.
  * Encryption settings that is not availble in wifiEngineState will also
  * be restored.
@@ -946,16 +946,16 @@ int wei_reconfigure_auth(void)
 {
    int status;
    unsigned int i;
-   
+
    for(i = 0; i < DE_ARRAY_SIZE(auth_state.keys); i++) {
       struct key_entry_t* e = &auth_state.keys[i];
       if(!e->valid)
          continue;
-      
+
       status = WiFiEngine_AddKey(e->desc.key_id, e->desc.key_len,
                                  (char *)e->desc.key.part, e->desc.key_type, e->prot,
                                  e->desc.config_by_authenticator,
-                                 &e->desc.mac_addr, 
+                                 &e->desc.mac_addr,
                                  &e->desc.receive_seq_cnt, e->tx_key);
       if(status != WIFI_ENGINE_SUCCESS) {
          DE_TRACE_INT(TR_AUTH, "Could not configure key[%d]\n", i);
@@ -1001,7 +1001,7 @@ static void cache_new_tx_key(unsigned int index)
          auth_state.keys[i].tx_key = 0;
       }
    }
-}   
+}
 
 
 /*
@@ -1011,15 +1011,15 @@ static void cache_new_tx_key(unsigned int index)
  * will be overwritten.
  *
  */
-static int cache_add_key(uint32_t key_idx, size_t key_len, const void *key, 
+static int cache_add_key(uint32_t key_idx, size_t key_len, const void *key,
                             m80211_key_type_t key_type,
                             m80211_protect_type_t prot,
                             int authenticator_configured,
-                            m80211_mac_addr_t *bssid, 
+                            m80211_mac_addr_t *bssid,
                             receive_seq_cnt_t *rsc, int tx_key)
 {
    struct key_entry_t* e;
-   
+
    if(key_idx >= DE_ARRAY_SIZE(auth_state.keys))
       return WIFI_ENGINE_FAILURE;
 
@@ -1039,16 +1039,16 @@ static int cache_add_key(uint32_t key_idx, size_t key_len, const void *key,
 
    if(e->tx_key)
       cache_new_tx_key(key_idx);
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
-/* 
+/*
  * Delete an encryption key from the cache. Currently, only the key_idx
  * parameter is used to simply mark the corresponding slot as invalid.
  *
  */
-static int cache_del_key(uint32_t key_idx, m80211_key_type_t key_type, 
+static int cache_del_key(uint32_t key_idx, m80211_key_type_t key_type,
                               m80211_mac_addr_t *bssid)
 {
    if(key_idx >= DE_ARRAY_SIZE(auth_state.keys))
@@ -1072,4 +1072,3 @@ static int cache_clear(void)
 
 
 /** @} */ /* End of we_auth group */
-

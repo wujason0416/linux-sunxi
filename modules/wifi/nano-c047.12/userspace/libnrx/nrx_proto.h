@@ -16,7 +16,7 @@
   *
   * @return The connection number, or a negative number on error.
   *
-  * @note This functions does not follow the convention of 
+  * @note This functions does not follow the convention of
   * returning zero or errno number.
   */
 int
@@ -40,7 +40,7 @@ nrx_event_connection_number (nrx_context ctx);
   * @retval EWOULDBLOCK  Indicates that the wait timeout was exceeded.
   * @retval EPIPE        Poll indicates an abnormal condition. This happens
   *                      for instance if the context is destroyed.
-  * @retval other        May return error numbers from socket(2), 
+  * @retval other        May return error numbers from socket(2),
   *                      bind(2), or poll(2).
   */
 int
@@ -54,7 +54,7 @@ nrx_wait_event (nrx_context ctx,
   * @param ctx The context.
   *
   * @retval Zero         On success.
-  * @retval other        May return error numbers from socket(2), 
+  * @retval other        May return error numbers from socket(2),
   *                      bind(2) or recvfrom(2).
   */
 int
@@ -76,7 +76,7 @@ nrx_next_event (nrx_context ctx);
   * @param period The beacon period in TU (1 TU = 1024 microseconds). This
   *        cannot be 0; Maximum value is 2^16-1.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -89,7 +89,7 @@ nrx_set_ibss_beacon_period (nrx_context ctx,
   * @brief <b>Set IBSS ATIM period</b>
   *
   * The ATIM parameter defines the window size for sending ATIM frames.
-  * This parameter is only used for IBSS power save. 
+  * This parameter is only used for IBSS power save.
   * Setting the ATIM window will only take effect when starting a
   * new IBSS.
   *
@@ -97,7 +97,7 @@ nrx_set_ibss_beacon_period (nrx_context ctx,
   * @param window The ATIM window length in TU (1 TU = 1024 microseconds).
   * The maximum value is 2^16.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -112,7 +112,7 @@ nrx_set_ibss_atim_window (nrx_context ctx,
   * The context should be freed after use.
   *
   * @param ctx A pointer to the context to initialise.
-  * @param ifname The interface name for accesses. 
+  * @param ifname The interface name for accesses.
   *               If NULL an attempt to discover the correct interface
   *               will be made.
   *
@@ -160,7 +160,7 @@ nrx_check_wx_version (nrx_context ctx,
                       unsigned int version);
 
 /*!
-  * 
+  *
   * @ingroup MISC
   * @brief <b>Set the join timeout value</b>
   *
@@ -199,7 +199,7 @@ nrx_set_join_timeout (nrx_context ctx,
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -210,15 +210,15 @@ nrx_enable_multi_domain (nrx_context ctx);
   * @ingroup MISC
   * @brief <b>Configure multi-domain support</b>
   *
-  * This command will have effect only when multi-domain is enabled. It configures 
-  * whether association is allowed with IEEE 802.11d compliant APs only or whether 
-  * to use IEEE 802.11d information obtained but associate to both compliant and 
-  * non-compliant APs. 
+  * This command will have effect only when multi-domain is enabled. It configures
+  * whether association is allowed with IEEE 802.11d compliant APs only or whether
+  * to use IEEE 802.11d information obtained but associate to both compliant and
+  * non-compliant APs.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
-  * @param enforce When this parameter is non-zero association will only be done 
-  *        with APs that are compliant with the IEEE 802.11d standard.  When 0, 
-  *        association will also be done with APs that are not compliant. 
+  * @param enforce When this parameter is non-zero association will only be done
+  *        with APs that are compliant with the IEEE 802.11d standard.  When 0,
+  *        association will also be done with APs that are not compliant.
   */
 int
 nrx_conf_multi_domain (nrx_context ctx,
@@ -228,12 +228,12 @@ nrx_conf_multi_domain (nrx_context ctx,
   * @ingroup MISC
   * @brief <b>Disable multi-domain support</b>
   *
-  * Deactivates support for the IEEE 802.11d standard 
+  * Deactivates support for the IEEE 802.11d standard
   * (the "Global Harmonization standard").
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -249,7 +249,7 @@ nrx_disable_multi_domain (nrx_context ctx);
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -262,7 +262,7 @@ nrx_enable_bt_coex (nrx_context ctx);
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -273,20 +273,20 @@ nrx_disable_bt_coex (nrx_context ctx);
   * @ingroup MISC
   * @brief <b>Configure BT coexistence</b>
   *
-  * Configures the bluetooth coexistence, as several types of coexistence schemes exist. 
+  * Configures the bluetooth coexistence, as several types of coexistence schemes exist.
   * A new bluetooth coexistence configuration will only be activated when bluetooth
   * coexistence is enabled. When the configuration is changed with nrx_conf_bt_coex()
   * then nrx_disable_bt_coex() should be called followed by nrx_enable_bt_coex()
   * to effect the change.
-  * 
+  *
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param bt_vendor Vendor of Bluetooth hardware
-  *                   - 0x00 = CSR, 
-  *                   - 0x01 = Broadcom, 
-  *                   - 0x02 = STMicroelectronics, 
+  *                   - 0x00 = CSR,
+  *                   - 0x01 = Broadcom,
+  *                   - 0x02 = STMicroelectronics,
   *                   - 0x03-0xFF = RESERVED
-  * @param pta_mode  Vendor specific definition of PTA interface. 
+  * @param pta_mode  Vendor specific definition of PTA interface.
   *                  Settings CSR:
   *                   - 0x00 = 2-wire scheme
   *                   - 0x01 = 3-wire scheme
@@ -296,8 +296,8 @@ nrx_disable_bt_coex (nrx_context ctx);
   *                  Settings STMicroelectronics:
   *                   - 0x00 = 3-wire scheme
   *                   - 0x01 = 4-wire scheme
-  * @param pta_def   Length equals number of wires. For each PTA interface wire from Bluetooth, 
-  *                  specify which gpio_coex_pin id (0 to 4) the wire is connected to and its 
+  * @param pta_def   Length equals number of wires. For each PTA interface wire from Bluetooth,
+  *                  specify which gpio_coex_pin id (0 to 4) the wire is connected to and its
   *                  active logic level (0="Low", 1="High"). For WLAN_Active, WLAN_Activity and
   *                  RF_Confirm this referes to the logic level when BT is blocked.
   *                  For CSR 2-wire scheme specify pins in the following order:
@@ -328,13 +328,13 @@ nrx_disable_bt_coex (nrx_context ctx);
   *                   - RF_Confirm
   *                   - Status
   *                   - Freq
-  * @param antenna_dual  0=Single, 1=Dual. 
+  * @param antenna_dual  0=Single, 1=Dual.
   * @param antenna_sel0  0=Don't use AntSel0, 1=Use AntSel0.
   * @param antenna_sel1  0=Don't use AntSel1, 1=Use AntSel1.
-  * @param antenna_level0 Logical level for AntSel0 in position BT, 0="Low", 1="High". 
-  * @param antenna_level1 Logical level for AntSel1 in position BT, 0="Low", 1="High". 
+  * @param antenna_level0 Logical level for AntSel0 in position BT, 0="Low", 1="High".
+  * @param antenna_level1 Logical level for AntSel1 in position BT, 0="Low", 1="High".
   *
-  * @return 
+  * @return
   * - 0 on success
   * - EINVAL on invalid arguments or failure.
   */
@@ -354,7 +354,7 @@ nrx_conf_bt_coex (nrx_context ctx,
   * @brief <b>Retrieve the manufacturer id string</b>
   *
   * @param ctx A valid nrx_context.
-  * @param mfg_id A buffer where the manufacturer id will be stored as a zero-terminated string. 
+  * @param mfg_id A buffer where the manufacturer id will be stored as a zero-terminated string.
   *               The maximum length of the manufacturer id string is 128 bytes.
   * @param len The size of buffer mfg_id. No more than len characters will be written
   *            to mfg_id. Minimum value is 1 and maximum value is 2^32-1.
@@ -401,19 +401,19 @@ nrx_get_product_version (nrx_context ctx,
   * @ingroup MISC
   * @brief <b>Enable device reset notification</b>
   *
-  * Notify the caller when the device has stopped responding.  
+  * Notify the caller when the device has stopped responding.
   * The device will be reset and restarted by the driver but volatile
   * configurations such as scan jobs, scan filters, notifications
   * (except this one) and thresholds are lost. The
   * application should register this notification callback so that it can
   * reinitialize all those settings in case of device crash.  The
   * callback is invoked every time (until disabled) the condition is
-  * met. 
+  * met.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
   * @param cb Callback that is invoked to notify the caller that
-  *           the device has been reset. The callback is invoked with operation 
+  *           the device has been reset. The callback is invoked with operation
   *           NRX_CB_TRIGGER on a successful notification. It will
   *           be passed a NULL-pointer for event_data.
   * @param cb_ctx Pointer to a user-defined callback context that will
@@ -438,8 +438,8 @@ nrx_register_dev_reset_notification (nrx_context ctx,
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param handle A handle previously obtained from
   * nrx_register_dev_reset_notification.
-  * 
-  * @return 
+  *
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments, e.g the handle is not registered.
   */
@@ -483,10 +483,10 @@ nrx_ccx_send_delts (nrx_context ctx,
   * @brief <b>Enter shutdown state</b>
   *
   * Issuing this command will cause the device to enter the shutdown state.
-  * 
+  *
   * @param ctx NRX context that was created by the call to nrx_init_context().
-  * 
-  * @return 
+  *
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -502,7 +502,7 @@ nrx_shutdown (nrx_context ctx);
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -522,7 +522,7 @@ nrx_enable_ps (nrx_context ctx);
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -542,8 +542,8 @@ nrx_disable_ps (nrx_context ctx);
   *
   * @param rx_all_dtim Boolean that defines whether the device should
   *                    wake up to receive all DTIM frames (1) or
-  *                    if it can skip some of them (0), see 802.11 for 
-  *                    details. This parameter can be changed dynamically 
+  *                    if it can skip some of them (0), see 802.11 for
+  *                    details. This parameter can be changed dynamically
   *                    at any time.
   *
   * @param use_ps_poll Boolean that defines whether the device should
@@ -565,9 +565,9 @@ nrx_disable_ps (nrx_context ctx);
   *        traffic occurs at the same time as the traffic timeout has elapsed
   *        the pending traffic will be handled, then the device will go into
   *        sleep mode immediately. This parameter can be changed dynamically at
-  *        any time and cannot be 0. 
+  *        any time and cannot be 0.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -599,7 +599,7 @@ nrx_conf_ps (nrx_context ctx,
   *               (see 802.11e for details). When sp_len is 0 the AP will
   *               deliver all buffered data during a service period.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -631,7 +631,7 @@ nrx_enable_wmm_ps (nrx_context ctx,
   *                  (re)association. All ac:s can be set separately or
   *                  together.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -654,7 +654,7 @@ nrx_conf_wmm_ps (nrx_context ctx,
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -836,7 +836,7 @@ nrx_ht_rates_enabled (nrx_context ctx,
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -849,7 +849,7 @@ nrx_enable_wmm (nrx_context ctx);
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -871,12 +871,12 @@ nrx_disable_wmm (nrx_context ctx);
   * 802.11d has priority over this setting in the current
   * implementation. The region code setting will only
   * apply when no 802.11d information is available from
-  * the AP. 
+  * the AP.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param code Valid region codes are: NRX_REGION_JAPAN, NRX_REGION_AMERICA
   *             and NRX_REGION_EMEA (Europe, Middle East, Africa)
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -885,7 +885,7 @@ nrx_set_region_code (nrx_context ctx,
                      nrx_region_code_t code);
 
 /*!
-  * 
+  *
   * @brief <b>Enable link supervision features in the NIC</b>
   *
   * A deauthentication will be generated when NIC internally determines
@@ -906,7 +906,7 @@ int
 nrx_enable_link_supervision (nrx_context ctx);
 
 /*!
-  * 
+  *
   * @brief <b>Configuration of RX beacons criteria for link supervision</b>
   *
   * Sets the minimum number of consecutive beacons that should be
@@ -920,7 +920,7 @@ nrx_enable_link_supervision (nrx_context ctx);
   * @param ctx NRX context that was created by the call to nrx_init_context().
   *
   * @param rx_fail_limit Minimum number of missed beacons before firmware
-  *        will assume link is terminated. 0 will disable this 
+  *        will assume link is terminated. 0 will disable this
   *        criteria.
   *
   * @param rx_fail_timeout Minimum time in milliseconds since last received
@@ -938,7 +938,7 @@ nrx_conf_link_supervision_rx_beacon (nrx_context ctx,
                                      uint32_t rx_fail_timeout);
 
 /*!
-  * 
+  *
   * @brief <b>Configuration of TX fail criteria for link supervision</b>
   *
   * NIC will generate a deauthentication indication when it has failed to
@@ -964,7 +964,7 @@ nrx_conf_link_supervision_tx (nrx_context ctx,
   * @brief <b>Get the current SNR</b>
   *
   * The most recently measured signal to noise ratio for beacon or data
-  * frames is reported. 
+  * frames is reported.
   * The signal to noise ratio is measured as an average over the last 16 beacons
   * or data frames (using a sliding window). The size of the sliding window
   * can be configured with nrx_conf_snr().
@@ -974,7 +974,7 @@ nrx_conf_link_supervision_tx (nrx_context ctx,
   *            SNR value in dB (in host byteorder).
   * @param type Defines if the requested SNR value should come from
   *             beacon  (NRX_DT_BEACON) or data (NRX_DT_DATA) frames.
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   */
@@ -1016,7 +1016,7 @@ nrx_get_rssi (nrx_context ctx,
   * @brief <b>Get TX rate</b>
   *
   * Will get rate for the last transmission.
-  * 
+  *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param rate Where current TX rate will be stored.
   * @retval 0 on success
@@ -1031,7 +1031,7 @@ nrx_get_tx_rate (nrx_context ctx,
   * @brief <b>Get RX rate</b>
   *
   * Will get rate for the last reception.
-  * 
+  *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param rate Where current RX rate will be stored.
   * @retval 0 on success
@@ -1070,7 +1070,7 @@ nrx_enable_roam (nrx_context ctx);
   * SSID can now be set manually.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
-  * 
+  *
   * @return
   *  - 0 on success
   *  - EINVAL on invalid parameters.
@@ -1261,7 +1261,7 @@ nrx_conf_roam_rate_thr (nrx_context ctx,
   * @param auth_mode Forced authentication mode.
   *
   * @param enc_mode Forced encryption mode.
-  * 
+  *
   * @return
   *        - WIFI_ENGINE_SUCCESS on success,
   *        - WIFI_ENGINE_FAILURE on error.
@@ -1308,9 +1308,9 @@ nrx_conf_roam_auth (nrx_context ctx,
   *                    in the scan job. If an ssid is not specified for the scan
   *                    job, then the probe request will be broadcasted.
   * @param sn_pol Bitmask that defines the notification policy. This defines
-  *           when the host should be invoked. The host can be notified 
+  *           when the host should be invoked. The host can be notified
   * - as soon as the first network is found (FIRST_HIT)
-  *   (notified at most once per scan job per scan period). 
+  *   (notified at most once per scan job per scan period).
   * - when a scan job is complete (JOB_COMPLETE)
   *   (notified once per scan job per scan period)
   * - when all scan jobs in a scan period is complete (ALL_DONE)
@@ -1329,11 +1329,11 @@ nrx_conf_roam_auth (nrx_context ctx,
   * @param scan_period Time in ms between scans. If this parameter is 0
   *                    the device will never scan by itself. Otherwise it
   *                    will periodically initiate a new scan when this
-  *                    period has passed since the last scan was completed. 
+  *                    period has passed since the last scan was completed.
   *                    This parameter is not used when the device is associated.
   *                    The maximum value is 2^32-1 ms.
-  * @param probe_delay Time in microseconds spent on the channel before sending 
-  *                    the first probe request. This parameter will only be used 
+  * @param probe_delay Time in microseconds spent on the channel before sending
+  *                    the first probe request. This parameter will only be used
   *                    for active scan.
   *                    The minimum value is 1 and maximum is 2^16-1 microseconds.
   * @param pa_ch_time The time in TU (1 TU = 1024 microseconds) spent on
@@ -1359,7 +1359,7 @@ nrx_conf_roam_auth (nrx_context ctx,
   *                    value is 2^16-1 TU.  The value must be larger than
   *                    min_ch_time.
   * @param as_scan_period Time in ms between scans when the device is
-  *                    associated. 
+  *                    associated.
   *                    If this parameter is 0 the device will never scan when
   *                    associated. Otherwise it will periodically initiate a
   *                    new scan when this period has passed since the last scan
@@ -1367,9 +1367,9 @@ nrx_conf_roam_auth (nrx_context ctx,
   *                    This parameter affects traffic throughput and latency,
   *                    shorter times degrade performance more.
   *                    This parameter is only used when the device is associated.
-  *                    The maximum value is 2^32-1 ms. 
+  *                    The maximum value is 2^32-1 ms.
    * @param as_min_ch_time The minimum time in TU (1 TU = 1024 microseconds) spent on
-  *                    each channel when the device is associated. If the medium is 
+  *                    each channel when the device is associated. If the medium is
   *                    idle during this time, scanning proceeds to the next channel.
   *                    Otherwise the device keeps listening for probe responses
   *                    in the channel for as_max_ch_time.
@@ -1381,26 +1381,26 @@ nrx_conf_roam_auth (nrx_context ctx,
   *                    associated.
   *                    The minimum value is 0. The maximum value is 2^16-1 TU.
   *                    The value must be larger than as_min_ch_time.
-  * @param max_scan_period Maximum time in ms between scan periods when disconnected. 
-  *                    This parameter is used as a limitation of the scan period when 
+  * @param max_scan_period Maximum time in ms between scan periods when disconnected.
+  *                    This parameter is used as a limitation of the scan period when
   *                    the nominal scan period doubles after every period_repetition.
-  *                    The maximum value is 2^32-1 ms. 
+  *                    The maximum value is 2^32-1 ms.
   *                    Scenario: scan_period = 5000, max_scan_period = 50000
   *                       gives the following periods 5000, 10000, 20000, 40000, 50000
-  *                       period doubled until 40000 reached, then it will stay with 50000 
-  * @param max_as_scan_period Maximum time in ms between scan periods when connected. 
-  *                    This parameter is used as a limitation of the scan period when 
+  *                       period doubled until 40000 reached, then it will stay with 50000
+  * @param max_as_scan_period Maximum time in ms between scan periods when connected.
+  *                    This parameter is used as a limitation of the scan period when
   *                    the nominal scan period doubles after every period_repetition.
-  *                    The maximum value is 2^32-1 ms. 
+  *                    The maximum value is 2^32-1 ms.
   *                    Scenario: as_scan_period = 5000, max_as_scan_period = 50000
   *                       gives the following periods 5000, 10000, 20000, 40000, 50000
-  *                       period doubled until 40000 reached, then it will stay with 50000 
+  *                       period doubled until 40000 reached, then it will stay with 50000
   *
   * @param period_repetition Number of repetitions of a scan period before it is doubled.
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
-  *  
+  *
   */
 int
 nrx_conf_scan (nrx_context ctx,
@@ -1444,7 +1444,7 @@ nrx_conf_scan (nrx_context ctx,
   *
   * @param state The state that the scan job should be set to.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   *
@@ -1465,7 +1465,7 @@ nrx_set_scan_job_state (nrx_context ctx,
   * host. Several scan filters can be defined. They are identified by
   * the sf_id parameter. There is a
   * limit to the number of scan filters that can exist in the device so
-  * this call may fail if the current limit is passed. 
+  * this call may fail if the current limit is passed.
   * The scan filters will be associated to scan jobs (see nrx_add_scan_job) and
   * will therefore be used whenever the job is executued (periodic or
   * triggered).
@@ -1486,10 +1486,10 @@ nrx_set_scan_job_state (nrx_context ctx,
   * @param threshold_type Type of threshold, ABSOLUTE(0) or RELATIVE(1) to the connected STA
   *                       Relative type only active when connected.
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
-  * 
+  *
   */
 int
 nrx_add_scan_filter (nrx_context ctx,
@@ -1499,7 +1499,7 @@ nrx_add_scan_filter (nrx_context ctx,
                      uint32_t snr_thr,
                      uint16_t threshold_type);
 
-/*! 
+/*!
   * @ingroup SCAN
   * @brief <b>Delete a scan filter</b>
   *
@@ -1507,16 +1507,16 @@ nrx_add_scan_filter (nrx_context ctx,
   * can be deleted for proper operation. If a scan filter that is in use
   * by a scan job is deleted then the scan job will continue to execute
   * without a scan filter. Such a scan job will use any new filters that have
-  * the same id as a previously deleted filter. 
-  * 
+  * the same id as a previously deleted filter.
+  *
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param sf_id A user supplied scan filter id. This identifies the scan
   *              filter to be deleted. The scan filter id -1 is reserved and cannot be used.
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
-  * 
+  *
   */
 int
 nrx_delete_scan_filter (nrx_context ctx,
@@ -1541,9 +1541,9 @@ nrx_delete_scan_filter (nrx_context ctx,
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param sj_id The scan job id output buffer. This identifies the scan
-  *              job so that several scan jobs can be defined. 
+  *              job so that several scan jobs can be defined.
   *              The ID value is filled in by this function call.
-  * @param ssid Defines the SSID that the scan job should look for. 
+  * @param ssid Defines the SSID that the scan job should look for.
   *             A zero-length SSID counts as a "broadcast" SSID
   *             that will cause all SSIDs to be scanned for.
   * @param bssid A BSSID to scan for. If this is set to the broadcast BSSID
@@ -1563,9 +1563,9 @@ nrx_delete_scan_filter (nrx_context ctx,
   *              Valid priorities are in the range 1-128, e.g 128 is prioritized.
   * @param ap_exclude May be either 0 or 1. When set to 1 the AP which the
   *                   device is associated with should be exluded from the scan
-  *                   result. This means that scan result information and 
-  *                   scan notifications triggered by this AP will not be 
-  *                   forwarded to the host. However, this AP will still be 
+  *                   result. This means that scan result information and
+  *                   scan notifications triggered by this AP will not be
+  *                   forwarded to the host. However, this AP will still be
   *                   included in the scan results list presented by e.g
   *                   nrx_get_scan_list().
   *
@@ -1574,11 +1574,11 @@ nrx_delete_scan_filter (nrx_context ctx,
   *              should be set to -1 if no filter should be used.
   * @param run_every_nth_period Defines how often the scan job should be executed
   *
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   * - TODO if no more scan jobs can be created.
-  * 
+  *
   */
 int
 nrx_add_scan_job (nrx_context ctx,
@@ -1603,12 +1603,12 @@ nrx_add_scan_job (nrx_context ctx,
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param sj_id A scan job id. This identifies the scan
-  *              job to be deleted. 
-  * @return 
+  *              job to be deleted.
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   * - EBUSY if the scan job is currently executing.
-  * 
+  *
   */
 int
 nrx_delete_scan_job (nrx_context ctx,
@@ -1624,7 +1624,7 @@ nrx_delete_scan_job (nrx_context ctx,
   * time (until disabled) when the condition specified by sn_pol is met.
   *
   * This function can be called several times, e.g. with different notification
-  * policies for different callbacks. 
+  * policies for different callbacks.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
   * @param sn_pol Bitmask that defines the notification policy. This
@@ -1645,7 +1645,7 @@ nrx_delete_scan_job (nrx_context ctx,
   *
   * @param cb Callback that is invoked to notify the caller that
   *        a directed scan sequence has completed.  The callback is
-  *        invoked with operation NRX_CB_TRIGGER on a successful 
+  *        invoked with operation NRX_CB_TRIGGER on a successful
   *        notification.
   *        It will be passed a pointer to nrx_scan_notif_t, containing
   *        the policy that triggered the callback and the job id for
@@ -1656,7 +1656,7 @@ nrx_delete_scan_job (nrx_context ctx,
   *               be passed to the callback on invocation. This is for
   *               caller use only, it will not be parsed or modified in
   *               any way by this library. This parameter can be NULL.
-  * @return 
+  * @return
   * - Pointer to callback handle if success.
   * - 0 if error.
   *
@@ -1678,7 +1678,7 @@ nrx_register_scan_notification_handler (nrx_context ctx,
   * @param handle A handle previously obtained from
   * nrx_register_scan_notification_handler. The handle will no longer be
   * valid after this call.
-  * 
+  *
   * @return
   * - 0 on success.
   * - EINVAL on invalid parameters, e.g. the callback is not registered.
@@ -1702,13 +1702,13 @@ nrx_cancel_scan_notification_handler (nrx_context ctx,
   * Note that scan jobs that are in state SUSPENDED cannot be triggered.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
-  * @param sj_id A scan job id to trigger. 
+  * @param sj_id A scan job id to trigger.
   * @param channel_interval interval in ms between channels
-  * @return 
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   * - EBUSY if a directed scan is already in progress (RELEASE 5).
-  * 
+  *
   */
 int
 nrx_trigger_scan_ex (nrx_context ctx,
@@ -1730,12 +1730,12 @@ nrx_trigger_scan_ex (nrx_context ctx,
   * Note that scan jobs that are in state SUSPENDED cannot be triggered.
   *
   * @param ctx NRX context that was created by the call to nrx_init_context().
-  * @param sj_id A scan job id to trigger. 
-  * @return 
+  * @param sj_id A scan job id to trigger.
+  * @return
   * - 0 on success.
   * - EINVAL on invalid arguments.
   * - EBUSY if a directed scan is already in progress (RELEASE 5).
-  * 
+  *
   */
 int
 nrx_trigger_scan (nrx_context ctx,
@@ -1749,9 +1749,9 @@ nrx_trigger_scan (nrx_context ctx,
   *
   * Flushes the scan list
   *
-  * @return 
+  * @return
   * - 0 on success.
-  * 
+  *
   */
 int
 nrx_flush_scanlist (nrx_context ctx);
@@ -1765,7 +1765,7 @@ nrx_flush_scanlist (nrx_context ctx);
   * combination of the BSSID and SSID. This means that there may be
   * several entries with the same SSID but different BSSIDs (such as
   * several APs in the same ESS) and several entries with the same
-  * BSSID but different SSIDs (such a stealth AP being shown once 
+  * BSSID but different SSIDs (such a stealth AP being shown once
   * as found by a "broadcast" scan job (without a SSID) and once
   * as found by a scan job that probes for the particular SSID of the
   * stealth AP (with the SSID)).
@@ -1797,4 +1797,3 @@ nrx_get_scan_list (nrx_context ctx,
 /* END GENERATED PROTOS */
 
 #endif /* __nrx_proto_h__ */
-

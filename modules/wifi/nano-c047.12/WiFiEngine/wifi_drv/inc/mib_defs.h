@@ -38,7 +38,7 @@
 #define MIB_dot11RSNAEnable                        "1.5.1.7"
 
 /* MAC Constants */
-#define MIB_dot11MACAddress              "2.1.1.1" 
+#define MIB_dot11MACAddress              "2.1.1.1"
 #define MIB_dot11RTSThreshold            "2.1.1.2"
 #define MIB_dot11ShortRetryLimit         "2.1.1.3"
 #define MIB_dot11LongRetryLimit          "2.1.1.4"
@@ -82,7 +82,7 @@
 #define MIB_dot11fixedRate           "5.2.11"
 #define MIB_dot11noiseFloor          "5.2.15"
 
-#define MIB_dot11InterferenceMode    "5.2.15.1" 
+#define MIB_dot11InterferenceMode    "5.2.15.1"
 #define MIB_dot11interfererenceErrorRate        "5.2.15.3"
 
 #define MIB_dot11LinkMonitoringBeaconCount      "5.2.19.1"

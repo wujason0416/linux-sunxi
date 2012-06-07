@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -89,7 +89,7 @@ _func_enter_;
 	rtw_os_recv_resource_init(precvpriv, padapter);
 
 	precvpriv->pallocated_frame_buf = rtw_zvmalloc(NR_RECVFRAME * sizeof(union recv_frame) + RXFRAME_ALIGN_SZ);
-	
+
 	if(precvpriv->pallocated_frame_buf==NULL){
 		res= _FAIL;
 		goto exit;
@@ -150,7 +150,7 @@ _func_exit_;
 void rtw_mfree_recv_priv_lock(struct recv_priv *precvpriv)
 {
 	_rtw_spinlock_free(&precvpriv->lock);
-#ifdef CONFIG_RECV_THREAD_MODE	
+#ifdef CONFIG_RECV_THREAD_MODE
 	_rtw_free_sema(&precvpriv->recv_sema);
 	_rtw_free_sema(&precvpriv->terminate_recvthread_sema);
 #endif
@@ -389,26 +389,26 @@ _func_exit_;
 
 sint rtw_enqueue_recvbuf(struct recv_buf *precvbuf, _queue *queue)
 {
-	_irqL irqL;	
+	_irqL irqL;
 
 	_enter_critical(&queue->lock, &irqL);
 
 	rtw_list_delete(&precvbuf->list);
 
 	rtw_list_insert_tail(&precvbuf->list, get_list_head(queue));
-	
+
 	_exit_critical(&queue->lock, &irqL);
 
 
 	return _SUCCESS;
-	
+
 }
 
 struct recv_buf *rtw_dequeue_recvbuf (_queue *queue)
 {
 	_irqL irqL;
 	struct recv_buf *precvbuf;
-	_list	*plist, *phead;	
+	_list	*plist, *phead;
 
 	_enter_critical(&queue->lock, &irqL);
 
@@ -425,7 +425,7 @@ struct recv_buf *rtw_dequeue_recvbuf (_queue *queue)
 		precvbuf = LIST_CONTAINOR(plist, struct recv_buf, list);
 
 		rtw_list_delete(&precvbuf->list);
-		
+
 	}
 
 	_exit_critical(&queue->lock, &irqL);
@@ -468,11 +468,11 @@ _func_enter_;
 				//iv = precvframe->u.hdr.rx_data+prxattrib->hdrlen;
 				//rxdata_key_idx =( ((iv[3])>>6)&0x3) ;
 				mickey=&psecuritypriv->dot118021XGrprxmickey[prxattrib->key_index].skey[0];
-				
+
 				RT_TRACE(_module_rtl871x_recv_c_,_drv_info_,("\n recvframe_chkmic: bcmc key \n"));
 				//DBG_8192C("\n recvframe_chkmic: bcmc key psecuritypriv->dot118021XGrpKeyid(%d),pmlmeinfo->key_index(%d) ,recv key_id(%d)\n",
 				//								psecuritypriv->dot118021XGrpKeyid,pmlmeinfo->key_index,rxdata_key_idx);
-				
+
 				if(psecuritypriv->binstallGrpkey==_FALSE)
 				{
 					res=_FAIL;
@@ -537,7 +537,7 @@ _func_enter_;
 				// cannot compare with psecuritypriv->dot118021XGrpKeyid also cause timing issue
 				if((IS_MCAST(prxattrib->ra)==_TRUE)  && (prxattrib->key_index != pmlmeinfo->key_index ))
 					brpt_micerror = _FALSE;
-				
+
 				if((prxattrib->bdecrypted ==_TRUE)&& (brpt_micerror == _TRUE))
 				{
 					rtw_handle_tkip_mic_err(adapter,(u8)IS_MCAST(prxattrib->ra));
@@ -605,13 +605,13 @@ _func_enter_;
 				case _WEP104_:
 					prxattrib->key_index = psecuritypriv->dot11PrivacyKeyIndex;
 					break;
-				case _TKIP_:			
-				case _AES_:						
+				case _TKIP_:
+				case _AES_:
 				default:
 					prxattrib->key_index = psecuritypriv->dot118021XGrpKeyid;
 					break;
-			}	
-		}			
+			}
+		}
 	}
 
 	if((prxattrib->encrypt>0) && ((prxattrib->bdecrypted==0) ||(psecuritypriv->sw_decrypt==_TRUE)))
@@ -690,7 +690,7 @@ static union recv_frame * portctrl(_adapter *adapter,union recv_frame * precv_fr
 	struct sta_priv *pstapriv ;
 	union recv_frame * prtnframe;
 	u16	ether_type=0;
-	u16  eapol_type = 0x888e;//for Funia BD's WPA issue  
+	u16  eapol_type = 0x888e;//for Funia BD's WPA issue
 	struct rx_pkt_attrib *pattrib = & precv_frame->u.hdr.attrib;
 
 _func_enter_;
@@ -826,7 +826,7 @@ static void process_pwrbit_data(_adapter *padapter, union recv_frame *precv_fram
 				psta->state ^= WIFI_SLEEP_STATE;
 
 				pstapriv->sta_dz_bitmap &= ~BIT(psta->aid);
-				
+
 				//DBG_871X("to wakeup, sta_dz_bitmap=%x\n", pstapriv->sta_dz_bitmap);
 				wakeup_sta_to_xmit(padapter, psta);
 
@@ -840,13 +840,13 @@ static void process_pwrbit_data(_adapter *padapter, union recv_frame *precv_fram
 
 static void process_wmmps_data(_adapter *padapter, union recv_frame *precv_frame)
 {
-#ifdef CONFIG_AP_MODE		
+#ifdef CONFIG_AP_MODE
 	struct rx_pkt_attrib *pattrib = &precv_frame->u.hdr.attrib;
 	struct sta_priv *pstapriv = &padapter->stapriv;
 	struct sta_info *psta=NULL;
 
 	psta = rtw_get_stainfo(pstapriv, pattrib->src);
-	
+
 	if(!psta) return;
 
 	if(!psta->qos_option)
@@ -854,12 +854,12 @@ static void process_wmmps_data(_adapter *padapter, union recv_frame *precv_frame
 
 	if(!(psta->qos_info&0xf))
 		return;
-		
+
 
 	if(psta->state&WIFI_SLEEP_STATE)
 	{
-		u8 wmmps_ac=0;	
-		
+		u8 wmmps_ac=0;
+
 		switch(pattrib->priority)
 		{
 			case 1:
@@ -878,7 +878,7 @@ static void process_wmmps_data(_adapter *padapter, union recv_frame *precv_frame
 			case 3:
 			default:
 				wmmps_ac = psta->uapsd_be&BIT(1);
-				break;	
+				break;
 		}
 
 		if(wmmps_ac)
@@ -894,11 +894,11 @@ static void process_wmmps_data(_adapter *padapter, union recv_frame *precv_frame
 				issue_qos_nulldata(padapter, psta->hwaddr, (u16)pattrib->priority);
 			}
 		}
-				
+
 	}
 
-	
-#endif	
+
+#endif
 
 }
 
@@ -909,7 +909,7 @@ sint On_TDLS_Setup_Req(_adapter *adapter, union recv_frame *precv_frame)
 	struct sta_info *ptdls_sta= NULL;
    	struct sta_priv *pstapriv = &adapter->stapriv;
 	u8 *ptr = precv_frame->u.hdr.rx_data;
-	struct mlme_ext_priv	*pmlmeext = &(adapter->mlmeextpriv);	
+	struct mlme_ext_priv	*pmlmeext = &(adapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
 	struct security_priv *psecuritypriv = &adapter->securitypriv;
 	_irqL irqL;
@@ -926,7 +926,7 @@ sint On_TDLS_Setup_Req(_adapter *adapter, union recv_frame *precv_frame)
 
 	psa = get_sa(ptr);
 	ptdls_sta = rtw_get_stainfo(pstapriv, psa);
-	
+
 	pmyid=myid(&(adapter->eeprompriv));
 	ptr +=prx_pkt_attrib->hdrlen + prx_pkt_attrib->iv_len+LLC_HEADER_SIZE+TYPE_LENGTH_FIELD_SIZE+1;
 	parsing_length= ((union recv_frame *)precv_frame)->u.hdr.len
@@ -944,11 +944,11 @@ sint On_TDLS_Setup_Req(_adapter *adapter, union recv_frame *precv_frame)
 			ptdls_sta = rtw_alloc_stainfo(pstapriv, psa);
 		}else{
 			//If the direct link is already set up
-			//Process as re-setup after tear down		
+			//Process as re-setup after tear down
 			DBG_8192C("re-setup a direct link\n");
 		}
-		
-		if(ptdls_sta) 
+
+		if(ptdls_sta)
 		{
 			//copy dialog token
 			pdialog=ptr+2;
@@ -957,7 +957,7 @@ sint On_TDLS_Setup_Req(_adapter *adapter, union recv_frame *precv_frame)
 
 			//parsing information element
 			for(j=FIXED_IE; j<parsing_length;){
-	
+
 				pIE = (PNDIS_802_11_VARIABLE_IEs)(ptr+ j);
 
 				switch (pIE->ElementID)
@@ -1010,9 +1010,9 @@ sint On_TDLS_Setup_Req(_adapter *adapter, union recv_frame *precv_frame)
 					default:
 						break;
 				}
-	
+
 				j += (pIE->Length + 2);
-				
+
 			}
 
 			//check status code
@@ -1027,16 +1027,16 @@ sint On_TDLS_Setup_Req(_adapter *adapter, union recv_frame *precv_frame)
 				//request haven't RSNIE
 				ptdls_sta->stat_code=38;
 			}
-			
+
 			ptdls_sta->state|= TDLS_INITIATOR_STATE;
 			ptdls_sta->aid=*(pdialog);
 			if(prx_pkt_attrib->encrypt){
 				_rtw_memcpy(ptdls_sta->SNonce, SNonce, 32);
 				_rtw_memcpy(&(ptdls_sta->TDLS_PeerKey_Lifetime), timeout_interval, 4);
 			}
-			_enter_critical_bh(&(pstapriv->sta_hash_lock), &irqL);		
+			_enter_critical_bh(&(pstapriv->sta_hash_lock), &irqL);
 			pmlmeinfo->tdls_sta_cnt++;
-			_exit_critical_bh(&(pstapriv->sta_hash_lock), &irqL);	
+			_exit_critical_bh(&(pstapriv->sta_hash_lock), &irqL);
 		}
 		else
 		{
@@ -1068,7 +1068,7 @@ sint On_TDLS_Setup_Req(_adapter *adapter, union recv_frame *precv_frame)
 	issue_tdls_setup_rsp(adapter, precv_frame);
 
 _exit_recv_tdls_frame:
-	
+
 	return _FAIL;
 }
 
@@ -1090,7 +1090,7 @@ sint On_TDLS_Setup_Rsp(_adapter *adapter, union recv_frame *precv_frame)
 	u8  *pftie, *ptimeout_ie, *plinkid_ie, *prsnie, *pftie_mic, *ppairwise_cipher;
 	u16 pairwise_count, j, k;
 	u8 verify_ccmp=0;
-	
+
 	psa = get_sa(ptr);
 	ptdls_sta = rtw_get_stainfo(pstapriv, psa);
 
@@ -1110,7 +1110,7 @@ sint On_TDLS_Setup_Rsp(_adapter *adapter, union recv_frame *precv_frame)
 	_rtw_memcpy(&(prx_pkt_attrib->frag_num), pdialog, 1);
 
 	if(stat_code!=0){
-		_enter_critical_bh(&(pstapriv->sta_hash_lock), &irqL);	
+		_enter_critical_bh(&(pstapriv->sta_hash_lock), &irqL);
 		pmlmeinfo->tdls_sta_cnt--;
 		_exit_critical_bh(&(pstapriv->sta_hash_lock), &irqL);
 		rtw_free_stainfo(adapter,  ptdls_sta);
@@ -1168,7 +1168,7 @@ sint On_TDLS_Setup_Rsp(_adapter *adapter, union recv_frame *precv_frame)
 		}
 
 		j += (pIE->Length + 2);
-		
+
 	}
 
 	if(prx_pkt_attrib->encrypt){
@@ -1185,7 +1185,7 @@ sint On_TDLS_Setup_Rsp(_adapter *adapter, union recv_frame *precv_frame)
 
 	if(prx_pkt_attrib->encrypt){
 		if(tdls_verify_mic(ptdls_sta->tpk.kck, 2, plinkid_ie, prsnie, ptimeout_ie, pftie)==0){	//0: Invalid, 1: valid
-			_enter_critical_bh(&(pstapriv->sta_hash_lock), &irqL);	
+			_enter_critical_bh(&(pstapriv->sta_hash_lock), &irqL);
 			pmlmeinfo->tdls_sta_cnt--;
 			rtw_free_stainfo(adapter,  ptdls_sta);
 			_exit_critical_bh(&(pstapriv->sta_hash_lock), &irqL);
@@ -1209,7 +1209,7 @@ sint On_TDLS_Setup_Rsp(_adapter *adapter, union recv_frame *precv_frame)
 		}
 		rtw_setstakey_cmd(adapter, (u8*)ptdls_sta, _TRUE);
 	}
-	
+
 	return _FAIL;
 }
 
@@ -1222,7 +1222,7 @@ sint On_TDLS_Setup_Cfm(_adapter *adapter, union recv_frame *precv_frame)
 	struct rx_pkt_attrib	*prx_pkt_attrib = &precv_frame->u.hdr.attrib;
 	struct mlme_ext_priv	*pmlmeext = &(adapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
-	u8 *psa; 
+	u8 *psa;
 	u16 stat_code;
 	sint parsing_length;
 	PNDIS_802_11_VARIABLE_IEs	pIE;
@@ -1246,7 +1246,7 @@ sint On_TDLS_Setup_Cfm(_adapter *adapter, union recv_frame *precv_frame)
 	_rtw_memcpy(&stat_code, ptr+2, 2);
 
 	if(stat_code!=0){
-		_enter_critical_bh(&(pstapriv->sta_hash_lock), &irqL);	
+		_enter_critical_bh(&(pstapriv->sta_hash_lock), &irqL);
 		pmlmeinfo->tdls_sta_cnt--;
 		_exit_critical_bh(&(pstapriv->sta_hash_lock), &irqL);
 		rtw_free_stainfo(adapter,  ptdls_sta);
@@ -1284,12 +1284,12 @@ sint On_TDLS_Setup_Cfm(_adapter *adapter, union recv_frame *precv_frame)
 			}
 
 			j += (pIE->Length + 2);
-			
+
 		}
 
 		//verify mic in FTIE MIC field
 		if(tdls_verify_mic(ptdls_sta->tpk.kck, 3, plinkid_ie, prsnie, ptimeout_ie, pftie)==0){	//0: Invalid, 1: Valid
-			_enter_critical_bh(&(pstapriv->sta_hash_lock), &irqL);	
+			_enter_critical_bh(&(pstapriv->sta_hash_lock), &irqL);
 			pmlmeinfo->tdls_sta_cnt--;
 			rtw_free_stainfo(adapter,  ptdls_sta);
 			_exit_critical_bh(&(pstapriv->sta_hash_lock), &irqL);
@@ -1340,7 +1340,7 @@ sint On_TDLS_Dis_Req(_adapter *adapter, union recv_frame *precv_frame)
 	issue_tdls_dis_rsp(adapter, precv_frame);
 
 	return _FAIL;
-	
+
 }
 
 sint On_TDLS_Teardown(_adapter *adapter, union recv_frame *precv_frame)
@@ -1348,7 +1348,7 @@ sint On_TDLS_Teardown(_adapter *adapter, union recv_frame *precv_frame)
 	u8 *psa;
 	u8 *ptr = precv_frame->u.hdr.rx_data;
 	struct rx_pkt_attrib	*prx_pkt_attrib = &precv_frame->u.hdr.attrib;
-	struct mlme_ext_priv	*pmlmeext = &(adapter->mlmeextpriv);	
+	struct mlme_ext_priv	*pmlmeext = &(adapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
 	struct sta_priv 	*pstapriv = &adapter->stapriv;
 	struct sta_info *ptdls_sta= NULL;
@@ -1363,7 +1363,7 @@ sint On_TDLS_Teardown(_adapter *adapter, union recv_frame *precv_frame)
 			ptdls_sta->option =3;
 			_set_workitem(&ptdls_sta->option_workitem);
 		}
-		_enter_critical_bh(&(pstapriv->sta_hash_lock), &irqL);	
+		_enter_critical_bh(&(pstapriv->sta_hash_lock), &irqL);
 		pmlmeinfo->tdls_sta_cnt--;
 		_exit_critical_bh(&(pstapriv->sta_hash_lock), &irqL);
 		//ready to clear cam
@@ -1377,9 +1377,9 @@ sint On_TDLS_Teardown(_adapter *adapter, union recv_frame *precv_frame)
 	}
 	if(pmlmeinfo->tdls_sta_cnt==0)
 		pmlmeinfo->tdls_setup_state=UN_TDLS_STATE;
-		
+
 	return _FAIL;
-	
+
 }
 
 u8 TDLS_check_ch_state(uint state){
@@ -1427,18 +1427,18 @@ sint On_TDLS_Peer_Traffic_Rsp(_adapter *adapter, union recv_frame *precv_frame)
 	if(ptdls_sta->state & TDLS_LINKED_STATE){
 		if(wmmps_ac && state)
 		{
-			_irqL irqL;	 
+			_irqL irqL;
 			_list	*xmitframe_plist, *xmitframe_phead;
 			struct xmit_frame *pxmitframe=NULL;
-		
-			_enter_critical_bh(&ptdls_sta->sleep_q.lock, &irqL);	
+
+			_enter_critical_bh(&ptdls_sta->sleep_q.lock, &irqL);
 
 			xmitframe_phead = get_list_head(&ptdls_sta->sleep_q);
 			xmitframe_plist = get_next(xmitframe_phead);
 
 			//transmit buffered frames
 			while ((rtw_end_of_queue_search(xmitframe_phead, xmitframe_plist)) == _FALSE)
-			{			
+			{
 				pxmitframe = LIST_CONTAINOR(xmitframe_plist, struct xmit_frame, list);
 				xmitframe_plist = get_next(xmitframe_plist);
 				rtw_list_delete(&pxmitframe->list);
@@ -1453,7 +1453,7 @@ sint On_TDLS_Peer_Traffic_Rsp(_adapter *adapter, union recv_frame *precv_frame)
 				}
 				//pxmitframe->attrib.triggered = 1;	//maybe doesn't need in TDLS
 				if(adapter->HalFunc.hal_xmit(adapter, pxmitframe) == _TRUE)
-				{		
+				{
 					rtw_os_xmit_complete(adapter, pxmitframe);
 				}
 
@@ -1473,16 +1473,16 @@ sint On_TDLS_Peer_Traffic_Rsp(_adapter *adapter, union recv_frame *precv_frame)
 						issue_tdls_ch_switch_req(adapter, pattrib->src);
 						DBG_8192C("issue tdls ch switch req back to base channel\n");
 				}
-				
+
 			}
 			else
 			{
 				DBG_871X("error!psta->sleepq_len=%d\n", ptdls_sta->sleepq_len);
-				ptdls_sta->sleepq_len=0;						
+				ptdls_sta->sleepq_len=0;
 			}
 
-			_exit_critical_bh(&ptdls_sta->sleep_q.lock, &irqL);			
-		
+			_exit_critical_bh(&ptdls_sta->sleep_q.lock, &irqL);
+
 		}
 
 	}
@@ -1496,7 +1496,7 @@ sint On_TDLS_Ch_Switch_Req(_adapter *adapter, union recv_frame *precv_frame)
    	struct sta_priv *pstapriv = &adapter->stapriv;
 	u8 *ptr = precv_frame->u.hdr.rx_data;
 	struct rx_pkt_attrib	*prx_pkt_attrib = &precv_frame->u.hdr.attrib;
-	u8 *psa; 
+	u8 *psa;
 	sint parsing_length;
 	PNDIS_802_11_VARIABLE_IEs	pIE;
 	u8 FIXED_IE =3;
@@ -1505,7 +1505,7 @@ sint On_TDLS_Ch_Switch_Req(_adapter *adapter, union recv_frame *precv_frame)
 
 	psa = get_sa(ptr);
 	ptdls_sta = rtw_get_stainfo(pstapriv, psa);
-	
+
 	//[+1]: payload type
 	ptr +=prx_pkt_attrib->hdrlen + prx_pkt_attrib->iv_len+LLC_HEADER_SIZE+TYPE_LENGTH_FIELD_SIZE+1;
 	parsing_length= ((union recv_frame *)precv_frame)->u.hdr.len
@@ -1518,7 +1518,7 @@ sint On_TDLS_Ch_Switch_Req(_adapter *adapter, union recv_frame *precv_frame)
 			-FIXED_IE;
 
 	ptdls_sta->off_ch = *(ptr+2);
-	
+
 	//parsing information element
 	for(j=FIXED_IE; j<parsing_length;){
 
@@ -1540,7 +1540,7 @@ sint On_TDLS_Ch_Switch_Req(_adapter *adapter, union recv_frame *precv_frame)
 		}
 
 		j += (pIE->Length + 2);
-		
+
 	}
 
 	//todo: check status
@@ -1557,8 +1557,8 @@ sint On_TDLS_Ch_Switch_Req(_adapter *adapter, union recv_frame *precv_frame)
 		DBG_8192C("back to base channel\n");
 		ptdls_sta->option=7;
 		_set_workitem(&ptdls_sta->option_workitem);
-		
-	}else{		
+
+	}else{
 		ptdls_sta->option=6;
 		_set_workitem(&ptdls_sta->option_workitem);
 	}
@@ -1571,7 +1571,7 @@ sint On_TDLS_Ch_Switch_Rsp(_adapter *adapter, union recv_frame *precv_frame)
    	struct sta_priv *pstapriv = &adapter->stapriv;
 	u8 *ptr = precv_frame->u.hdr.rx_data;
 	struct rx_pkt_attrib	*prx_pkt_attrib = &precv_frame->u.hdr.attrib;
-	u8 *psa; 
+	u8 *psa;
 	sint parsing_length;
 	PNDIS_802_11_VARIABLE_IEs	pIE;
 	u8 FIXED_IE =4;
@@ -1599,7 +1599,7 @@ sint On_TDLS_Ch_Switch_Rsp(_adapter *adapter, union recv_frame *precv_frame)
 	//avoiding duplicated or unconditional ch. switch. rsp
 	if((ptdls_sta->state & TDLS_CH_SW_INITIATOR_STATE) != TDLS_CH_SW_INITIATOR_STATE)
 		return _FAIL;
-	
+
 	//[+1]: payload type
 	ptr +=prx_pkt_attrib->hdrlen + prx_pkt_attrib->iv_len+LLC_HEADER_SIZE+TYPE_LENGTH_FIELD_SIZE+1;
 	parsing_length= ((union recv_frame *)precv_frame)->u.hdr.len
@@ -1616,7 +1616,7 @@ sint On_TDLS_Ch_Switch_Rsp(_adapter *adapter, union recv_frame *precv_frame)
 	if(stat_code!=0){
 		return _FAIL;
 	}
-	
+
 	//parsing information element
 	for(j=FIXED_IE; j<parsing_length;){
 
@@ -1640,7 +1640,7 @@ sint On_TDLS_Ch_Switch_Rsp(_adapter *adapter, union recv_frame *precv_frame)
 		}
 
 		j += (pIE->Length + 2);
-		
+
 	}
 
 	ptdls_sta->state &= ~(TDLS_CH_SW_INITIATOR_STATE);
@@ -1650,7 +1650,7 @@ sint On_TDLS_Ch_Switch_Rsp(_adapter *adapter, union recv_frame *precv_frame)
 	ptdls_sta->option=6;
 	_set_workitem(&ptdls_sta->option_workitem);
 
-	return _FAIL;	
+	return _FAIL;
 }
 
 sint OnTDLS(_adapter *adapter, union recv_frame *precv_frame)
@@ -1660,15 +1660,15 @@ sint OnTDLS(_adapter *adapter, union recv_frame *precv_frame)
 	u8 *paction = get_recvframe_data(precv_frame);
 
 	//point to action field, [+8]: snap+ether_type, [+1]: payload_type, [+1]: category field
-	paction+=pattrib->hdrlen + pattrib->iv_len+8+1+1;	
-	
+	paction+=pattrib->hdrlen + pattrib->iv_len+8+1+1;
+
 	switch(*paction){
 		case TDLS_SETUP_REQUEST:
 			DBG_8192C("recv tdls setup request frame\n");
 			ret=On_TDLS_Setup_Req(adapter, precv_frame);
 			break;
 		case TDLS_SETUP_RESPONSE:
-			DBG_8192C("recv tdls setup response frame\n");			
+			DBG_8192C("recv tdls setup response frame\n");
 			ret=On_TDLS_Setup_Rsp(adapter, precv_frame);
 			break;
 		case TDLS_SETUP_CONFIRM:
@@ -1703,7 +1703,7 @@ sint OnTDLS(_adapter *adapter, union recv_frame *precv_frame)
 
 exit:
 	return ret;
-	
+
 }
 #endif
 
@@ -1724,8 +1724,8 @@ static sint sta2sta_data_frame(
 	u8 * sta_addr = NULL;
 	sint bmcast = IS_MCAST(pattrib->dst);
 
-#ifdef CONFIG_TDLS	
-	struct mlme_ext_priv	*pmlmeext = &(adapter->mlmeextpriv);	
+#ifdef CONFIG_TDLS
+	struct mlme_ext_priv	*pmlmeext = &(adapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
 	struct sta_info *ptdls_sta=NULL;
 	u8 *psnap_type=ptr+pattrib->hdrlen + pattrib->iv_len+SNAP_SIZE;
@@ -1829,9 +1829,9 @@ _func_enter_;
 					ret= OnTDLS(adapter, precv_frame);
 					goto exit;
 				}
-				
+
 			}
-		}		
+		}
 		else
 #endif
 		// For Station mode, sa and bssid should always be BSSID, and DA is my mac-address
@@ -1924,7 +1924,7 @@ static sint ap2sta_data_frame(
 _func_enter_;
 
 	if ((check_fwstate(pmlmepriv, WIFI_STATION_STATE) == _TRUE)
-		&& (check_fwstate(pmlmepriv, _FW_LINKED) == _TRUE 
+		&& (check_fwstate(pmlmepriv, _FW_LINKED) == _TRUE
 			|| check_fwstate(pmlmepriv, _FW_UNDER_LINKING) == _TRUE	)
 		)
 	{
@@ -1963,7 +1963,7 @@ _func_enter_;
 				pattrib->src[3], pattrib->src[4], pattrib->src[5],
 				*(myhwaddr), *(myhwaddr+1), *(myhwaddr+2),
 				*(myhwaddr+3), *(myhwaddr+4), *(myhwaddr+5));
-			#endif			
+			#endif
 			ret= _FAIL;
 			goto exit;
 		}
@@ -2088,7 +2088,7 @@ static sint sta2ap_data_frame(
 	struct	sta_priv 		*pstapriv = &adapter->stapriv;
 	struct	security_priv	*psecuritypriv = &adapter->securitypriv;
 	struct	mlme_priv	*pmlmepriv = &adapter->mlmepriv;
-	unsigned char *mybssid  = get_bssid(pmlmepriv);	
+	unsigned char *mybssid  = get_bssid(pmlmepriv);
 	sint ret=_SUCCESS;
 
 _func_enter_;
@@ -2113,7 +2113,7 @@ _func_enter_;
 
 
 			process_pwrbit_data(adapter, precv_frame);
-			
+
 
 			// if NULL-frame, drop packet
 			if ((GetFrameSubType(ptr)) == WIFI_DATA_NULL)
@@ -2122,7 +2122,7 @@ _func_enter_;
 
 				//process_null_data(adapter, precv_frame);
 				//process_pwrbit_data(adapter, precv_frame);
-				
+
 
 				ret= _FAIL;
 				goto exit;
@@ -2141,9 +2141,9 @@ _func_enter_;
 					ret= _FAIL;
 					goto exit;
 				}
-			
+
 				process_wmmps_data(adapter, precv_frame);
-			
+
 			/*
 				if(GetFrameSubType(ptr)&(BIT(4)|BIT(5)|BIT(6)))
 				{
@@ -2171,11 +2171,11 @@ static sint validate_recv_ctrl_frame(_adapter *padapter, union recv_frame *precv
 	struct sta_priv *pstapriv = &padapter->stapriv;
 	u8 *pframe = precv_frame->u.hdr.rx_data;
 	//uint len = precv_frame->u.hdr.len;
-		
+
 	//DBG_871X("+validate_recv_ctrl_frame\n");
 
 	if (GetFrameType(pframe) != WIFI_CTRL_TYPE)
-	{		
+	{
 		return _FAIL;
 	}
 
@@ -2189,12 +2189,12 @@ static sint validate_recv_ctrl_frame(_adapter *padapter, union recv_frame *precv
 	if(GetFrameSubType(pframe) == WIFI_PSPOLL)
 	{
 		u16 aid;
-		u8 wmmps_ac=0;	
+		u8 wmmps_ac=0;
 		struct sta_info *psta=NULL;
-	
+
 		aid = GetAid(pframe);
 		psta = rtw_get_stainfo(pstapriv, GetAddr2Ptr(pframe));
-		
+
 		if((psta==NULL) || (psta->aid!=aid))
 		{
 			return _FAIL;
@@ -2221,7 +2221,7 @@ static sint validate_recv_ctrl_frame(_adapter *padapter, union recv_frame *precv
 			case 3:
 			default:
 				wmmps_ac = psta->uapsd_be&BIT(0);
-				break;	
+				break;
 		}
 
 		if(wmmps_ac)
@@ -2229,17 +2229,17 @@ static sint validate_recv_ctrl_frame(_adapter *padapter, union recv_frame *precv
 
 		if((psta->state&WIFI_SLEEP_STATE) && (pstapriv->sta_dz_bitmap&BIT(psta->aid)))
 		{
-			_irqL irqL;	 
+			_irqL irqL;
 			_list	*xmitframe_plist, *xmitframe_phead;
 			struct xmit_frame *pxmitframe=NULL;
-		
-			_enter_critical_bh(&psta->sleep_q.lock, &irqL);	
+
+			_enter_critical_bh(&psta->sleep_q.lock, &irqL);
 
 			xmitframe_phead = get_list_head(&psta->sleep_q);
 			xmitframe_plist = get_next(xmitframe_phead);
 
 			if ((rtw_end_of_queue_search(xmitframe_phead, xmitframe_plist)) == _FALSE)
-			{			
+			{
 				pxmitframe = LIST_CONTAINOR(xmitframe_plist, struct xmit_frame, list);
 
 				xmitframe_plist = get_next(xmitframe_plist);
@@ -2258,7 +2258,7 @@ static sint validate_recv_ctrl_frame(_adapter *padapter, union recv_frame *precv
 	                        //DBG_871X("handling ps-poll, q_len=%d, tim=%x\n", psta->sleepq_len, pstapriv->tim_bitmap);
 
 				if(padapter->HalFunc.hal_xmit(padapter, pxmitframe) == _TRUE)
-				{		
+				{
 					rtw_os_xmit_complete(padapter, pxmitframe);
 				}
 
@@ -2269,10 +2269,10 @@ static sint validate_recv_ctrl_frame(_adapter *padapter, union recv_frame *precv
 					//DBG_871X("after handling ps-poll, tim=%x\n", pstapriv->tim_bitmap);
 
 					//upate BCN for TIM IE
-					//update_BCNTIM(padapter);		
+					//update_BCNTIM(padapter);
 					update_beacon(padapter, _TIM_IE_, NULL, _FALSE);
 				}
-				
+
 			}
 			else
 			{
@@ -2286,24 +2286,24 @@ static sint validate_recv_ctrl_frame(_adapter *padapter, union recv_frame *precv
 					else
 					{
 						DBG_871X("error!psta->sleepq_len=%d\n", psta->sleepq_len);
-						psta->sleepq_len=0;						
+						psta->sleepq_len=0;
 					}
-				
-					pstapriv->tim_bitmap &= ~BIT(psta->aid);					
+
+					pstapriv->tim_bitmap &= ~BIT(psta->aid);
 
 					//upate BCN for TIM IE
 					//update_BCNTIM(padapter);
 					update_beacon(padapter, _TIM_IE_, NULL, _FALSE);
 				}
-				
+
 			}
-	
-			_exit_critical_bh(&psta->sleep_q.lock, &irqL);			
-			
+
+			_exit_critical_bh(&psta->sleep_q.lock, &irqL);
+
 		}
-		
+
 	}
-	
+
 #endif
 
 	return _FAIL;
@@ -2328,11 +2328,11 @@ static sint validate_recv_mgnt_frame(_adapter *adapter, union recv_frame *precv_
 #if 0
 	if(check_fwstate(pmlmepriv, WIFI_AP_STATE) == _TRUE)
 	{
-#ifdef CONFIG_NATIVEAP_MLME		
+#ifdef CONFIG_NATIVEAP_MLME
 	        mgt_dispatcher(adapter, precv_frame);
 #else
 		rtw_hostapd_mlme_rx(adapter, precv_frame);
-#endif	
+#endif
 	}
 	else
 	{
@@ -2345,7 +2345,7 @@ static sint validate_recv_mgnt_frame(_adapter *adapter, union recv_frame *precv_
 		//for rx pkt statistics
 		struct sta_info *psta = rtw_get_stainfo(&adapter->stapriv, GetAddr2Ptr(precv_frame->u.hdr.rx_data));
 		if(psta)
-			psta->sta_stats.rx_pkts++;	
+			psta->sta_stats.rx_pkts++;
 	}
 #endif
 
@@ -2365,11 +2365,11 @@ static sint validate_recv_data_frame(_adapter *adapter, union recv_frame *precv_
 	u8 *ptr = precv_frame->u.hdr.rx_data;
 	struct rx_pkt_attrib	*pattrib = & precv_frame->u.hdr.attrib;
 	struct sta_priv 	*pstapriv = &adapter->stapriv;
-	struct security_priv	*psecuritypriv = &adapter->securitypriv;	
+	struct security_priv	*psecuritypriv = &adapter->securitypriv;
 	sint ret = _SUCCESS;
 #ifdef CONFIG_TDLS
 	struct sta_info  *ptdls_sta = NULL;
-	struct mlme_ext_priv	*pmlmeext = &(adapter->mlmeextpriv);	
+	struct mlme_ext_priv	*pmlmeext = &(adapter->mlmeextpriv);
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
 #endif
 
@@ -2444,11 +2444,11 @@ _func_enter_;
 		ret= _FAIL;
 		goto exit;
 	}
-	
+
 	//psta->rssi = prxcmd->rssi;
 	//psta->signal_quality= prxcmd->sq;
 	precv_frame->u.hdr.psta = psta;
-		
+
 
 	pattrib->amsdu=0;
 	//parsing QC field
@@ -2601,7 +2601,7 @@ DBG_871X("\n");
 if(pHalData->bDumpRxPkt ==1){
 	int i;
 	DBG_871X("############################# \n");
-	
+
 	for(i=0; i<64;i=i+8)
 		DBG_871X("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:\n", *(ptr+i),
 		*(ptr+i+1), *(ptr+i+2) ,*(ptr+i+3) ,*(ptr+i+4),*(ptr+i+5), *(ptr+i+6), *(ptr+i+7));
@@ -2622,7 +2622,7 @@ else if(pHalData->bDumpRxPkt ==3){
 	if(type== WIFI_DATA_TYPE){
 		int i;
 		DBG_871X("############################# \n");
-		
+
 		for(i=0; i<64;i=i+8)
 			DBG_871X("%02X:%02X:%02X:%02X:%02X:%02X:%02X:%02X:\n", *(ptr+i),
 			*(ptr+i+1), *(ptr+i+2) ,*(ptr+i+3) ,*(ptr+i+4),*(ptr+i+5), *(ptr+i+6), *(ptr+i+7));
@@ -2684,7 +2684,7 @@ static sint wlanhdr_to_ethhdr ( union recv_frame *precvframe)
 	u8	bsnaphdr;
 	u8	*psnap_type;
 	struct ieee80211_snap_hdr	*psnap;
-	
+
 	sint ret=_SUCCESS;
 	_adapter			*adapter =precvframe->u.hdr.adapter;
 	struct mlme_priv	*pmlmepriv = &adapter->mlmepriv;
@@ -2695,7 +2695,7 @@ static sint wlanhdr_to_ethhdr ( union recv_frame *precvframe)
 _func_enter_;
 
 	if(pattrib->encrypt){
-		recvframe_pull_tail(precvframe, pattrib->icv_len);	
+		recvframe_pull_tail(precvframe, pattrib->icv_len);
 	}
 
 	psnap=(struct ieee80211_snap_hdr	*)(ptr+pattrib->hdrlen + pattrib->iv_len);
@@ -2703,7 +2703,7 @@ _func_enter_;
 	/* convert hdr + possible LLC headers into Ethernet header */
 	//eth_type = (psnap_type[0] << 8) | psnap_type[1];
 	if((_rtw_memcmp(psnap, rfc1042_header, SNAP_SIZE) &&
-		(_rtw_memcmp(psnap_type, SNAP_ETH_TYPE_IPX, 2) == _FALSE) && 
+		(_rtw_memcmp(psnap_type, SNAP_ETH_TYPE_IPX, 2) == _FALSE) &&
 		(_rtw_memcmp(psnap_type, SNAP_ETH_TYPE_APPLETALK_AARP, 2)==_FALSE) )||
 		//eth_type != ETH_P_AARP && eth_type != ETH_P_IPX) ||
 		 _rtw_memcmp(psnap, bridge_tunnel_header, SNAP_SIZE)){
@@ -2720,9 +2720,9 @@ _func_enter_;
 
 	RT_TRACE(_module_rtl871x_recv_c_,_drv_info_,("\n===pattrib->hdrlen: %x,  pattrib->iv_len:%x ===\n\n", pattrib->hdrlen,  pattrib->iv_len));
 
-	if ((check_fwstate(pmlmepriv, WIFI_MP_STATE) == _TRUE))	   	
+	if ((check_fwstate(pmlmepriv, WIFI_MP_STATE) == _TRUE))
 	{
-		ptr += rmv_len ;	
+		ptr += rmv_len ;
 		*ptr = 0x87;
 		*(ptr+1) = 0x12;
 
@@ -2744,7 +2744,7 @@ _func_enter_;
 		_rtw_memcpy(ptr+12, &len, 2);
 	}
 
-_func_exit_;	
+_func_exit_;
 	return ret;
 
 }
@@ -2774,7 +2774,7 @@ _func_enter_;
 	if (psnap->dsap==0xaa && psnap->ssap==0xaa && psnap->ctrl==0x03)
 	{
 		if (_rtw_memcmp(psnap->oui, oui_rfc1042, WLAN_IEEE_OUI_LEN))
-			bsnaphdr=_TRUE;//wlan_pkt_format = WLAN_PKT_FORMAT_SNAP_RFC1042;	
+			bsnaphdr=_TRUE;//wlan_pkt_format = WLAN_PKT_FORMAT_SNAP_RFC1042;
 		else if (_rtw_memcmp(psnap->oui, SNAP_HDR_APPLETALK_DDP, WLAN_IEEE_OUI_LEN) &&
 			_rtw_memcmp(psnap_type, SNAP_ETH_TYPE_APPLETALK_DDP, 2) )
 			bsnaphdr=_TRUE;	//wlan_pkt_format = WLAN_PKT_FORMAT_APPLETALK;
@@ -3124,9 +3124,9 @@ _func_exit_;
 
 static int amsdu_to_msdu(_adapter *padapter, union recv_frame *prframe)
 {
-#ifdef PLATFORM_LINUX	//for amsdu TP improvement,Creator: Thomas 
+#ifdef PLATFORM_LINUX	//for amsdu TP improvement,Creator: Thomas
 	int	a_len, padding_len;
-	u16	eth_type, nSubframe_Length;	
+	u16	eth_type, nSubframe_Length;
 	u8	nr_subframes, i;
 	unsigned char *data_ptr, *pdata;
 	struct rx_pkt_attrib *pattrib;
@@ -3140,7 +3140,7 @@ static int amsdu_to_msdu(_adapter *padapter, union recv_frame *prframe)
 	pattrib = &prframe->u.hdr.attrib;
 
 	recvframe_pull(prframe, prframe->u.hdr.attrib.hdrlen);
-	
+
 	if(prframe->u.hdr.attrib.iv_len >0)
 	{
 		recvframe_pull(prframe, prframe->u.hdr.attrib.iv_len);
@@ -3151,7 +3151,7 @@ static int amsdu_to_msdu(_adapter *padapter, union recv_frame *prframe)
 	pdata = prframe->u.hdr.rx_data;
 
 	while(a_len > ETH_HLEN) {
-		
+
 		/* Offset 12 denote 2 mac address */
 		//nSubframe_Length = *((u16*)(pdata + 12));
 		//==m==>change the length order
@@ -3260,21 +3260,21 @@ static int amsdu_to_msdu(_adapter *padapter, union recv_frame *prframe)
 #endif  // (LINUX_VERSION_CODE <= KERNEL_VERSION(2, 6, 35))
 
 
-			if( br_port && (check_fwstate(pmlmepriv, WIFI_STATION_STATE|WIFI_ADHOC_STATE) == _TRUE) )	 	
+			if( br_port && (check_fwstate(pmlmepriv, WIFI_STATION_STATE|WIFI_ADHOC_STATE) == _TRUE) )
 			{
 				int nat25_handle_frame(_adapter *priv, struct sk_buff *skb);
 				if (nat25_handle_frame(padapter, sub_skb) == -1) {
 					//priv->ext_stats.rx_data_drops++;
 					//DEBUG_ERR("RX DROP: nat25_handle_frame fail!\n");
 					//return FAIL;
-					
+
 #if 1
 					// bypass this frame to upper layer!!
 #else
 					dev_kfree_skb_any(sub_skb);
 					continue;
 #endif
-				}							
+				}
 			}
 #endif	// CONFIG_BR_EXT
 
@@ -3299,7 +3299,7 @@ exit:
 
 	prframe->u.hdr.len=0;
 	rtw_free_recvframe(prframe, pfree_recv_queue);//free this recv_frame
-	
+
 	return ret;
 #else
 	_irqL irql;
@@ -3763,10 +3763,10 @@ static int recv_indicatepkts_in_order(_adapter *padapter, struct recv_reorder_ct
 			//_rtw_spinunlock_ex(&ppending_recvframe_queue->lock);
 			return _TRUE;
 		}
-	
+
 		 prframe = LIST_CONTAINOR(plist, union recv_frame, u);
-	        pattrib = &prframe->u.hdr.attrib;	
-		preorder_ctrl->indicate_seq = pattrib->seq_num;		
+	        pattrib = &prframe->u.hdr.attrib;
+		preorder_ctrl->indicate_seq = pattrib->seq_num;
 		#ifdef DBG_RX_SEQ
 		DBG_871X("DBG_RX_SEQ %s:%d IndicateSeq: %d, NewSeq: %d\n", __FUNCTION__, __LINE__,
 			preorder_ctrl->indicate_seq, pattrib->seq_num);
@@ -3776,8 +3776,8 @@ static int recv_indicatepkts_in_order(_adapter *padapter, struct recv_reorder_ct
 	// Prepare indication list and indication.
 	// Check if there is any packet need indicate.
 	while(!rtw_is_list_empty(phead))
-	{										
-	
+	{
+
 		prframe = LIST_CONTAINOR(plist, union recv_frame, u);
 		pattrib = &prframe->u.hdr.attrib;
 
@@ -3838,10 +3838,10 @@ static int recv_indicatepkts_in_order(_adapter *padapter, struct recv_reorder_ct
 
 				if ((padapter->bDriverStopped == _FALSE) &&
 				    (padapter->bSurpriseRemoved == _FALSE))
-				{				
-					
+				{
+
 					rtw_recv_indicatepkt(padapter, prframe);		//indicate this recv_frame
-					
+
 				}
 			}
 			else if(pattrib->amsdu==1)
@@ -3922,34 +3922,34 @@ static int recv_indicatepkt_reorder(_adapter *padapter, union recv_frame *prfram
 				return _SUCCESS;
 
 			}
-			
+
 			#ifdef DBG_RX_DROP_FRAME
 			DBG_871X("DBG_RX_DROP_FRAME %s pattrib->qos !=1\n", __FUNCTION__);
 			#endif
-			
+
 			return _FAIL;
-		
+
 		}
 
 		if (preorder_ctrl->enable == _FALSE)
 		{
-			//indicate this recv_frame			
+			//indicate this recv_frame
 			preorder_ctrl->indicate_seq = pattrib->seq_num;
 			#ifdef DBG_RX_SEQ
 			DBG_871X("DBG_RX_SEQ %s:%d IndicateSeq: %d, NewSeq: %d\n", __FUNCTION__, __LINE__,
 				preorder_ctrl->indicate_seq, pattrib->seq_num);
 			#endif
-			
-			rtw_recv_indicatepkt(padapter, prframe);		
-			
+
+			rtw_recv_indicatepkt(padapter, prframe);
+
 			preorder_ctrl->indicate_seq = (preorder_ctrl->indicate_seq + 1)%4096;
 			#ifdef DBG_RX_SEQ
 			DBG_871X("DBG_RX_SEQ %s:%d IndicateSeq: %d, NewSeq: %d\n", __FUNCTION__, __LINE__,
 				preorder_ctrl->indicate_seq, pattrib->seq_num);
 			#endif
-			
-			return _SUCCESS;	
-		}			
+
+			return _SUCCESS;
+		}
 
 #ifndef CONFIG_RECV_REORDERING_CTRL
 		//indicate this recv_frame
@@ -4077,7 +4077,7 @@ void rtw_reordering_ctrl_timeout_handler(void *pcontext)
 
 	if(recv_indicatepkts_in_order(padapter, preorder_ctrl, _TRUE)==_TRUE)
 	{
-		_set_timer(&preorder_ctrl->reordering_ctrl_timer, REORDER_WAIT_TIME);		
+		_set_timer(&preorder_ctrl->reordering_ctrl_timer, REORDER_WAIT_TIME);
 	}
 
 	_exit_critical_bh(&ppending_recvframe_queue->lock, &irql);
@@ -4105,7 +4105,7 @@ static int process_recv_indicatepkts(_adapter *padapter, union recv_frame *prfra
 			#ifdef DBG_RX_DROP_FRAME
 			DBG_871X("DBG_RX_DROP_FRAME %s recv_indicatepkt_reorder error!\n", __FUNCTION__);
 			#endif
-		
+
 			if ((padapter->bDriverStopped == _FALSE) &&
 			    (padapter->bSurpriseRemoved == _FALSE))
 			{
@@ -4149,7 +4149,7 @@ static int process_recv_indicatepkts(_adapter *padapter, union recv_frame *prfra
 	return retval;
 
 }
- 
+
 
 static int recv_func(_adapter *padapter, void *pcontext)
 {
@@ -4224,7 +4224,7 @@ static int recv_func(_adapter *padapter, void *pcontext)
 		#ifdef DBG_RX_DROP_FRAME
 		DBG_871X("DBG_RX_DROP_FRAME %s recvframe_chk_defrag: drop pkt\n", __FUNCTION__);
 		#endif
-		goto _exit_recv_func;		
+		goto _exit_recv_func;
 	}
 
 	prframe=portctrl(padapter, prframe);
@@ -4273,7 +4273,7 @@ static int recv_func(_adapter *padapter, void *pcontext)
 			//indicate this recv_frame
 			retval = rtw_recv_indicatepkt(padapter, prframe);
 			if (retval != _SUCCESS)
-			{	
+			{
 				#ifdef DBG_RX_DROP_FRAME
 				DBG_871X("DBG_RX_DROP_FRAME %s rtw_recv_indicatepkt fail!\n", __FUNCTION__);
 				#endif
@@ -4341,7 +4341,7 @@ _func_enter_;
 	padapter = precvframe->u.hdr.adapter;
 	//pintfhdl = &padapter->iopriv.intf;
 
-	//pdev=&padapter->dvobjpriv;	
+	//pdev=&padapter->dvobjpriv;
 	//pmlmepriv = &padapter->mlmepriv;
 	precvpriv = &padapter->recvpriv;
 	//pfree_recv_queue = &precvpriv->free_recv_queue;
@@ -4405,7 +4405,7 @@ _func_exit_;
 void rtw_signal_stat_timer_hdl(RTW_TIMER_HDL_ARGS){
 	_adapter *adapter = (_adapter *)FunctionContext;
 	struct recv_priv *recvpriv = &adapter->recvpriv;
-	
+
 	u32 tmp_s, tmp_q;
 	u8 avg_signal_strength = 0;
 	u8 avg_signal_qual = 0;
@@ -4423,12 +4423,12 @@ void rtw_signal_stat_timer_hdl(RTW_TIMER_HDL_ARGS){
 			avg_signal_strength = recvpriv->signal_strength_data.avg_val;
 			avg_signal_qual = recvpriv->signal_qual_data.avg_val;
 		}
-		
+
 		if(recvpriv->signal_qual_data.update_req == 0) {// update_req is clear, means we got rx
 			num_signal_strength = recvpriv->signal_strength_data.total_num;
 			num_signal_qual = recvpriv->signal_qual_data.total_num;
 		}
-		
+
 		// after avg_vals are accquired, we can re-stat the signal values
 		recvpriv->signal_strength_data.update_req = 1;
 		recvpriv->signal_qual_data.update_req = 1;
@@ -4469,9 +4469,6 @@ void rtw_signal_stat_timer_hdl(RTW_TIMER_HDL_ARGS){
 		}
 	}
 	rtw_set_signal_stat_timer(recvpriv);
-	
+
 }
 #endif //CONFIG_NEW_SIGNAL_STAT_PROCESS
-
-
-

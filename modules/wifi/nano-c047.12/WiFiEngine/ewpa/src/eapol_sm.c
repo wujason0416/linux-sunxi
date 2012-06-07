@@ -45,7 +45,7 @@ typedef enum {
 	SUPP_PAE_RESTART = 8,
 	SUPP_PAE_S_FORCE_AUTH = 9,
 	SUPP_PAE_S_FORCE_UNAUTH = 10
-} SUPP_PAE_state_TYPE; /* dot1xSuppPaeState */ 
+} SUPP_PAE_state_TYPE; /* dot1xSuppPaeState */
 
 typedef enum {
     EAPOL_CB_IN_PROGRESS = 0,
@@ -61,7 +61,7 @@ typedef enum {
     SUPP_BE_RECEIVE = 4,
     SUPP_BE_RESPONSE = 5,
     SUPP_BE_FAIL = 6,
-    SUPP_BE_TIMEOUT = 7, 
+    SUPP_BE_TIMEOUT = 7,
     SUPP_BE_SUCCESS = 8
 } SUPP_BE_state_TYPE; /* dot1xSuppBackendPaeState */
 
@@ -149,7 +149,7 @@ struct eapol_sm {
 	u8 last_replay_counter[16];
 	struct eapol_config conf;
 	struct eapol_ctx *ctx;
-    cb_status_TYPE cb_status;		
+    cb_status_TYPE cb_status;
 	Boolean cached_pmk;
 
 	Boolean unicast_key_received, broadcast_key_received;
@@ -848,7 +848,7 @@ static void eapol_sm_txSuppRsp(struct eapol_sm *sm)
 
 	/* eapRespData is not used anymore, so free it here */
 	os_free(resp);
-	
+
 	if (sm->initial_req)
 		sm->dot1xSuppEapolReqIdFramesRx++;
 	else

@@ -321,7 +321,7 @@ static int wpa_supplicant_eapol_send(void *ctx, int type, const u8 *buf,
 		msg = wapi_alloc_packet(wpa_s, type, buf, len, &msglen, NULL);
 	else
 		msg = wpa_alloc_eapol(wpa_s, type, buf, len, &msglen, NULL);
-	
+
 	if (msg == NULL)
 		return -1;
 
@@ -332,7 +332,7 @@ static int wpa_supplicant_eapol_send(void *ctx, int type, const u8 *buf,
 	  res = wpa_ether_send(wpa_s, dst, ETH_P_WAPI, msg, msglen);
 	else
 	res = wpa_ether_send(wpa_s, dst, ETH_P_EAPOL, msg, msglen);
-	  
+
 	os_free(msg);
 	return res;
 }
@@ -458,7 +458,7 @@ static void wpa_supplicant_notify_eapol_done(void *ctx)
 {
 	struct wpa_supplicant *wpa_s = ctx;
 	wpa_msg(wpa_s, MSG_DEBUG, "WPA: EAPOL processing complete");
-        
+
 	if ( (wpa_s->key_mgmt == WPA_KEY_MGMT_IEEE8021X) || (wpa_s->key_mgmt == WAPI_KEY_MGMT_CERT)) {
 		wpa_supplicant_set_state(wpa_s, WPA_4WAY_HANDSHAKE);
 	} else {
@@ -620,7 +620,7 @@ static void wpa_supplicant_timeout(void *eloop_ctx, void *timeout_ctx)
 	wpa_msg(wpa_s, MSG_INFO, "Authentication with " MACSTR " timed out.",
 		MAC2STR(bssid));
 	wpa_blacklist_add(wpa_s, bssid);
-	
+
 	if (wpa_s->key_mgmt & (WAPI_KEY_MGMT_PSK | WAPI_KEY_MGMT_CERT))
 		wapi_sm_notify_disassoc(wpa_s->wapi);
 	else
@@ -713,7 +713,7 @@ void wpa_supplicant_initiate_eapol(struct wpa_supplicant *wpa_s)
 	if (wpa_s->conf)
 		eapol_conf.fast_reauth = wpa_s->conf->fast_reauth;
 	eapol_conf.workaround = ssid->eap_workaround;
-	
+
 	/* FIXME-> need to distiguish wapi and eap protocols?*/
 	eapol_conf.eap_disabled = wpa_s->key_mgmt != WPA_KEY_MGMT_IEEE8021X &&
 		wpa_s->key_mgmt != WAPI_KEY_MGMT_CERT &&
@@ -1028,7 +1028,7 @@ int wpa_supplicant_reload_configuration(struct wpa_supplicant *wpa_s)
 		eapol_sm_notify_eap_success(wpa_s->eapol, FALSE);
 	}
 	eapol_sm_notify_config(wpa_s->eapol, NULL, NULL);
-	
+
 	if (wpa_s->key_mgmt & (WAPI_KEY_MGMT_PSK | WAPI_KEY_MGMT_CERT))
 		wapi_sm_set_config(wpa_s->wapi, NULL);
 	else
@@ -1514,7 +1514,7 @@ int wpa_supplicant_wapi_set_suites(struct wpa_supplicant *wpa_s,
 	struct wapi_ie_data ie;
 	int sel;
 	int proto = 0;
-   
+
 	if (bss && bss->wapi_ie_len && (ssid->proto & WAPI_PROTO) &&
 		   wapi_parse_ie(bss->wapi_ie, bss->wapi_ie_len, &ie) == 0 &&
 		   (ie.group_cipher & ssid->group_cipher) &&
@@ -1552,7 +1552,7 @@ int wpa_supplicant_wapi_set_suites(struct wpa_supplicant *wpa_s,
 	}
 
 	sel = ie.group_cipher & ssid->group_cipher;
-	
+
 	if (sel & WAPI_CIPHER_SMS4) {
 		wpa_s->group_cipher = WAPI_CIPHER_SMS4;
 		wpa_msg(wpa_s, MSG_DEBUG, "WAPI: using GTK SMS4");
@@ -2417,7 +2417,7 @@ int wpa_supplicant_driver_init(struct wpa_supplicant *wpa_s,
 	wpa_drv_set_drop_unencrypted(wpa_s, 1);
 
 	wpa_s->prev_scan_ssid = BROADCAST_SSID_SCAN;
-	if ( wpa_s->conf->ap_scan > 0) 
+	if ( wpa_s->conf->ap_scan > 0)
 	{
  	   wpa_supplicant_req_scan(wpa_s, interface_count, 100000);
 	}
@@ -2833,7 +2833,7 @@ struct wpa_supplicant * wpa_supplicant_add_iface(struct wpa_global *global,
 		os_free(wpa_s);
 		return NULL;
 	}
-		
+
 	wpa_s->next = global->ifaces;
 	global->ifaces = wpa_s;
 

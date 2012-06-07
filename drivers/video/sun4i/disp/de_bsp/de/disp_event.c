@@ -20,22 +20,22 @@ __s32 BSP_disp_cmd_submit(__u32 sel)
 __s32 BSP_disp_cfg_start(__u32 sel)
 {
 	gdisp.screen[sel].cfg_cnt++;
-	
+
 	return DIS_SUCCESS;
 }
 
 __s32 BSP_disp_cfg_finish(__u32 sel)
 {
 	gdisp.screen[sel].cfg_cnt--;
-	
+
 	return DIS_SUCCESS;
 }
 
 void LCD_vbi_event_proc(__u32 sel, __u32 tcon_index)
-{    
+{
     __u32 cur_line = 0, start_delay = 0;
     __u32 i = 0;
-    
+
 	Video_Operation_In_Vblanking(sel, tcon_index);
 
     cur_line = LCDC_get_cur_line(sel, tcon_index);
@@ -74,7 +74,7 @@ void LCD_vbi_event_proc(__u32 sel, __u32 tcon_index)
 
 #if 0
     cur_line = LCDC_get_cur_line(sel, tcon_index);
-    
+
 	if(cur_line > 5)
 	{
     	DE_INF("%d\n", cur_line);
@@ -85,9 +85,9 @@ void LCD_vbi_event_proc(__u32 sel, __u32 tcon_index)
 }
 
 void LCD_line_event_proc(__u32 sel)
-{    
+{
 	if(gdisp.screen[sel].have_cfg_reg)
-	{   
+	{
 	    gdisp.init_para.disp_int_process(sel);
 	    gdisp.screen[sel].have_cfg_reg = FALSE;
 	}

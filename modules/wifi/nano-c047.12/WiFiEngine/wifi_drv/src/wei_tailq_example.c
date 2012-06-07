@@ -185,7 +185,7 @@ int main(int argc, char **argv)
    int i;
 
    WEI_TQ_INIT(&foo_bybitcount); /* initialise head strucure */
-   
+
    /* this shows how to insert at the head of a list, we know the list
     * is empty, so inserting at head will not break sort order */
    p = new_foo(10);

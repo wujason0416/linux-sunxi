@@ -26,7 +26,7 @@ int main() {
    return 0;
 }
 
-#endif 
+#endif
 
 
 #include <time.h>
@@ -43,11 +43,9 @@ int main() {
       ret = nrx_get_mib_val(ctx, "5.2.9", &x, &x_size);
       if (!ret)
          printf("Value MIB_dot11beaconLossRate %d\n", x);
-      else 
+      else
          printf("Failed (err %d, %s)\n", x, strerror(x));
       nanosleep(&t, NULL);
    } while (!ret);
    return 0;
 }
-
-

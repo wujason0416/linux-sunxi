@@ -96,7 +96,7 @@ void wei_asscache_add_req(m80211_mlme_associate_req_t *req)
 
 /*!
  * Get a pointer to the cached association request.
- * 
+ *
  * @return Pointer to the cache buffer. NULL if the cache was empty.
  */
 m80211_mlme_associate_req_t *wei_asscache_get_req(void)
@@ -130,7 +130,7 @@ void wei_asscache_add_cfm(m80211_mlme_associate_cfm_t *cfm)
 
 /*!
  * Get a pointer to the cached association response.
- * 
+ *
  * @return Pointer to the cache buffer. NULL if the cache was empty.
  */
 m80211_mlme_associate_cfm_t *wei_asscache_get_cfm(void)

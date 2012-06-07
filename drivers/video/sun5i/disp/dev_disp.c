@@ -242,7 +242,7 @@ __s32 DRV_DISP_Init(void)
 	memset(&g_disp_drv, 0, sizeof(__disp_drv_t));
 
     sys_put_wvalue(0xf1c20118, 1<<19);
-    
+
     BSP_disp_init(&para);
     BSP_disp_open();
 
@@ -610,9 +610,9 @@ long disp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
         __wrn("ioctl:%x fail when in suspend!\n", cmd);
         return -1;
     }
-    
+
 #if 0
-    if(cmd!=DISP_CMD_TV_GET_INTERFACE && cmd!=DISP_CMD_HDMI_GET_HPD_STATUS && cmd!=DISP_CMD_GET_OUTPUT_TYPE 
+    if(cmd!=DISP_CMD_TV_GET_INTERFACE && cmd!=DISP_CMD_HDMI_GET_HPD_STATUS && cmd!=DISP_CMD_GET_OUTPUT_TYPE
     	&& cmd!=DISP_CMD_SCN_GET_WIDTH && cmd!=DISP_CMD_SCN_GET_HEIGHT
     	&& cmd!=DISP_CMD_VIDEO_SET_FB && cmd!=DISP_CMD_VIDEO_GET_FRAME_ID)
     {
@@ -1719,4 +1719,3 @@ MODULE_AUTHOR("danling_xiao");
 MODULE_DESCRIPTION("display driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:disp");
-

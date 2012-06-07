@@ -1,6 +1,6 @@
 /******************************************************************************
 
-            Copyright (c) 2004 by Nanoradio AB 
+            Copyright (c) 2004 by Nanoradio AB
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
 All rights, title, ownership, or other interests in the software remain the
@@ -13,7 +13,7 @@ consent of Nanoradio AB.
 
 Nanoradio AB reserves the right to modify this software without notice.
 
-Nanoradio AB 
+Nanoradio AB
 Torshamnsgatan 39                       info@nanoradio.se
 164 40 Kista                            http://www.nanoradio.se
 SWEDEN
@@ -44,7 +44,7 @@ void packer_HIC_Unpack(hic_message_context_t* msg_ref, Blob_t *blob);
 int packer_Unpack(hic_message_context_t *msg_ref, Blob_t *blob);
 
 char* packer_DereferencePacket(driver_packet_ref packet,
-                               uint16_t*         packetSize, 
+                               uint16_t*         packetSize,
                                uint8_t*          packetType,
                                uint8_t*          packetId);
 

@@ -439,4 +439,3 @@ MACHINE_START(SUN4I, "sun4i")
 	.init_machine   = sw_core_init,
 	.reserve        = sw_core_reserve,
 MACHINE_END
-

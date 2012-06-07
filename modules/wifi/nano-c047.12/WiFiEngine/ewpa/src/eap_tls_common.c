@@ -422,7 +422,7 @@ static int eap_tls_process_output(struct eap_ssl_data *data, EapType eap_type,
 	size_t len;
 	u8 *pos, *flags;
 	int more_fragments, length_included;
-	
+
 	wpa_printf(MSG_DEBUG, "SSL: %lu bytes left to be sent out (of total "
 		   "%lu bytes)",
 		   (unsigned long) data->tls_out_len - data->tls_out_pos,

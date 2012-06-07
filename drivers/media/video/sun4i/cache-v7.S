@@ -39,5 +39,3 @@ flush_clean_user_range:
     mov	r0, r0, lsl #12
     add	r0, r0, #4096
     b	2b
-
-

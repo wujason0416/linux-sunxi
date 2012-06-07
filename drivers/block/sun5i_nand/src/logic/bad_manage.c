@@ -106,7 +106,7 @@ static __s32 _MarkBadBlk(struct __SuperPhyBlkType_t *pBadBlk, __u32 nZoneNum)
 		LOGICCTL_DBG("[LOGICCTL_DBG] erase bad block fail!\n");
 	}
 
-	
+
     //set the spare area data for write
     MEMSET((void *)tmpSpare, 0x00, 2*sizeof(struct __NandUserData_t));
 
@@ -157,7 +157,7 @@ __s32 LML_BadBlkManage(struct __SuperPhyBlkType_t *pBadBlk, __u32 nZoneNum, __u3
     tmpBadBlk = *pBadBlk;
 
 	LOGICCTL_ERR("%s : %d : bad block manage go\n",__FUNCTION__,__LINE__);
-	
+
 __PROCESS_BAD_BLOCK:
 
     if(pNewBlk)
@@ -191,4 +191,3 @@ __PROCESS_BAD_BLOCK:
 
     return 0;
 }
-

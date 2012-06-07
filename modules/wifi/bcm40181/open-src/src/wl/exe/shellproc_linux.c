@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2011, Broadcom Corporation
  * All Rights Reserved.
- * 
+ *
  * This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
  * the contents of this file may not be disclosed to third parties, copied
  * or duplicated in any form, in whole or in part, without the prior
@@ -142,7 +142,7 @@ remote_shell_async_get_resp(char* shell_fname, char* buf_ptr, int msg_len)
 		return sts;
 	}
 
-	/* If there is any response from the shell, Read the file and 
+	/* If there is any response from the shell, Read the file and
 	 * update the buffer for the shell response
 	 * else Just send the return value of the command executed
 	 */
@@ -163,7 +163,7 @@ remote_shell_async_get_resp(char* shell_fname, char* buf_ptr, int msg_len)
 	return sts;
 }
 
-/* 
+/*
  * Function to get the shell response length
  * by opening the file containing the shell response
  * and get the total file size.
@@ -192,7 +192,7 @@ rwl_get_file_size(char *file_name)
 	return filesize;
 }
 
-/* 
+/*
  * Function for executing asynchronous shell comamnd
  * Stores the results in async temp file and returns the PID
  */
@@ -339,7 +339,7 @@ remote_shell_async_exec(char *buf_ptr)
 	return msg_len;
 }
 
-/* Process for 'kill' command. 
+/* Process for 'kill' command.
  * Kill command can also be used from the client to get the
  * result of asynchronous command and actually kill the mentioned process
  */
@@ -353,7 +353,7 @@ remote_kill_cmd_exec(char *cmd_buf_ptr)
 
 	system(cmd_buf_ptr);
 
-	/* Parse the PID val from the kill command. 
+	/* Parse the PID val from the kill command.
 	 */
 	pid_token = strtok_r(cmd_buf_ptr, " ", (char **)next_pid);
 	while (pid_token != NULL) {
@@ -364,7 +364,7 @@ remote_kill_cmd_exec(char *cmd_buf_ptr)
 		pid_token = strtok_r(NULL, " ", (char **)next_pid);
 	}
 
-	/* Check for the matching PID from the async structure and 
+	/* Check for the matching PID from the async structure and
 	 * give the last 256 bytes statistics of the async process
 	 * that was running
 	 */
@@ -497,7 +497,7 @@ remote_shell_sync_exec(char *cmd_buf_ptr, void *wl)
 	/* Defalut time out only in case of Non socket transport */
 	alarm(g_shellsync_timeout);
 	/* registering the relevant signals to handle end of child process,
-	 * the ctrl+c event on the server side and the kill command on the 
+	 * the ctrl+c event on the server side and the kill command on the
 	 * server process
 	 */
 	signal(SIGCHLD, rwl_chld_handler);
@@ -563,7 +563,7 @@ remote_shell_sync_exec(char *cmd_buf_ptr, void *wl)
 		if (get_ctrlc_header(wl) >= 0) {
 			if (g_rem_ptr->msg.flags == (unsigned)CTRLC_FLAG) {
 				uname(&name);
-				/* Checking for mips architecture 
+				/* Checking for mips architecture
 				 * The mips machine responds differently to
 				 * execl command. so the pid is incremented
 				 * to kill the right command.
@@ -594,7 +594,7 @@ remote_shell_sync_exec(char *cmd_buf_ptr, void *wl)
 		if (get_ctrlc_header(wl) >= 0) {
 			if (g_rem_ptr->msg.flags == (unsigned)CTRLC_FLAG) {
 				uname(&name);
-				/* Checking for mips architecture 
+				/* Checking for mips architecture
 				 * The mips machine responds differently to
 				 * execl command. so the pid is incremented
 				 * to kill the right command.
@@ -605,16 +605,16 @@ remote_shell_sync_exec(char *cmd_buf_ptr, void *wl)
 				}
 				/* Checking for arm architecture
 				 * The multiple commands would not work
-				 * for ctrl+C. So we kill the processes 
-				 * spawned after the parent. This method has 
+				 * for ctrl+C. So we kill the processes
+				 * spawned after the parent. This method has
 				 * its own limitations but the busybox in pxa
-				 * doesnot have many options to implement it better 
+				 * doesnot have many options to implement it better
 				 */
 				else {
 					if (strncmp(name.machine, "armv5tel",
 					sizeof(name.machine)) == 0) {
 						/* The command below is used to get the
-						 * PIDs and they are killed 
+						 * PIDs and they are killed
 						 */
 						snprintf(cmd_find_lastpid,
 							sizeof(cmd_find_lastpid),
@@ -633,13 +633,13 @@ remote_shell_sync_exec(char *cmd_buf_ptr, void *wl)
 						pclose(fpt);
 					}
 					/* In the case of x86, on receiving ctrl+C
-					 * the child PIDs are obtained by searching 
+					 * the child PIDs are obtained by searching
 					 * the parent PID to obtain the PIDs of the
 					 * and kill them
 					 */
 					else {
 						while (pid != 0) {
-							/* The commad below is used to get the 
+							/* The commad below is used to get the
 							 * child PIDs by using their parent PID
 							 */
 							snprintf(cmd_find_lastpid,

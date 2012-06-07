@@ -2,7 +2,7 @@
 /******************************************************************************
  *  Copyright (c) 2010 - Sweden Connectivity AB.
  *  ALL RIGHTS RESERVED
- *  
+ *
  *  PAL_Init.c
  *  This file implements the tty for communication between PAL/driver and Stack
  *	It's starts pal_main_thread and register callback for PAL events and data
@@ -27,34 +27,34 @@ net_rx_cb_t HCI_response_function(mac_api_net_id_t net, char* buf, int size)
 }
 /*******************************************************************************
  * FUNCTION:	pal_main_thread
- * 
- * DESCRIPTION:   
  *
- * PARAMETERS:	
+ * DESCRIPTION:
  *
- * RETURN:	
+ * PARAMETERS:
+ *
+ * RETURN:
  *
  ******************************************************************************/
 /*static int pal_main_thread(void *_priv)
 {
- 
+
 }
 */
 
 static int palTty_startup(struct uart_port *port)
 {
-  
+
     return 0;
 }
 
 /*******************************************************************************
  * FUNCTION:	palTty_shutdown
- * 
- * DESCRIPTION:   
  *
- * PARAMETERS:	
+ * DESCRIPTION:
  *
- * RETURN:	
+ * PARAMETERS:
+ *
+ * RETURN:
  *
  ******************************************************************************/
 static void palTty_shutdown(struct uart_port *port)
@@ -65,43 +65,40 @@ static void palTty_shutdown(struct uart_port *port)
 
 void nano_To_Pal(int msg)
 {
-	
+
 
 }
 
 
 /*******************************************************************************
  * FUNCTION:	pal_Init
- * 
- * DESCRIPTION:   
  *
- * PARAMETERS:	
+ * DESCRIPTION:
  *
- * RETURN:	
+ * PARAMETERS:
+ *
+ * RETURN:
  *
  ******************************************************************************/
 int pal_Init (void)
 {
 
 
-  
+
 	return 1;
 }
 
 /*******************************************************************************
  * FUNCTION:	__exit
- * 
- * DESCRIPTION:   
  *
- * PARAMETERS:	
+ * DESCRIPTION:
  *
- * RETURN:	
+ * PARAMETERS:
+ *
+ * RETURN:
  *
  ******************************************************************************/
 void pal_Exit (void)
 {
- 
+
 }
-
- 
-

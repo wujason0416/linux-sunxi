@@ -63,7 +63,7 @@ typedef struct dynamic_dlm_ops_s
 
 static dynamic_dlm_ops_t dynamic_dlm_ops;
 
-const struct dlm_ops_t dynamic_ops = 
+const struct dlm_ops_t dynamic_ops =
 {
    dynamic_dlm_ops_get_data,
    NULL, /* free_data */
@@ -130,8 +130,8 @@ dynamic_dlm_ops_find(uint32_t id, uint32_t size)
 }
 
 char* we_dlm_register(
-      const char*   dlm_name, 
-      unsigned int  dlm_id, 
+      const char*   dlm_name,
+      unsigned int  dlm_id,
       unsigned int  dlm_size)
 {
    dlm_t *dlm;
@@ -139,7 +139,7 @@ char* we_dlm_register(
                                   * instead of using a magic DLM,
                                   * remove this assert when all
                                   * drivers are updated */
-   
+
    dlm = (dlm_t*)DriverEnvironment_Malloc(sizeof(dlm_t) + dlm_size);
    dlm->dlm_name = dlm_name;
    dlm->dlm_id = dlm_id;
@@ -174,7 +174,7 @@ void we_dlm_dynamic_initialize(void)
    dynamic_dlm_ops.ops = dynamic_ops;
    WEI_TQ_INIT(&dynamic_dlm_ops.head);
    dynamic_dlm_ops.current_dlm = NULL;
-   we_dlm_register_adapter(&dynamic_dlm_ops_find);   
+   we_dlm_register_adapter(&dynamic_dlm_ops_find);
 #endif /* WE_DLM_DYNAMIC */
 }
 
@@ -182,4 +182,3 @@ void we_dlm_dynamic_shutdown(void)
 {
    we_dlm_flush();
 }
-

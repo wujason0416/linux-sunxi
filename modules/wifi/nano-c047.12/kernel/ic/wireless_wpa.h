@@ -2,7 +2,7 @@
 #define __wireless_wpa_h__
 
 /*
- * Definitions required for WPA from Wireless extensions 18 
+ * Definitions required for WPA from Wireless extensions 18
  */
 
 #define SIOCSIWGENIE    0x8B30

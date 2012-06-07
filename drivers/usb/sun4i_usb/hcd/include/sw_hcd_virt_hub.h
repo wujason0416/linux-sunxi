@@ -10,7 +10,7 @@
 *
 * Author 		: javen
 *
-* Description 	: ÐéÄâ hub
+* Description 	: è™šæ‹Ÿ hub
 *
 * History 		:
 *      <author>    		<time>       	<version >    		<desc>
@@ -35,4 +35,3 @@ void sw_hcd_port_resume_ex(struct sw_hcd *sw_hcd);
 void sw_hcd_port_reset_ex(struct sw_hcd *sw_hcd);
 
 #endif   //__SW_HCD_VIRT_HUB_H__
-

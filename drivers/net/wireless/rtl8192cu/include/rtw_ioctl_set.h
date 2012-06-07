@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
  *
  *
- 
+
 ******************************************************************************/
 #ifndef __RTW_IOCTL_SET_H_
 #define __RTW_IOCTL_SET_H_
@@ -71,4 +71,3 @@ u8 rtw_validate_ssid(NDIS_802_11_SSID *ssid);
 
 
 #endif
-

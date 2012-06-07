@@ -48,7 +48,7 @@ struct scard_data {
 	char autn[16];
 	char ik[16];     /* integrity key */
 	char ck[16];     /* confidentiality key */
-	
+
 	aka_status_TYPE aka_status;
 	char auts[14];   /* */
 };
@@ -132,7 +132,7 @@ struct scard_data * scard_init(scard_sim_type sim_type)
 	struct scard_data *scard = NULL;
 
 	nr_rtke_sim_register_gsm_alg_callback(scard_gsm_alg_resp);
-	nr_rtke_sim_register_umts_alg_callback(scard_umts_alg_resp, 
+	nr_rtke_sim_register_umts_alg_callback(scard_umts_alg_resp,
 					       scard_umts_alg_err);
 	switch(sim_type) {
 	case SCARD_GSM_SIM_ONLY:
@@ -238,7 +238,7 @@ int scard_gsm_auth(struct scard_data *scard, const unsigned char *_rand,
 		scard->state = SC_IDLE;
 		return 0;
 	case SC_ERROR:
-		DE_TRACE_STATIC(TR_WPA, "error\n");	
+		DE_TRACE_STATIC(TR_WPA, "error\n");
 		return -1;
 	}
 

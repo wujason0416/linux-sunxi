@@ -39,7 +39,7 @@ void __wei_list_insert(wei_list_head_t *old_e, wei_list_head_t *new_e)
 void __wei_list_remove(wei_list_head_t *el)
 {
    wei_list_head_t *prev;
-   
+
    DE_ASSERT(el != NULL);
    WIFI_LOCK();
    prev = el->prev;

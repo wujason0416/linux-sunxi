@@ -11,4 +11,3 @@ PLATFORM_FLAGS += -DMODULE_ARCH_INIT={.foo=0}
 CROSS_COMPILE = /home/nanotest/mydroid/prebuilt/linux-x86/toolchain/arm-eabi-4.4.0/bin/arm-eabi-
 KERNEL_MAJOR_VERSION=2.6
 TRANSPORT?=ksdio
-

@@ -70,7 +70,7 @@ static __u32 twi_id = 0;
 
 /**
  * gsensor_fetch_sysconfig_para - get config info from sysconfig.fex file.
- * return value:  
+ * return value:
  *                    = 0; success;
  *                    < 0; err
  */
@@ -81,9 +81,9 @@ static int gsensor_fetch_sysconfig_para(void)
 	__u32 twi_addr = 0;
 	char name[I2C_NAME_SIZE];
 	script_parser_value_type_t type = SCIRPT_PARSER_VALUE_TYPE_STRING;
-		
+
 	printk("========%s===================\n", __func__);
-	 
+
 	if(SCRIPT_PARSER_OK != (ret = script_parser_fetch("gsensor_para", "gsensor_used", &device_used, 1))){
 	                pr_err("%s: script_parser_fetch err.ret = %d. \n", __func__, ret);
 	                goto script_parser_fetch_err;
@@ -115,7 +115,7 @@ static int gsensor_fetch_sysconfig_para(void)
 		printk("%s: tkey_twi_id is %d. \n", __func__, twi_id);
 
 		ret = 0;
-		
+
 	}else{
 		pr_err("%s: gsensor_unused. \n",  __func__);
 		ret = -1;
@@ -131,14 +131,14 @@ script_parser_fetch_err:
 
 /**
  * gsensor_detect - Device detection callback for automatic device creation
- * return value:  
+ * return value:
  *                    = 0; success;
  *                    < 0; err
  */
 static int gsensor_detect(struct i2c_client *client, struct i2c_board_info *info)
 {
 	struct i2c_adapter *adapter = client->adapter;
-	
+
 	if(twi_id == adapter->nr){
 		pr_info("%s: Detected chip %s at adapter %d, address 0x%02x\n",
 			 __func__, SENSOR_NAME, i2c_adapter_id(adapter), client->addr);
@@ -200,7 +200,7 @@ static int mxc622x_i2c_tx_data(char *buf, int len)
 			.buf	= buf,
 		}
 	};
-	
+
 	for (i = 0; i < MXC622X_RETRY_COUNT; i++) {
 		if (i2c_transfer(this_client->adapter, msg, 1) > 0) {
 			break;
@@ -260,7 +260,7 @@ static long mxc622x_ioctl(struct file *file, unsigned int cmd, unsigned long arg
 		vec[1] = (int)data[1];
 		vec[2] = (int)data[2];
 	#if DEBUG
-		printk("[X - %04x] [Y - %04x] [Z - %04x]\n", 
+		printk("[X - %04x] [Y - %04x] [Z - %04x]\n",
 			vec[0], vec[1], vec[2]);
 	#endif
 		if (copy_to_user(pa, vec, sizeof(vec))) {
@@ -276,7 +276,7 @@ static long mxc622x_ioctl(struct file *file, unsigned int cmd, unsigned long arg
 		vec[1] = (int)data[1];
 		vec[2] = (unsigned int)data[2];
 	#if DEBUG
-		printk("[X - %04x] [Y - %04x] [STATUS - %04x]\n", 
+		printk("[X - %04x] [Y - %04x] [STATUS - %04x]\n",
 			vec[0], vec[1], vec[2]);
 	#endif
 		if (copy_to_user(pa, vec, sizeof(vec))) {
@@ -331,7 +331,7 @@ int mxc622x_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	int res = 0;
 
 	printk("%s, line is: %d. \n", __func__, __LINE__);
-	
+
 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
 		pr_err("%s: functionality check failed\n", __FUNCTION__);
 		res = -ENODEV;
@@ -424,7 +424,7 @@ static int __init mxc622x_init(void)
 {
 	int ret = -1;
 	pr_info("mxc622x driver: init\n");
-	
+
 	if(gsensor_fetch_sysconfig_para()){
 		printk("%s: err.\n", __func__);
 		return -1;
@@ -434,7 +434,7 @@ static int __init mxc622x_init(void)
 	__func__, u_i2c_addr.normal_i2c[0], u_i2c_addr.normal_i2c[1]);
 
 	mxc622x_driver.detect = gsensor_detect;
-	
+
 	ret = i2c_add_driver(&mxc622x_driver);
 
 	return ret;
@@ -452,4 +452,3 @@ module_exit(mxc622x_exit);
 MODULE_AUTHOR("Robbie Cao<hjcao@memsic.com>");
 MODULE_DESCRIPTION("MEMSIC MXC622X (DTOS) Accelerometer Sensor Driver");
 MODULE_LICENSE("GPL");
-

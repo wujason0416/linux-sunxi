@@ -7,15 +7,15 @@
 
 #ifdef __cplusplus
 extern "C" {
-#endif 
+#endif
 
 
 typedef enum _DataRate {
     DATA_RATE_UNSUPPORT, //for index 0
-    DATA_RATE_1M,   
+    DATA_RATE_1M,
     DATA_RATE_2M,
     DATA_RATE_5_5M,
-    DATA_RATE_6M,   
+    DATA_RATE_6M,
     DATA_RATE_9M,
     DATA_RATE_11M,
     DATA_RATE_12M,
@@ -42,15 +42,15 @@ typedef enum _DataRate {
  *
  * @return 0 on success, < 0 on failure.
  */
-int OpenDUT(void);  
+int OpenDUT(void);
 
 
 /**
- * Close DUT. 
+ * Close DUT.
  *
  * @return 0 on success, < 0 on failure.
  */
-int CloseDUT(void); 
+int CloseDUT(void);
 
 
 /**
@@ -60,17 +60,17 @@ int CloseDUT(void);
  *
  * @return 0 on success, < 0 on failure.
  */
-int SetChannel(int channel);              
+int SetChannel(int channel);
 
 
 /**
  * SetDataRate sets the data rate of 802.11b,g,n mode.
  *
- * @param rate should be the member of enum 'DataRate'. 
+ * @param rate should be the member of enum 'DataRate'.
  *
  * @return 0 on success, < 0 on failure.
  */
-int SetDataRate(DataRate rate);                
+int SetDataRate(DataRate rate);
 
 
 /**
@@ -80,7 +80,7 @@ int SetDataRate(DataRate rate);
  *
  * @return 0 on success, < 0 on failure.
  */
-int SetLongPreamble(int enable);                 
+int SetLongPreamble(int enable);
 
 
 /**
@@ -100,7 +100,7 @@ int SetShortGuardInterval(int enable);
  *
  * @return 0 on success, < 0 on failure.
  */
-int TxGain(int txpwr);        
+int TxGain(int txpwr);
 
 
 /**
@@ -110,7 +110,7 @@ int TxGain(int txpwr);
  *
  * @return 0 on success or unsupport, < 0 on failure.
  */
-int SetBurstInterval(int burstinterval);   
+int SetBurstInterval(int burstinterval);
 
 
 /**
@@ -122,7 +122,7 @@ int SetBurstInterval(int burstinterval);
  *
  * @return 0 on success, < 0 on failure.
  */
-int SetPayload(int size);                 
+int SetPayload(int size);
 
 
 /**
@@ -134,7 +134,7 @@ int SetPayload(int size);
  *
  * @return 0 on success, < 0 on failure.
  */
-int SetBand(int band);      
+int SetBand(int band);
 
 
 /**
@@ -146,7 +146,7 @@ int SetBand(int band);
  *
  * @return 0 on success, < 0 on failure.
  */
-int SetBandWidth(int width);      
+int SetBandWidth(int width);
 
 
 /**
@@ -154,7 +154,7 @@ int SetBandWidth(int width);
  *
  * @return 0 on success, < 0 on failure.
  */
-int TxStartWithMod();                     
+int TxStartWithMod();
 
 
 /**
@@ -162,7 +162,7 @@ int TxStartWithMod();
  *
  * @return 0 on success, < 0 on failure.
  */
-int TxStartWoMod();         
+int TxStartWoMod();
 
 
 /**
@@ -170,15 +170,15 @@ int TxStartWoMod();
  *
  * @return 0 on success, < 0 on failure.
  */
-int TxStop();     
+int TxStop();
 
 
 /**
- * Rx test begins when RxStart() is called. 
+ * Rx test begins when RxStart() is called.
  *
  * @return 0 on success, < 0 on failure.
  */
-int RxStart();                        
+int RxStart();
 
 
 /**
@@ -186,7 +186,7 @@ int RxStart();
  *
  * @return 0 on success, < 0 on failure.
  */
-int RxStop();                    
+int RxStop();
 
 
 /**
@@ -195,7 +195,7 @@ int RxStop();
  *
  * @return : the number of good frames.
  */
-int GetGoodFrame();     
+int GetGoodFrame();
 
 
 /**
@@ -203,7 +203,7 @@ int GetGoodFrame();
  *
  * @return : the number of error frames.
  */
-int GetErrorFrame();      
+int GetErrorFrame();
 
 
 /**
@@ -215,6 +215,6 @@ const char *GetErrorString();
 
 #ifdef __cplusplus
 } /* extern "C" */
-#endif 
+#endif
 
-#endif 
+#endif

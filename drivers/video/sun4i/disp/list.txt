@@ -22234,5 +22234,3 @@
 
 ** Section #39 '.strtab' (SHT_STRTAB)
     Size   : 12628 bytes
-
-

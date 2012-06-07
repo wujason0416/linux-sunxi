@@ -36,8 +36,8 @@ void we_dlm_register_adapter(dlm_ops_find cb);
 void we_dlm_flush(void);
 
 char* we_dlm_register(
-      const char*   dlm_name, 
-      unsigned int  dlm_id, 
+      const char*   dlm_name,
+      unsigned int  dlm_id,
       unsigned int  dlm_size);
 char *dynamic_dlm_ops_find_mib_table(const char* dlm_name);
 #endif

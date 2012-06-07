@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
  *
  *
- 
+
 ******************************************************************************/
 #ifndef __RTW_MLME_H_
 #define __RTW_MLME_H_
@@ -175,7 +175,7 @@ struct tx_provdisc_req_info{
 
 struct rx_provdisc_req_info{	//When peer device issue prov_disc_req first, we should store the following informations
 	u8					peerDevAddr[ ETH_ALEN ];		//	Peer device address
-	u8					strconfig_method_desc_of_prov_disc_req[4];	//	description for the config method located in the provisioning discovery request frame.	
+	u8					strconfig_method_desc_of_prov_disc_req[4];	//	description for the config method located in the provisioning discovery request frame.
 																	//	The UI must know this information to know which config method the remote p2p device is requiring.
 };
 
@@ -194,7 +194,7 @@ struct wifidirect_info{
 	_adapter*				padapter;
 	_timer					find_phase_timer;
 	_timer					restore_p2p_state_timer;
-	
+
 	//	Used to do the scanning. After confirming the peer is availalble, the driver transmits the P2P frame to peer.
 	_timer					pre_tx_scan_timer;
 	struct tx_provdisc_req_info	tx_prov_disc_info;
@@ -235,7 +235,7 @@ struct wifidirect_info{
 
 	enum	P2P_WPSINFO		ui_got_wps_info;	//	This field will store the WPS value (PIN value or PBC) that UI had got from the user.
 	u16						supported_wps_cm;	//	This field describes the WPS config method which this driver supported.
-												//	The value should be the combination of config method defined in page104 of WPS v2.0 spec.												
+												//	The value should be the combination of config method defined in page104 of WPS v2.0 spec.
 	u8						channel_cnt;		//	This field is the count number for P2P Channel List attribute of group negotitation response frame.
 	u8						channel_list[13];		//	This field will contain the channel number of P2P Channel List attribute of group negotitation response frame.
 												//	We will use the channel_cnt and channel_list fields when constructing the group negotitation confirm frame.
@@ -299,7 +299,7 @@ struct mlme_priv {
 	int num_sta_no_ht;
 
 	/* Number of HT AP/stations 20 MHz */
-	//int num_sta_ht_20mhz; 
+	//int num_sta_ht_20mhz;
 
 
 	int num_FortyMHzIntolerant;
@@ -316,7 +316,7 @@ struct mlme_priv {
 	u8 	scan_mode; // active: 1, passive: 0
 
 
-	u8 probereq_wpsie[MAX_WPS_IE_LEN];//added in probe req	
+	u8 probereq_wpsie[MAX_WPS_IE_LEN];//added in probe req
 	int probereq_wpsie_len;
 
 #if defined (CONFIG_AP_MODE) && defined (CONFIG_NATIVEAP_MLME)
@@ -343,24 +343,24 @@ struct mlme_priv {
 
 	/* Overlapping BSS information */
 	int olbc_ht;
-	
+
 #ifdef CONFIG_80211N_HT
 	u16 ht_op_mode;
-#endif /* CONFIG_80211N_HT */	
+#endif /* CONFIG_80211N_HT */
 
-	u8 *wps_beacon_ie;	
+	u8 *wps_beacon_ie;
 	u8 *wps_probe_resp_ie;
 	u8 *wps_assoc_resp_ie;
 	u32 wps_beacon_ie_len;
 	u32 wps_probe_resp_ie_len;
 	u32 wps_assoc_resp_ie_len;
 
-	
+
 	_lock	bcn_update_lock;
 	u8		update_bcn;
-	
-	
-#endif	
+
+
+#endif
 
 #ifdef RTK_DMP_PLATFORM
 	// DMP kobject_hotplug function  signal need in passive level
@@ -379,8 +379,8 @@ struct hostapd_priv
 #ifdef CONFIG_HOSTAPD_MLME
 	struct net_device *pmgnt_netdev;
 	struct usb_anchor anchored;
-#endif	
-	
+#endif
+
 };
 
 extern int hostapd_mode_init(_adapter *padapter);
@@ -590,4 +590,3 @@ void _rtw_roaming(_adapter *padapter, struct wlan_network *tgt_network);
 #endif
 
 #endif //__RTL871X_MLME_H_
-

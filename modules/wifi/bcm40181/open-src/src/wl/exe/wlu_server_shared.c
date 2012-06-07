@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2011, Broadcom Corporation
  * All Rights Reserved.
- * 
+ *
  * This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
  * the contents of this file may not be disclosed to third parties, copied
  * or duplicated in any form, in whole or in part, without the prior
@@ -755,7 +755,7 @@ remote_server_exec(int argc, char **argv, void *wl)
 			/* Sync shell command: No need to send response from here */
 			else {
 #ifdef RWL_SOCKET
-				/* Transmitted to client. Then close the handle & 
+				/* Transmitted to client. Then close the handle &
 				 * get the new handle for next transmission & reception.
 				 */
 				close_sock_handle(g_rwl_hndle);
@@ -768,7 +768,7 @@ remote_server_exec(int argc, char **argv, void *wl)
 				if (buf_ptr)
 					free(buf_ptr);
 #ifdef RWL_SOCKET
-				/* Transmitted to client. Then close the handle & 
+				/* Transmitted to client. Then close the handle &
 				 * get the new handle for next transmission & reception.
 				 */
 				close_sock_handle(g_rwl_hndle);
@@ -782,7 +782,7 @@ remote_server_exec(int argc, char **argv, void *wl)
 			if (buf_ptr)
 				free(buf_ptr);
 #ifdef RWL_SOCKET
-			/* Transmitted to client. Then close the handle & 
+			/* Transmitted to client. Then close the handle &
 			 * get the new handle for next transmission & reception.
 			 */
 			close_sock_handle(g_rwl_hndle);

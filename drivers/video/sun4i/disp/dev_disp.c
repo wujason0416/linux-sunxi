@@ -607,9 +607,9 @@ long disp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
         __wrn("ioctl:%x fail when in suspend!\n", cmd);
         return -1;
     }
-    
+
 #if 0
-    if(cmd!=DISP_CMD_TV_GET_INTERFACE && cmd!=DISP_CMD_HDMI_GET_HPD_STATUS && cmd!=DISP_CMD_GET_OUTPUT_TYPE 
+    if(cmd!=DISP_CMD_TV_GET_INTERFACE && cmd!=DISP_CMD_HDMI_GET_HPD_STATUS && cmd!=DISP_CMD_GET_OUTPUT_TYPE
     	&& cmd!=DISP_CMD_SCN_GET_WIDTH && cmd!=DISP_CMD_SCN_GET_HEIGHT
     	&& cmd!=DISP_CMD_VIDEO_SET_FB && cmd!=DISP_CMD_VIDEO_GET_FRAME_ID)
     {
@@ -1756,4 +1756,3 @@ MODULE_AUTHOR("danling_xiao");
 MODULE_DESCRIPTION("display driver");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform:disp");
-

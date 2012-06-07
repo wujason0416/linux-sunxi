@@ -12,7 +12,7 @@
  * the License, or (at your option) any later version.
  *
  */
- 
+
 #ifndef __SW_SYSTEM_H
 #define __SW_SYSTEM_H
 

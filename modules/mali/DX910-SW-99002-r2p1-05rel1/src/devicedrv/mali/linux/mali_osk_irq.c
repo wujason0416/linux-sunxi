@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -109,14 +109,14 @@ _mali_osk_irq_t *_mali_osk_irq_init( u32 irqnum, _mali_osk_irq_uhandler_t uhandl
 			MALI_DEBUG_PRINT(2, ("Probe for irq failed\n"));
 		}
 	}
-	
+
 	irq_object->irqnum = irqnum;
 	irq_object->uhandler = uhandler;
 	irq_object->bhandler = bhandler;
 	irq_object->data = data;
 
 	/* Is this a real IRQ handler we need? */
-	if (!mali_benchmark && irqnum != _MALI_OSK_IRQ_NUMBER_FAKE && irqnum != _MALI_OSK_IRQ_NUMBER_PMM) 
+	if (!mali_benchmark && irqnum != _MALI_OSK_IRQ_NUMBER_FAKE && irqnum != _MALI_OSK_IRQ_NUMBER_PMM)
 	{
 		if (-1 == irqnum)
 		{
@@ -166,7 +166,7 @@ void _mali_osk_flush_workqueue( _mali_osk_irq_t *irq )
 	mali_osk_irq_object_t *irq_object = (mali_osk_irq_object_t *)irq;
         if(irq_object->irqnum == _MALI_OSK_IRQ_NUMBER_PMM )
         {
-		flush_workqueue(pmm_wq);	
+		flush_workqueue(pmm_wq);
 	}
 #endif
 }
@@ -236,4 +236,3 @@ static void irq_handler_bottom_half ( void *  input )
 
 	irq_object->bhandler(irq_object->data);
 }
-

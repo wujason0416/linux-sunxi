@@ -92,5 +92,3 @@ extern __u32 standby_get_voltage(enum power_vol_type_e type);
 
 
 #endif  /* __STANDBY_POWER_H__ */
-
-

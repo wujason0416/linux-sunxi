@@ -20,12 +20,12 @@ static int packet_size = 1024;
 static int channel = 6;
 static int time = 3;
 static int burst_interval = 10;
-static int output_power = 21; 
+static int output_power = 21;
 
 static int str_comp(char *str1, char *str2, int len)
 {
     int i;
-    
+
     for(i=0;i<len;i++)
     {
         if(str1[i] !=  str2[i])
@@ -36,18 +36,18 @@ static int str_comp(char *str1, char *str2, int len)
 
 int main(int argc, char **argv)
 {
-    
+
     int status;
     int i;
     int debug = 0;
     int long_preamble = 0;
-    
+
     int test = TEST_NONE;
     DataRate rate_e = DATA_RATE_1M;
     char *rate_s = "1Mbps";
     char *interface_name = NULL;
-    
-    
+
+
     DBG("argc=%u\n", argc);
 
     if(argc < 2)
@@ -58,8 +58,8 @@ int main(int argc, char **argv)
 
     interface_name = argv[1];
 
-    
-    
+
+
     for(i=2;i<argc;i++)
     {
         if(str_comp(argv[i], "-ch:", 4))
@@ -94,7 +94,7 @@ int main(int argc, char **argv)
                     rate_e = DATA_RATE_1M;
                     rate_s = "1Mbps";
                     break;
-                case 2:    
+                case 2:
                 case 2000:
                     rate_e = DATA_RATE_2M;
                     rate_s = "2Mbps";
@@ -103,7 +103,7 @@ int main(int argc, char **argv)
                     rate_e = DATA_RATE_5_5M;
                     rate_s = "5.5Mbps";
                     break;
-                //case 6: the user migh have writen "-rate:6.5"...    
+                //case 6: the user migh have writen "-rate:6.5"...
                 case 6000:
                     rate_e = DATA_RATE_6M;
                     rate_s = "6Mbps";
@@ -111,28 +111,28 @@ int main(int argc, char **argv)
                 case 6500:
                     rate_e = DATA_RATE_MCS0;
                     rate_s = "6.5Mbps (MCS0)";
-                    break;    
-                case 9:    
+                    break;
+                case 9:
                 case 9000:
                     rate_e = DATA_RATE_9M;
                     rate_s = "9Mbps";
                     break;
-                case 11:    
+                case 11:
                 case 11000:
                     rate_e = DATA_RATE_11M;
                     rate_s = "11Mbps";
                     break;
-                case 12:    
+                case 12:
                 case 12000:
                     rate_e = DATA_RATE_12M;
                     rate_s = "12Mbps";
                     break;
-                case 13:    
+                case 13:
                 case 13000:
                     rate_e = DATA_RATE_MCS1;
                     rate_s = "13Mbps (MSC1)";
                     break;
-                case 18:    
+                case 18:
                 case 18000:
                     rate_e = DATA_RATE_18M;
                     rate_s = "18Mbps";
@@ -141,27 +141,27 @@ int main(int argc, char **argv)
                     rate_e = DATA_RATE_MCS2;
                     rate_s = "19.5Mbps (MSC2)";
                     break;
-                case 22:    
+                case 22:
                 case 22000:
                     rate_e = DATA_RATE_22M;
                     rate_s = "22Mbps";
                     break;
-                case 24:    
+                case 24:
                 case 24000:
                     rate_e = DATA_RATE_24M;
                     rate_s = "24Mbps";
                     break;
-                case 26:    
+                case 26:
                 case 26000:
                     rate_e = DATA_RATE_MCS3;
                     rate_s = "26Mbps (MSC3)";
                     break;
-                case 33:    
+                case 33:
                 case 33000:
                     rate_e = DATA_RATE_33M;
                     rate_s = "33Mbps";
                     break;
-                case 36:    
+                case 36:
                 case 36000:
                     rate_e = DATA_RATE_36M;
                     rate_s = "36Mbps";
@@ -171,26 +171,26 @@ int main(int argc, char **argv)
                     rate_e = DATA_RATE_MCS4;
                     rate_s = "39Mbps (MCS4)";
                     break;
-                case 48:    
+                case 48:
                 case 48000:
                     rate_e = DATA_RATE_48M;
                     rate_s = "48Mbps";
                     break;
-                case 52:    
+                case 52:
                 case 52000:
                     rate_e = DATA_RATE_MCS5;
                     rate_s = "52Mbps (MCS5)";
                     break;
-                case 54:    
+                case 54:
                 case 54000:
                     rate_e = DATA_RATE_54M;
                     rate_s = "54Mbps";
-                    break;    
+                    break;
                 case 58500:
                     rate_e = DATA_RATE_MCS6;
                     rate_s = "58.5Mbps (MCS6)";
                     break;
-                case 65:    
+                case 65:
                 case 65000:
                     rate_e = DATA_RATE_MCS7;
                     rate_s = "65Mbps (MSC7)";
@@ -201,7 +201,7 @@ int main(int argc, char **argv)
            }
            continue;
         }
-        
+
         if(str_comp(argv[i], "-bi:", 4))
         {
             burst_interval = atoi(argv[i]+4);
@@ -212,7 +212,7 @@ int main(int argc, char **argv)
             }
             continue;
         }
-         
+
         if(str_comp(argv[i], "-size:", 6))
         {
             packet_size = atoi(argv[i]+6);
@@ -223,7 +223,7 @@ int main(int argc, char **argv)
             }
             continue;
         }
-        
+
         if(str_comp(argv[i], "-pwr:", 5))
         {
             output_power = atoi(argv[i]+5);
@@ -233,7 +233,7 @@ int main(int argc, char **argv)
                 return -1;
             }
             continue;
-        }     
+        }
 
         if(str_comp(argv[i], "none", 4))
         {
@@ -252,12 +252,12 @@ int main(int argc, char **argv)
             test = TEST_RX;
             continue;
         }
-        
+
         if(str_comp(argv[i], "-lp", 3))
         {
             long_preamble = 1;
             continue;
-        }  
+        }
 
         if(str_comp(argv[i], "-dbg", 4))
         {
@@ -275,8 +275,8 @@ int main(int argc, char **argv)
         CON("  Driver say:\"%s\"\n",GetErrorString());
         return -1;
     }
-  
-  
+
+
     status = OpenDUT();
     if(status)
     {
@@ -284,7 +284,7 @@ int main(int argc, char **argv)
         CON("  Driver say:\"%s\"\n",GetErrorString());
         return -1;
     }
-     
+
     status = SetLongPreamble(long_preamble);
     if(status)
     {
@@ -292,16 +292,16 @@ int main(int argc, char **argv)
         CON("  Driver say:\"%s\"\n",GetErrorString());
         goto exit;
     }
-     
+
     status = SetBurstInterval(burst_interval);
     if(status)
     {
         CON("Failed to set burst interval\n");
         CON("  Driver say:\"%s\"\n",GetErrorString());
         goto exit;
-    }   
-  
-  
+    }
+
+
     status = SetChannel(channel);
     if(status)
     {
@@ -309,7 +309,7 @@ int main(int argc, char **argv)
         CON("  Driver say:\"%s\"\n",GetErrorString());
         goto exit;
     }
-    
+
     status = SetPayload(packet_size);
     if(status)
     {
@@ -317,7 +317,7 @@ int main(int argc, char **argv)
         CON("  Driver say:\"%s\"\n",GetErrorString());
         goto exit;
     }
-  
+
 
   status = SetDataRate(rate_e);
   if(status)
@@ -339,8 +339,8 @@ int main(int argc, char **argv)
                 CON("Failed to set output power\n");
                 CON("  Driver say:\"%s\"\n",GetErrorString());
                 goto exit;
-            }   
-         
+            }
+
             status = TxStartWithMod();
             if(status)
             {
@@ -359,11 +359,11 @@ int main(int argc, char **argv)
                     CON("  Driver say:\"%s\"\n",GetErrorString());
                     goto exit;
                 }
-                
+
             }
         }
         break;
-        
+
         case TEST_RX:
         {
             status = RxStart();

@@ -8,7 +8,7 @@ include common.inc
 V?=0
 ifeq ($V,0)
 	Q=@
-endif	
+endif
 
 ifeq ($(KERNEL_MAJOR_VERSION),2.4)
 	MAKEFILE=Makefile-2.4
@@ -61,7 +61,7 @@ loopback: obj
 		fi;\
 	done
 
-install: ic transport 
+install: ic transport
 	$(Q)echo "Installing in $(INSTALL_DIR)"
 	cp obj/nano_if.ko obj/nano_$(TRANSPORT).ko $(INSTALL_DIR)
 	cp obj/x_mac.axf $(INSTALL_DIR)
@@ -79,12 +79,12 @@ clean:
 	done
 
 SEEK_AND_DESTROY=*.o .*.cmd *.d *.symvers *.ko *.mod.c *.tmp_versions
-veryclean: 
+veryclean:
 	@echo "Deleting files/dirs:" $(SEEK_AND_DESTROY)
 	$(Q)for f in $(SEEK_AND_DESTROY); do \
 		find $(HOSTDRIVER_DIR) -name $$f | xargs rm -rf ;\
 	done
-	$(Q)rm -rf $(OBJ_DIR) 
+	$(Q)rm -rf $(OBJ_DIR)
 
 strip:
 include targets.inc

@@ -77,9 +77,9 @@
 #include "registry.h"
 #include "registryAccess.h"
 
-/* 
+/*
    FIXME: this should be removed. Used to inform
-   reassoc req when we need to roam using ccx 
+   reassoc req when we need to roam using ccx
 */
 #if (DE_CCX_ROAMING == CFG_INCLUDED)
 WiFiEngine_net_t * ccxnet;
@@ -117,16 +117,16 @@ WiFiEngine_net_t * ccxnet;
 
 #define NUM_STATES 5
 typedef enum roam_state_e {
-   /* state disconnected will be reached if roaming agent failed to roam. 
-    * In disconneced state the roaming agent will remain unactive until the 
+   /* state disconnected will be reached if roaming agent failed to roam.
+    * In disconneced state the roaming agent will remain unactive until the
     * first connect success. */
-   STATE_DISCONNECTED,     
+   STATE_DISCONNECTED,
 
-   /* state connected is defined from first connect success to that we lose 
+   /* state connected is defined from first connect success to that we lose
     * the AP or transit to state roaming|hc|ap_mia */
    STATE_CONNECTED,
 
-   /* missing in action: beacon failure, tx failure, ... 
+   /* missing in action: beacon failure, tx failure, ...
     * transit from connected */
    STATE_DISCONNECTING,
 
@@ -795,8 +795,8 @@ int WiFiEngine_roam_configure_net_election(uint32_t k1, uint32_t k2)
  * * @return
  *        - WIFI_ENGINE_SUCCESS on success,
  */
-int WiFiEngine_roam_configure_counters( 
-      int max_scan_count, 
+int WiFiEngine_roam_configure_counters(
+      int max_scan_count,
       int max_elect_count,
       int max_connect_count)
 {
@@ -809,7 +809,7 @@ int WiFiEngine_roam_configure_counters(
    if( max_connect_count >= 0)
       roam_config.max_elect_count = max_elect_count;
 
-   DE_TRACE_INT3(TR_ROAM, "reconfiguring max_scan_count: %d max_connect_count: %d max_elect_count: %d\n", 
+   DE_TRACE_INT3(TR_ROAM, "reconfiguring max_scan_count: %d max_connect_count: %d max_elect_count: %d\n",
          roam_config.max_scan_count, roam_config.max_connect_count, roam_config.max_elect_count);
 
    return WIFI_ENGINE_SUCCESS;
@@ -1432,7 +1432,7 @@ static void state_disconnected_ev_connect_success(EV_ARGS)
    /* roaming must be enabled before initial connect */
    if (!roam_config.enable_roaming)
       return;
-   
+
    if(is_ibss(wei_netlist_get_current_net()))
       return;
 
@@ -1454,9 +1454,9 @@ static void state_connected_ev_init(EV_ARGS)
    roam_state.rssi_update_pending = 0;
 
    /* TODO: move to _CM_ */
-   status = we_ind_cond_register( 
-            &roam_state.core_dump_h, 
-            WE_IND_CORE_DUMP_START, "WE_IND_CORE_DUMP_START", 
+   status = we_ind_cond_register(
+            &roam_state.core_dump_h,
+            WE_IND_CORE_DUMP_START, "WE_IND_CORE_DUMP_START",
             wei_roam_core_dump_ind, NULL, 0, NULL);
    DE_ASSERT(status == WIFI_ENGINE_SUCCESS);
 
@@ -1557,20 +1557,20 @@ static void state_connected_ev_scan_ind(EV_ARGS)
    /* trigger a sequence of cb functions to update rssi/snr values
       and finally call roam() */
    if (roam_config.measure_on_data) {
-      status = we_ind_cond_register(&roam_state.rssi_h, 
-                WE_IND_MIB_DOT11RSSI_DATA, 
-                "WE_IND_MIB_DOT11RSSI_DATA", 
+      status = we_ind_cond_register(&roam_state.rssi_h,
+                WE_IND_MIB_DOT11RSSI_DATA,
+                "WE_IND_MIB_DOT11RSSI_DATA",
                 state_elective_ev_rssi_cb, NULL, 1, NULL);
       DE_ASSERT(status == WIFI_ENGINE_SUCCESS);
    } else {
-      status = we_ind_cond_register(&roam_state.rssi_h, 
-                WE_IND_MIB_DOT11RSSI, 
-                "WE_IND_MIB_DOT11RSSI", 
+      status = we_ind_cond_register(&roam_state.rssi_h,
+                WE_IND_MIB_DOT11RSSI,
+                "WE_IND_MIB_DOT11RSSI",
                 state_elective_ev_rssi_cb, NULL, 1, NULL);
       DE_ASSERT(status == WIFI_ENGINE_SUCCESS);
    }
 
-   
+
 #endif
 }
 
@@ -1592,14 +1592,14 @@ static void state_connected_ev_scan_complete(EV_ARGS)
    /* trigger a sequence of cb functions to update rssi/snr values
       and finally call roam() */
    if (roam_config.measure_on_data) {
-      status = we_ind_cond_register(&roam_state.rssi_h, 
-               WE_IND_MIB_DOT11RSSI_DATA, 
+      status = we_ind_cond_register(&roam_state.rssi_h,
+               WE_IND_MIB_DOT11RSSI_DATA,
                 "WE_IND_MIB_DOT11RSSI_DATA",
                 state_elective_ev_rssi_cb, NULL, 1, NULL);
       DE_ASSERT(status == WIFI_ENGINE_SUCCESS);
    } else {
-      status = we_ind_cond_register(&roam_state.rssi_h, 
-                WE_IND_MIB_DOT11RSSI, 
+      status = we_ind_cond_register(&roam_state.rssi_h,
+                WE_IND_MIB_DOT11RSSI,
                 "WE_IND_MIB_DOT11RSSI",
                 state_elective_ev_rssi_cb, NULL, 1, NULL);
       DE_ASSERT(status == WIFI_ENGINE_SUCCESS);
@@ -1707,7 +1707,7 @@ static void state_hc_ev_scan_complete(EV_ARGS)
       DE_TRACE_STATIC(TR_WARN, "net already elected, ignoring to prevent race\n");
       return;
    }
-   
+
    net = elect_net(0);
    if (net) {
       set_elected_net(net);
@@ -1841,7 +1841,7 @@ int wei_roam_notify_connected(void)
 #if (DE_CCX_ROAMING == CFG_INCLUDED)
    ccxnet = NULL;
 #endif
- 
+
    return is_roaming_active();
 }
 
@@ -2240,7 +2240,7 @@ static bool_t is_levels_above_thresholds(
    return TRUE;
 }
 
-static bool_t is_net_lq_above(WiFiEngine_net_t* net, 
+static bool_t is_net_lq_above(WiFiEngine_net_t* net,
       int rssi, int snr, bool_t with_margin)
 {
    int net_snr, net_rssi;
@@ -2253,16 +2253,16 @@ static bool_t is_net_lq_above(WiFiEngine_net_t* net,
       net_snr -= roam_config.snr_margin;
    }
 
-   DE_TRACE_INT4(TR_ROAM_HIGH_RES, "candidate rssi: %d > %d snr: %d > %d \n", 
+   DE_TRACE_INT4(TR_ROAM_HIGH_RES, "candidate rssi: %d > %d snr: %d > %d \n",
    net_rssi, rssi, net_snr, snr);
 
-   if (roam_config.rssi_enable && 
+   if (roam_config.rssi_enable &&
          net_rssi < rssi) {
       return FALSE;
    }
 
    if (roam_config.snr_enable &&
-         net_snr > 0 && 
+         net_snr > 0 &&
          net_snr < snr) {
       return FALSE;
    }
@@ -2306,7 +2306,7 @@ static void disconnect(void)
    DE_TRACE_STATIC(TR_ROAM, "ENTRY\n");
 
    /* protect SM from queuing a disconnect before connecting,
-      a bug in SM can cause this disconnect to be issued after 
+      a bug in SM can cause this disconnect to be issued after
         we have become connected causing a hc-roam loop */
    status = WiFiEngine_GetBSSType(&type);
 
@@ -2322,10 +2322,10 @@ static bool_t is_privacy_changed(WiFiEngine_net_t* net)
 {
    uint16_t elected_privacy = 0;
    uint16_t last_net_privacy = 0;
-   
+
    DE_ASSERT(net);
 
-   elected_privacy = net->bss_p->bss_description_p->capability_info & M80211_CAPABILITY_PRIVACY; 
+   elected_privacy = net->bss_p->bss_description_p->capability_info & M80211_CAPABILITY_PRIVACY;
    last_net_privacy = roam_state.last_connected_net_cabability & M80211_CAPABILITY_PRIVACY;
    if (last_net_privacy != elected_privacy)
       return TRUE;
@@ -2745,7 +2745,7 @@ static bool_t is_old(WiFiEngine_net_t* candidate)
       return FALSE;
 
    if (is_tick_less_then(
-            candidate->last_heard_tick, 
+            candidate->last_heard_tick,
             roam_state.connected_at_tick))
       return TRUE;
 
@@ -2805,4 +2805,3 @@ int wei_roam_trigger_lqm_job(void)
 
    return WIFI_ENGINE_SUCCESS;
 }
-

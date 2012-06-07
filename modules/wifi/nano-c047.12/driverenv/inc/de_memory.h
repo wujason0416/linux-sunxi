@@ -22,7 +22,7 @@ T Y P E D E F ' S
  * probably be identical */
 /*!
  * \brief Allocate nonpaged memory.
- * 
+ *
  * Allocate memory in that is safe to access while holding a lock/trylock
  * as defined by DriverEnvironment_*_lock/trylock. In environments where
  * locking is unnecessary or where thread preemption cannot be disabled

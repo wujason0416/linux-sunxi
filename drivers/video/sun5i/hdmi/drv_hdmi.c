@@ -10,7 +10,7 @@ static struct task_struct * HDMI_task;
 void hdmi_delay_ms(__u32 t)
 {
     __u32 timeout = t*HZ/1000;
-    
+
     set_current_state(TASK_INTERRUPTIBLE);
     schedule_timeout(timeout);
 }
@@ -33,8 +33,8 @@ __s32 Hdmi_open(void)
 __s32 Hdmi_close(void)
 {
     __inf("[Hdmi_close]\n");
-    
-	Hdmi_hal_video_enable(0); 
+
+	Hdmi_hal_video_enable(0);
 	ghdmi.bopen = 0;
 
 	return 0;
@@ -45,57 +45,57 @@ __s32 Hdmi_set_display_mode(__disp_tv_mode_t mode)
 	__u32 hdmi_mode;
 
 	__inf("[Hdmi_set_display_mode],mode:%d\n",mode);
-	
+
 	switch(mode)
 	{
 	case DISP_TV_MOD_480I:
 		hdmi_mode = HDMI1440_480I;
 		break;
-		
+
 	case DISP_TV_MOD_576I:
 		hdmi_mode = HDMI1440_576I;
 		break;
-		
+
 	case DISP_TV_MOD_480P:
 		hdmi_mode = HDMI480P;
 		break;
-		
+
 	case DISP_TV_MOD_576P:
 		hdmi_mode = HDMI576P;
-		break;  
-		
+		break;
+
 	case DISP_TV_MOD_720P_50HZ:
 		hdmi_mode = HDMI720P_50;
 		break;
-		
+
 	case DISP_TV_MOD_720P_60HZ:
 		hdmi_mode = HDMI720P_60;
 		break;
-		
+
 	case DISP_TV_MOD_1080I_50HZ:
 		hdmi_mode = HDMI1080I_50;
 		break;
-		
+
 	case DISP_TV_MOD_1080I_60HZ:
 		hdmi_mode = HDMI1080I_60;
-		break;         
-		
+		break;
+
 	case DISP_TV_MOD_1080P_24HZ:
 		hdmi_mode = HDMI1080P_24;
-		break;    
-		
+		break;
+
 	case DISP_TV_MOD_1080P_50HZ:
 		hdmi_mode = HDMI1080P_50;
 		break;
-		
+
 	case DISP_TV_MOD_1080P_60HZ:
 		hdmi_mode = HDMI1080P_60;
-		break;  
+		break;
 
 	case DISP_TV_MOD_1080P_24HZ_3D_FP:
 		hdmi_mode = HDMI1080P_24_3D_FP;
-		break;  
-		
+		break;
+
     case DISP_TV_MOD_720P_50HZ_3D_FP:
         hdmi_mode = HDMI720P_50_3D_FP;
         break;
@@ -116,67 +116,67 @@ __s32 Hdmi_set_display_mode(__disp_tv_mode_t mode)
 __s32 Hdmi_Audio_Enable(__u8 mode, __u8 channel)
 {
     __inf("[Hdmi_Audio_Enable],ch:%d\n",channel);
-    
+
 	return Hdmi_hal_audio_enable(mode, channel);
 }
 
 __s32 Hdmi_Set_Audio_Para(hdmi_audio_t * audio_para)
 {
     __inf("[Hdmi_Set_Audio_Para]\n");
-    
+
 	return Hdmi_hal_set_audio_para(audio_para);
 }
 
 __s32 Hdmi_mode_support(__disp_tv_mode_t mode)
 {
 	__u32 hdmi_mode;
-	
+
 	switch(mode)
 	{
 	case DISP_TV_MOD_480I:
 		hdmi_mode = HDMI1440_480I;
 		break;
-		
+
 	case DISP_TV_MOD_576I:
 		hdmi_mode = HDMI1440_576I;
 		break;
-		
+
 	case DISP_TV_MOD_480P:
 		hdmi_mode = HDMI480P;
 		break;
-		
+
 	case DISP_TV_MOD_576P:
 		hdmi_mode = HDMI576P;
-		break;  
-		
+		break;
+
 	case DISP_TV_MOD_720P_50HZ:
 		hdmi_mode = HDMI720P_50;
 		break;
-		
+
 	case DISP_TV_MOD_720P_60HZ:
 		hdmi_mode = HDMI720P_60;
 		break;
-		
+
 	case DISP_TV_MOD_1080I_50HZ:
 		hdmi_mode = HDMI1080I_50;
 		break;
-		
+
 	case DISP_TV_MOD_1080I_60HZ:
 		hdmi_mode = HDMI1080I_60;
-		break;         
-		
+		break;
+
 	case DISP_TV_MOD_1080P_24HZ:
 		hdmi_mode = HDMI1080P_24;
-		break;    
-		
+		break;
+
 	case DISP_TV_MOD_1080P_50HZ:
 		hdmi_mode = HDMI1080P_50;
 		break;
-		
+
 	case DISP_TV_MOD_1080P_60HZ:
 		hdmi_mode = HDMI1080P_60;
-		break;  
-		
+		break;
+
 	case DISP_TV_MOD_1080P_24HZ_3D_FP:
 	    hdmi_mode = HDMI1080P_24_3D_FP;
 	    break;
@@ -217,16 +217,16 @@ int Hdmi_run_thread(void *parg)
 		//{
 		//	down(run_sem);
 		//}
-		
+
 		Hdmi_hal_main_task();
 
 		if(ghdmi.bopen)
-		{		    
+		{
 			hdmi_delay_ms(200);
 		}
 		else
 		{
-			hdmi_delay_ms(200);   
+			hdmi_delay_ms(200);
 		}
 	}
 
@@ -237,18 +237,18 @@ extern void audio_set_hdmi_func(__audio_hdmi_func * hdmi_func);
 extern __s32 disp_set_hdmi_func(__disp_hdmi_func * func);
 
 __s32 Hdmi_init(void)
-{	    
+{
     __audio_hdmi_func audio_func;
     __disp_hdmi_func disp_func;
-    
+
 	run_sem = kmalloc(sizeof(struct semaphore),GFP_KERNEL | __GFP_ZERO);
 	sema_init((struct semaphore*)run_sem,0);
-	
+
 	HDMI_task = kthread_create(Hdmi_run_thread, (void*)0, "hdmi proc");
 	if(IS_ERR(HDMI_task))
 	{
 	    __s32 err = 0;
-	    
+
 		__wrn("Unable to start kernel thread %s.\n","hdmi proc");
 		err = PTR_ERR(HDMI_task);
 		HDMI_task = NULL;
@@ -283,7 +283,7 @@ __s32 Hdmi_exit(void)
 		kfree(run_sem);
 		run_sem = 0;
 	}
-	
+
 	if(HDMI_task)
 	{
 		kthread_stop(HDMI_task);
@@ -291,4 +291,3 @@ __s32 Hdmi_exit(void)
 	}
 	return 0;
 }
-

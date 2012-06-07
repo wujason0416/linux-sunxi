@@ -51,7 +51,7 @@ static int bcm40181_get_io_value(char* name)
 {
 	int ret = -1;
 	struct mmc_pm_ops *ops = &mmc_card_pm_ops;
-	
+
     if (strcmp(name, "bcm40181_wakeup")) {
         bcm40181_msg("No gpio %s for BCM40181\n", name);
         return -1;

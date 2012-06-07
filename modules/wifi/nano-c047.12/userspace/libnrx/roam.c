@@ -72,7 +72,7 @@ nrx_enable_roam(nrx_context ctx)
  * SSID can now be set manually.
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
- * 
+ *
  * @return
  *  - 0 on success
  *  - EINVAL on invalid parameters.
@@ -368,7 +368,7 @@ nrx_conf_roam_net_election(nrx_context ctx, uint32_t k1, uint32_t k2)
    NRX_ASSERT(ctx);
    param.k1 = k1;
    param.k2 = k2;
- 
+
    return nrx_nrxioctl(ctx, NRXIOWROAMCONFNETELECTION, &param.ioc);
 }
 
@@ -394,7 +394,7 @@ nrx_conf_roam_net_election(nrx_context ctx, uint32_t k1, uint32_t k2)
  * @param auth_mode Forced authentication mode.
  *
  * @param enc_mode Forced encryption mode.
- * 
+ *
  * @return
  *        - WIFI_ENGINE_SUCCESS on success,
  *        - WIFI_ENGINE_FAILURE on error.
@@ -409,7 +409,7 @@ int nrx_conf_roam_auth(nrx_context ctx,
    param.enable = enable;
    param.auth_mode = (int) auth_mode;
    param.enc_mode = (int) enc_mode;
-   
+
    return nrx_nrxioctl(ctx, NRXIOWROAMCONFAUTH, &param.ioc);
 }
 
@@ -432,6 +432,6 @@ nrx_conf_delay_spread(nrx_context ctx, uint32_t thr, uint16_t winsize)
    NRX_ASSERT(ctx);
    param.thr = thr;
    param.winsize = winsize;
- 
+
    return nrx_nrxioctl(ctx, NRXIOWCONFDELAYSPREAD, &param.ioc);
 }

@@ -27,7 +27,7 @@ This module implements functionality for handling download of fw to Target.
 
 *****************************************************************************/
 /** @defgroup we_fw WiFiEngine firmware handling
- * 
+ *
  * @brief This module implements functionality for handling download of fw to Target.
  *
  *  @{
@@ -52,7 +52,7 @@ static unsigned int calc_checksum( const void *src, unsigned int len)
 }
 
 #if DE_MIB_TABLE_SUPPORT == CFG_ON
-int   WiFiEngine_Firmware_LoadMIBTable(fw_type type) 
+int   WiFiEngine_Firmware_LoadMIBTable(fw_type type)
 {
    de_file_ref_t f;
    int ret = WIFI_ENGINE_SUCCESS;
@@ -90,7 +90,7 @@ int   WiFiEngine_Firmware_LoadMIBTable(fw_type type)
 
    de_fclose(f);
 
-   DE_TRACE_INT2(TR_ALWAYS, "mib_table, read %d checksum %x\n", total_read, 
+   DE_TRACE_INT2(TR_ALWAYS, "mib_table, read %d checksum %x\n", total_read,
          calc_checksum(mib_buf, total_read));
    if(mib_buf == NULL || total_read >= mib_table_max_size)
    {
@@ -103,14 +103,14 @@ int   WiFiEngine_Firmware_LoadMIBTable(fw_type type)
 }
 #endif /* DE_MIB_TABLE_SUPPORT */
 
-/*! 
+/*!
  * @brief Downloads FW and starts x_mac
  *
  * @param none
  *
  * @return WIFI_ENGINE_SUCCESS on success.
  */
-int   WiFiEngine_DownloadFirmware(fw_type type) 
+int   WiFiEngine_DownloadFirmware(fw_type type)
 {
    de_file_ref_t f;
    size_t bytes_read = 123;
@@ -211,5 +211,3 @@ int   WiFiEngine_DownloadFirmware(fw_type type)
 }
 
 /** @} */ /* End of we_util group */
-
-

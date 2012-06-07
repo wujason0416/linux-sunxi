@@ -28,13 +28,13 @@ static unsigned char GetBase64Value(unsigned char ch);
  */
 extern struct wapi_cert_data wapi_cert;
 
-static const WOID gWOID[WAPI_OID_NUMBER] = 
+static const WOID gWOID[WAPI_OID_NUMBER] =
 {
     /* OIDName          OIDLen      ParLen      OID     Parameter*/
     {WAPI_ECDSA_OID, 8, 11, {0x2A, 0x81, 0x1C, 0xD7, 0x63, 0x01, 0x01, 0x01}, {0x06, 0x09, 0x2A, 0x81, 0x1C, 0xD7, 0x63, 0x01, 0x01, 0x02, 0x01}}
 };
 
-static const WOID gPubKeyOID[WAPI_OID_NUMBER] = 
+static const WOID gPubKeyOID[WAPI_OID_NUMBER] =
 {
     {ECDSA_ECDH_OID, 7, 11, {0x2a, 0x86, 0x48, 0xce, 0x3d, 0x02, 0x01}, {0x06, 0x09, 0x2A, 0x81, 0x1C, 0xD7, 0x63, 0x01, 0x01, 0x02, 0x01}}
 };
@@ -72,7 +72,7 @@ static int ParseSequence(unsigned char **pBuffer, unsigned char *pMax, int *pCla
     t = *p & V_ASN1_PRIMITIVE_TAG;
     bCt = *p & V_ASN1_CONSTRUCTED;
     p++;
-	if (t == V_ASN1_PRIMITIVE_TAG) 
+	if (t == V_ASN1_PRIMITIVE_TAG)
     {
         t = 0;
         do
@@ -351,7 +351,7 @@ int ParsePubKey(unsigned char **pBuffer, unsigned char *pMax, unsigned char *pPu
     {
         return 1;
     }
-    p += ParLen;   
+    p += ParLen;
     if ((*p & V_ASN1_PRIMITIVE_TAG) != V_ASN1_BIT_STRING)
     {
         return 1;
@@ -382,23 +382,23 @@ int ParsePubKey(unsigned char **pBuffer, unsigned char *pMax, unsigned char *pPu
 
 static unsigned char GetBase64Value(unsigned char ch)
 {
-    if ((ch >= 'A') && (ch <= 'Z')) 
-        return ch - 'A'; 
-    if ((ch >= 'a') && (ch <= 'z')) 
-        return ch - 'a' + 26; 
-    if ((ch >= '0') && (ch <= '9')) 
-        return ch - '0' + 52; 
-    switch (ch) 
-	{ 
-    case '+': 
-        return 62; 
-    case '/': 
-        return 63; 
-    case '=': /* base64 padding */ 
-        return 0; 
-    default: 
-        return 0; 
-	} 
+    if ((ch >= 'A') && (ch <= 'Z'))
+        return ch - 'A';
+    if ((ch >= 'a') && (ch <= 'z'))
+        return ch - 'a' + 26;
+    if ((ch >= '0') && (ch <= '9'))
+        return ch - '0' + 52;
+    switch (ch)
+	{
+    case '+':
+        return 62;
+    case '/':
+        return 63;
+    case '=': /* base64 padding */
+        return 0;
+    default:
+        return 0;
+	}
 }
 
 
@@ -413,15 +413,15 @@ int Base64Dec(unsigned char *buf,const unsigned char*text,int size)
 
 	while(size>0)
 	{
-		chunk[0] = GetBase64Value(text[0]); 
-		chunk[1] = GetBase64Value(text[1]); 
-		chunk[2] = GetBase64Value(text[2]); 
-		chunk[3] = GetBase64Value(text[3]); 
-		
-		*buf++ = (chunk[0] << 2) | (chunk[1] >> 4); 
-		*buf++ = (chunk[1] << 4) | (chunk[2] >> 2); 
+		chunk[0] = GetBase64Value(text[0]);
+		chunk[1] = GetBase64Value(text[1]);
+		chunk[2] = GetBase64Value(text[2]);
+		chunk[3] = GetBase64Value(text[3]);
+
+		*buf++ = (chunk[0] << 2) | (chunk[1] >> 4);
+		*buf++ = (chunk[1] << 4) | (chunk[2] >> 2);
 		*buf++ = (chunk[2] << 6) | (chunk[3]);
-		
+
 		text+=4;
 		size-=4;
 		parsenum+=3;
@@ -485,10 +485,10 @@ static const unsigned char* findmark_mem(const unsigned char* src, int lsrc, con
  * [Input]       const unsigned char *src_cert
  *                  const unsigned char *start_flag
  *                  const unsigned char *end_flag
- * [Output]     int * len 
- * [Return]     unsigned char * 
+ * [Output]     int * len
+ * [Return]     unsigned char *
  *                            NULL  fail
-                               !0     success (private key value)                                   
+                               !0     success (private key value)
  * [Limitation] NULL
  * ---------------------------------------------------------------------------------------
  */
@@ -507,7 +507,7 @@ unsigned char *get_realinfo_from_cert(unsigned char *des, const unsigned char *s
 	}
 	l0 = strlen((const char*)start_flag);
 	l1 = strlen((const char*)end_flag);
-	
+
 
 	ps = findmark_mem(p, len, start_flag, l0);
 	pe = findmark_mem(p, len, end_flag, l1);
@@ -515,7 +515,7 @@ unsigned char *get_realinfo_from_cert(unsigned char *des, const unsigned char *s
 	{
 	  return NULL;
 	}
-	
+
 	for (p=ps+l0; p<pe; p++)
 	{
 		int t = getchartype_base64(*p);
@@ -524,7 +524,7 @@ unsigned char *get_realinfo_from_cert(unsigned char *des, const unsigned char *s
 			des[c++] = *p;
 		}
 	}
-	
+
 	return des;
 }
 
@@ -703,7 +703,7 @@ void *iwn_x509_get_subject_name(void *cert_st)
 	{
 		return (void *)ret;
 	}
-  
+
     do
     {
         /* tbsCertificate */
@@ -794,7 +794,7 @@ void *iwn_x509_get_subject_name(void *cert_st)
 		break;
         }
         ret->length = (unsigned char)tmp;
-        
+
     } while(0);
 
 	if (fail_flag)
@@ -829,7 +829,7 @@ void *iwn_x509_get_serial_number(void *cert_st)
 	{
 		return (void *)ret;
 	}
-  
+
     do
     {
         /* tbsCertificate */
@@ -905,7 +905,7 @@ void *iwn_x509_get_issuer_name(void *cert_st)
     if (p == NULL)
 	return (void *)ret;
     pMax = p + ((cert_id  *)cert_st)->length;
-	
+
     ret = get_buffer(sizeof(byte_data));
 	if (ret == NULL)
 	{
@@ -989,7 +989,7 @@ void *iwn_x509_get_issuer_name(void *cert_st)
             break;
         }
         ret->length = (unsigned char)tmp;
-        
+
     } while(0);
 
 	if (fail_flag)
@@ -1007,7 +1007,7 @@ int iwn_x509_get_sign(void *cert_st, unsigned char *out, int out_len)
 	unsigned char *pMax = NULL;
        unsigned long tmp = 0;
 	int tmp_len = 0;
-	int ret = -1;	
+	int ret = -1;
 
        if (cert_st == NULL ||out == NULL || out_len < SIGN_LEN)
        {
@@ -1018,7 +1018,7 @@ int iwn_x509_get_sign(void *cert_st, unsigned char *out, int out_len)
 	if (p == NULL)
 		return ret;
 	pMax = p + ((cert_id  *)cert_st)->length;
- 
+
 	do
 	{
 		/* tbsCertificate */
@@ -1072,7 +1072,7 @@ int iwn_x509_get_sign(void *cert_st, unsigned char *out, int out_len)
 		else
 		{
 			if (tmp == 0x17)
-			{	
+			{
 				p--;
 				tmp_len = (int)tmp + 1;
 				os_memcpy(out, p, tmp_len);
@@ -1102,7 +1102,7 @@ int iwn_x509_get_sign(void *cert_st, unsigned char *out, int out_len)
 		else
 		{
 			if (tmp == 0x17)
-			{	
+			{
 				p--;
 				os_memcpy(out+tmp_len, p, tmp + 1);
 				out[tmp_len] = 0x00;
@@ -1129,7 +1129,7 @@ int iwn_x509_get_sign_inlen(void *cert_st)
 	unsigned char *pMax = NULL;
 	unsigned char *pBAK = NULL;
        unsigned long tmp;
-	int ret_len = 0;	
+	int ret_len = 0;
 
        if (cert_st == NULL)
        {
@@ -1148,7 +1148,7 @@ int iwn_x509_get_sign_inlen(void *cert_st)
 	       {
 	            break;
 	       }
-		pBAK = p;	
+		pBAK = p;
 	       if (ParseSequence(&p, pMax, NULL, NULL, &tmp, NULL))
 	       {
 	            break;
@@ -1200,7 +1200,7 @@ void cert_obj_register( struct cert_obj_st_t *cert_obj)
 	{
 		return ;
 	}
-	
+
 	cert_objs[cert_obj->cert_type] = cert_obj;
 	wapi_cert.cert_info.config.used_cert = (unsigned short)cert_obj->cert_type;
 	return;
@@ -1210,7 +1210,7 @@ void cert_obj_register( struct cert_obj_st_t *cert_obj)
 void cert_obj_unregister(const struct cert_obj_st_t *cert_obj)
 {
 	int index = cert_obj->cert_type;
-	
+
 	/*struct cert_obj_st_t *obj = NULL;*/
 	if(cert_obj->cert_type > 3)
 	{
@@ -1263,7 +1263,7 @@ int x509_verify_cert(struct cert_obj_st_t *cert_obj)
 	if (iwn_x509_get_sign(user_cert, user_sign_value, sizeof(user_sign_value)) < 0)
 		return ret;
 
-	if ((*cert_obj->verify)(asu_pkey->data, asu_pkey->length, asu_cert->data+4, iwn_x509_get_sign_inlen(asu_cert), 
+	if ((*cert_obj->verify)(asu_pkey->data, asu_pkey->length, asu_cert->data+4, iwn_x509_get_sign_inlen(asu_cert),
 		asu_sign_value, SIGN_LEN) <= 0)
 	{
 		wpa_printf(MSG_ERROR,"in %s X509_verify(asu_cert) failure\n", __func__);
@@ -1276,13 +1276,13 @@ int x509_verify_cert(struct cert_obj_st_t *cert_obj)
 		goto err;
 	}
 	ret = 0;
-	
+
 err:
 	return ret;
 }
 
 void x509_free_obj_data(struct cert_obj_st_t *cert_obj)
-{	
+{
 	if(cert_obj->asu_cert_st != NULL)
 	{
 		wpa_printf(MSG_DEBUG,"in %s:%d free asu_cert_st\n", __func__, __LINE__);
@@ -1407,10 +1407,10 @@ int get_x509_cert(struct cert_obj_st_t *cert_obj)
 
        /* save information */
 	os_memcpy(((cert_id *)(cert_obj->user_cert_st))->data, buffer, len);
-	((cert_id *)(cert_obj->user_cert_st))->length = (unsigned short)len;		
+	((cert_id *)(cert_obj->user_cert_st))->length = (unsigned short)len;
 	os_memcpy(cert_obj->cert_bin->data, buffer, len);
 	cert_obj->cert_bin->length = (unsigned short)len;
-	/* parse the user cert end */            
+	/* parse the user cert end */
 
 
 	/* parse the asu cert start */
@@ -1420,7 +1420,7 @@ int get_x509_cert(struct cert_obj_st_t *cert_obj)
 	{
 		wpa_printf(MSG_DEBUG,"get asu cert error. \n");
 		ret = -1;
-		goto error;	
+		goto error;
 	}
 
 	len = strlen((char *)tmp);
@@ -1446,7 +1446,7 @@ int get_x509_cert(struct cert_obj_st_t *cert_obj)
 
 	os_memcpy(((cert_id *)(cert_obj->asu_cert_st))->data, buffer, len);
 	((cert_id *)(cert_obj->asu_cert_st))->length = (unsigned short)len;
-	
+
 
 	/* get asu public key */
 	cert_obj->asu_pubkey = (*cert_obj->get_public_key)(cert_obj->asu_cert_st);
@@ -1455,7 +1455,7 @@ int get_x509_cert(struct cert_obj_st_t *cert_obj)
 		wpa_printf(MSG_DEBUG,"get asu public key fial. \n");
 		ret = -1;
 		goto error;
-	}	
+	}
 	/* parse the asu cert end */
 
 	/* Verify the public key and private key  */
@@ -1479,7 +1479,7 @@ int get_x509_cert(struct cert_obj_st_t *cert_obj)
 	}
 	ret = 0;
 
-error:	
+error:
 	wpa_printf(MSG_DEBUG,"get_x509_cert over\n");
 	return ret;
 }
@@ -1492,7 +1492,7 @@ static int load_x509(const struct cert_obj_st_t *cert_obj)
 int init_cert(void)
 {
 	int ret =  -1;
-	unsigned short  index = wapi_cert.cert_info.config.used_cert;    
+	unsigned short  index = wapi_cert.cert_info.config.used_cert;
 
 	x509_free_obj_data((struct cert_obj_st_t *)cert_objs[index]);
 	ret = load_x509(cert_objs[index]);
@@ -1503,8 +1503,8 @@ int init_cert(void)
 		wapi_cert.cert_info.asue_cert_obj = (struct cert_obj_st_t *)cert_objs[index];
 		wpa_printf(MSG_DEBUG, "WAPI: in %s:%d,length=%d", __func__, __LINE__,wapi_cert.cert_info.asue_cert_obj->cert_bin->length);
 
-		wapi_fixdata_id_by_ident(wapi_cert.cert_info.asue_cert_obj->user_cert_st, 
-                                 (wai_fixdata_id*)&(wapi_cert.asue_id), 
+		wapi_fixdata_id_by_ident(wapi_cert.cert_info.asue_cert_obj->user_cert_st,
+                                 (wai_fixdata_id*)&(wapi_cert.asue_id),
                                  wapi_cert.cert_info.config.used_cert);
 
 		wapi_cert.has_cert = 1;
@@ -1515,7 +1515,7 @@ int init_cert(void)
 int cleanup_cert(void)
 {
 	int ret =  -1;
-	unsigned short  index =  wapi_cert.cert_info.config.used_cert;    
+	unsigned short  index =  wapi_cert.cert_info.config.used_cert;
 	x509_free_obj_data((struct cert_obj_st_t *)cert_objs[index]);
 	return ret;
 }
@@ -1539,7 +1539,7 @@ int cleanup_cert(void)
 int   x509_ecc_verify(const unsigned char *pub_s, int pub_sl, unsigned char *in ,  int in_len, unsigned char *sign,int sign_len)
 {
   int ret = 0;
-  
+
   if (pub_s == NULL || pub_sl <= 0 || in == NULL || in_len <= 0 || sign == NULL || sign_len <= 0)
     {
       return ret;
@@ -1565,7 +1565,7 @@ int   x509_ecc_verify(const unsigned char *pub_s, int pub_sl, unsigned char *in 
  *                  int priv_sl,
  *                  const unsigned char *int,
  *                  int in_len
- * [Output]     unsigned char *out 
+ * [Output]     unsigned char *out
  * [Return]     int
  *                              > 0   success
  *                              0      fail
@@ -1606,7 +1606,7 @@ int x509_ecc_verify_key(const unsigned char *pub_s, int pub_sl, const unsigned c
 
 #define EC962_SIGN_LEN 48
   unsigned char data[] = "123456abcd";
-  
+
   unsigned char sign[EC962_SIGN_LEN+1];
   int ret = 0;
 
@@ -1614,7 +1614,7 @@ int x509_ecc_verify_key(const unsigned char *pub_s, int pub_sl, const unsigned c
     {
       return 0;
     }
- 
+
   os_memset(sign, 0, sizeof(sign));
   ret = ecc192_sign(priv_s, data, strlen((char*)data), sign);
   if (ret != EC962_SIGN_LEN)
@@ -1667,7 +1667,7 @@ static void init_struct_x509(void)
 	cert_obj_x509.user_cert_st	= NULL;
 	cert_obj_x509.private_key	= NULL;
 	cert_obj_x509.cert_bin		= NULL;
-	
+
 	cert_obj_x509.get_public_key	= X509_wapi_get_pubkey;
 	cert_obj_x509.get_subject_name	= X509_wapi_get_subject_name;
 	cert_obj_x509.get_issuer_name	= X509_wapi_get_issuer_name;

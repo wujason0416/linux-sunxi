@@ -258,7 +258,7 @@ bool_t WiFiEngine_isWMMAssociated(void)
    bool_t isWMM;
 
    /* Get a reference to basic network information from the registry. */
-   basicWiFiProperties   = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);  
+   basicWiFiProperties   = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
    isWMM = FALSE;
 
    if(wei_is_80211_connected())
@@ -444,7 +444,7 @@ int WiFiEngine_GetCachedAssocCfmIEs(void *dst, size_t *len)
        Blob_t blob;
        size_t new_len;
        WiFiEngine_net_t *net = NULL;
-       
+
       INIT_BLOB(&blob, NULL, BLOB_UNKNOWN_SIZE);
       HicWrapper_m80211_ie_ccx_reassoc_rsp_parameter_set_t(&cfm->ie.ccx_reassoc_rsp_parameter_set, &blob, ACTION_GET_SIZE);
 
@@ -460,7 +460,7 @@ int WiFiEngine_GetCachedAssocCfmIEs(void *dst, size_t *len)
       {
          return WIFI_ENGINE_FAILURE_INVALID_LENGTH;
       }
-       
+
       // Add AP WPA/RSN IE.
 #if (DE_CCX_ROAMING == CFG_INCLUDED)
       net = ccxnet;
@@ -469,19 +469,19 @@ int WiFiEngine_GetCachedAssocCfmIEs(void *dst, size_t *len)
      if (net)
      {
         int status;
-       
+
        /* We need to check first for RSN because when RSN is used , WPA seems to have a
           wrong value stored with element ID 221 but length 6 which is not a valid WPA IE.
        */
        new_len = *len;
-       status = WiFiEngine_PackRSNIE(&net->bss_p->bss_description_p->ie.rsn_parameter_set, p, &new_len); 
+       status = WiFiEngine_PackRSNIE(&net->bss_p->bss_description_p->ie.rsn_parameter_set, p, &new_len);
        if (status == WIFI_ENGINE_SUCCESS && new_len > 0)  {
           p += new_len;
-         *len -= new_len;  
+         *len -= new_len;
         }
         else {
             new_len = *len;
-            status = WiFiEngine_PackWPAIE(&net->bss_p->bss_description_p->ie.wpa_parameter_set, p, &new_len); 
+            status = WiFiEngine_PackWPAIE(&net->bss_p->bss_description_p->ie.wpa_parameter_set, p, &new_len);
             if (status == WIFI_ENGINE_SUCCESS && new_len > 0)  {
                 p += new_len;
                 *len -= new_len;
@@ -1307,5 +1307,3 @@ int   WiFiEngine_Set_CCKM_Key(char* key, size_t key_len)
 }
 #endif //DE_CCX
 /** @} */ /* End of we_util group */
-
-

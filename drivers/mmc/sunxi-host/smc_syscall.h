@@ -3,7 +3,7 @@
  * (C) Copyright 2007-2011
  * Allwinner Technology Co., Ltd. <www.allwinnertech.com>
  * Aaron.Maoye <leafy.myeh@allwinnertech.com>
- * 
+ *
  * description for this code
  *
  * This program is free software; you can redistribute it and/or
@@ -101,7 +101,7 @@
 #define PI_DRV0_REG        		    (gpio_base+0x134)
 #define PI_DRV1_REG        		    (gpio_base+0x138)
 #define PI_PULL0_REG     			(gpio_base+0x13C)
-#define PI_PULL1_REG     			(gpio_base+0x140) 
+#define PI_PULL1_REG     			(gpio_base+0x140)
 
 //SRAMC register
 #define SRAMC_BASE              0x01c00000
@@ -116,7 +116,7 @@ static inline void aw_gpio_trigger_single(void)
     u32 backup;
     void __iomem* cfg_base  = (void __iomem*)PI_CFG0_REG;
     void __iomem* data_base = (void __iomem*)PI_DAT_REG;
-    
+
     //config gpio to output
     backup = readl(cfg_base);
     rval = readl(cfg_base);
@@ -142,7 +142,7 @@ static inline void aw_gpio_trigger_single1(void)
     u32 backup;
     void __iomem* cfg_base  = (void __iomem*)PI_CFG0_REG;
     void __iomem* data_base = (void __iomem*)PI_DAT_REG;
-    
+
     //config gpio to output
     backup = readl(cfg_base);
     rval = readl(cfg_base);
@@ -167,12 +167,12 @@ static inline void aw_gpio_cfg_pi1(void)
 	u32 rval;
     void __iomem* cfg_base  = (void __iomem*)PI_CFG0_REG;
     void __iomem* data_base = (void __iomem*)PI_DAT_REG;
-    
+
     //pull high data
     rval = readl(data_base);
  	rval |= 0xf;
     writel(rval, data_base);
-    
+
     rval = readl(cfg_base);
     rval &= ~(0x7777);
     rval |= 0x1111;
@@ -183,12 +183,12 @@ static inline void aw_gpio_one_pulse_on_pi0(void)
 {
 	u32 rval;
     void __iomem* data_base = (void __iomem*)PI_DAT_REG;
-    
+
     //pull low data
     rval = readl(data_base);
 	rval &= ~(1 << 0);
 	writel(rval, data_base);
-    
+
     //pull high data
  	rval |= 1 << 0;
     writel(rval, data_base);
@@ -198,12 +198,12 @@ static inline void aw_gpio_one_pulse_on_pi1(void)
 {
 	u32 rval;
     void __iomem* data_base = (void __iomem*)PI_DAT_REG;
-    
+
     //pull low data
     rval = readl(data_base);
 	rval &= ~(1 << 1);
 	writel(rval, data_base);
-    
+
     //pull high data
  	rval |= 1 << 1;
     writel(rval, data_base);
@@ -213,12 +213,12 @@ static inline void aw_gpio_one_pulse_on_pi2(void)
 {
 	u32 rval;
     void __iomem* data_base = (void __iomem*)PI_DAT_REG;
-    
+
     //pull low data
     rval = readl(data_base);
 	rval &= ~(1 << 2);
 	writel(rval, data_base);
-    
+
     //pull high data
  	rval |= 1 << 2;
     writel(rval, data_base);
@@ -228,12 +228,12 @@ static inline void aw_gpio_one_pulse_on_pi3(void)
 {
 	u32 rval;
     void __iomem* data_base = (void __iomem*)PI_DAT_REG;
-    
+
     //pull low data
     rval = readl(data_base);
 	rval &= ~(1 << 3);
 	writel(rval, data_base);
-    
+
     //pull high data
  	rval |= 1 << 3;
     writel(rval, data_base);
@@ -245,7 +245,7 @@ static inline void aw_gpio_trigger_single2(void)
     u32 backup;
     void __iomem* cfg_base  = (void __iomem*)PI_CFG0_REG;
     void __iomem* data_base = (void __iomem*)PI_DAT_REG;
-    
+
     //config gpio to output
     backup = readl(cfg_base);
     rval = readl(cfg_base);
@@ -271,7 +271,7 @@ static inline void aw_gpio_trigger_single3(void)
     u32 backup;
     void __iomem* cfg_base  = (void __iomem*)PI_CFG0_REG;
     void __iomem* data_base = (void __iomem*)PI_DAT_REG;
-    
+
     //config gpio to output
     backup = readl(cfg_base);
     rval = readl(cfg_base);
@@ -297,7 +297,7 @@ static inline void aw_gpio_trigger_by_pf4(void)
     u32 backup;
     void __iomem* cfg_base  = (void __iomem*)PF_CFG0_REG;
     void __iomem* data_base = (void __iomem*)PF_DAT_REG;
-    
+
     //config gpio to output
     backup = readl(cfg_base);
     rval = readl(cfg_base);
@@ -324,4 +324,3 @@ static inline void uart_send_char(char c)
 }
 
 #endif
-

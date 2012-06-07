@@ -48,4 +48,3 @@ extern __s32 Hdmi_hal_set_pll(__u32 pll, __u32 clk);
 
 
 #endif
-

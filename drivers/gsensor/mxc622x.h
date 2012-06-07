@@ -64,4 +64,3 @@
 #define MXC622X_IOC_SETDETECTION	_IOW(MXC622X_IOM, 0x08, unsigned char)
 
 #endif /* __MXC622X_H__ */
-

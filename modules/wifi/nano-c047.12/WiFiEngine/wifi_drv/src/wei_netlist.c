@@ -2,7 +2,7 @@
 
 /** @defgroup wei_netlist WiFiEngine internal net descriptor implementation
  *
- * 
+ *
  * \brief  This module implements WiFiEngine net descriptors (WiFiEngine_net_t).
  * Net descriptors are used to represent known networks, essentially beacon
  * frames, in the driver. The module implements the descriptors and
@@ -51,10 +51,10 @@
 #include "registryAccess.h"
 #include "macWrapper.h"
 #include "hicWrapper.h"
-   
+
 /*!
  * Frees the network descriptor and the associated bss descriptor
- * if the descriptor is not kept on any net list. If the descriptor 
+ * if the descriptor is not kept on any net list. If the descriptor
  * is still in a net list this call is a no-op.
  */
 void wei_netlist_free_net_safe(WiFiEngine_net_t *net)
@@ -74,11 +74,11 @@ void wei_netlist_clear_active_nets()
 {
    WiFiEngine_net_t *p, *net;
    wei_netlist_state_t *netlist;
-   
+
    netlist = wei_netlist_get_net_state();
-   
+
    net = netlist->active_list_ref;
-   
+
    while (net)
    {
       p = net;
@@ -93,11 +93,11 @@ void wei_netlist_clear_sta_nets(void)
 {
    WiFiEngine_net_t *p, *net;
    wei_netlist_state_t *netlist;
-   
+
    netlist = wei_netlist_get_net_state();
-   
+
    net = netlist->sta_list_ref;
-   
+
    while (net)
    {
       p = net;
@@ -111,7 +111,7 @@ void wei_netlist_clear_sta_nets(void)
 void wei_netlist_free_all_nets()
 {
    WiFiEngine_net_t *net;
-   
+
    wei_netlist_clear_active_nets();
    wei_netlist_clear_sta_nets();
 
@@ -215,7 +215,7 @@ wei_update_snr_from_noise_floor(mlme_bss_description_t *bss)
 }
 
 static int
-wei_update_net_from_bss_descr(WiFiEngine_net_t *net, 
+wei_update_net_from_bss_descr(WiFiEngine_net_t *net,
                               mlme_bss_description_t *new_bss)
 {
    mlme_bss_description_t *tmp1, *tmp2;
@@ -230,7 +230,7 @@ wei_update_net_from_bss_descr(WiFiEngine_net_t *net,
       /* since this scan ind was a result from a probe response, try
        * to keep any dtim period received earlier from a beacon */
       tmp1->dtim_period = net->bss_p->dtim_period;
-   } 
+   }
    net->measured_snr = tmp1->snr_info;
 
    wei_update_snr_from_noise_floor(tmp1);
@@ -239,16 +239,16 @@ wei_update_net_from_bss_descr(WiFiEngine_net_t *net,
    tmp2 = net->bss_p;
    net->bss_p = tmp1;
    WrapperFreeStructure(tmp2);
-   
+
    return TRUE;
 }
 
 static int
-wei_net_matches_bss_descr(WiFiEngine_net_t *net, 
+wei_net_matches_bss_descr(WiFiEngine_net_t *net,
                           mlme_bss_description_t *new_bss)
 {
    return wei_equal_bssid(net->bssId_AP, new_bss->bssId)
-      && wei_equal_ssid(net->bss_p->bss_description_p->ie.ssid, 
+      && wei_equal_ssid(net->bss_p->bss_description_p->ie.ssid,
                         new_bss->bss_description_p->ie.ssid);
 }
 
@@ -261,13 +261,13 @@ wei_netlist_add_net_to_active_list(mlme_bss_description_t *new_bss)
 {
    WiFiEngine_net_t*      net;
    wei_netlist_state_t*        netlist;
-   
+
    DE_ASSERT(new_bss != NULL);
 
 
    /* walk the active list to check if this net is already present */
    netlist = wei_netlist_get_net_state();
-   for(net = netlist->active_list_ref; 
+   for(net = netlist->active_list_ref;
        net != NULL;
        net = WEI_GET_NEXT_LIST_ENTRY_NAMED(net, WiFiEngine_net_t, active_list)) {
       if(wei_net_matches_bss_descr(net, new_bss)) {
@@ -280,7 +280,7 @@ wei_netlist_add_net_to_active_list(mlme_bss_description_t *new_bss)
       if(wei_net_matches_bss_descr(net, new_bss)) {
          wei_update_net_from_bss_descr(net, new_bss);
          /* Link it */
-         wei_netlist_add_to_active(net);          
+         wei_netlist_add_to_active(net);
          return net;
       }
    }
@@ -294,7 +294,7 @@ wei_netlist_add_net_to_active_list(mlme_bss_description_t *new_bss)
    return net;
 }
 
-/* This will merge sta nets into the sta list. The list is used to handle STA:s 
+/* This will merge sta nets into the sta list. The list is used to handle STA:s
    in an ibss net. By definition the ibss net defined is uniqley by ssid and bssid.
    Each sta in the net is identified by its peer mac address.
    To avoid confusion: even though this method adds new nets it is a single ibss
@@ -305,7 +305,7 @@ WiFiEngine_net_t*  wei_netlist_add_net_to_sta_list(m80211_nrp_mlme_peer_status_i
 {
    WiFiEngine_net_t*      netMaster;
    WiFiEngine_net_t*      net;
-   
+
    DE_ASSERT(new_sta != NULL);
 
    net = wei_netlist_get_current_net();
@@ -317,7 +317,7 @@ WiFiEngine_net_t*  wei_netlist_add_net_to_sta_list(m80211_nrp_mlme_peer_status_i
          DE_MEMCPY(net->bssId_AP.octet, new_sta->bssid.octet, sizeof(new_sta->bssid));
 
       }
-      
+
       if (wei_equal_bssid(net->peer_mac, new_sta->peer_mac))
       {
          DE_TRACE_STATIC(TR_NETLIST, "Found net in current_net\n");
@@ -502,7 +502,7 @@ int wei_netlist_count_active()
    wei_netlist_state_t*     netlist;
    int i = 0;
 
-   netlist = wei_netlist_get_net_state();  
+   netlist = wei_netlist_get_net_state();
 
    net = netlist->active_list_ref;
    while (net)
@@ -520,7 +520,7 @@ int wei_netlist_count_sta()
    wei_netlist_state_t*     netlist;
    int i = 0;
 
-   netlist = wei_netlist_get_net_state();  
+   netlist = wei_netlist_get_net_state();
 
    net = netlist->sta_list_ref;
    while (net)
@@ -539,7 +539,7 @@ void wei_netlist_remove_from_active(WiFiEngine_net_t *net)
    char ssid[M80211_IE_MAX_LENGTH_SSID + 1];
 #endif
 
-   netlist = wei_netlist_get_net_state();  
+   netlist = wei_netlist_get_net_state();
    if (net == netlist->active_list_ref)
    {
       wei_netlist_remove_reference(&netlist->active_list_ref);
@@ -564,8 +564,8 @@ void wei_netlist_remove_from_active(WiFiEngine_net_t *net)
 void wei_netlist_remove_from_sta(WiFiEngine_net_t *net)
 {
    wei_netlist_state_t *netlist;
-   
-   netlist = wei_netlist_get_net_state();  
+
+   netlist = wei_netlist_get_net_state();
    if (net == netlist->sta_list_ref)
    {
       wei_netlist_remove_reference(&netlist->sta_list_ref);
@@ -584,7 +584,7 @@ void wei_netlist_remove_from_sta(WiFiEngine_net_t *net)
       }
       net->ref_cnt--;
    }
-   
+
    WEI_LIST_REMOVE_NAMED(net, sta_list);
 }
 
@@ -615,7 +615,7 @@ void wei_netlist_add_to_active(WiFiEngine_net_t *net)
          net->bss_p->rssi_info,
          net->bss_p->snr_info);
 
-   netlist = wei_netlist_get_net_state();  
+   netlist = wei_netlist_get_net_state();
    if (netlist->active_list_ref == NULL)
    {
       DE_TRACE_STATIC(TR_NETLIST,"First in empty list\n");
@@ -634,7 +634,7 @@ void wei_netlist_add_to_active(WiFiEngine_net_t *net)
       prev = p;
    }
 
-   if (p == net)      
+   if (p == net)
    {
       return;
    }
@@ -677,7 +677,7 @@ void wei_netlist_add_to_sta(WiFiEngine_net_t *net)
    DE_TRACE3(TR_NETLIST, "Sort net %p into sta list. RSSI %d\n", net, net->bss_p->rssi_info);
    DE_TRACE_STRING(TR_NETLIST, "SSID %s\n", wei_printSSID(&net->bss_p->bss_description_p->ie.ssid, ssid, sizeof(ssid)));
 
-   netlist = wei_netlist_get_net_state();  
+   netlist = wei_netlist_get_net_state();
    if (netlist->sta_list_ref == NULL)
    {
       DE_TRACE_STATIC(TR_NETLIST,"First in empty list\n");
@@ -696,7 +696,7 @@ void wei_netlist_add_to_sta(WiFiEngine_net_t *net)
       prev = p;
    }
 
-   if (p == net)    
+   if (p == net)
    {
       return;
    }
@@ -738,12 +738,12 @@ void wei_netlist_make_current_net(WiFiEngine_net_t *net)
 }
 
 /*!
- * @return 
+ * @return
  * - TRUE if the net was aged and expired.
  * - FALSE if the net was aged but lived.
  */
-int wei_netlist_expire_net(WiFiEngine_net_t *net, 
-			   driver_tick_t current_time, 
+int wei_netlist_expire_net(WiFiEngine_net_t *net,
+			   driver_tick_t current_time,
 			   driver_tick_t expire_age)
 {
    WiFiEngine_net_t *cnet;
@@ -783,8 +783,8 @@ int wei_netlist_get_size_of_ies(WiFiEngine_net_t *net)
 {
    Blob_t   blob;
 
-   DE_ASSERT(net != NULL && 
-	     net->bss_p != NULL && 
+   DE_ASSERT(net != NULL &&
+	     net->bss_p != NULL &&
 	     net->bss_p->bss_description_p != NULL);
 
    INIT_BLOB(&blob, NULL, BLOB_UNKNOWN_SIZE);
@@ -803,7 +803,7 @@ void wei_limit_netlist(int size)
    if(size == 0)
       return;
 
-   netlist = wei_netlist_get_net_state();  
+   netlist = wei_netlist_get_net_state();
 
    p = netlist->active_list_ref;
 
@@ -816,13 +816,13 @@ void wei_limit_netlist(int size)
    for(current_net_id = 1; current_net_id < size;current_net_id++)
    {
       p = WEI_GET_NEXT_LIST_ENTRY_NAMED(p, WiFiEngine_net_t, active_list);
-      
+
       if(p == NULL)
       {
          //the number of nets where fewer than size
          return;
       }
-      
+
    }
 
    cnet = wei_netlist_get_current_net();
@@ -845,4 +845,3 @@ void wei_limit_netlist(int size)
 }
 
 /** @} */ /* End of wei_netlist group */
-

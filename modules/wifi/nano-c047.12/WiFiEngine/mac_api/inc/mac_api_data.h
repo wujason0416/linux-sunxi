@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-            Copyright (c) 2004 by Nanoradio AB 
+            Copyright (c) 2004 by Nanoradio AB
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
  All rights, title, ownership, or other interests in the
@@ -88,13 +88,13 @@ typedef struct
 
 #define HIC_DATA_REQ_SET_VLANID_PRIO(_pkt,_prio)	\
    HIC_PUT_ULE16((unsigned char*)(_pkt) + 4, (_prio))
-	
+
 #define HIC_DATA_REQ_GET_VLANID_PRIO(_pkt)	\
    HIC_GET_ULE16((unsigned char*)(_pkt) + 4)
 
 #define HIC_DATA_REQ_SET_SVC(_pkt, _svc)		\
    HIC_PUT_ULE16((unsigned char*)(_pkt) + 6, (_svc))
-	
+
 #define HIC_DATA_REQ_GET_SVC(_pkt)		\
    HIC_GET_ULE16((unsigned char*)(_pkt) + 6)
 

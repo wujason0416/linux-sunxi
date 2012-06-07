@@ -17,19 +17,19 @@ static void generate_random_bssid(m80211_mac_addr_t *bssid);
 static bool_t init_bss_description(mlme_bss_description_t* bss_p)
 {
    rIBSSBeaconProperties* beacon;
-   rBasicWiFiProperties*  properties; 
+   rBasicWiFiProperties*  properties;
    m80211_ie_ssid_t*      pssid;
 
    /* Get network information from the registry. */
    beacon = (rIBSSBeaconProperties*)Registry_GetProperty(ID_ibssBeacon);
-   properties = (rBasicWiFiProperties *)Registry_GetProperty(ID_basic); 
+   properties = (rBasicWiFiProperties *)Registry_GetProperty(ID_basic);
 
    bss_p->bss_description_p = (m80211_bss_description_t*)WrapperAttachStructure(bss_p, sizeof(m80211_bss_description_t));
 
    if (bss_p->bss_description_p == NULL)
    {
       return FALSE;
-   }    
+   }
 
    bss_p->bssType = M80211_CAPABILITY_IBSS;
    bss_p->dtim_period = (uint8_t)beacon->dtim_period;
@@ -52,7 +52,7 @@ static bool_t init_bss_description(mlme_bss_description_t* bss_p)
    DE_MEMCPY(&bss_p->bss_description_p->ie.ssid, pssid, sizeof(bss_p->bss_description_p->ie.ssid));
    REGISTRY_WUNLOCK();
 
-   wei_ratelist2ie(&bss_p->bss_description_p->ie.supported_rate_set, &bss_p->bss_description_p->ie.ext_supported_rate_set, 
+   wei_ratelist2ie(&bss_p->bss_description_p->ie.supported_rate_set, &bss_p->bss_description_p->ie.ext_supported_rate_set,
                    &beacon->supportedRateSet);
 
    if(wifiEngineState.config.encryptionLimit == Encryption_TKIP)
@@ -66,7 +66,7 @@ static bool_t init_bss_description(mlme_bss_description_t* bss_p)
       pairwise_suite  = M80211_CIPHER_SUITE_TKIP;
       akm_suite = M80211_AKM_SUITE_PSK;
 
-      wei_build_wpa_ie((void*)bss_p, &bss_p->bss_description_p->ie.wpa_parameter_set, group_suite, pairwise_suite, akm_suite);      
+      wei_build_wpa_ie((void*)bss_p, &bss_p->bss_description_p->ie.wpa_parameter_set, group_suite, pairwise_suite, akm_suite);
 
    }
    else if(wifiEngineState.config.encryptionLimit == Encryption_CCMP)
@@ -80,7 +80,7 @@ static bool_t init_bss_description(mlme_bss_description_t* bss_p)
       pairwise_suite  = M80211_CIPHER_SUITE_CCMP;
       akm_suite = M80211_AKM_SUITE_PSK;
 
-      wei_build_wpa_ie((void*)bss_p, &bss_p->bss_description_p->ie.wpa_parameter_set, group_suite, pairwise_suite, akm_suite);      
+      wei_build_wpa_ie((void*)bss_p, &bss_p->bss_description_p->ie.wpa_parameter_set, group_suite, pairwise_suite, akm_suite);
 
    }
    else
@@ -91,13 +91,13 @@ static bool_t init_bss_description(mlme_bss_description_t* bss_p)
 
    /* FH parameters not used*/
    bss_p->bss_description_p->ie.fh_parameter_set.hdr.id = M80211_IE_ID_NOT_USED;
-   DE_MEMCPY(&bss_p->bss_description_p->ie.ds_parameter_set, 
-             &beacon->tx_channel, 
+   DE_MEMCPY(&bss_p->bss_description_p->ie.ds_parameter_set,
+             &beacon->tx_channel,
              sizeof(bss_p->bss_description_p->ie.ds_parameter_set));
    /* CF parameters not used*/
    bss_p->bss_description_p->ie.cf_parameter_set.hdr.id = M80211_IE_ID_NOT_USED;
-   DE_MEMCPY(&bss_p->bss_description_p->ie.ibss_parameter_set, 
-             &beacon->atim_set, 
+   DE_MEMCPY(&bss_p->bss_description_p->ie.ibss_parameter_set,
+             &beacon->atim_set,
              sizeof(bss_p->bss_description_p->ie.ibss_parameter_set));
    /* TIM parameters not used - power save to be used later*/
    bss_p->bss_description_p->ie.tim_parameter_set.hdr.id = M80211_IE_ID_NOT_USED;
@@ -108,17 +108,17 @@ static bool_t init_bss_description(mlme_bss_description_t* bss_p)
    /* WMM parameters not used*/
    bss_p->bss_description_p->ie.wmm_parameter_element.WMM_hdr.hdr.hdr.id  = M80211_IE_ID_NOT_USED;
    bss_p->bss_description_p->ie.wmm_information_element.WMM_hdr.hdr.hdr.id  = M80211_IE_ID_NOT_USED;
-   
+
    return TRUE;
 }
 
 static WiFiEngine_net_t* create_ibss_net(void)
 {
    WiFiEngine_net_t *net;
-   
+
    net = wei_netlist_create_new_net();
    if (!net) return NULL;
-   
+
    generate_random_bssid(&net->bssId_AP);
    if (!init_bss_description(net->bss_p)) {
       wei_netlist_free_net_safe(net);
@@ -135,7 +135,7 @@ static WiFiEngine_net_t* find_ibss_net(void)
    WiFiEngine_net_t *net;
 
    rBasicWiFiProperties *basicWiFiProperties;
-   basicWiFiProperties = (rBasicWiFiProperties *)Registry_GetProperty(ID_basic);  
+   basicWiFiProperties = (rBasicWiFiProperties *)Registry_GetProperty(ID_basic);
 
    net = wei_netlist_get_net_by_ssid(basicWiFiProperties->desiredSSID);
    if (!net) net = wei_netlist_get_joinable_net();
@@ -144,7 +144,7 @@ static WiFiEngine_net_t* find_ibss_net(void)
 }
 
 
-/*! 
+/*!
  * @brief Look for an IBSS network in the netlist or create one if none exists
  *
  * @param conf
@@ -164,22 +164,22 @@ WiFiEngine_net_t* wei_find_create_ibss_net(void)
 {
    WiFiEngine_net_t *net;
 
-   rBasicWiFiProperties*  properties; 
-   properties = (rBasicWiFiProperties *)Registry_GetProperty(ID_basic); 
+   rBasicWiFiProperties*  properties;
+   properties = (rBasicWiFiProperties *)Registry_GetProperty(ID_basic);
 
    if (properties->desiredSSID.hdr.id != M80211_IE_ID_SSID)
       return NULL;
 
    net = find_ibss_net();
    if(!net) net = create_ibss_net();
-      
+
    return net;
 }
 
 bool_t  wei_is_ibss_connected(m80211_nrp_mlme_peer_status_ind_t *ind)
 {
    bool_t is_connected = FALSE;
-   
+
    if(ind->status == MLME_PEER_STATUS_CONNECTED)
    {
      if(wei_netlist_count_sta() == 0)
@@ -187,7 +187,7 @@ bool_t  wei_is_ibss_connected(m80211_nrp_mlme_peer_status_ind_t *ind)
         is_connected = TRUE;
      }
    }
-   
+
    /* Store the station in sta list */
    wei_netlist_add_net_to_sta_list(ind);
 
@@ -197,7 +197,7 @@ bool_t  wei_is_ibss_connected(m80211_nrp_mlme_peer_status_ind_t *ind)
 void wei_ibss_remove_net(m80211_nrp_mlme_peer_status_ind_t *ind)
 {
    WiFiEngine_net_t *net;
-   
+
    net = wei_netlist_get_sta_net_by_peer_mac_address(ind->peer_mac);
    if(net != NULL)
    {
@@ -242,18 +242,18 @@ wei_find_create_ibss_net(void)
 
 #endif /* (DE_NETWORK_SUPPORT & CFG_NETWORK_IBSS) */
 
-/* 
- * code that is mostly used by ibss byt may be used on some platform. 
- * place them here so that they will be removed by the linker on thous platforms 
+/*
+ * code that is mostly used by ibss byt may be used on some platform.
+ * place them here so that they will be removed by the linker on thous platforms
  */
 
-/*! 
+/*!
  * @brief Generate a random MAC address
  *
  * @param flags IN specifies attributes of generated address, it's a bitmask with flags:
- * M80211_MAC_UNICAST, 
+ * M80211_MAC_UNICAST,
  * M80211_MAC_MULTICAST,
- * M80211_MAC_GLOBAL, 
+ * M80211_MAC_GLOBAL,
  * M80211_MAC_LOCAL
  * @param mac OUT where the address is stored
  * @param len OUT size of mac buffer, must be M80211_ADDRESS_SIZE
@@ -261,7 +261,7 @@ wei_find_create_ibss_net(void)
 static void generate_random_mac(int32_t flags, void *mac, size_t len)
 {
    DE_ASSERT(len == M80211_ADDRESS_SIZE);
- 
+
    DriverEnvironment_RandomData(mac, len);
 
    ((unsigned char*)mac)[0] &= ~3;
@@ -283,4 +283,3 @@ void WiFiEngine_RandomMAC(int32_t flags, void *mac, size_t len)
 {
    generate_random_mac(flags, mac, len);
 }
-

@@ -7,4 +7,3 @@ obj-y += ccmu/ccm_mod_clk.o \
          ccmu/ccu_dbg.o \
          clock.o \
          aw_clocksrc.o
-

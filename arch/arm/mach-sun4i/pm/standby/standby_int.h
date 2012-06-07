@@ -81,4 +81,3 @@ extern __s32 standby_query_int(enum interrupt_source_e src);
 
 
 #endif  //__STANDBY_INT_H__
-

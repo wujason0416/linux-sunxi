@@ -202,12 +202,12 @@ void print_pkt_hdr(char *pkt, size_t len)
    size_t table_size;
 
    if (len < 8) {
-      DE_TRACE_INT(TR_DATA, "Short packet (" TR_FSIZE_T " bytes)\n", 
+      DE_TRACE_INT(TR_DATA, "Short packet (" TR_FSIZE_T " bytes)\n",
                    TR_ASIZE_T(len));
       return;
    }
    l = HIC_MESSAGE_LENGTH_GET(pkt);
-   t = HIC_MESSAGE_TYPE(pkt); 
+   t = HIC_MESSAGE_TYPE(pkt);
    m = HIC_MESSAGE_ID(pkt);
    hsize = HIC_MESSAGE_HDR_SIZE(pkt);
 
@@ -268,7 +268,7 @@ void print_pkt_hdr(char *pkt, size_t len)
       c += DE_SNPRINTF(str + c, sizeof(str) - c, ": %s", table[m]);
       c = DE_MIN(sizeof(str), c);
    }
-   if(t == HIC_MESSAGE_TYPE_DATA 
+   if(t == HIC_MESSAGE_TYPE_DATA
       && m == (HIC_MAC_DATA_CFM & ~MAC_API_PRIMITIVE_TYPE_RSP)
       && len >= hsize + 8) {
       c += DE_SNPRINTF(str + c, sizeof(str) - c, " s%ur%up%xd%u",
@@ -289,7 +289,7 @@ void print_ip_header(char *pkt, size_t len)
    uint16_t ver;
    char str[128];
    size_t c = 0;
-        
+
    ver = nbo_uint16(pkt);
    if (ver != 4) {
       DE_TRACE_INT(TR_DATA, "IP header version field not 4 (%d)\n", ver);
@@ -313,7 +313,7 @@ void print_ip_header(char *pkt, size_t len)
          c += DE_SNPRINTF(str + c, sizeof(str) - c, "unknown protocol ");
          c = DE_MIN(sizeof(str), c);
          break;
-                
+
    }
 
    DE_TRACE_STRING(TR_DATA, "%s\n", str);
@@ -391,7 +391,7 @@ void log_pkt(char *buf, size_t len, int read)
 int dump_log(char *buf, size_t len)
 {
    int i;
-   
+
    for (i = 0; i < PKT_LOG_LENGTH; i++)
    {
       if (len < sizeof pkt_log[i])

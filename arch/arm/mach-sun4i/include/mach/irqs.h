@@ -22,11 +22,11 @@
 #define NR_IRQS		                      96
 
 /*----------- interrupt register list -------------------------------------------*/
-                                         
 
-/* registers */                            
-                                          
-/* mask */             
+
+/* registers */
+
+/* mask */
 #define SW_INT_START	                  0
 
 #define SW_INT_IRQNO_ENMI               0

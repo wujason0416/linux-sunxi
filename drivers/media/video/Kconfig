@@ -1084,5 +1084,5 @@ menuconfig VIDEO_CSI_SUN4I
 	depends on VIDEO_DEV && VIDEO_V4L2
 
 if VIDEO_CSI_SUN4I
-source "drivers/media/video/sun4i_csi/Kconfig"	   	  
+source "drivers/media/video/sun4i_csi/Kconfig"
 endif

@@ -18,7 +18,7 @@ typedef struct {
 
 void show_help(void)
 {
-   fprintf(stderr, 
+   fprintf(stderr,
            "Usage: btcoex_ratio [-i ifname][-z]\n"
            "Options:\n"
            "   -i, change interface\n"
@@ -71,7 +71,7 @@ main(int argc, char **argv)
 
    /* Get mib value. */
    len = sizeof(ant_dist);
-   err_no = nrx_get_mib_val(ctx, 
+   err_no = nrx_get_mib_val(ctx,
                             btcoex_antenna_distribution_mib,
                             &ant_dist,
                             &len);
@@ -85,7 +85,7 @@ main(int argc, char **argv)
    if (ant_dist.bt_time == 0 && ant_dist.wlan_time == 0)
       printf("WLAN media time: NaN\n");
    else
-      printf("WLAN media time: %.1f%%\n", 
+      printf("WLAN media time: %.1f%%\n",
              100.0 * ant_dist.wlan_time / (0.0 + ant_dist.bt_time + ant_dist.wlan_time) );
 
    /* Reset mib to zero. */
@@ -93,7 +93,7 @@ main(int argc, char **argv)
    {
       ant_dist.bt_time = 0;
       ant_dist.wlan_time = 0;
-      err_no = nrx_set_mib_val(ctx, 
+      err_no = nrx_set_mib_val(ctx,
                                btcoex_antenna_distribution_mib,
                                &ant_dist,
                                sizeof(ant_dist));

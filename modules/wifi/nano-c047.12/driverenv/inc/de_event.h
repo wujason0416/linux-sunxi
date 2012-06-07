@@ -47,7 +47,7 @@ typedef enum _NRWIF_INTERNAL_MESSAGE
 typedef void *driver_ind_param_t;
 
 /* \brief Modular indication function.
- * 
+ *
  * Handle WiFiEngine indications that should trigger external events/actions.
  * This function is executed when WiFiEngine generates a indication event.
  *
@@ -85,7 +85,7 @@ int DriverEnvironment_InitializeEvent(de_event_t *ev);
 /*!
  * Uninitialize an event struct.
  * @param ev (de_event_t *) Pointer to an event struct to be uninitialized.
- * @return 
+ * @return
  * - 1 on success.
  * - 0 otherwise.
  */
@@ -102,7 +102,7 @@ void DriverEnvironment_SignalEvent(de_event_t *ev);
 
 /*!
  * @brief Wait on an event.
- * 
+ *
  * Wait on ev. This will block execution of this thread until someone
  * signals the event or the timeout occurs.
  * @param ev (de_event_t *) The event to wait on.

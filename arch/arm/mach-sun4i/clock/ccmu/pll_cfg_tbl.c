@@ -303,4 +303,3 @@ int ccm_clk_get_pll_para(struct core_pll_factor_t *factor, __u64 rate)
 
     return 0;
 }
-

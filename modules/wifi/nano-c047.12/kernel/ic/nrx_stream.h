@@ -31,9 +31,9 @@ nrx_stream_flush (struct nrx_stream *stream);
   *
   * @param stream References the stream.
   * @param offset Offset to seek to relative to position given by whence.
-  * @param whence Position to seek from, 
-  *   0 = start of stream, 
-  *   1 = current position, 
+  * @param whence Position to seek from,
+  *   0 = start of stream,
+  *   1 = current position,
   *   2 = end of stream.
   *
   * @return Position in stream, or a negative errno number.
@@ -64,7 +64,7 @@ nrx_stream_open_buf (
   *
   * @param filename The path to the file to open.
   * @param flags Flags to pass to open (O_RDONLY etc).
-  * @param mode Mode of the file to open, only meaningful 
+  * @param mode Mode of the file to open, only meaningful
   *             if flags include O_CREAT.
   * @param stream Returns a stream object.
   *

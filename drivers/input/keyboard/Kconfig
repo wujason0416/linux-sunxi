@@ -577,7 +577,7 @@ config KEYBOARD_SUN4I_KEYBOARD
         tristate "SUN4I KEY BOARD support"
         help
           Say Y here to enable the keyboard, support 7 keys.
-          based on verify board.      
+          based on verify board.
 
 config KEYBOARD_HV2605_KEYBOARD
         tristate "SUN4I HV2605 KEY BOARD support"
@@ -592,5 +592,5 @@ config IR_SUN4I
 config IR_SUN5I
        tristate "sun5i IR  support"
        depends on ARCH_SUN5I
-       
+
 endif

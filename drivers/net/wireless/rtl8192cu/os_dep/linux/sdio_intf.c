@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
  *
  *
- 
+
 ******************************************************************************/
 #define _HCI_INTF_C_
 
@@ -29,7 +29,7 @@
 #include <hal_init.h>
 #include <sdio_hal.h>
 #include <sdio_ops.h>
-#include <linux/mmc/sdio_func.h> 
+#include <linux/mmc/sdio_func.h>
 #include <linux/mmc/sdio_ids.h>
 extern u32 rtw_start_drv_threads(_adapter *padapter);
 extern void rtw_stop_drv_threads (_adapter *padapter);
@@ -60,7 +60,7 @@ extern unsigned int sd_dvobj_init(_adapter * padapter){
 	//_rtw_init_sema(&psddev->init_finish,0);
 	sdio_claim_host(func);
 	 ret=sdio_enable_func(func);
-	if(ret){	
+	if(ret){
 	RT_TRACE(_module_hci_intfs_c_,_drv_err_,("sd_dvobj_init: sdio_enable_func fail!!!!!\n"));
 		return _FAIL;
 	}
@@ -74,7 +74,7 @@ extern unsigned int sd_dvobj_init(_adapter * padapter){
 	ret=sdio_claim_irq(func,sd_sync_int_hdl);
 	sdio_release_host(func);
 	psddev->sdio_himr=0xff;
-	if(ret)	
+	if(ret)
 		return _FAIL;
 	_func_exit_;
 	return _SUCCESS;
@@ -82,7 +82,7 @@ extern unsigned int sd_dvobj_init(_adapter * padapter){
 
 extern void sd_dvobj_deinit(_adapter * padapter)
 {
-       unsigned char data;    
+       unsigned char data;
 	struct dvobj_priv *psddev=&padapter->dvobjpriv;
 	struct sdio_func *func=psddev->func;
 
@@ -314,7 +314,7 @@ int recvbuf2recvframe_s(_adapter *padapter, struct recv_buf *precvbuf)
 			}
 		}
 		prxstat = (struct recv_stat*)pbuf;
-		pkt_len = le32_to_cpu(prxstat->rxdw0&0x00003fff); //pkt_len = prxstat->frame_length;             
+		pkt_len = le32_to_cpu(prxstat->rxdw0&0x00003fff); //pkt_len = prxstat->frame_length;
 
 		RT_TRACE(_module_rtl871x_recv_c_,_drv_info_,("rxdesc: offsset0:0x%08x, offsset4:0x%08x, offsset8:0x%08x, offssetc:0x%08x\n",prxstat->rxdw0, prxstat->rxdw1, prxstat->rxdw2, prxstat->rxdw4));
 
@@ -436,7 +436,7 @@ void sd_recv_rxfifo(PADAPTER padapter)
 	u32 blk_sz, cnt;//,remain,tmp_cnt;
 	struct recv_priv *precvpriv;
 //	struct recv_stat *prxstat;
-	//union recv_frame *precvframe, *ppreframe = NULL; 
+	//union recv_frame *precvframe, *ppreframe = NULL;
 //	_queue *pfree_recv_queue, *ppending_recv_queue;
 //	u8 tmp[2048];
 	struct recv_buf *precvbuf;
@@ -461,7 +461,7 @@ void sd_recv_rxfifo(PADAPTER padapter)
 		cnt = (padapter->dvobjpriv.rxblknum-rx_blknum) * blk_sz;
 	}
 	RT_TRACE(_module_hci_intfs_c_,_drv_notice_,("=====================sd_recv_rxfifo  padapter->dvobjpriv.rxblknum=%x Blk_Num = %x   cnt=%d",padapter->dvobjpriv.rxblknum, rx_blknum,cnt));
-        
+
 	if (cnt == 0) {
 //		remain = 0;
 		precvbuf = NULL;
@@ -489,7 +489,7 @@ void sd_recv_rxfifo(PADAPTER padapter)
 	}
 	read_pkt2recvbuf(padapter, cnt, precvbuf);
 
-	return;	
+	return;
 
 drop_pkt:
 
@@ -551,7 +551,7 @@ get_next:
 	} else {
 		RT_TRACE(_module_hci_intfs_c_, _drv_notice_, ("sd_c2h_hdl: pevtpriv->event_seq (%d) == c2hbuf seq(%d)",pevtpriv->event_seq,cmd_seq));
 	}
-	cmd_len = *(u16 *)&pevtpriv->c2h_mem[0];	
+	cmd_len = *(u16 *)&pevtpriv->c2h_mem[0];
 	cmd_len &= 0x3ff;
 	RT_TRACE(_module_hci_intfs_c_, _drv_err_, ("@sd_c2h_hdl: cmd_len=%d",cmd_len));
 //	if(cmd_len){
@@ -691,7 +691,7 @@ static int r871xs_drv_init(struct sdio_func *func, const struct sdio_device_id *
 	//step 1.
 	pnetdev = rtw_init_netdev(NULL);
 	if (!pnetdev)
-		goto error;	
+		goto error;
 
 	padapter = rtw_netdev_priv(pnetdev);
 	pdvobjpriv = &padapter->dvobjpriv;
@@ -729,14 +729,14 @@ static int r871xs_drv_init(struct sdio_func *func, const struct sdio_device_id *
 	}
 
 	if (padapter->dvobj_init(padapter) == _FAIL) {
-		RT_TRACE(_module_hci_intfs_c_,_drv_err_,("\n initialize device object priv Failed!\n"));			
+		RT_TRACE(_module_hci_intfs_c_,_drv_err_,("\n initialize device object priv Failed!\n"));
 		goto error;
 	}
 
 
 	//step 6.
 	if (rtw_init_drv_sw(padapter) == _FAIL) {
-		RT_TRACE(_module_hci_intfs_c_,_drv_err_,("Initialize driver software resource Failed!\n"));			
+		RT_TRACE(_module_hci_intfs_c_,_drv_err_,("Initialize driver software resource Failed!\n"));
 		goto error;
 	}
 
@@ -773,7 +773,7 @@ error:
 		RT_TRACE(_module_hci_intfs_c_,_drv_err_,("\n Initialize dvobjpriv.dvobj_deinit error!!!\n"));
 	} else {
 		padapter->dvobj_deinit(padapter);
-	} 	  
+	}
 
 	if (pnetdev) {
 		unregister_netdev(pnetdev);
@@ -861,7 +861,7 @@ _func_exit_;
 			unregister_netdev(pnetdev); //will call netdev_close()
 
 		rtw_cancel_all_timer(padapter);
-		
+
 		r871x_dev_unload(padapter);
 		//s6.
 		if (padapter->dvobj_deinit) {
@@ -872,7 +872,7 @@ _func_exit_;
 
 		rtw_free_drv_sw(padapter);
 		//after rtw_free_drv_sw(), padapter has beed freed, don't refer to it.
-		
+
 		sdio_claim_host(func);
 		RT_TRACE(_module_hci_intfs_c_,_drv_err_,(" in dev_remove():sdio_claim_host !\n"));
 		sdio_release_irq(func);
@@ -889,12 +889,12 @@ _func_exit_;
 	return;
 }
 
-static drv_priv drvpriv = {	
+static drv_priv drvpriv = {
 		.r871xs_drv.probe		= r871xs_drv_init,
 		.r871xs_drv.remove		= r8712s_dev_remove,
 		.r871xs_drv.name		= "rtl871x_sdio_wlan",
 		.r871xs_drv.id_table	= sdio_ids,
-};	
+};
 
 
 static int __init r8712s_drv_entry(void)
@@ -902,7 +902,7 @@ static int __init r8712s_drv_entry(void)
 	int status;
 	RT_TRACE(_module_hci_intfs_c_,_drv_err_,("+8712s_sdio - drv_entry\n"));
 	status = sdio_register_driver(&drvpriv.r871xs_drv);
-	RT_TRACE(_module_hci_intfs_c_,_drv_err_,("-8712_sdio - drv_entry, status=%d\n", status));	
+	RT_TRACE(_module_hci_intfs_c_,_drv_err_,("-8712_sdio - drv_entry, status=%d\n", status));
 
 	return status;
 }

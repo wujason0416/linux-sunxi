@@ -51,7 +51,7 @@
 #  else
 #    error "could not determine byte order"
 #  endif*/
-#define bswap_16 	swab16 
+#define bswap_16 	swab16
 #define bswap_32	swab32
 #else
 #include <endian.h>
@@ -108,7 +108,7 @@ typedef unsigned long long u64;
 #define HTONS_NEEDED
 #endif /* __nucleus__ */
 
-#if defined(__rtke__) 
+#if defined(__rtke__)
 #define __BIG_ENDIAN 4321
 #define __LITTLE_ENDIAN 1234
 #define LITTLE_ENDIAN __LITTLE_ENDIAN

@@ -143,7 +143,7 @@ static int cmp_var_struct(const void* remote,  const void* local, int len)
 	u16 remote_val_type = 0;
 	u16 remote_val_len = 0;
 	const u8 *p = NULL;
-	
+
 	wai_fixdata_id * id = (wai_fixdata_id *)local;
 
 	p = remote;
@@ -160,7 +160,7 @@ static int cmp_var_struct(const void* remote,  const void* local, int len)
 		{
 			return -1;
 		}
-	
+
 	return 0;
 }
 
@@ -251,7 +251,7 @@ struct wapi_sm * wapi_sm_init(struct wapi_sm_ctx *ctx)
                            "failed");
                 os_free(sm);
                 return NULL;
-        
+
 	}
 #endif
         return sm;
@@ -368,7 +368,7 @@ int wapi_sm_get_status(struct wapi_sm *sm, char *buf, size_t buflen,
 {
 	char *pos = buf, *end = buf + buflen;
 	int ret;
-	
+
 	ret = os_snprintf(pos, end - pos,
                           "pairwise_cipher=%s\n"
                           "group_cipher=%s\n"
@@ -591,7 +591,7 @@ int wapi_sm_set_assoc_ie(struct wapi_sm *sm, const u8 *ie, size_t len)
 {
 	if (sm == NULL)
 		return -1;
-	
+
 	os_free(sm->assoc_wapi_ie);
 	if (ie == NULL || len == 0) {
 		wpa_printf(MSG_DEBUG, "WAPI: clearing own WAPI IE");
@@ -602,11 +602,11 @@ int wapi_sm_set_assoc_ie(struct wapi_sm *sm, const u8 *ie, size_t len)
 		sm->assoc_wapi_ie = os_malloc(len);
 		if (sm->assoc_wapi_ie == NULL)
 			return -1;
-		
+
 		os_memcpy(sm->assoc_wapi_ie, ie, len);
 		sm->assoc_wapi_ie_len = len;
 	}
-	
+
 	return 0;
 }
 
@@ -669,7 +669,7 @@ int wapi_parse_ie(const u8 *wapi_ie, size_t wapi_ie_len,
         data->pmkid = NULL;
         data->num_pmkid = 0;
         data->mgmt_group_cipher = 0;
-	
+
 	if (wapi_ie_len == 0) {
                 /* No WAPI IE - fail silently */
                 return -1;
@@ -826,7 +826,7 @@ static int wapi_install_ptk(struct wapi_sm *sm,
         if (sm->proto == WAPI_PROTO) {
                 null_rsc[0] = 0x5c;
 		null_rsc[1] = 0x36;
-		key_rsc = null_rsc;		
+		key_rsc = null_rsc;
         } /*else {
                 key_rsc = key->key_rsc;
                 wpa_hexdump(MSG_DEBUG, "WPA: RSC", key_rsc, rsclen);
@@ -860,7 +860,7 @@ static void wapi_key_mic(const u8 *key,
 			 const u8 *buf, size_t len, u8 *mic)
 {
 	u8 hash[SHA256_MAC_LEN];
-		
+
 	hmac_sha256(key, 16, buf+12, len-12-20, hash);
 	//hmac_sha256(key, 16, buf, len, hash);
 	os_memcpy(mic, hash, 20);
@@ -930,7 +930,7 @@ static int wapi_send_2_of_3(struct wapi_sm *sm,
 	os_memcpy(reply->supp_challenge, sm->snonce, 32);
 	os_memcpy(reply->auth_challenge, key->auth_challenge, 32);
 	os_memcpy(reply->supp_wapi_ie, sm->assoc_wapi_ie, 24);
-	
+
 	os_memcpy(dst, key->addid, 6);
 
 	wpa_printf(MSG_DEBUG, "WAPI: Sending WAPI-Key 2/3");
@@ -974,13 +974,13 @@ static int wapi_send_2_of_2(struct wapi_sm *sm,
  * @pmk: Pairwise master key
  * @pmk_len: Length of PMK
  * @label: Label to use in derivation
- * @addid: Authenticator and supplicant mac address. 
+ * @addid: Authenticator and supplicant mac address.
  * @nonce1: ANonce or SNonce
  * @nonce2: SNonce or ANonce
  * @ptk: Buffer for pairwise transient key
  * @ptk_len: Length of PTK
  *
- * KD_HMAC_SHA256(BK, ADDID || N1 || N2 || 
+ * KD_HMAC_SHA256(BK, ADDID || N1 || N2 ||
  * "pairwise key expansion for unicast and additional keys and nonce")
  *
  * N1: authenticator challenge
@@ -1006,9 +1006,9 @@ static void wapi_pmk_to_ptk(const u8 *pmk, size_t pmk_len,
 	/* Station Challenge */
 	u8 temp_nonce2[32] = {0x0a ,0xb7 ,0x83 ,0x2b ,0xfe ,0x49 ,0xf9 ,0x87 ,0xbf ,0x9d ,0xa1 ,0xcb ,0xe3 ,0x99 ,0x74 ,0x6f ,0x33,
 			      0xb6 ,0x39 ,0x69 ,0x99 ,0x99 ,0x12 ,0x57 ,0x8c ,0xb2 ,0x9b ,0x0c ,0x6a ,0x40 ,0x3a ,0xfe };
-#endif 
+#endif
 
-#if 1   
+#if 1
 	os_memcpy(data, addid, 12);
 	os_memcpy(data+12, nonce1, 32);
 	os_memcpy(data+12+32, nonce2, 32);
@@ -1035,7 +1035,7 @@ int wapi_fixdata_id_by_ident(void *cert_st, wai_fixdata_id *fixdata_id, u16 inde
 	byte_data *serial_no = NULL;
 	const struct cert_obj_st_t *cert_obj = NULL;
 
-	if(fixdata_id == NULL || cert_st == NULL) 
+	if(fixdata_id == NULL || cert_st == NULL)
 		return -1;
 
 	temp= fixdata_id->id_data;
@@ -1137,7 +1137,7 @@ static int wapi_cert_2_3_send(struct wapi_sm* sm, u8* payload, int len)
 	payload = payload; /*what a f** is this?  disable warnning */
 	len = len; /* disable warnning */
 
-	wpa_printf(MSG_DEBUG, "WAPI CERT: in %s:%d", __func__, __LINE__);	
+	wpa_printf(MSG_DEBUG, "WAPI CERT: in %s:%d", __func__, __LINE__);
 	pos = tbuf;
 	os_memset(pos, 0, sizeof(tbuf));
 	os_memset(&data_buff, 0, sizeof(data_buff));
@@ -1154,10 +1154,10 @@ static int wapi_cert_2_3_send(struct wapi_sm* sm, u8* payload, int len)
 	pos= ex_memcpy(pos, &(sm->asue_key_data.data), sm->asue_key_data.length);
 	SETSHORT(pos,sm->ae_id.id_flag); pos += 2;
 	SETSHORT(pos,sm->ae_id.id_len); pos += 2;
-	pos = ex_memcpy(pos, sm->ae_id.id_data, sm->ae_id.id_len);	
+	pos = ex_memcpy(pos, sm->ae_id.id_data, sm->ae_id.id_len);
 
 	SETSHORT(pos,wapi_cert.cert_info.config.used_cert); pos += 2;
-	SETSHORT(pos,wapi_cert.cert_info.asue_cert_obj->cert_bin->length); pos += 2;	
+	SETSHORT(pos,wapi_cert.cert_info.asue_cert_obj->cert_bin->length); pos += 2;
 
 	pos= ex_memcpy(pos, wapi_cert.cert_info.asue_cert_obj->cert_bin->data, wapi_cert.cert_info.asue_cert_obj->cert_bin->length);
 	//wpa_hexdump(MSG_DEBUG, "cert_bin->data",wapi_cert.cert_info.asue_cert_obj->cert_bin->data, wapi_cert.cert_info.asue_cert_obj->cert_bin->length);
@@ -1233,7 +1233,7 @@ static int wapi_process_cert_1_of_3(struct wapi_sm* sm, const unsigned char *src
 	u8 *ae_cer = NULL;
 	u8 *ecdh = NULL;
 	int ret = -1;
-	u8 auth_act_len = WAPI_FLAG_LEN 
+	u8 auth_act_len = WAPI_FLAG_LEN
 		+32/*random number*/
 		+2/*ASU ID Identifier*/
 		+2/*ASU ID Length*/
@@ -1243,9 +1243,9 @@ static int wapi_process_cert_1_of_3(struct wapi_sm* sm, const unsigned char *src
 		+2/*ECDH Parameter Length */;
 
 	wpa_printf(MSG_DEBUG, "WAPI CERT: in %s:%d", __func__, __LINE__);
-        
+
 	wapi_sm_set_state(sm, WPA_4WAY_HANDSHAKE);
-	
+
 	if(len < auth_act_len) {
 		wpa_printf(MSG_ERROR, "WAPI CERT: WAPI frame payload too short");
 		return -1;
@@ -1269,7 +1269,7 @@ static int wapi_process_cert_1_of_3(struct wapi_sm* sm, const unsigned char *src
 	}
 
 	/*get ASU ID*/
-	GETSHORT(asu_id, sm->ae_asu_id.id_flag); 
+	GETSHORT(asu_id, sm->ae_asu_id.id_flag);
 	GETSHORT((asu_id+2), sm->ae_asu_id.id_len);
 	if(len < sm->ae_asu_id.id_len) {
 		wpa_printf(MSG_ERROR, "WAPI CERT: WAPI frame payload too short");
@@ -1278,12 +1278,12 @@ static int wapi_process_cert_1_of_3(struct wapi_sm* sm, const unsigned char *src
 	else {
 		os_memcpy(sm->ae_asu_id.id_data, asu_id+4, sm->ae_asu_id.id_len);
 	}
-	len -= sm->ae_asu_id.id_len; 
+	len -= sm->ae_asu_id.id_len;
 
 	/*get AE Certificate*/
 	ae_cer = asu_id + 2 + 2 + sm->ae_asu_id.id_len;
-	GETSHORT(ae_cer, sm->ae_cert.cert_flag); 
-	GETSHORT((ae_cer+2), sm->ae_cert.length); 
+	GETSHORT(ae_cer, sm->ae_cert.cert_flag);
+	GETSHORT((ae_cer+2), sm->ae_cert.length);
 	if(len < sm->ae_cert.length){
 		wpa_printf(MSG_ERROR, "WAPI CERT: WAPI frame payload too short");
 		return -1;
@@ -1310,7 +1310,7 @@ static int wapi_process_cert_1_of_3(struct wapi_sm* sm, const unsigned char *src
 	}
 	len -= sm->ecdh.para_len;
 
-	if(len != 0) 
+	if(len != 0)
         {
 		wpa_printf(MSG_DEBUG, "WAPI CERT: in %s:%d", __func__, __LINE__);
 		return -1;
@@ -1324,7 +1324,7 @@ static int wapi_process_cert_1_of_3(struct wapi_sm* sm, const unsigned char *src
 
 	//os_get_random(sm->Nasue, 32);
     GetRandom_Value(sm->Nasue, 32);
-	
+
 	if (wapi_cert_2_3_send(sm, payload, len))
 	{
 		wpa_printf(MSG_DEBUG, "WAPI CERT: in %s:%d", __func__, __LINE__);
@@ -1361,7 +1361,7 @@ static int asue_certauthbk_derivation(struct wapi_sm *sm, const unsigned char *s
 	os_memcpy(text + 32, sm->Nasue, 32);
 	os_memcpy(text + 32 + 32, input_text, strlen(input_text));
 
-	KD_hmac_sha256(text, 32+32+strlen(input_text), 
+	KD_hmac_sha256(text, 32+32+strlen(input_text),
 		       ecdhkey, 24,
 		       temp_out, 16 + 32);
 
@@ -1376,11 +1376,11 @@ static int asue_certauthbk_derivation(struct wapi_sm *sm, const unsigned char *s
 	wpa_hexdump(MSG_DEBUG, "text1", text,32+32+strlen(input_text));
 
 	KD_hmac_sha256(text, 12,
-		       sm->pmk, 16, 
+		       sm->pmk, 16,
 		       sm->bkid, 16);
-	
+
 	mhash_sha256(temp_out + 16, 32, sm->ae_auth_flag);
-	wpa_hexdump(MSG_ERROR, "Generated PMK: ", sm->pmk, 16); 
+	wpa_hexdump(MSG_ERROR, "Generated PMK: ", sm->pmk, 16);
 	sm->pmk_len = 16;
 	wpa_hexdump(MSG_ERROR, "bkid: ", sm->bkid, 16);
 	ret = 0;
@@ -1472,7 +1472,7 @@ static int wapi_process_cert_3_of_3(struct wapi_sm* sm, const unsigned char *src
 	if(flag & BIT(3))
 		{
 			u8 *cert_pos = NULL, *asu_sign = NULL;
-			u16 fix_data_len=0, sign_len=0; 
+			u16 fix_data_len=0, sign_len=0;
 			tkey *pubkey = NULL;
 			wpa_printf(MSG_DEBUG, "WAPI CERT: in %s:%d,wapi_cert.asue_id.id_len=%d", __func__, __LINE__,wapi_cert.asue_id.id_len);
 
@@ -1501,7 +1501,7 @@ static int wapi_process_cert_3_of_3(struct wapi_sm* sm, const unsigned char *src
 			pubkey = cert_obj->asu_pubkey;
 			if(!(*cert_obj->verify)(pubkey->data, pubkey->length,
 						cert_res,fix_data_len + 3,
-						asu_sign + 1 + 2 + sign_len - 48, 
+						asu_sign + 1 + 2 + sign_len - 48,
 						48))
 				{
 					wpa_hexdump(MSG_ERROR, "pubkey->data", pubkey->data,pubkey->length);
@@ -1526,7 +1526,7 @@ static int wapi_process_cert_3_of_3(struct wapi_sm* sm, const unsigned char *src
 
 		if(!(*cert_obj->verify)(pubkey->data, pubkey->length,
 					payload,request_len,
-					ae_sign, 
+					ae_sign,
 					48))
 			{
 				pubkey = free_buffer(pubkey, sizeof(tkey));
@@ -1589,7 +1589,7 @@ static void wapi_process_1_of_3(struct wapi_sm *sm,
 	{
 		u8 temp[16+32];
 		u8 temp_addid[12] = { 0x00, 0x0b, 0xc0, 0x02, 0x44, 0x67,  0x00, 0x50, 0xc2, 0x6a, 0xf1, 0xbb};
-		
+
 	     	//wpa_hexdump(MSG_DEBUG, "###key->addid: ", key->addid, 12);
 		wpa_hexdump(MSG_DEBUG, "###key->BKID: ", key->bkid, 16);
 
@@ -1599,9 +1599,9 @@ static void wapi_process_1_of_3(struct wapi_sm *sm,
 #endif
 	ptk = &sm->ptk;
         wapi_pmk_to_ptk(sm->pmk, sm->pmk_len, "pairwise key expansion for unicast and additional keys and nonce",
-			key->addid, key->auth_challenge, sm->snonce, 
+			key->addid, key->auth_challenge, sm->snonce,
                        (u8 *) ptk, sizeof(*ptk));
-	
+
 	sm->ptk_set = 1;
 
 	if (wapi_send_2_of_3(sm, key, sm->snonce,
@@ -1751,7 +1751,7 @@ static void wapi_process_1_of_2(struct wapi_sm *sm,
         wapi_sm_set_state(sm, WPA_GROUP_HANDSHAKE);
 
         pos = (const u8 *) (key + 1); /* 17 bytes from pos, byte 0 is the length and the rest the key itself*/
-	
+
 	os_memset(temp_msk, 0, sizeof(temp_msk));
         os_memcpy(temp_msk, pos+1, 16);
         os_memcpy(iv, key->key_id, 16);
@@ -1760,7 +1760,7 @@ static void wapi_process_1_of_2(struct wapi_sm *sm,
 
         wpi_encrypt(iv, temp_msk, 16, sm->ptk.kek, nmk);
 
-	/* Mic Calculation */	
+	/* Mic Calculation */
 	buf[0] = key->flag;
 	buf[1] = key->mskid;
 	buf[2] = key->uskid;
@@ -1769,10 +1769,10 @@ static void wapi_process_1_of_2(struct wapi_sm *sm,
 	os_memcpy(buf+3+12+16, key->key_id, 16);
 	buf[3+12+16+16] = 16;
 	os_memcpy(buf+3+12+16+16+1, pos+1, 16);
-	
+
 	hmac_sha256(sm->ptk.mac, 16, buf, len, hash);
 	os_memcpy(mic, hash, 20);
-	
+
 	if(os_memcmp(mic, pos+1+16, 20) != 0)
 		wpa_printf(MSG_DEBUG, "Multicast  announcement packet ---> mic  is WRONG");
 	else
@@ -1868,7 +1868,7 @@ int wapi_sm_rx_eapol(struct wapi_sm *sm, const u8 *src_addr,
 		key_announce = (struct wapi_multicast_key_announce *)(hdr +1);
 		break;
 	default:
-		wpa_printf(MSG_DEBUG, "wapi_sm_rx_eapol: ERROR -> subtype: %d", hdr->subtype); 
+		wpa_printf(MSG_DEBUG, "wapi_sm_rx_eapol: ERROR -> subtype: %d", hdr->subtype);
 		goto out;
 	}
 
@@ -1899,7 +1899,7 @@ int wapi_sm_rx_eapol(struct wapi_sm *sm, const u8 *src_addr,
 		wpa_printf(MSG_DEBUG, "WAPI: Unknown subtype %d", hdr->subtype);
 		goto out;
 	}
-	
+
 	ret = 1;
 
  out:

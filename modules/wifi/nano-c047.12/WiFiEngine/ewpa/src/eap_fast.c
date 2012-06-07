@@ -902,7 +902,7 @@ static int eap_fast_set_tls_master_secret(struct eap_sm *sm,
 	wpa_hexdump(MSG_MSGDUMP, "EAP-FAST: T-PRF seed", seed, seed_len);
 	wpa_hexdump_key(MSG_MSGDUMP, "EAP-FAST: PAC-Key",
 			data->current_pac->pac_key, EAP_FAST_PAC_KEY_LEN);
-	/* master_secret = T-PRF(PAC-Key, "PAC to master secret label hash", 
+	/* master_secret = T-PRF(PAC-Key, "PAC to master secret label hash",
 	 * server_random + client_random, 48) */
 	sha1_t_prf(data->current_pac->pac_key, EAP_FAST_PAC_KEY_LEN,
 		   "PAC to master secret label hash",

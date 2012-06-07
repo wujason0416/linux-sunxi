@@ -2,7 +2,7 @@
 // Copyright (c) 2004-2010 Atheros Communications Inc.
 // All rights reserved.
 //
-// 
+//
 //
 // Permission to use, copy, modify, and/or distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -253,7 +253,7 @@ ar6k_cfg80211_connect(struct wiphy *wiphy, struct net_device *dev,
     AR_SOFTC_T     *ar     = arPriv->arSoftc;
     AR_SOFTC_STA_T *arSta  = &arPriv->arSta;
     A_STATUS status;
-#ifdef CFG80211_WAPI_ENABLE	
+#ifdef CFG80211_WAPI_ENABLE
 	const unsigned char wps_oui[] = { 0x00, 0x50, 0xf2, 0x04 };
 	const unsigned char wpa_oui[] = { 0x00, 0x50, 0xf2, 0x01 };
 	unsigned char *ie = sme->ie;
@@ -352,7 +352,7 @@ ar6k_cfg80211_connect(struct wiphy *wiphy, struct net_device *dev,
             A_MEMCPY(arSta->arReqBssid, sme->bssid, sizeof(arSta->arReqBssid));
         }
     }
-	
+
     ar6k_set_wpa_version(arPriv, sme->crypto.wpa_versions);
     ar6k_set_auth_type(arPriv, sme->auth_type);
 
@@ -403,9 +403,9 @@ ar6k_cfg80211_connect(struct wiphy *wiphy, struct net_device *dev,
     }
 
     arPriv->arNetworkType = arPriv->arNextMode;
-	
+
 #ifdef CFG80211_WAPI_ENABLE
-/*the following codes for wps and wapi, but ONLY test wapi*/	
+/*the following codes for wps and wapi, but ONLY test wapi*/
 	if (ie[0] == WLAN_EID_VENDOR_SPECIFIC &&
          memcmp(ie + 2, wps_oui, sizeof(wps_oui)) == 0) {
 				/* WPS IE detected, notify target */
@@ -414,12 +414,12 @@ ar6k_cfg80211_connect(struct wiphy *wiphy, struct net_device *dev,
 				arPriv->arAuthMode = 0;
     } else {
      	if ((ie[0]==IEEE80211_ELEMID_RSN) ||
-    		(ie[0]==IEEE80211_ELEMID_VENDOR && 
-    		memcmp(&ie[2], wpa_oui, sizeof(wpa_oui))==0)) { 
+    		(ie[0]==IEEE80211_ELEMID_VENDOR &&
+    		memcmp(&ie[2], wpa_oui, sizeof(wpa_oui))==0)) {
 				sme->ie_len = 0; /* Firmware will set for us. Clear the previous one */
    		}
 		/* for WAPI */
-        else if (ie[0]==IEEE80211_ELEMID_WAPI) 
+        else if (ie[0]==IEEE80211_ELEMID_WAPI)
 	    {
         }
         /************/
@@ -960,7 +960,7 @@ ar6k_cfg80211_add_key(struct wiphy *wiphy, struct net_device *ndev,
         }
     } else {
         key_usage |= PAIRWISE_USAGE;
-    }	
+    }
     status = wmi_addKey_cmd(arPriv->arWmi, arPriv->arDefTxKeyIndex, key_type, key_usage,
                     key->key_len, wapiKeyRsc, key->key, KEY_OP_INIT_VAL,
                     (A_UINT8*)mac_addr, SYNC_BOTH_WMIFLAG);
@@ -1629,10 +1629,3 @@ ar6k_cfg80211_deinit(AR_SOFTC_DEV_T *arPriv)
     wiphy_free(wdev->wiphy);
     kfree(wdev);
 }
-
-
-
-
-
-
-

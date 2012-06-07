@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // Copyright (c) 2004-2010 Atheros Corporation.  All rights reserved.
-// 
+//
 //
 // Permission to use, copy, modify, and/or distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -3941,7 +3941,7 @@ wmi_create_pstream_cmd(struct wmi_t *wmip, WMI_CREATE_PSTREAM_CMD *params)
     if ((A_UINT32)params->tsid == (A_UINT32)WMI_IMPLICIT_PSTREAM) {
         LOCK_WMI(pWmiPriv);
         fatPipeExistsForAC = (pWmiPriv->wmi_fatPipeExists & (1 << params->trafficClass));
-        /* 
+        /*
          * EV#84204 target assert failure in _tx_aggr_drain_post_process()
          * To prevent the driver from sending the back-to-back CREATE_PSTREAM cmd
          */
@@ -8043,5 +8043,3 @@ wmi_set_apsd_buffered_traffic_cmd(struct wmi_t *wmip, A_UINT16 aid, A_UINT16 bit
 
     return (wmi_cmd_send(wmip, osbuf, WMI_AP_APSD_BUFFERED_TRAFFIC_CMDID, NO_SYNC_WMIFLAG));
 }
-
-

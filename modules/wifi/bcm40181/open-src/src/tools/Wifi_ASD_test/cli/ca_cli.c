@@ -135,7 +135,7 @@ main(int argc, char *argv[])
 		DPRINT_ERR(WFA_ERR, "incorrect port number\n");
 		exit(1);
 	}
-	
+
 	if((errno = Start_Socket_Service()) != 0){
 		DPRINT_ERR(WFA_ERR, "Start_Socket_Service failed\n");
 		return 0;

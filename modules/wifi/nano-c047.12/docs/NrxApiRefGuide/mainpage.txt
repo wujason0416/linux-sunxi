@@ -4,5 +4,3 @@
  * \page disclaimer_copyright 	Disclaimer and copyright
  * \htmlinclude 		disclaimer_copyright.htm
 */
-
-

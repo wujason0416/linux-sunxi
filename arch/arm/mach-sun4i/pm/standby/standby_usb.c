@@ -95,5 +95,3 @@ __s32 standby_query_usb_event(void)
 {
     return -1;
 }
-
-

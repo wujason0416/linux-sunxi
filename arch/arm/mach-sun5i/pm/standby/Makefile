@@ -44,4 +44,3 @@ all:
 	@echo well done!
 clean:
 	-rm *.o *.map *.lst *.bin *.elf *.exe dram/*.o
-

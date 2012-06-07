@@ -177,7 +177,7 @@ main(int argc, char *argv[])
 	fd_set sockSet;
 	char *rwl_exe_path;
 	rwl_exe_path = malloc(WFA_BUFF_1K);
-	
+
 /* CA assumes that wl.exe will be stored in the current working directory */
 	get_rwl_exe_path(rwl_exe_path, WFA_BUFF_1K);
 	if (argc < 3) {
@@ -185,7 +185,7 @@ main(int argc, char *argv[])
 		return 0;
 	}
 
-    /* isdigit() is not working with the build server tagged build 
+    /* isdigit() is not working with the build server tagged build
 	 * so isdigit is replaced with isNumber() function call */
 
 	if (isNumber(argv[2]) == FALSE) {
@@ -231,7 +231,7 @@ main(int argc, char *argv[])
 	length_client_path = strlen(rwl_client_path);
 	/* Look for wifi transport */
 	if(strstr(rwl_client_path, "--wifi") != NULL) {
-		rwl_wifi_flag = 1; 
+		rwl_wifi_flag = 1;
 	} else {
 		rwl_wifi_flag = 0;
 	}
@@ -253,8 +253,8 @@ main(int argc, char *argv[])
 		return 0;
 	}
 	DPRINT_INFO(WFA_OUT, "rwl_client_path = %s\n", rwl_client_path);
-	
-	
+
+
 	/* Create TCP socket for getting the commands from tc_cli */
 	if ((tmsockfd = wfaCreateTCPServSock(myport))== -1) {
 		DPRINT_ERR(WFA_ERR, "Failed to open socket\n");
@@ -313,8 +313,8 @@ main(int argc, char *argv[])
 			memset(respStr, 0, WFA_BUFF_128);
 			sprintf(respStr, "status,RUNNING\r\n");
 			wfaCtrlSend(gCaSockfd, (BYTE *)respStr, strlen(respStr));
-			/* WFA Comment :having this is for slowing down unexpected 
-			 * output result on CLI command sometimes 
+			/* WFA Comment :having this is for slowing down unexpected
+			 * output result on CLI command sometimes
 			 */
 			asd_sleep(1);
 			DPRINT_INFO(WFA_OUT, "%s\n", respStr);
@@ -322,7 +322,7 @@ main(int argc, char *argv[])
 			slen = (int )strlen((char *)xcCmdBuf);
 			strncpy(command, (char*)xcCmdBuf, strlen((char*)xcCmdBuf));
 		   /* The carriage return and newline character need to be
-			* removed before sending the command to the DUT for the TCL 
+			* removed before sending the command to the DUT for the TCL
 			* scripts to run correctly.
 			*/
 			strtok(command, "\r\n");
@@ -363,7 +363,7 @@ main(int argc, char *argv[])
 
 			memset(pcmdBuf, 0, WFA_BUFF_1K);
 
-			/* Check for the valid command and the valid arguements for the command 
+			/* Check for the valid command and the valid arguements for the command
 			 * and return STATUS INVLID for commands that do not exist or if the arguements
 			 * for the command are invalid.
 			 */
@@ -375,7 +375,7 @@ main(int argc, char *argv[])
 					wfaCtrlSend(gCaSockfd, (BYTE *)respStr, WFA_BUFF_128);/* Buffer size modified from strlen(respStr) on 21/11/07 */
 					DPRINT_WARNING(WFA_WNG, "Incorrect command syntax\n");
 					continue;
-			} 
+			}
 		   /*
 			* Decode the command that is parsed above to find the actual function pointer
 			* that needs to be executed. (decode for xcCmdTag )
@@ -413,7 +413,7 @@ main(int argc, char *argv[])
 				/* Commands that need to be executed at DUT are processed here
 				 * TG commands for example
 				 */
-				 /*In case of Multiple streams the commands will have space after each 
+				 /*In case of Multiple streams the commands will have space after each
 				  * streamid. So Look for \n for the end of command.
 				  */
 				strtok(command, "\n");
@@ -430,12 +430,12 @@ main(int argc, char *argv[])
 
 				if (fread(trafficPath, sizeof(char), RESPONSE_SIZE, fp) <= 0)
 					strcpy(trafficPath, "status,ERROR\r\n");
-				
+
 				DPRINT_INFO(WFA_OUT, "%s %d\n", trafficPath, strlen(trafficPath));
 
 				wfaCtrlSend(gCaSockfd, (BYTE *)trafficPath, strlen(trafficPath));
 				file_cleanup(fp);
-												
+
 				memset(command, 0, strlen(command));
 				free(trafficPath);
 

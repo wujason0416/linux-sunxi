@@ -1,9 +1,9 @@
 /**
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -213,7 +213,7 @@ init_chrdev_err:
 void terminate_kernel_device(void)
 {
 	dev_t dev = MKDEV(mali_major, 0);
-	
+
 	mali_sysfs_unregister(&device, dev, mali_dev_name);
 
 	/* unregister char device */
@@ -322,7 +322,7 @@ static int mali_ioctl(struct inode *inode, struct file *filp, unsigned int cmd, 
 		MALI_DEBUG_PRINT(7, ("filp->private_data was NULL\n"));
 		return -ENOTTY;
 	}
-	
+
 	if (NULL == (void *)arg)
 	{
 		MALI_DEBUG_PRINT(7, ("arg was NULL\n"));

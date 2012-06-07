@@ -44,7 +44,7 @@ static int mali_drm_unload(struct drm_device *dev)
 	return 0;
 }
 
-static struct drm_driver driver = 
+static struct drm_driver driver =
 {
 	.driver_features = DRIVER_USE_PLATFORM_DEVICE,
 	.load = mali_drm_load,

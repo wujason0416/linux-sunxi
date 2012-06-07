@@ -2,7 +2,7 @@
 /******************************************************************************
  *  Copyright (c) 2010 - Sweden Connectivity AB.
  *  ALL RIGHTS RESERVED
- *  
+ *
  *  pal_command_parser.h
  *  Parses incomming HCI messages
  *	Take necessary WiFi action and send back the response
@@ -38,9 +38,9 @@
 
 #define AMP_TOTAL_BANDWIDTH		0x00000000 //
 #define AMP_GUARANTEED_BANDWITH		0xffffffff //For best effort
-#define AMP_MIN_LATENCY			0xffffffff 
-#define AMP_MAX_PDU_SIZE		0xffffffff 
-#define AMP_CONTROLLER_TYPE		0x01 
+#define AMP_MIN_LATENCY			0xffffffff
+#define AMP_MAX_PDU_SIZE		0xffffffff
+#define AMP_CONTROLLER_TYPE		0x01
 
 #define AMP_MAX_HCI_PACKET_LENGTH	254
 
@@ -89,7 +89,7 @@
 int HCI_Read_Flow_Control_Mode_Cmd_fcn(void* param);
 
 typedef struct
-{ 
+{
 char evt_hdr;
   char evt_code;
   char length;
@@ -105,7 +105,7 @@ int HCI_Write_Flow_Control_Mode_Cmd_fcn(void* param);
 
 typedef struct
 { char flow_control_mode;
-	
+
 }HCI_Write_Flow_Control_Mode_Cmd_struct;
 
 typedef struct
@@ -123,7 +123,7 @@ int HCI_Read_Buffer_Size_Cmd_fcn(void* param);
 
 typedef struct
 { 	char evt_hdr;
-	char evt_code;	
+	char evt_code;
 	char length;
 	char num_HCI_pkts;
 	short opcode;
@@ -131,7 +131,7 @@ typedef struct
 	short HC_ACL_Data_Packet_Length;
 	char HC_Synchronous_Data_Packet_Length;
 	short HC_Total_Num_ACL_Data_Packets;
-	short HC_Total_Num_Synchronous_Data_Packets; 
+	short HC_Total_Num_Synchronous_Data_Packets;
 }HCI_Read_Buffer_Size_evt;
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -147,8 +147,8 @@ typedef struct
 	short opcode;
 	char status;
 	short Max_ACL_Data_Packet_Length;
-	short Data_Block_Length;  
-	short Total_Data_Blocks;  
+	short Data_Block_Length;
+	short Total_Data_Blocks;
 }HCI_Read_Data_Block_Size_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -157,7 +157,7 @@ int Number_Of_Complete_Data_Bocks_Evt_fcn(int noOfCompletedPackets);
 
 
 typedef struct
-{ 	
+{
 	char evt_hdr;
 	char evt_code; //0x48
 	char length;
@@ -173,7 +173,7 @@ int Buffer_OverFlow_Evt_fcn(void);
 
 
 typedef struct
-{ 	
+{
 	char evt_hdr;
 	char evt_code; //0x1A
 	char length;
@@ -236,7 +236,7 @@ int HCI_Reset_Failed_Contact_Counter_Cmd_fcn(void* param);
 
 typedef struct
 { short handle;
-	
+
 }HCI_Reset_Failed_Contact_Counter_Cmd_struct;
 
 typedef struct
@@ -255,7 +255,7 @@ int HCI_Set_Event_Mask_Cmd_fcn(void* param);
 
 typedef struct
 { char Event_Mask[8];
-	
+
 }HCI_Set_Event_Mask_Cmd_struct;
 
 typedef struct
@@ -354,7 +354,7 @@ typedef struct
 { char Location_Domain_Aware;
 short Location_Domain;
 char Location_Domain_Options;
-char Location_Options; 	
+char Location_Options;
 }HCI_Write_Location_Data_Cmd_struct;
 
 typedef struct
@@ -386,7 +386,7 @@ char status;
 int HCI_Write_Connection_Accept_Timeout_Cmd_fcn(void* param);
 
 typedef struct
-{	short Conn_Accept_Timeout;	
+{	short Conn_Accept_Timeout;
 }HCI_Write_Connection_Accept_Timeout_Cmd_struct;
 
 typedef struct
@@ -403,8 +403,8 @@ char status;
 int HCI_Read_Failed_Contact_Counter_Command_Cmd_fcn(void* param);
 
 typedef struct
-{ 
-  short handle;	
+{
+  short handle;
 }HCI_Read_Failed_Contact_Counter_Command_Cmd_struct;
 
 typedef struct
@@ -423,7 +423,7 @@ char status;
 int HCI_Read_Link_Supervision_Timeout_Cmd_fcn(void* param);
 
 typedef struct
-{ 
+{
   short handle;
 }HCI_Read_Link_Supervision_Timeout_Cmd_struct;
 
@@ -444,7 +444,7 @@ int HCI_Write_Link_Supervision_Timeout_Cmd_fcn(void* param);
 typedef struct
 { short handle;
   short Link_Supervission_Timeout;
-	
+
 }HCI_Write_Link_Supervision_Timeout_Cmd_struct;
 
 typedef struct
@@ -472,7 +472,7 @@ char evt_code;
 char length;
 char num_HCI_pkts;
 short opcode;
-char status;  
+char status;
 }HCI_Short_Range_Mode_evt;
 
 typedef struct
@@ -492,13 +492,13 @@ int HCI_Set_Event_Filter_Cmd_fcn(void* param);
 typedef struct
 { char Filter_Type;
   char Filter_Condition_Type;
-  char Condition;	
+  char Condition;
 }HCI_Set_Event_Filter_Cmd_struct;
 
 typedef struct
 { HCI_Set_Event_Filter_Cmd_struct Set_Event_Filter_Cmd_struct;
   char Class_of_Device[3];
-  char Condition;	
+  char Condition;
 }HCI_Set_Event_Filter_Connection_type;
 
 
@@ -508,7 +508,7 @@ char evt_code;
 char length;
 char num_HCI_pkts;
 short opcode;
-char status;   
+char status;
 }HCI_Set_Event_Filter_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -521,7 +521,7 @@ char evt_code;
 char length;
 char num_HCI_pkts;
 short opcode;
-char status;  
+char status;
   char AMP_Status;
   int Total_Bandwidth;
   int Max_Guaranteed_Bandwidth;
@@ -531,7 +531,7 @@ char status;
   short PAL_Capabilities;
   short Max_AMP_ASSOC_Length;
   int Max_Flush_Timeout;
-  int Best_Effort_Flush_Timeout;  
+  int Best_Effort_Flush_Timeout;
 }HCI_Read_Local_AMP_Info_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -544,7 +544,7 @@ char evt_code;
 char length;
 char num_HCI_pkts;
 short opcode;
-char status;    
+char status;
 }HCI_AMP_Test_End_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -553,7 +553,7 @@ int HCI_AMP_Test_Cmd_fcn(void* param);
 
 typedef struct
 { char Controller_type;
-	
+
 }HCI_AMP_Test_Cmd_struct;
 
 typedef struct
@@ -562,7 +562,7 @@ char evt_code;
 char length;
 char num_HCI_pkts;
 short opcode;
-char status; 
+char status;
 }HCI_AMP_Test_Data_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -582,7 +582,7 @@ char evt_code;
 char length;
 char num_HCI_pkts;
 short opcode;
-char status; 
+char status;
 }HCI_Enable_AMP_Receiver_Report_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -595,7 +595,7 @@ char evt_code;
 char length;
 char num_HCI_pkts;
 short opcode;
-char status; 
+char status;
 }HCI_AMP_Start_Test_Event;
 
 
@@ -608,7 +608,7 @@ int HCI_AMP_Test_Command_fcn(void* param);
 int HCI_AMP_Receiver_Report_Evt_fcn(char reason);
 
 typedef struct
-{ 
+{
 	char evt_hdr;
 	char evt_code;
 	char length;
@@ -618,7 +618,7 @@ typedef struct
 	char Number_Of_Frames;
 	char Number_Of_Error_Frames;
 	int Number_Of_Bits;
-	int Number_Of_Error_Bits; 
+	int Number_Of_Error_Bits;
 }HCI_AMP_Receiver_Report_evt;
 
 
@@ -632,14 +632,14 @@ int HCI_Accept_Logical_Link_Cmd_fcn(void* param);
 typedef struct
 { char Logical_Link_Handle;
   char Tx_Flow_Spec[16];
-  char Rx_Flow_Spec[16];	
+  char Rx_Flow_Spec[16];
 }HCI_Accept_Logical_Link_Cmd_struct;
 
 typedef struct
 {  char evt_hdr;
 char evt_code; //ox0f
 char length;
-char status; 
+char status;
 char num_HCI_pkts;
 short opcode;
 }HCI_Accept_Logical_Link_status_evt;
@@ -648,7 +648,7 @@ typedef struct
 {  char evt_hdr;
 char evt_code; //0x45
 char length;
-char status; 
+char status;
 short logical_link_handle;
 char phy_link_handle;
 char TX_flow_spec_ID;
@@ -664,14 +664,14 @@ typedef struct
 { char Physical_Link_Handle;
 char Tx_Flow_Spec[16];
 char Rx_Flow_Spec[16];
-	
+
 }HCI_Create_Logical_Link_Cmd_struct;
 
 typedef struct
 {  char evt_hdr;
 char evt_code; //ox0f
 char length;
-char status; 
+char status;
 char num_HCI_pkts;
 short opcode;
 }HCI_Create_Logical_Link_status_evt;
@@ -680,7 +680,7 @@ typedef struct
 {  char evt_hdr;
 char evt_code; //0x45
 char length;
-char status; 
+char status;
 short logical_link_handle;
 char phy_link_handle;
 char TX_flow_spec_ID;
@@ -698,17 +698,17 @@ typedef struct
 {  char evt_hdr;
 char evt_code; //ox0f
 char length;
-char status; 
+char status;
 char num_HCI_pkts;
 short opcode;
 }HCI_Disconnect_Logical_Link_status_evt;
 
 typedef struct
-{ 
+{
 char evt_hdr;
 char evt_code; //0x46
 char length;
-char status; 
+char status;
 short logical_link_handle;
 char reason;
 }HCI_Disconnect_Logical_Link_complete_evt;
@@ -720,16 +720,16 @@ int HCI_Logical_Link_Cancel_Cmd_fcn(void* param);
 typedef struct
 { char Physical_Link_Handle;
   char Tx_Flow_Spec_ID;
-	
+
 }HCI_Logical_Link_Cancel_Cmd_struct;
 
 typedef struct
 {  	char evt_hdr;
-	char evt_code;	
+	char evt_code;
 	char length;
 	char num_HCI_pkts;
 	short opcode;
-	char status; 
+	char status;
 	char Physical_Link_Handle;
 	char Tx_Flow_Spec_ID;
 }HCI_Logical_Link_Cancel_evt;
@@ -741,11 +741,11 @@ int HCI_Read_logical_Link_Accept_Timeout_Cmd_fcn(void* param);
 
 typedef struct
 {  	char evt_hdr;
-	char evt_code;	
+	char evt_code;
 	char length;
 	char num_HCI_pkts;
 	short opcode;
-	char status; 
+	char status;
 	short Logical_Link_Accept_Timeout;
 }HCI_Read_logical_Link_Accept_Timeout_evt;
 
@@ -755,16 +755,16 @@ typedef struct
 int HCI_Write_logical_Link_Accept_Timeout_Cmd_fcn(void* param);
 
 typedef struct
-{ 	short Logical_Link_Accept_Timeout;	
+{ 	short Logical_Link_Accept_Timeout;
 }HCI_Write_logical_Link_Accept_Timeout_struct;
 
 typedef struct
 { 	char evt_hdr;
-	char evt_code;	
+	char evt_code;
 	char length;
 	char num_HCI_pkts;
 	short opcode;
-	char status;  
+	char status;
 }HCI_Write_logical_Link_Accept_Timeout_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -777,12 +777,12 @@ typedef struct
 
 typedef struct
 { 	char evt_hdr;
-	char evt_code;	
+	char evt_code;
 	char length;
 	char num_HCI_pkts;
 	short opcode;
-	char status; 
-	int Best_Effort_Flush_Timeout;  
+	char status;
+	int Best_Effort_Flush_Timeout;
 }HCI_Read_Best_Effort_Flush_Timeout_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -811,11 +811,11 @@ typedef struct
 
 typedef struct
 { 	char evt_hdr;
-	char evt_code;	
+	char evt_code;
 	char length;
 	char num_HCI_pkts;
 	short opcode;
-	char status;  
+	char status;
 }HCI_Write_Best_Effort_Flush_Timeout_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -831,7 +831,7 @@ typedef struct
 {  	char evt_hdr;
 	char evt_code; //ox0f
 	char length;
-	char status; 
+	char status;
 	char num_HCI_pkts;
 	short opcode;
 }HCI_Enhanced_Flush_status_evt;
@@ -840,7 +840,7 @@ typedef struct
 { 	char evt_hdr;
 	char evt_code; //0x39
 	char length;
-	short handle;	
+	short handle;
 }HCI_Enhanced_Flush_complete_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -848,18 +848,18 @@ typedef struct
 int HCI_Read_RSSI_Cmd_fcn(void* param);
 
 typedef struct
-{ 	short handle;	
+{ 	short handle;
 }HCI_Read_RSSI_Cmd_struct;
 
 typedef struct
 { 	char evt_hdr;
-	char evt_code;	
+	char evt_code;
 	char length;
 	char num_HCI_pkts;
 	short opcode;
-	char status; 
+	char status;
 	short handle;
-	char RSSI;  
+	char RSSI;
 }HCI_Read_RSSI_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -872,13 +872,13 @@ typedef struct
 
 typedef struct
 { 	char evt_hdr;
-	char evt_code;	
+	char evt_code;
 	char length;
 	char num_HCI_pkts;
 	short opcode;
-	char status; 
+	char status;
 	short handle;
-	char Link_Quality;  
+	char Link_Quality;
 }HCI_Read_Link_Quality_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -888,7 +888,7 @@ int HCI_Create_Physical_Link_Cmd_fcn(void* param);
 typedef struct
 { char Physical_Link_Handle;
   char Dedicated_AMP_Key_Length;
-  char Dedicated_AMP_Key_Type; 
+  char Dedicated_AMP_Key_Type;
   char Dedicated_AMP_Key[16];
 }HCI_Create_Physical_Link_struct;
 
@@ -896,7 +896,7 @@ typedef struct
 {  	char evt_hdr;
 	char evt_code; //ox0f
 	char length;
-	char status; 
+	char status;
 	char num_HCI_pkts;
 	short opcode;
 }HCI_Create_Physical_Link_status_evt;
@@ -916,7 +916,7 @@ int Physical_Link_Complete_Event(char reason);
 typedef struct
 { 	char Physical_Link_Handle;
 	char Dedicated_AMP_Key_Length;
-	char Dedicated_AMP_Key_Type; 
+	char Dedicated_AMP_Key_Type;
 	char Dedicated_AMP_Key[16];
 }HCI_Accept_Physical_Link_Cmd_struct;
 
@@ -924,7 +924,7 @@ typedef struct
 {  	char evt_hdr;
 	char evt_code; //ox0f
 	char length;
-	char status; 
+	char status;
 	char num_HCI_pkts;
 	short opcode;
 }HCI_Accept_Physical_Link_status_evt;
@@ -934,7 +934,7 @@ typedef struct
 	char evt_code; //ox40
 	char length;
 	char status;
-	char Physical_Link_Handle;  
+	char Physical_Link_Handle;
 }HCI_Physical_Link_complete_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -950,7 +950,7 @@ typedef struct
 {  	char evt_hdr;
 	char evt_code; //ox0f
 	char length;
-	char status; 
+	char status;
 	char num_HCI_pkts;
 	short opcode;
 }HCI_Disconnect_Physical_Link_status_evt;
@@ -976,14 +976,14 @@ typedef struct
 
 typedef struct
 { 	char evt_hdr;
-	char evt_code;	
+	char evt_code;
 	char length;
 	char num_HCI_pkts;
 	short opcode;
-	char status;  
+	char status;
 	char Physical_Link_Handle;
 	short AMP_ASSOC_Remaining_Length;
-	char AMP_ASSOC_fragment[248];  
+	char AMP_ASSOC_fragment[248];
 }HCI_Read_Local_AMP_ASSOC_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -999,28 +999,28 @@ typedef struct
 
 typedef struct
 {	char evt_hdr;
-	char evt_code;	
+	char evt_code;
 	char length;
 	char num_HCI_pkts;
 	short opcode;
-	char status; 
-	char Physical_Link_Handle;  
+	char status;
+	char Physical_Link_Handle;
 }HCI_Write_Remote_AMP_ASSOC_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
-#define HCI_Flow_Spec_Modify_Cmd_def 0x3c04  //  
+#define HCI_Flow_Spec_Modify_Cmd_def 0x3c04  //
 int HCI_Flow_Spec_Modify_Cmd_fcn(void* param);
 
 typedef struct
 { 	short handle;
   	char Tx_flow_spec[16];
-  	char Rx_flow_spec[16];  
+  	char Rx_flow_spec[16];
 }HCI_Flow_Spec_Modify_Cmd_struct;
 
 typedef struct
 {  	char evt_hdr;
 	char evt_code; //ox0f
 	char length;
-	char status; 
+	char status;
 	char num_HCI_pkts;
 	short opcode;
 }HCI_Flow_Spec_Modify_status_evt;
@@ -1030,7 +1030,7 @@ typedef struct
 	char evt_code; //ox47
 	char length;
 	char status;
-	char handle;	
+	char handle;
 }HCI_Flow_Spec_Modify_complete_evt;
 /////////////////////////////////////////////////////////////////////////////////////////
 int Check_Event_Mask(uint16_t netID, char *bufPt, int length);
@@ -1040,4 +1040,3 @@ int HCI_Send_Data(void* readBuf);
 int number_of_completed_data_blocks(void);
 
 #endif /*HCI_30_CMD_H_*/
-

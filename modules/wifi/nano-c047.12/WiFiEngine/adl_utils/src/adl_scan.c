@@ -81,9 +81,9 @@ void nrwifi_scan_one(nrwifi_scan_done_cb callback_fn, const char* ssid)
 
    //get the channel list from the registry
    ch_list = b->regionalChannels;
-   
+
    if(scan_job == -1)
-   {         
+   {
       if(WiFiEngine_AddScanJob(&scan_job, //scan job ID
                                nrssid,
                                bssid,
@@ -120,10 +120,10 @@ static void scan_done_cb(wi_msg_param_t param, void* priv)
       WiFiEngine_RemoveScanJob(scan_job,NULL);
       scan_job = -1;
    }
-   
+
 
    WiFiEngine_GetScanList(NULL, &num_of_nets);
-   
+
    if(num_of_nets == 0)
    {
       if(done_cb)
@@ -165,7 +165,7 @@ static void scan_done_cb(wi_msg_param_t param, void* priv)
       return;
    }
 
-   /* Copy the network information. 
+   /* Copy the network information.
       Note that this is only ok since we have locked the referred information in memory.
       In prevoius implementation the WiFiEngine_net_t::bss_p member was not safe to use.
     */
@@ -177,11 +177,10 @@ static void scan_done_cb(wi_msg_param_t param, void* priv)
    if(done_cb)
       done_cb(net_array, num_of_nets);
 
-   /* The information referred to by net_array will be locked in memory until this call is done. */ 
+   /* The information referred to by net_array will be locked in memory until this call is done. */
    WiFiEngine_ReleaseScanList(netlist, num_of_nets);
    DriverEnvironment_Free(netlist);
    DriverEnvironment_Free(net_array);
 
    return;
 }
-

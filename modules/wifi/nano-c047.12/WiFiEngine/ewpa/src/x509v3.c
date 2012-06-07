@@ -1547,7 +1547,7 @@ int x509_certificate_chain_validate(struct x509_certificate *trusted,
 	os_get_time(&now);
 
 	for (cert = chain, idx = 0; cert; cert = cert->next, idx++) {
-		x509_name_string(&cert->subject, buf, sizeof(buf)); 
+		x509_name_string(&cert->subject, buf, sizeof(buf));
 		wpa_printf(MSG_DEBUG, "X509: %lu: %s", idx, buf);
 
 		if (chain_trusted)

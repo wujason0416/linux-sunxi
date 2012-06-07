@@ -33,7 +33,7 @@ struct pcap_e {
    void* data;
    size_t len;
    uint16_t flags;
-   WEI_TQ_ENTRY(pcap_e) next; 
+   WEI_TQ_ENTRY(pcap_e) next;
    struct pcap_hdr hdr;
 };
 
@@ -60,7 +60,7 @@ static int prep_new_pcap_file(const char* path)
         file = MC_GFL_OPEN(name, GFL_O_RDONLY, GFL_S_IROTH);
         if(file>=0) {
             MC_GFL_CLOSE(file);
-        } else { 
+        } else {
             return MC_GFL_OPEN(name, GFL_O_CREAT|GFL_O_WRONLY|GFL_O_TRUNC, GFL_S_IROTH);
         }
     }
@@ -69,7 +69,7 @@ static int prep_new_pcap_file(const char* path)
 
 int
 nrx_pcap_open(const char* path)
-{ 
+{
    struct {
       uint32_t magic;
       uint16_t major;
@@ -111,7 +111,7 @@ nrx_pcap_open(const char* path)
    pcap_header.linktype = PCAP_LINKTYPE;
    written += MC_GFL_WRITE(ctx->file, &pcap_header, sizeof(pcap_header));
    if( written < sizeof(pcap_header) ) {
-      DE_TRACE_INT3(TR_PCAP, "Ops, file write to short. expected %d got %d. ignoring closing file handle %d\n", 
+      DE_TRACE_INT3(TR_PCAP, "Ops, file write to short. expected %d got %d. ignoring closing file handle %d\n",
             sizeof(pcap_header), written, ctx->file);
       /*
       MC_GFL_CLOSE(ctx->file);
@@ -197,7 +197,7 @@ nrx_pcap_q_write(struct pcap_ctx *ctx)
       return;
    }
 
-   WEI_TQ_FOREACH(e, &ctx->pcap_head, next) { 
+   WEI_TQ_FOREACH(e, &ctx->pcap_head, next) {
       WEI_TQ_REMOVE(&ctx->pcap_head, e, next);
       DriverEnvironment_release_trylock(&ctx->lock);
 
@@ -216,8 +216,8 @@ nrx_pcap_q_write(struct pcap_ctx *ctx)
    DriverEnvironment_release_trylock(&ctx->lock);
 }
 
-/* 
- * write packet and queued packets to disk. 
+/*
+ * write packet and queued packets to disk.
  * TODO: sort packets before writing to file.
  */
 int

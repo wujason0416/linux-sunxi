@@ -2,13 +2,13 @@
  * Broadcom device-specific manifest constants.
  *
  * Copyright (C) 1999-2011, Broadcom Corporation
- * 
+ *
  *         Unless you and Broadcom execute a separate written software license
  * agreement governing use of this software, this software is licensed to you
  * under the terms of the GNU General Public License version 2 (the "GPL"),
  * available at http://www.broadcom.com/licenses/GPLv2.php, with the
  * following added to such license:
- * 
+ *
  *      As a special exception, the copyright holders of this software give you
  * permission to link this software with independent modules, and to copy and
  * distribute the resulting executable under terms of your choice, provided that
@@ -16,7 +16,7 @@
  * the license of that module.  An independent module is a module which is not
  * derived from this software.  The special exception does not apply to any
  * modifications of the software.
- * 
+ *
  *      Notwithstanding the above, under no circumstances may you combine this
  * software in any way with any other Broadcom software provided under a license
  * other than the GPL, without Broadcom's express prior written consent.
@@ -134,7 +134,7 @@
 #define BCM43237_D11N5G_ID	0x4356		/* 43237 802.11n 5GHz device */
 #define BCM43227_D11N2G_ID	0x4358		/* 43228 802.11n 2.4GHz device */
 #define BCM43228_D11N_ID		0x4359		/* 43228 802.11n DualBand device */
-#define BCM43228_D11N5G_ID	0x435a		/* 43228 802.11n 5GHz device */ 
+#define BCM43228_D11N5G_ID	0x435a		/* 43228 802.11n 5GHz device */
 #define BCM43362_D11N_ID	0x4363		/* 43362 802.11n 2.4GHz device */
 #define BCM43239_D11N_ID	0x4370		/* 43239 802.11n dualband device */
 
@@ -330,7 +330,7 @@
 #define BFL2_CAESERS_BRD	0x00000040  /* Board is Caesers brd (unused by sw) */
 #define BFL2_BTC3WIRE		0x00000080  /* Board support legacy 3 wire or 4 wire */
 #define BFL2_BTCLEGACY          0x00000080  /* Board support legacy 3/4 wire, to replace
-					     * BFL2_BTC3WIRE 
+					     * BFL2_BTC3WIRE
 					     */
 #define BFL2_SKWRKFEM_BRD	0x00000100  /* 4321mcm93 board uses Skyworks FEM */
 #define BFL2_SPUR_WAR		0x00000200  /* Board has a WAR for clock-harmonic spurs */

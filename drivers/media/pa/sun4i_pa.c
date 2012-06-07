@@ -46,7 +46,7 @@ static int pa_dev_open(struct inode *inode, struct file *filp){
     return 0;
 }
 
-static int pa_dev_release(struct inode *inode, struct file *filp){  
+static int pa_dev_release(struct inode *inode, struct file *filp){
 	#ifdef PA_DEBUG
 	 printk("%s,%d\n", __func__, __LINE__);
 	 #endif
@@ -54,20 +54,20 @@ static int pa_dev_release(struct inode *inode, struct file *filp){
 }
 
 static long
-pa_dev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg){	
-	
-	switch (cmd) {	
+pa_dev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg){
+
+	switch (cmd) {
 		case PA_OPEN:
 			#ifdef PA_DEBUG
 			printk("%s,%d\n", __func__, __LINE__);
 			#endif
-			gpio_write_one_pin_value(gpio_pa_shutdown, 1, "audio_pa_ctrl");  
+			gpio_write_one_pin_value(gpio_pa_shutdown, 1, "audio_pa_ctrl");
 			break;
 		case PA_CLOSE:
 			#ifdef PA_DEBUG
 			printk("%s,%d\n", __func__, __LINE__);
-			#endif			
-			gpio_write_one_pin_value(gpio_pa_shutdown, 0, "audio_pa_ctrl");  
+			#endif
+			gpio_write_one_pin_value(gpio_pa_shutdown, 0, "audio_pa_ctrl");
 			break;
 		default:
 			break;
@@ -76,12 +76,12 @@ pa_dev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg){
 }
 
 static int snd_sun4i_pa_suspend(struct platform_device *pdev,pm_message_t state)
-{		
+{
 	return 0;
 }
 
 static int snd_sun4i_pa_resume(struct platform_device *pdev)
-{	
+{
 	return 0;
 }
 
@@ -94,7 +94,7 @@ static struct file_operations pa_dev_fops = {
 
 /*data relating*/
 static struct platform_device sun4i_device_pa = {
-	.name = "sun4i-pa",   	   
+	.name = "sun4i-pa",
 };
 
 /*method relating*/
@@ -110,27 +110,27 @@ static struct platform_driver sun4i_pa_driver = {
 
 static int __init pa_dev_init(void)
 {
-    int err = 0;	
+    int err = 0;
 	printk("[pa_drv] start!!!\n");
-	
+
 	if((platform_device_register(&sun4i_device_pa))<0)
 		return err;
 
 	if ((err = platform_driver_register(&sun4i_pa_driver)) < 0)
 		return err;
-  	
+
     alloc_chrdev_region(&dev_num, 0, 1, "pa_chrdev");
     pa_dev = cdev_alloc();
     cdev_init(pa_dev, &pa_dev_fops);
     pa_dev->owner = THIS_MODULE;
-    err = cdev_add(pa_dev, dev_num, 1);	
+    err = cdev_add(pa_dev, dev_num, 1);
     if (err) {
-    	printk(KERN_NOTICE"Error %d adding pa_dev!\n", err);    
+    	printk(KERN_NOTICE"Error %d adding pa_dev!\n", err);
         return -1;
     }
     pa_dev_class = class_create(THIS_MODULE, "pa_cls");
     device_create(pa_dev_class, NULL,
-                  dev_num, NULL, "pa_dev");   
+                  dev_num, NULL, "pa_dev");
     printk("[pa_drv] init end!!!\n");
     return 0;
 }
@@ -147,4 +147,3 @@ module_exit(pa_dev_exit);
 MODULE_AUTHOR("young");
 MODULE_DESCRIPTION("User mode encrypt device interface");
 MODULE_LICENSE("GPL");
-

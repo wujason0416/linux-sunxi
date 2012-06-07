@@ -1,15 +1,15 @@
 /*
  * This is the soul purpose of this file:
  *
- * scan, wps connect, scan, inform about 
+ * scan, wps connect, scan, inform about
  * final connect to host specific driver.
  *
- * This file deal with scanning, connecting and 
- * scanning a second time for the new network. 
- * Almost all of the work done here are related 
- * to WiFiEngine and almost nothing with the 
- * supplicant. The code is designed to be 
- * portable to other platforms but assume that 
+ * This file deal with scanning, connecting and
+ * scanning a second time for the new network.
+ * Almost all of the work done here are related
+ * to WiFiEngine and almost nothing with the
+ * supplicant. The code is designed to be
+ * portable to other platforms but assume that
  * the supplicant is compiled with this code.
  *
  */
@@ -52,7 +52,7 @@ typedef struct wps_ctx {
    m80211_ie_ssid_t ssid;
 
    // from we_cm.h
-   void *connection; 
+   void *connection;
    int max_connect_retrys;
 
    /* pin must be a NULL terminated string */
@@ -66,7 +66,7 @@ typedef struct wps_ctx {
    int scan_runs;
    char ma_ssid[MAX_SSID_LEN+1];
    int ma_ssid_len;
-   
+
    int force_wps_connection;
 
    //void *priv;
@@ -95,7 +95,7 @@ wps_ctx_s _wps_ctx;
 static int
 _scan_setup(
       scan_suite_s *ss,
-      i_func_t scan_ind_cb, 
+      i_func_t scan_ind_cb,
       i_func_t scan_complete_cb)
 {
    int s;
@@ -105,7 +105,7 @@ _scan_setup(
       return WPS_CODE_INTERNAL_ERROR;
 
    s = WiFiEngine_ActivateScanSuite(ss, scan_ind_cb, scan_complete_cb);
-   if(s != WIFI_ENGINE_SUCCESS) 
+   if(s != WIFI_ENGINE_SUCCESS)
       return WPS_CODE_INTERNAL_ERROR;
 
    return WIFI_ENGINE_SUCCESS;
@@ -123,7 +123,7 @@ static void _free_net(WiFiEngine_net_t **net_p)
 
    net->ref_cnt--;
    wei_netlist_free_net_safe(net);
-   
+
    *net_p = NULL;
 }
 
@@ -132,7 +132,7 @@ static void cleanup(wps_ctx_s* ctx)
    m80211_mac_addr_t bssid;
 
    DE_TRACE_STATIC(TR_WPS,"cleanup\n");
-   
+
    ctx->num_of_nets = 0;
    ctx->num_of_parsed_nets = 0;
    ctx->err_multiple_nets = 0;
@@ -163,7 +163,7 @@ static void cleanup(wps_ctx_s* ctx)
    /* free context */
    _free_net(&ctx->net);
    _free_net(&ctx->final_net);
-   
+
    /* this will disable wps in the supplicant */
    wps_set_ssid(NULL, NULL, 3);
 }
@@ -191,7 +191,7 @@ void wps_abort(void* wps_priv, int reason)
 
    DE_TRACE_STATIC(TR_WPS,"abort\n");
 
-   ctx = (wps_ctx_s*)wps_priv; 
+   ctx = (wps_ctx_s*)wps_priv;
    if(!ctx)
       return;
 
@@ -200,7 +200,7 @@ void wps_abort(void* wps_priv, int reason)
 }
 
 /**
- * This is the start 
+ * This is the start
  *
  * param wps_complete_cb to be called after abort/timeout/success/failure
  * return context on success; use this context on call to wps_abort()
@@ -240,7 +240,7 @@ void* wps_scan_and_connect(
    if(ssid) {
       DE_ASSERT(DE_STRLEN(ssid) <= MAX_SSID_LEN);
       ctx->ma_ssid_len = DE_STRLEN(ssid);
-      DE_MEMCPY(&ctx->ma_ssid[0], ssid, ctx->ma_ssid_len );   
+      DE_MEMCPY(&ctx->ma_ssid[0], ssid, ctx->ma_ssid_len );
    }
 
    ss = &ctx->scan;
@@ -260,7 +260,7 @@ void* wps_scan_and_connect(
          wps_timeout_timer_id,
          wps_timeout_expired,
          1);
-   
+
    ctx->err_multiple_nets=0;
    s = WiFiEngine_SetScanJobState(ss->scan_job.id, 1 /* start */ ,NULL);
    if(s != WIFI_ENGINE_SUCCESS)
@@ -291,31 +291,31 @@ static void wps_scan_ind_cb(wi_msg_param_t param, void* priv)
    ctx = (wps_ctx_s*)ss->priv;
 
    ctx->num_of_parsed_nets++;
-   
+
    DE_TRACE_INT(TR_WPS, "num_of_parsed_nets=%d\n", ctx->num_of_parsed_nets);
-   
-   /* This is needed in order to pass wps test case 5.1.8. 
+
+   /* This is needed in order to pass wps test case 5.1.8.
       When two AP's are configured with PBC and they are both active then we
       should not allow connection. This means that we should parse the
-      complete list of the active nets to see if we have more than one wps active AP's */ 
-   if(!ctx->num_of_nets) 
+      complete list of the active nets to see if we have more than one wps active AP's */
+   if(!ctx->num_of_nets)
    {
        DE_TRACE_STATIC(TR_WPS, "Refresh num_of_net from active list\n");
        WiFiEngine_GetScanList(NULL, &num_of_nets);
        ctx->num_of_nets = num_of_nets;
    }
-   
+
    DE_TRACE_INT(TR_WPS, "num_of_nets=%d\n",ctx->num_of_nets);
 
    DE_ASSERT(ctx->num_of_parsed_nets <= ctx->num_of_nets);
-   
+
    if((ctx->num_of_parsed_nets == ctx->num_of_nets))
 	   ctx->scan_runs++;
- 
+
     DE_TRACE_INT(TR_WPS, "scan_runs=%d\n",ctx->scan_runs);
    /* Some WPS APs (like broadcom) do no set 'Selected Registrar' attribute to 1 properly when using an
       external registrar (e.g vista). Allow such an AP to be selected for PIN registration after a couple
-      of scan runs that do not find APs marked with 'Selected Registrar = 1'. This will allow the driver 
+      of scan runs that do not find APs marked with 'Selected Registrar = 1'. This will allow the driver
       to iterate through all APs that advertize WPS support without delaying connection with implementations
       that set 'Selected Registrar = 1' properly */
    if( (ctx->scan_runs < MAX_SCAN_RUNS) || (ctx->pin_len == 0) || ((ctx->scan_runs == MAX_SCAN_RUNS) && (ctx->num_of_parsed_nets == ctx->num_of_nets)) ) {
@@ -324,7 +324,7 @@ static void wps_scan_ind_cb(wi_msg_param_t param, void* priv)
          DE_TRACE_INT(TR_WPS, "this is the last scan ind, num_of_nets=%d\n",ctx->num_of_nets);
       else
          return;
-   } 
+   }
    else {
 		/* It's possible that an AP will update it's configuration during WPS processing.
 		   In that case we should use the net with the latest configuration. */
@@ -333,21 +333,21 @@ static void wps_scan_ind_cb(wi_msg_param_t param, void* priv)
 				DE_TRACE_STATIC(TR_WPS,"Found the same net again! Update the old one...n");
 				ctx->err_multiple_nets = 0;
 			}
-		}   
-		ctx->err_multiple_nets++; 
+		}
+		ctx->err_multiple_nets++;
    }
    }
    else {
       DE_TRACE_STATIC(TR_WPS,"No active WPS APs found. Search for WPS capable APs\n");
-	   
+
       /* we are only interested for PIN registration */
       if(ctx->pin_len > 0) {
          /* get all the WPS APs that advertise wps support */
          if(we_filter_out_wps_configured(net) != WIFI_NET_FILTER_WPS_NOT_CONFIGURED) {
-            ctx->num_of_nets = ctx->num_of_parsed_nets = 0; 
+            ctx->num_of_nets = ctx->num_of_parsed_nets = 0;
             return;
          }
-			
+
          DE_TRACE_STATIC(TR_WPS,"Found WPS capable AP. Check if it is the desired one\n");
          /* check if this net is the desired one */
          ssid_ie = &net->bss_p->bss_description_p->ie.ssid;
@@ -366,9 +366,9 @@ static void wps_scan_ind_cb(wi_msg_param_t param, void* priv)
          ctx->force_wps_connection = 1; /* we found our net, no need to wait anymore */
       }
    }
-			
+
    DE_TRACE_INT(TR_WARN, "err_multiple_nets=%d\n",ctx->err_multiple_nets);
-   
+
    if(!ctx->net && (ctx->num_of_parsed_nets == ctx->num_of_nets) && (ctx->err_multiple_nets == 0))
    {
        DE_TRACE_STATIC(TR_WPS,"No WPS net found in the list of active nets, get new list\n");
@@ -384,7 +384,7 @@ static void wps_scan_ind_cb(wi_msg_param_t param, void* priv)
       ctx->net = net;
       net->ref_cnt++;
    }
-   
+
    if(ctx->err_multiple_nets > 1)
    {
       DE_TRACE_STATIC(TR_WPS,"Oops; more than one!\n");
@@ -392,12 +392,12 @@ static void wps_scan_ind_cb(wi_msg_param_t param, void* priv)
       (*ctx->complete_cb)(WPS_CODE_MULTIPLE_NETS);
       return;
    }
-   
+
    /* The connection should only initiated after parsing the complete
       list of active nets because of wps test case 5.1.8 */
    if((ctx->num_of_parsed_nets < ctx->num_of_nets) && !ctx->force_wps_connection)
       return;
-   
+
    ctx->num_of_parsed_nets = 0;
    ctx->force_wps_connection = 0;
 
@@ -540,7 +540,7 @@ static void wps_disconnected_cb(wi_msg_param_t param, void* priv)
       return;
    }
 
-   s = WiFiEngine_ActivateScanSuite(ss, 
+   s = WiFiEngine_ActivateScanSuite(ss,
          wps_connect_scan_ind_cb, NULL);
    if(s != WIFI_ENGINE_SUCCESS)
    {
@@ -577,7 +577,7 @@ static void wps_connect_scan_ind_cb(wi_msg_param_t param, void* priv)
    /* should never happen */
    if(ctx->final_net)
       return;
-   
+
    /* rely on that props have been set in wps_disconnected_cb() */
    if(we_filter_out_ssid(net))
       return;

@@ -4,12 +4,12 @@
  *
  * Copyright (C) 2011, Broadcom Corporation
  * All Rights Reserved.
- * 
+ *
  * This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
  * the contents of this file may not be disclosed to third parties, copied
  * or duplicated in any form, in whole or in part, without the prior
  * written permission of Broadcom Corporation.
- * 
+ *
  * $Id: rwl_wifi.h,v 1.4 2009/12/11 19:43:41 Exp $
  *
  */
@@ -29,7 +29,7 @@
 #define RWL_WIFI_DEFAULT		0x00
 #define RWL_ACTION_WIFI_FRAG_TYPE	0x55 /* Fragment indicator for receiver */
 
-/* 
+/*
  * Information about the action frame data fields in the dot11_action_wifi_vendor_specific
  * cdc structure (1 to 16). This does not include the status flag. Since this
  * is not directly visible to the driver code, we can't use sizeof(struct cdc_ioctl).

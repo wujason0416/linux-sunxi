@@ -23,6 +23,3 @@ refresh_all_reg_vrh:
 	$(P4_EDIT) $@
 	$(GEN_VRH) $<
 	$(P4_SUBMIT) ...
-
-
-

@@ -5,7 +5,7 @@
 #ifdef ANDROID
 #define LOG_TAG "wlandutlib"
 #include <utils/Log.h>
-#endif 
+#endif
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -159,9 +159,9 @@ int OpenDUT()
         error_msg = is_error;
         RETURNI(-1);
     }
-  
+
     current_channel = 1;
-  
+
     error_msg = no_error;
     RETURNI(SUCCESS);
 }
@@ -170,7 +170,7 @@ int OpenDUT()
 int CloseDUT()
 {
   ENTRY;
-  console_close(connection);  
+  console_close(connection);
   error_msg = no_error;
   RETURNI(SUCCESS);
 }
@@ -182,9 +182,9 @@ int SetChannel(int channel)
   int ret;
   int i;
   ENTRY;
-  
+
   error_msg = no_error;
-  
+
   //Only IEEE 802.11b/g channels
   if(channel < 1 || channel > 14)
   {
@@ -192,9 +192,9 @@ int SetChannel(int channel)
     error_msg = is_error;
     RETURNI(-1);
   }
-  
+
   current_channel = channel;
-  
+
   sprintf(buffer, "set_rf_channel=%i\n",current_channel);
   ret = send_cmd(buffer);
   RETURNI(ret);
@@ -205,50 +205,50 @@ int SetDataRate(DataRate rate)
 {
     int was_OFDM = is_OFDM;
     ENTRY;
-   
-   
+
+
     error_msg = no_error;
     switch(rate)
     {
         case DATA_RATE_1M:
             current_rate=M80211_XMIT_RATE_1MBIT;     is_OFDM = FALSE; break;
-        case DATA_RATE_2M:  
+        case DATA_RATE_2M:
              current_rate=M80211_XMIT_RATE_2MBIT;    is_OFDM = FALSE; break;
         case DATA_RATE_5_5M:
              current_rate=M80211_XMIT_RATE_5_5MBIT;  is_OFDM = FALSE; break;
-        case DATA_RATE_6M:  
+        case DATA_RATE_6M:
              current_rate=M80211_XMIT_RATE_6MBIT;    is_OFDM = TRUE; break;
         case DATA_RATE_MCS0:
              current_rate=M80211_XMIT_RATE_6_5MBIT;  is_OFDM = TRUE; break;
-        case DATA_RATE_9M:  
+        case DATA_RATE_9M:
              current_rate=M80211_XMIT_RATE_9MBIT;    is_OFDM = TRUE; break;
-        case DATA_RATE_11M: 
+        case DATA_RATE_11M:
              current_rate=M80211_XMIT_RATE_11MBIT;   is_OFDM = FALSE; break;
-        case DATA_RATE_12M: 
+        case DATA_RATE_12M:
              current_rate=M80211_XMIT_RATE_12MBIT;   is_OFDM = TRUE; break;
         case DATA_RATE_MCS1:
              current_rate=M80211_XMIT_RATE_13MBIT;   is_OFDM = TRUE; break;
-        case DATA_RATE_18M: 
+        case DATA_RATE_18M:
              current_rate=M80211_XMIT_RATE_18MBIT;   is_OFDM = TRUE; break;
         case DATA_RATE_MCS2:
              current_rate=M80211_XMIT_RATE_19_5MBIT; is_OFDM = TRUE; break;
-        case DATA_RATE_22M: 
+        case DATA_RATE_22M:
              current_rate=M80211_XMIT_RATE_22MBIT;   is_OFDM = TRUE; break;
-        case DATA_RATE_24M: 
+        case DATA_RATE_24M:
              current_rate=M80211_XMIT_RATE_24MBIT;   is_OFDM = TRUE; break;
         case DATA_RATE_MCS3:
              current_rate=M80211_XMIT_RATE_26MBIT;   is_OFDM = TRUE; break;
-        case DATA_RATE_33M: 
+        case DATA_RATE_33M:
              current_rate=M80211_XMIT_RATE_33MBIT;   is_OFDM = TRUE; break;
-        case DATA_RATE_36M: 
+        case DATA_RATE_36M:
              current_rate=M80211_XMIT_RATE_36MBIT;   is_OFDM = TRUE; break;
         case DATA_RATE_MCS4:
              current_rate=M80211_XMIT_RATE_39MBIT;   is_OFDM = TRUE; break;
-        case DATA_RATE_48M: 
+        case DATA_RATE_48M:
              current_rate=M80211_XMIT_RATE_48MBIT;   is_OFDM = TRUE; break;
         case DATA_RATE_MCS5:
              current_rate=M80211_XMIT_RATE_52MBIT;   is_OFDM = TRUE; break;
-        case DATA_RATE_54M: 
+        case DATA_RATE_54M:
              current_rate=M80211_XMIT_RATE_54MBIT;   is_OFDM = TRUE; break;
         case DATA_RATE_MCS6:
              current_rate=M80211_XMIT_RATE_58_5MBIT; is_OFDM = TRUE; break;
@@ -259,12 +259,12 @@ int SetDataRate(DataRate rate)
             error_msg = is_error;
             RETURNI(-1);
     }
-     
+
     if((was_OFDM != is_OFDM) && (output_power != -99))
     {
         TxGain(output_power);
-    } 
-     
+    }
+
     RETURNI(SUCCESS);
 }
 
@@ -299,34 +299,34 @@ int TxGain(int txpwr)
     char buffer[512];
     int ret;
     int index;
-    
+
     ENTRY;
-    
+
     error_msg = no_error;
-    
+
     if((txpwr < 0) || (txpwr > 21))
     {
         sprintf(is_error, "TX-power outside range");
         error_msg = is_error;
         RETURNI(-1);
     }
-    
+
     output_power = txpwr;
-  
+
     txpwr += RFLOSS;
-    
+
     if(is_OFDM)
     {
         index = MAX_OFDM_POWER - txpwr;
     }
     else
     {
-        index = MAX_QPSK_POWER - txpwr; 
+        index = MAX_QPSK_POWER - txpwr;
     }
-    
+
     if(index < 0)
        index = 0;
-  
+
     sprintf(buffer, "dec_power_index=%u\n",index);
     ret = send_cmd(buffer);
     RETURNI(ret);
@@ -353,9 +353,9 @@ int TxStartWithMod()
     int ret;
     int i;
     ENTRY;
-  
+
     error_msg = no_error;
-  
+
     sprintf(buffer, "txgen_start=%u,%u,-1,%u,0,0,0,%u\n",
                     current_rate,
                     current_packet_size,
@@ -381,9 +381,9 @@ int TxStop()
     int ret;
     int i;
     ENTRY;
-  
+
     error_msg = no_error;
-  
+
     sprintf(buffer, "txgen_stop\n");
     ret = send_cmd(buffer);
     RETURNI(ret);
@@ -396,9 +396,9 @@ int RxStart()
   int ret;
   int i;
   ENTRY;
-  
+
   error_msg = no_error;
-  
+
   sprintf(buffer, "rxstat_clr\n");
   ret = send_cmd(buffer);
   rx_frames = 0;
@@ -413,17 +413,17 @@ int RxStop()
     int ret;
     int i;
     ENTRY;
-  
+
     error_msg = no_error;
-    
+
     for(i=0;i <= LAST_RATE_XMIT_RATE; i++)
-    {  
+    {
         sprintf(buffer, "rxstat=%u,0\n",i);
         ret = send_cmd(buffer);
     }
-    //send some nonsense to make sure last results are read 
+    //send some nonsense to make sure last results are read
     SetChannel(current_channel);
-    
+
     RETURNI(ret);
 
     return SUCCESS;
@@ -447,8 +447,8 @@ int SetBand(int band)
     {
        return 0;
     }
-    sprintf(is_error, "5GHz band not supported"); 
-    error_msg = is_error;   
+    sprintf(is_error, "5GHz band not supported");
+    error_msg = is_error;
     return -1;
 }
 
@@ -458,8 +458,8 @@ int SetBandWidth(int width)
     {
        return 0;
     }
-    sprintf(is_error, "40Mhz bandwidth not supported"); 
-    error_msg = is_error;   
+    sprintf(is_error, "40Mhz bandwidth not supported");
+    error_msg = is_error;
     return -1;
 }
 
@@ -559,22 +559,22 @@ int console_read(con_handle_t h, char *buf, size_t buflen)
                     unsigned int i,j;
                     int last_good = 0;
                     char dbgbuf[257];
-                    
+
                     j = 0;
-                    
+
                     memset(dbgbuf,0,256);
                     for(i=0;i<slen;i++)
                     {
                         char Char = buf[i];
                         if(i>256)
                             break;
-                        
+
                         if(Char == 0)
                             Char = '\n';
-                        
+
                         if(Char == '\r')
                             continue;
-                            
+
                         if(Char == '\n')
                         {
                             if(j)
@@ -582,10 +582,10 @@ int console_read(con_handle_t h, char *buf, size_t buflen)
                                 dbgbuf[j] = Char;
                                 j++;
                             }
-                            continue;  
+                            continue;
                         }
                         dbgbuf[j] = Char;
-                        last_good = j; // 
+                        last_good = j; //
                         j++;
                     }
                     dbgbuf[last_good+1] = 0;
@@ -605,14 +605,14 @@ int send_cmd(const char *cmd)
     char buffer[512];
     int ret;
     int i;
-  
+
     ENTRY;
 
     if(trace_cmd)
     {
         CON(" ->DUT:%s",cmd);
-    } 
-    
+    }
+
     error_msg = no_error;
 
     if(console_write(connection,cmd))
@@ -621,9 +621,9 @@ int send_cmd(const char *cmd)
         error_msg = is_error;
         RETURNI(-1);
     }
-  
+
     i=0;
-  
+
     while(1)
     {
         memset(buffer,0,sizeof(buffer));
@@ -652,21 +652,21 @@ int send_cmd(const char *cmd)
                 int num = 0;
                 char *pos = &buffer[9];
                 int a;
-                
+
                 //makes bad valued point out...
                 memset(value,0xFF,sizeof(value));
-                
+
                 for(num = 0; num < 32; num++)
                 {
                     value[num] = atoi(pos);
                     pos = strchr(pos,',');
                     if(pos == NULL)
                         break;
-                        
-                    pos++; 
+
+                    pos++;
                 }
                 num++;
-                
+
                 rx_frames += value[2] + value[3] + value[4] + value[5];
                 bad_crc_frames += value[10];
             }

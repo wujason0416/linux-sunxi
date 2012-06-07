@@ -84,7 +84,7 @@ L O C A L   F U N C T I O N   P R O T O T Y P E S
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,38)
 static spinlock_t crit_sect = SPIN_LOCK_UNLOCKED;
 #else
-DEFINE_SPINLOCK(crit_sect); 
+DEFINE_SPINLOCK(crit_sect);
 #endif
 static unsigned long irq_flags;
 
@@ -162,7 +162,7 @@ unsigned int DriverEnvironment_Startup(void)
    struct net_device *dev = WiFiEngine_GetAdapter();
    struct nrx_softc *sc = netdev_priv(dev);
    int i;
-   
+
    KDEBUG(TRACE, "ENTRY");
    skb_queue_head_init(&sc->tx_alloc_queue);
    for (i = 0; i < WE_IND_LAST_MARK; i++)
@@ -175,7 +175,7 @@ unsigned int DriverEnvironment_Startup(void)
    WEI_TQ_INIT(&active_timers);
 
    WiFiEngine_Registry_LoadDefault();
-   
+
    return (0);
 }
 
@@ -183,7 +183,7 @@ int DriverEnvironment_Terminate(unsigned int driver_id)
 {
    struct net_device *dev = WiFiEngine_GetAdapter();
    struct nrx_softc *sc = netdev_priv(dev);
-   
+
    wei_sm_drain_sig_q();
 
    skb_queue_purge(&sc->tx_alloc_queue);
@@ -203,16 +203,16 @@ int DriverEnvironment_GetNewTimer(driver_timer_id_t *id, int restartFromCb)
    timer->repeating = 0;
    timer->flags = 0;
    timer->callback = NULL;
-   
+
    *id = (driver_timer_id_t)timer;
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
 void DriverEnvironment_CancelTimer(driver_timer_id_t id)
 {
    struct de_timer *timer = (struct de_timer*)id;
-   
+
    if (timer == NULL)
    {
       DE_TRACE2(TR_NOISE, "%s : called with NULL id\n", __func__);
@@ -268,7 +268,7 @@ timer_callback(unsigned long d)
       return;
    } else if(timer->repeating != 0 && test_bit(DE_TIMER_RUNNING, &timer->flags))
       mod_timer(&timer->timer, jiffies + msecs_to_jiffies(timer->repeating) + 1);
-   
+
    clear_bit(DE_TIMER_LOCK, &timer->flags);
    if(cb != NULL)
       (*cb)(NULL, 0);
@@ -284,7 +284,7 @@ int __de_stop_timer(struct de_timer *timer)
       clear_bit(DE_TIMER_RUNNING, &timer->flags);
       del_timer(&timer->timer);
    }
-   
+
    clear_bit(DE_TIMER_LOCK, &timer->flags);
 
    return 0;
@@ -301,19 +301,19 @@ int __de_start_timer(struct de_timer *timer)
       clear_bit(DE_TIMER_LOCK, &timer->flags);
       return -1;
    }
-   
+
    setup_timer(&timer->timer, timer_callback, (unsigned long)timer);
    mod_timer(&timer->timer, jiffies + msecs_to_jiffies(timer->time) + 1);
 
    set_bit(DE_TIMER_RUNNING, &timer->flags);
-   
+
    clear_bit(DE_TIMER_LOCK, &timer->flags);
 
    return 0;
 }
 
-int DriverEnvironment_RegisterTimerCallback(long time, 
-                                            driver_timer_id_t timer_id, 
+int DriverEnvironment_RegisterTimerCallback(long time,
+                                            driver_timer_id_t timer_id,
                                             de_callback_t cb,
                                             int repeating)
 {
@@ -351,7 +351,7 @@ driver_msec_t DriverEnvironment_GetTimestamp_msec(void)
 #if HZ == 100
    return jiffies * 10;
 #elif HZ == 108
-	return (jiffies * 9 + jiffies / 4); /* 0.1% error! */ 
+	return (jiffies * 9 + jiffies / 4); /* 0.1% error! */
 #elif HZ == 200
    return jiffies * 5;
 #elif HZ == 250
@@ -361,7 +361,7 @@ driver_msec_t DriverEnvironment_GetTimestamp_msec(void)
 #else
    return jiffies_to_msecs(jiffies);
 #endif
-} 
+}
 
 void DriverEnvironment_GetTimestamp_wall(long *sec, long *usec)
 {
@@ -407,7 +407,7 @@ static WEI_TQ_HEAD(, meminfo) mactive = WEI_TQ_HEAD_INITIALIZER(mactive);
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,38)
 static spinlock_t memlock = SPIN_LOCK_UNLOCKED;
 #else
-DEFINE_SPINLOCK(memlock); 
+DEFINE_SPINLOCK(memlock);
 #endif
 
 #define MEMSIZE 32
@@ -448,7 +448,7 @@ static void memtrace_dump(const char *m)
 {
    struct meminfo *mp;
    int i = 0;
-   
+
    KDEBUG(MEMORY, "%s ---", m);
    WEI_TQ_FOREACH(mp, &mactive, next) {
       KDEBUG(MEMORY, "%d %s:%u %p(%lu)", i, mp->func, mp->line, mp->ptr, (unsigned long)mp->size);
@@ -458,18 +458,18 @@ static void memtrace_dump(const char *m)
 #endif
 
 void
-memtrace_alloc(const void *ptr, size_t len, int type, 
+memtrace_alloc(const void *ptr, size_t len, int type,
                const char *func, unsigned int line)
 {
    struct meminfo *mp;
-   
+
    spin_lock(&memlock);
 
    if((mp = memtrace_find(ptr, 1)) != NULL) {
       MDEBUG(mp, "ptr not free'd");
       memtrace_remove(mp);
    }
-   
+
    if(len < MEMSIZE)
       memsize[len]++;
    else
@@ -501,10 +501,10 @@ memtrace_free(const void *ptr, int type, int poison,
               const char *func, unsigned int line)
 {
    struct meminfo *mp;
-   
+
    if(ptr == NULL)
       return;
-   
+
    spin_lock(&memlock);
    if((mp = memtrace_find(ptr, 1)) != NULL) {
       KDEBUG(MEMORY, "%p(%lu):%s:%u->%s:%u %lu", mp->ptr, (unsigned long)mp->size, mp->func, mp->line, func, line, jiffies - mp->time);
@@ -516,7 +516,7 @@ memtrace_free(const void *ptr, int type, int poison,
       spin_unlock(&memlock);
       return;
    }
-   
+
    if((mp = memtrace_find(ptr, 0)) == NULL) {
       KDEBUG(TRACE, "ptr not found %s:%u:%p", func, line, ptr);
    } else {
@@ -532,7 +532,7 @@ void memtrace_proc(struct nrx_px_softc *sc)
 {
    struct meminfo *mp;
    int i;
-   
+
    nrx_px_setsize(sc, 0);
    spin_lock(&memlock);
    WEI_TQ_FOREACH(mp, &mactive, next) {
@@ -638,13 +638,13 @@ void DriverEnvironment_indicate(we_indication_t type, void *data, size_t len)
       KDEBUG(TRACE, "WE_IND_SCAN_COMPLETE");
       wake_up(&sc->mib_wait_queue);
       if(data == NULL) {
-         nrx_wxevent_scan_complete(dev); 
+         nrx_wxevent_scan_complete(dev);
       } else if(len == sizeof(m80211_nrp_mlme_scannotification_ind_t)){
          nrx_wxevent_scan(dev, (m80211_nrp_mlme_scannotification_ind_t *)data);
       }
       break;
    case WE_IND_ROAMING_COMPLETE:
-   case WE_IND_80211_IBSS_CONNECTED: 
+   case WE_IND_80211_IBSS_CONNECTED:
    case WE_IND_CM_CONNECTED:
       DE_TRACE1(TR_NOISE, "Indicating Media status connected\n");
       netif_carrier_on(dev);
@@ -670,7 +670,7 @@ void DriverEnvironment_indicate(we_indication_t type, void *data, size_t len)
 #if 0
    WE_CONN_LOST_AUTH_FAIL,
    WE_CONN_LOST_ASSOC_FAIL,
-   WE_CONN_LOST_REASSOC_FAIL,   
+   WE_CONN_LOST_REASSOC_FAIL,
    WE_CONN_LOST_DEAUTH,
    WE_CONN_LOST_DEAUTH_IND,
    WE_CONN_LOST_DISASS,
@@ -697,7 +697,7 @@ void DriverEnvironment_indicate(we_indication_t type, void *data, size_t len)
       CandidateInfo *cinfo;
       DE_ASSERT(len == sizeof(*cinfo));
       cinfo = data;
-      nrx_wxevent_pmkid_candidate(dev, 
+      nrx_wxevent_pmkid_candidate(dev,
                                   cinfo->bssId.octet,
                                   cinfo->rssi_info,
                                   cinfo->flag);
@@ -709,11 +709,11 @@ void DriverEnvironment_indicate(we_indication_t type, void *data, size_t len)
    case WE_IND_ACTIVITY_TIMEOUT:
       DE_TRACE1(TR_NOISE, "Driver inactivity indicated\n");
       break;
-   case WE_IND_PAIRWISE_MIC_ERROR: 
+   case WE_IND_PAIRWISE_MIC_ERROR:
    case WE_IND_GROUP_MIC_ERROR: {
       m80211_mac_addr_t *bssid = data;
-      nrx_wxevent_michael_mic_failure(dev, 
-				      bssid->octet, 
+      nrx_wxevent_michael_mic_failure(dev,
+				      bssid->octet,
 				      type == WE_IND_GROUP_MIC_ERROR);
       break;
    }
@@ -735,13 +735,13 @@ void DriverEnvironment_indicate(we_indication_t type, void *data, size_t len)
 
 #if 0
 // deprecated by we_ind.c
-int DriverEnvironment_Register_Ind_Handler(we_indication_t type, 
-                                           we_ind_cb_t cb, 
+int DriverEnvironment_Register_Ind_Handler(we_indication_t type,
+                                           we_ind_cb_t cb,
                                            const void *ctx)
 {
    struct net_device *dev = WiFiEngine_GetAdapter();
    struct nrx_softc *sc = netdev_priv(dev);
-   
+
    DE_ASSERT(ctx == NULL);
    DE_ASSERT(sc->ind_cbs[type] == NULL);
    sc->ind_cbs[type] = cb;
@@ -750,7 +750,7 @@ int DriverEnvironment_Register_Ind_Handler(we_indication_t type,
 }
 
 int DriverEnvironment_Deregister_Ind_Handler(we_indication_t type,
-                                             we_ind_cb_t cb, 
+                                             we_ind_cb_t cb,
                                              const void *ctx)
 {
    struct net_device *dev = WiFiEngine_GetAdapter();
@@ -760,7 +760,7 @@ int DriverEnvironment_Deregister_Ind_Handler(we_indication_t type,
    if (sc->ind_cbs[type] == cb) {
       sc->ind_cbs[type] = NULL;
    }
-   
+
    return DRIVERENVIRONMENT_SUCCESS;
 }
 
@@ -773,7 +773,7 @@ int DriverEnvironment_Is_Ind_Handler_Registered(we_indication_t type,
    if(sc->ind_cbs[type] == cb) {
       return DRIVERENVIRONMENT_SUCCESS;
    }
-   
+
    return DRIVERENVIRONMENT_FAILURE;
 }
 #endif
@@ -791,7 +791,7 @@ void DriverEnvironment_init_trylock(driver_trylock_t *lock)
 driver_trylock_t DriverEnvironment_acquire_trylock(driver_trylock_t *lock)
 {
    int ret;
-   
+
    ret = test_and_set_bit(0, (void *)lock);
 
    return ret;
@@ -807,7 +807,7 @@ void DriverEnvironment_acquire_read_lock(driver_lock_t *lock)
    DriverEnvironment_acquire_lock(lock);
 }
 
-void DriverEnvironment_release_read_lock(driver_lock_t *lock) 
+void DriverEnvironment_release_read_lock(driver_lock_t *lock)
 {
    DriverEnvironment_release_lock(lock);
 }
@@ -822,37 +822,37 @@ void DriverEnvironment_release_write_lock(driver_lock_t *lock)
    DriverEnvironment_release_lock(lock);
 }
 
-void DriverEnvironment_enable_target_sleep(void) 
+void DriverEnvironment_enable_target_sleep(void)
 {
-   nrx_trsp_ctrl(WiFiEngine_GetAdapter(), 
-                 NANONET_SLEEP, 
+   nrx_trsp_ctrl(WiFiEngine_GetAdapter(),
+                 NANONET_SLEEP,
                  NANONET_SLEEP_ON);
 }
 
-void DriverEnvironment_disable_target_sleep(void) 
+void DriverEnvironment_disable_target_sleep(void)
 {
-   nrx_trsp_ctrl(WiFiEngine_GetAdapter(), 
-                 NANONET_SLEEP, 
+   nrx_trsp_ctrl(WiFiEngine_GetAdapter(),
+                 NANONET_SLEEP,
                  NANONET_SLEEP_OFF);
 }
 
-void DriverEnvironment_disable_target_interface(void) 
+void DriverEnvironment_disable_target_interface(void)
 {
    DE_TRACE1(TR_NOISE, "Calling disableTargetInterface\n");
 }
 
-void DriverEnvironment_Enable_Boot(void) 
+void DriverEnvironment_Enable_Boot(void)
 {
-   nrx_trsp_ctrl(WiFiEngine_GetAdapter(), 
-                 NANONET_BOOT, 
+   nrx_trsp_ctrl(WiFiEngine_GetAdapter(),
+                 NANONET_BOOT,
                  NANONET_BOOT_ENABLE);
 }
 
 
-void DriverEnvironment_Disable_Boot(void) 
+void DriverEnvironment_Disable_Boot(void)
 {
-   nrx_trsp_ctrl(WiFiEngine_GetAdapter(), 
-                 NANONET_BOOT, 
+   nrx_trsp_ctrl(WiFiEngine_GetAdapter(),
+                 NANONET_BOOT,
                  NANONET_BOOT_DISABLE);
 }
 
@@ -871,9 +871,9 @@ static char core_dump_buf[CORE_DUMP_MAX_SIZE];
 
 void DriverEnvironment_Core_Dump_Started(
       int coredump,
-      int restart, 
-      uint8_t objId, 
-      uint8_t errCode, 
+      int restart,
+      uint8_t objId,
+      uint8_t errCode,
       size_t expected_size, /* or more */
       size_t max_size, /* used to help malloc */
       void **ctx)
@@ -912,7 +912,7 @@ void DriverEnvironment_Core_Dump_Started(
  */
 void DriverEnvironment_Core_Dump_Write(
    void *ctx,
-   void *data, 
+   void *data,
    size_t len)
 {
    struct de_coredump_priv *s = (struct de_coredump_priv*)ctx;
@@ -931,9 +931,9 @@ void DriverEnvironment_Core_Dump_Write(
 
 void DriverEnvironment_Core_Dump_Abort(
       int coredump,
-      int restart, 
-      uint8_t objid, 
-      uint8_t err_code, 
+      int restart,
+      uint8_t objid,
+      uint8_t err_code,
       void **ctx)
 {
    struct de_coredump_priv *s = (struct de_coredump_priv*)*ctx;
@@ -948,9 +948,9 @@ void DriverEnvironment_Core_Dump_Abort(
 
 void DriverEnvironment_Core_Dump_Complete(
       int coredump,
-      int restart, 
-      uint8_t objid, 
-      uint8_t err_code, 
+      int restart,
+      uint8_t objid,
+      uint8_t err_code,
       void **ctx)
 {
    struct de_coredump_priv *s = (struct de_coredump_priv*)*ctx;
@@ -958,7 +958,7 @@ void DriverEnvironment_Core_Dump_Complete(
    struct nrx_softc *sc = netdev_priv(dev);
 
    KDEBUG(TRACE, "ENTRY");
-   
+
    nrx_set_flag(sc, NRX_FLAG_SHUTDOWN);
 
    if(coredump && s)
@@ -974,12 +974,12 @@ void DriverEnvironment_Core_Dump_Complete(
    }
 }
 
-/*! 
+/*!
  * This will be called when the target device is woken up.  It does
  * driver-specific things that need to be taken care of (such as
  * starting to send queued packets).
  */
-void DriverEnvironment_handle_driver_wakeup(void) 
+void DriverEnvironment_handle_driver_wakeup(void)
 {
    struct net_device *dev = WiFiEngine_GetAdapter();
    nrx_tx_queue_wake(dev);
@@ -1030,7 +1030,7 @@ int DriverEnvironment_LittleEndian2Native(char *dst, size_t len)
  * though.
  *
  * Platforms without event support :
- * 
+ *
  * Make DriverEnvironment_IsEventWaitAllowed() always return 0.
  */
 /*!
@@ -1046,7 +1046,7 @@ int DriverEnvironment_IsEventWaitAllowed(void)
       return 0;
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 0)
 #define current_is_keventd() (current->pid == 2)
-   if(current_is_keventd()) /* do we need to special case other threads too? 
+   if(current_is_keventd()) /* do we need to special case other threads too?
                                what about 2.6? */
       return 0;
 #endif
@@ -1083,8 +1083,8 @@ int __de_reset_event(de_event_t *ev)
  *
  * @param ev Event struct to wait on.
  * @param ms_to_wait Wait timeout in ms. 0 to wait forever.
- * @return 
- * - 1 if the event was signalled. 
+ * @return
+ * - 1 if the event was signalled.
  * - 0 on timeout.
  */
 int __de_wait_on_event(de_event_t *ev, int ms_to_wait)

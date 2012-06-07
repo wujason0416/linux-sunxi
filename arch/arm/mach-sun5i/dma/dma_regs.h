@@ -16,7 +16,7 @@
 #define _DMA_REGS_
 
 /* DMA */
-#define SOFTWINNER_DMA_BASE             0x01c02000	
+#define SOFTWINNER_DMA_BASE             0x01c02000
 
 /* DMA Register definitions */
 #define SW_DMA_DIRQEN      		(0x0000)	//	DMA_IRQ_EN_REG(0x0000)

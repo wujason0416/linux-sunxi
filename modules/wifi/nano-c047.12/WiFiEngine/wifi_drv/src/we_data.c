@@ -111,7 +111,7 @@ static int send_addts_req(size_t dialog_token, size_t identifier, char* TSPECbod
     m80211_nrp_mlme_addts_req_t addts_req;
     uint32_t trans_id;
     int status;
-   
+
     DE_TRACE_STATIC(TR_SM, "send_addts_req!\n");
 
     pkt = DriverEnvironment_TX_Alloc(74);
@@ -144,10 +144,10 @@ static int send_addts_req(size_t dialog_token, size_t identifier, char* TSPECbod
         pkt[0] = 0xE0 | (identifier<<1);
         pkt[1] = 0x34; //0x1A
         pkt[2] = 0x00; //0x00
-	    
+
         pkt[3] = 0xD0;
         pkt[4] = 0x80;
-	    
+
         pkt[5] = 0xD0;
         pkt[6] = 0x00;
 
@@ -219,8 +219,8 @@ static int send_addts_req(size_t dialog_token, size_t identifier, char* TSPECbod
     {
         DE_MEMCPY(addts_req.body.wmm_tspec_ie.TSPEC_body, TSPECbody, 55);
 	DE_MEMCPY(wifiEngineState.ccxState.addts_state[identifier].TSPEC_body, TSPECbody, 55);
-	
-    }	     
+
+    }
 
     Mlme_CreateMessageContext(msg_ref);
 
@@ -239,7 +239,7 @@ static int send_addts_req(size_t dialog_token, size_t identifier, char* TSPECbod
 
     DriverEnvironment_TX_Free(pkt);
     Mlme_ReleaseMessageContext(msg_ref);
- 
+
     return 1;
 }
 
@@ -250,7 +250,7 @@ int send_delts(size_t identifier)
     m80211_nrp_mlme_delts_req_t delts;
     uint32_t trans_id;
     int status;
-   
+
 
 
     delts.action_code = 0x02; //DELTS
@@ -314,14 +314,14 @@ int send_delts(size_t identifier)
         DE_TRACE_STATIC(TR_SM,"DELTS Confirmation successful!!!\n ");
    }*/
    Mlme_ReleaseMessageContext(msg_ref);
- 
+
     return 1;
 }
 
 int   WiFiEngine_SendAddtsReq(uint8_t identifier)
 {
     return send_addts_req(0, identifier, NULL);
-} 
+}
 
 int   WiFiEngine_SendDelts(uint8_t identifier)
 {
@@ -332,13 +332,13 @@ static int GetPacketSize(int *result_entries)
 {
     int offset = 0;
     int entries, i;
-	int entries_1; 
-	int status; 
-    
+	int entries_1;
+	int status;
+
     WiFiEngine_net_t *net=NULL;
-	WiFiEngine_net_t *netlist=NULL; 
+	WiFiEngine_net_t *netlist=NULL;
     WiFiEngine_net_t *nlstart=NULL;
-    
+
 	status = WiFiEngine_GetBSSIDList(NULL, &entries);
 	if (status != WIFI_ENGINE_SUCCESS){
 	   KDEBUG(ERROR,"EXIT EIO");
@@ -351,7 +351,7 @@ static int GetPacketSize(int *result_entries)
 		   KDEBUG(ERROR, "out of memory");
            return -1;
 		}
-		status = WiFiEngine_GetBSSIDList(netlist, &entries_1);   
+		status = WiFiEngine_GetBSSIDList(netlist, &entries_1);
 		if(status != WIFI_ENGINE_SUCCESS){
 		   kfree(netlist);
 		   KDEBUG(ERROR, "EXIT EIO");
@@ -363,12 +363,12 @@ static int GetPacketSize(int *result_entries)
     {
 		nlstart = netlist;
 		*result_entries = entries;
-	   
+
 		for(i=0;i<entries;i++)
 	    {
 			net = &netlist[i];
 			offset+=36;
-			
+
 			if(net->bss_p->bss_description_p->ie.ssid.hdr.id != M80211_IE_ID_NOT_USED)
 			{
 				offset+=2+net->bss_p->bss_description_p->ie.ssid.hdr.len;
@@ -384,7 +384,7 @@ static int GetPacketSize(int *result_entries)
 			if(net->bss_p->bss_description_p->ie.ds_parameter_set.hdr.id != M80211_IE_ID_NOT_USED)
 			{
 				offset+=2+net->bss_p->bss_description_p->ie.ds_parameter_set.hdr.len;
-			}	
+			}
 			if(net->bss_p->bss_description_p->ie.cf_parameter_set.hdr.id != M80211_IE_ID_NOT_USED)
 			{
 				offset+=2+net->bss_p->bss_description_p->ie.cf_parameter_set.hdr.len;
@@ -392,22 +392,22 @@ static int GetPacketSize(int *result_entries)
 			if(net->bss_p->bss_description_p->ie.ibss_parameter_set.hdr.id != M80211_IE_ID_NOT_USED)
 			{
 				offset+=2+net->bss_p->bss_description_p->ie.ibss_parameter_set.hdr.len;
-			}	
+			}
 			if(net->bss_p->bss_description_p->ie.tim_parameter_set.hdr.id != M80211_IE_ID_NOT_USED)
 			{
 				offset+=2+net->bss_p->bss_description_p->ie.tim_parameter_set.hdr.len;
-			}	
+			}
 			if(net->bss_p->bss_description_p->ie.ccx_rm_parameter_set.hdr.hdr.id != M80211_IE_ID_NOT_USED)
 			{
 				offset+=2+net->bss_p->bss_description_p->ie.ccx_rm_parameter_set.hdr.hdr.len;
 			}
 
 	    }
-	    kfree(netlist); 
+	    kfree(netlist);
     }
 	else
-	   *result_entries = 0; 
-    
+	   *result_entries = 0;
+
 	return offset;
 }
 
@@ -438,7 +438,7 @@ static int traffic_metrics_cb(void *data, size_t len)
 int radio_measurement_cb(void *data, size_t len)
 {
     int entries=0;
-	int entries_1; 
+	int entries_1;
     WiFiEngine_net_t *net=NULL;
 	WiFiEngine_net_t *netlist=NULL;
     char *pkt;
@@ -454,9 +454,9 @@ int radio_measurement_cb(void *data, size_t len)
     u16 timestamp;
     int status;
     int stripped_packet_len;
-	int len_swap;     
+	int len_swap;
 	int packetsize=0;
-    static int sj_id = -1;	
+    static int sj_id = -1;
     m80211_ie_ssid_t bcast_ssid;
     m80211_mac_addr_t bcast_bssid;
     rBasicWiFiProperties*   basic;
@@ -464,7 +464,7 @@ int radio_measurement_cb(void *data, size_t len)
     rScanPolicy * s;
 
     DE_TRACE_STATIC(TR_SM, "radio_measurement_cb!\n");
-    
+
     packetsize = GetPacketSize(&entries);
 	DE_TRACE_STATIC2(TR_SM, "Number of scanned APs = %d\n", entries);
 	if(!packetsize)
@@ -472,15 +472,15 @@ int radio_measurement_cb(void *data, size_t len)
 	else
 	   DE_TRACE_STATIC2(TR_SM, "Packetsize is = %d\n", packetsize);
 
-	length = dhsize + 40 + packetsize ; 
+	length = dhsize + 40 + packetsize ;
     nr_bytes_added = WiFiEngine_GetPaddingLength(length);
-	
-    pkt = DriverEnvironment_TX_Alloc(length+nr_bytes_added); 
+
+    pkt = DriverEnvironment_TX_Alloc(length+nr_bytes_added);
 	if (pkt == NULL){
 	   DE_TRACE_INT(TR_WARN, "Failed to allocate %u bytes buffer\n", length+nr_bytes_added);
 	   return WIFI_ENGINE_FAILURE_RESOURCES;
 	}
-	
+
     WiFiEngine_GetBSSID(&bssid);
     DE_MEMCPY(dst, bssid.octet, 6);
 
@@ -521,24 +521,24 @@ int radio_measurement_cb(void *data, size_t len)
 		   KDEBUG(ERROR, "out of memory");
            return -1;
 		}
-		status = WiFiEngine_GetBSSIDList(netlist, &entries_1);   
+		status = WiFiEngine_GetBSSIDList(netlist, &entries_1);
 		if(status != WIFI_ENGINE_SUCCESS){
 		   kfree(netlist);
 		   KDEBUG(ERROR, "EXIT EIO");
            return -1;
 		}
-		
+
 	}
     for(i=0;i<entries;i++)
     {
 		char isDSS=1;
 		net = &netlist[i];
-	
+
 		pkt[offset] = 0x27;
 		offset++;
 		pkt[offset] = 0;
 		offset++;
-		
+
 		element_size_offset = offset;
 		element_size = 0;
 
@@ -587,13 +587,13 @@ int radio_measurement_cb(void *data, size_t len)
 			}
 		}
 			if(isDSS)
-		{ 
+		{
 			pkt[offset] = 0x02;  //dss
 			offset++;
 			element_size++;
 		}
 		else
-		{ 
+		{
 			pkt[offset] = 0x04;  //ofdm
 			offset++;
 			element_size++;
@@ -601,13 +601,13 @@ int radio_measurement_cb(void *data, size_t len)
 
 		pkt[offset] = (char)net->bss_p->rssi_info;  //signal strength
 		offset++;
-		element_size++;	
+		element_size++;
 
 		DE_MEMCPY(pkt+offset, net->bss_p->bssId.octet, 6);
 		offset+=6;
 		element_size+=6;
 
-		timestamp = (u16)net->bss_p->local_timestamp;	
+		timestamp = (u16)net->bss_p->local_timestamp;
 		DE_MEMCPY(pkt+offset, &timestamp, 4);
 		offset+=4;
 		element_size+=4;
@@ -647,7 +647,7 @@ int radio_measurement_cb(void *data, size_t len)
 			DE_MEMCPY(pkt+offset, (char*)&net->bss_p->bss_description_p->ie.ds_parameter_set, net->bss_p->bss_description_p->ie.ds_parameter_set.hdr.len+2);
 			offset+=2+net->bss_p->bss_description_p->ie.ds_parameter_set.hdr.len;
 			element_size+=2+net->bss_p->bss_description_p->ie.ds_parameter_set.hdr.len;
-		}	
+		}
 		if(net->bss_p->bss_description_p->ie.cf_parameter_set.hdr.id != M80211_IE_ID_NOT_USED)
 		{
 			DE_MEMCPY(pkt+offset, (char*)&net->bss_p->bss_description_p->ie.cf_parameter_set, net->bss_p->bss_description_p->ie.cf_parameter_set.hdr.len+2);
@@ -659,13 +659,13 @@ int radio_measurement_cb(void *data, size_t len)
 			DE_MEMCPY(pkt+offset, (char*)&net->bss_p->bss_description_p->ie.ibss_parameter_set, net->bss_p->bss_description_p->ie.ibss_parameter_set.hdr.len+2);
 			offset+=2+net->bss_p->bss_description_p->ie.ibss_parameter_set.hdr.len;
 			element_size+=2+net->bss_p->bss_description_p->ie.ibss_parameter_set.hdr.len;
-		}	
+		}
 		if(net->bss_p->bss_description_p->ie.tim_parameter_set.hdr.id != M80211_IE_ID_NOT_USED)
 		{
 			DE_MEMCPY(pkt+offset, (char*)&net->bss_p->bss_description_p->ie.tim_parameter_set, net->bss_p->bss_description_p->ie.tim_parameter_set.hdr.len+2);
 			offset+=2+net->bss_p->bss_description_p->ie.tim_parameter_set.hdr.len;
 			element_size+=2+net->bss_p->bss_description_p->ie.tim_parameter_set.hdr.len;
-		}	
+		}
 		if(net->bss_p->bss_description_p->ie.ccx_rm_parameter_set.hdr.hdr.id != M80211_IE_ID_NOT_USED)
 		{
 			DE_MEMCPY(pkt+offset, (char*)&net->bss_p->bss_description_p->ie.ccx_rm_parameter_set, net->bss_p->bss_description_p->ie.ccx_rm_parameter_set.hdr.hdr.len+2);
@@ -684,11 +684,11 @@ int radio_measurement_cb(void *data, size_t len)
 
     len = offset;
 
-    status = WiFiEngine_ProcessSendPacket(pkt+dhsize, 14, 
+    status = WiFiEngine_ProcessSendPacket(pkt+dhsize, 14,
 					  len - dhsize,
 					  pkt, &dhsize, 0, NULL);
 
-    pkt_size = HIC_MESSAGE_LENGTH_GET(pkt); 
+    pkt_size = HIC_MESSAGE_LENGTH_GET(pkt);
 
     if(status == WIFI_ENGINE_SUCCESS)
     {
@@ -741,17 +741,17 @@ static char *LocateIE(char *packet, char *element, int len)
             return 0;
         }
 
-        if (DE_MEMCMP(p, element, 6) == 0) 
+        if (DE_MEMCMP(p, element, 6) == 0)
         {
-            return p; 
+            return p;
         }
- 
+
         l -= len;
         p += len;
     }
     return 0;
 	}
-	
+
 static int HandleAddtsResponsePacket(unsigned char *p, int max)
 {
    size_t dialog_token=1;
@@ -787,7 +787,7 @@ static int HandleAddtsResponsePacket(unsigned char *p, int max)
              if( pTSM_Element[7] == 0x01) //Traffic Stream Metrics Enabled
 		     {
 				WiFiEngine_stats_t stats;
-				
+
                 wifiEngineState.ccxState.metrics.collect_metrics_enabled = TRUE;
 
                 //DE_MEMCPY(&wifiEngineState.ccxState.addts_state[identifier].tsm_interval, &p[14+8+55+8], 2);
@@ -798,8 +798,8 @@ static int HandleAddtsResponsePacket(unsigned char *p, int max)
 				WiFiEngine_GetStatistics(&stats, 1);
                 wifiEngineState.ccxState.metrics.lastFwPktLoss = (uint16_t)stats.dot11FailedCount;
                 wifiEngineState.ccxState.metrics.lastFwPktCnt  = (uint16_t)stats.dot11TransmittedFrameCount;
-				
-				
+
+
                 DriverEnvironment_RegisterTimerCallback(wifiEngineState.ccxState.addts_state[identifier].tsm_interval,
                                                         wifiEngineState.ccxState.ccx_traffic_stream_metrics_id,
                                                         traffic_metrics_cb,
@@ -817,7 +817,7 @@ static int HandleAddtsResponsePacket(unsigned char *p, int max)
         {
 	    //Admission refused - let's retry with suggested parameters...
         if((p[14]==0xDD)&&(p[16]==0x00)&&(p[17]==0x50)&&(p[18]==0xF2)&&(p[19]==0x02)&&(p[20]==0x02)&&(p[21]==0x01))
-	    { 		
+	    {
 		//save admission state and re-send TSPEC with suggested parameters
 		if(wifiEngineState.ccxState.addts_state[identifier].dialog_token == dialog_token)
 	   	{
@@ -827,14 +827,14 @@ static int HandleAddtsResponsePacket(unsigned char *p, int max)
 
             send_addts_req(dialog_token, identifier, &p[22]);  //p[22]=TS_info
  	    }
-	     
-        }   
+
+        }
      else if((p[13] == 0xC9) || (p[13] == 0x03) || (p[13] == 0xCA))
         {
 	    //Admission refused - do not retry with different parameters
         wifiEngineState.ccxState.addts_state[identifier].admission_state = p[13];
-	    wifiEngineState.ccxState.addts_state[identifier].active = ADDTS_REFUSED_DO_NOT_RETRY_UNTIL_ROAMING;	     
-        }   
+	    wifiEngineState.ccxState.addts_state[identifier].active = ADDTS_REFUSED_DO_NOT_RETRY_UNTIL_ROAMING;
+        }
    	return 1;
    }
    return 0;
@@ -846,9 +846,9 @@ int is_ccx_delts_packet(unsigned char *p, int max)
    if(max < 80)
       return FALSE;
 
-   if(p[12] == 0x00 && p[13] == 0x00 && //Protocol Type 
+   if(p[12] == 0x00 && p[13] == 0x00 && //Protocol Type
      p[14] == 0x11 && // Category Code = 17
-     p[16] == 0x02)   // Action Code = DELTS    
+     p[16] == 0x02)   // Action Code = DELTS
    {
         dialog_token = p[17];
 	identifier = (p[28]|0xE)>> 1;
@@ -866,7 +866,7 @@ int is_ccx_beacon_req_packet(unsigned char *p, int max, char* channel, int* dura
    if(max < 42)
       return FALSE;
 
-   if(p[20] == 0x00 && p[21] == 0x00 && //Protocol Type 
+   if(p[20] == 0x00 && p[21] == 0x00 && //Protocol Type
       p[22] == 0x00 && // IAPP ID
       p[24] == 0x32 && // IAPP Type
       p[25] == 0x01 && // IAPP SubType
@@ -875,12 +875,12 @@ int is_ccx_beacon_req_packet(unsigned char *p, int max, char* channel, int* dura
    {
 	 int dur=0;
    	 *channel = p[50];
-	
+
 
 	 wifiEngineState.ccxState.scan_mode = *active = p[51];
-	
+
 	 DE_TRACE_STATIC2(TR_SM,"Scan mode =%d\n", wifiEngineState.ccxState.scan_mode);
-	
+
 	 DE_MEMCPY(&dur, &p[52], 2);
 
 	 *duration = dur;
@@ -888,7 +888,7 @@ int is_ccx_beacon_req_packet(unsigned char *p, int max, char* channel, int* dura
      wifiEngineState.ccxState.dialog_token[1] = p[39];
    	 wifiEngineState.ccxState.measurement_token[0] = p[46];
    	 wifiEngineState.ccxState.measurement_token[1] = p[47];
-   
+
    	 return 1;   // Measurement Type = Beacon Req
     }
 
@@ -896,7 +896,7 @@ int is_ccx_beacon_req_packet(unsigned char *p, int max, char* channel, int* dura
 }
 
 int HandleRadioMeasurementReq(char channel, int duration, char mode)
-{    
+{
     static int sj_id = -1;
     uint8_t new_channel[M80211_CHANNEL_LIST_MAX_LENGTH];
 	int i;
@@ -906,12 +906,12 @@ int HandleRadioMeasurementReq(char channel, int duration, char mode)
 	channel_list_t channelList2;
 	char *p;
     p = new_channel;
- 
+
 	//Suspend the default scan job
 	WiFiEngine_RemoveScanJob(0, NULL);
 	if(mode==2)
 	  WiFiEngine_RemoveScanJob(1, NULL);
-    WiFiEngine_FlushScanList(); 
+    WiFiEngine_FlushScanList();
 
     DE_TRACE_STATIC(TR_SM, "HandleRadioMeasurementReq\n");
 
@@ -924,7 +924,7 @@ int HandleRadioMeasurementReq(char channel, int duration, char mode)
 		channelList2.no_channels = M80211_CHANNEL_LIST_MAX_LENGTH-1;
         for(i=0;i<M80211_CHANNEL_LIST_MAX_LENGTH;i++)
 		{
-			if(i+1 != channel) 
+			if(i+1 != channel)
 			{
 				*p = i+1;
 				p++;
@@ -934,21 +934,21 @@ int HandleRadioMeasurementReq(char channel, int duration, char mode)
 	}
     channelList.no_channels = 1;
     channelList.channelList[0] = channel;
-	
+
     Ssid.hdr.len = 0;
     Ssid.hdr.id = M80211_IE_ID_NOT_USED;
     DE_MEMSET(&bcast_bssid, 0xFF, sizeof(bcast_bssid));
 
 	//WiFiEngine_ConfigureScan(SHORT_PREAMBLE,108,2,15,5000,0,20,20,20,40,15000,6,10,5000,5000,1,NULL);
- 
+
 	//Passive scan on the serving channel and active scan on other available channels
 	if(mode==2)
 	{
-	  WiFiEngine_ConfigureScan(SHORT_PREAMBLE,108,2,15,5000,0,100,60,40,40,15000,60,40,5000,5000,1,NULL);	
+	  WiFiEngine_ConfigureScan(SHORT_PREAMBLE,108,2,15,5000,0,100,60,40,40,15000,60,40,5000,5000,1,NULL);
       WiFiEngine_AddScanJob((int*) &sj_id, Ssid, bcast_bssid, 0, channelList, 2, 1, 0, 0, 1, NULL); //passive scan
 	  DE_TRACE_STATIC4(TR_SM, "Created scan Job with id=%d and mode=%d and channel %d \n",sj_id,mode,channel);
 	  WiFiEngine_TriggerScanJob(sj_id,20);
-      WiFiEngine_AddScanJob((int*) &sj_id, Ssid, bcast_bssid, 1, channelList2, 2, 1, 0, 0, 1, NULL); //active scan	  
+      WiFiEngine_AddScanJob((int*) &sj_id, Ssid, bcast_bssid, 1, channelList2, 2, 1, 0, 0, 1, NULL); //active scan
 	  DE_TRACE_STATIC4(TR_SM, "Created scan Job with id=%d and mode=%d and channel %d \n",sj_id,mode,channel);
 	  WiFiEngine_TriggerScanJob(sj_id,20);
 	  duration = duration * 3;
@@ -961,11 +961,11 @@ int HandleRadioMeasurementReq(char channel, int duration, char mode)
 	DE_TRACE_STATIC4(TR_SM, "Created scan Job with id=%d and mode=%d and channel %d \n",sj_id,mode,channel);
 	WiFiEngine_TriggerScanJob(sj_id,20);
     }
-	
+
 	if( mode==0 )
 	   duration = duration * 3;
 
-	DriverEnvironment_RegisterTimerCallback(duration, wifiEngineState.ccxState.ccx_radio_measurement_timer_id, radio_measurement_cb, FALSE);  
+	DriverEnvironment_RegisterTimerCallback(duration, wifiEngineState.ccxState.ccx_radio_measurement_timer_id, radio_measurement_cb, FALSE);
 
     return 1;
 }
@@ -986,17 +986,17 @@ static struct data_ctx_t {
 static void connected_cb(wi_msg_param_t param, void* priv)
 {
    DE_TRACE_STATIC(TR_SM, "Device connected\n");
-   wifiEngineState.dataReqPending = 0;   
+   wifiEngineState.dataReqPending = 0;
    connected = TRUE;
-  
+
 }
 
-  
+
 static void disconnecting_cb(wi_msg_param_t param, void* priv)
 {
    DE_TRACE_STATIC(TR_SM, "Device disconnected\n");
    connected = FALSE;
-   
+
 }
 
 
@@ -1004,14 +1004,14 @@ static void ps_interface_enabled_cb(wi_msg_param_t param, void* priv)
 {
    DE_TRACE_STATIC(TR_SM, "power save mechanism for hic interface enabled \n");
    interface_enabled = TRUE;
-  
+
 }
 
 static void ps_interface_disabled_cb(wi_msg_param_t param, void* priv)
 {
    DE_TRACE_STATIC(TR_SM, "power save mechanism for hic interface disabled\n");
    interface_enabled = FALSE;
-   wifiEngineState.dataPathState = DATA_PATH_OPENED;    
+   wifiEngineState.dataPathState = DATA_PATH_OPENED;
 }
 
 static void data_path_free_handlers(void)
@@ -1037,12 +1037,12 @@ void wei_data_plug(void)
    DE_TRACE_STATIC(TR_SM, "State Init\n");
 
    connected = FALSE;
-   interface_enabled = FALSE;   
+   interface_enabled = FALSE;
    data_ctx.connected_h = NULL;
    data_ctx.disconnecting_h = NULL;
    data_ctx.disconnected_h = NULL;
    data_ctx.ps_interface_enabled_h = NULL;
-   data_ctx.ps_interface_disabled_h = NULL;   
+   data_ctx.ps_interface_disabled_h = NULL;
 
   data_ctx.connected_h = we_ind_register(
             WE_IND_80211_CONNECTED,
@@ -1059,7 +1059,7 @@ void wei_data_plug(void)
             disconnecting_cb,
             NULL,
             0,
-            NULL);   
+            NULL);
    DE_ASSERT(data_ctx.disconnecting_h != NULL);
 
    data_ctx.disconnected_h = we_ind_register(
@@ -1068,7 +1068,7 @@ void wei_data_plug(void)
             disconnecting_cb,
             NULL,
             0,
-            NULL); 
+            NULL);
    DE_ASSERT(data_ctx.disconnected_h != NULL);
 
    data_ctx.ps_interface_enabled_h= we_ind_register(
@@ -1077,7 +1077,7 @@ void wei_data_plug(void)
             ps_interface_enabled_cb,
             NULL,
             0,
-            NULL); 
+            NULL);
    DE_ASSERT(data_ctx.ps_interface_enabled_h != NULL);
 
    data_ctx.ps_interface_disabled_h = we_ind_register(
@@ -1100,7 +1100,7 @@ convert_rate(m80211_std_rate_encoding_t rate)
       uint32_t linkspeed;
       status = WiFiEngine_GetRateIndexLinkspeed(rate & 0x7f, &linkspeed);
       if(status != WIFI_ENGINE_SUCCESS) {
-         DE_TRACE_INT2(TR_DATA, "GetRateIndexLinkspeed(%u) failed (%d)\n", 
+         DE_TRACE_INT2(TR_DATA, "GetRateIndexLinkspeed(%u) failed (%d)\n",
                        rate, status);
          return 2; /* XXX what to do? */
       }
@@ -1118,7 +1118,7 @@ convert_rate(m80211_std_rate_encoding_t rate)
           * is the max value supported by the BG rate code
           * system)
           */
-         return 127; 
+         return 127;
 #endif
       return rate;
    }
@@ -1145,7 +1145,7 @@ convert_rate(m80211_std_rate_encoding_t rate)
  * </PRE>
  *
  * @param transid Output buffer for the transaction ID of the packet.
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success,
  * - WIFI_ENGINE_SUCCESS_ABSORBED if the packet was consumed by WiFiEngine (it was a command)
  * - WIFI_ENGINE_SUCCESS_DATA_CFM if the packet was a data confirm
@@ -1154,17 +1154,17 @@ convert_rate(m80211_std_rate_encoding_t rate)
  * - WIFI_ENGINE_FAILURE if the header was malformed or if WiFiEngine is in a bad state.
  */
 int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
-                                       char **stripped_pkt, 
+                                       char **stripped_pkt,
                                        size_t *stripped_pkt_len,
                                        uint16_t *vlanid_prio,
-                                       uint32_t *transid) 
+                                       uint32_t *transid)
 {
    typedef struct
    {
       struct wrapper_alloc_buf hdr;
       mac_msg_t         buffer;
    } static_msg_t;
-   
+
    static_msg_t          static_msg;
    hic_message_context_t msg_ref;
    int      status = WIFI_ENGINE_SUCCESS_ABSORBED;
@@ -1180,15 +1180,15 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
    char active;
 #endif
 
-   DE_TRACE_DO(TR_DATA, print_pkt_hdr(pkt, pkt_len));  
+   DE_TRACE_DO(TR_DATA, print_pkt_hdr(pkt, pkt_len));
 
    if (TRACE_ENABLED(TR_DATA_DUMP))
    {
-      DE_TRACE_DATA(TR_DATA_DUMP, "RX Data: ", pkt, pkt_len);      
+      DE_TRACE_DATA(TR_DATA_DUMP, "RX Data: ", pkt, pkt_len);
    }
    else
-   {    
-      DE_TRACE3(TR_DATA_HIGH_RES, "RX pkt is at %p, len " TR_FSIZE_T "\n", 
+   {
+      DE_TRACE3(TR_DATA_HIGH_RES, "RX pkt is at %p, len " TR_FSIZE_T "\n",
                 pkt, TR_ASIZE_T(pkt_len));
    }
 
@@ -1206,7 +1206,7 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
 
 #define MIN_HIC_HEADER_SIZE 6
    if(pkt_len < MIN_HIC_HEADER_SIZE) {
-      DE_TRACE_INT(TR_DATA, "short packet (" TR_FSIZE_T ")\n", 
+      DE_TRACE_INT(TR_DATA, "short packet (" TR_FSIZE_T ")\n",
                    TR_ASIZE_T(pkt_len));
       return WIFI_ENGINE_FAILURE;
    }
@@ -1216,10 +1216,10 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
     * message is a local buffer that is copied in wei_sm_queue_sig()).
     */
    /* Mlme_CreateMessageContext(msg_ref);  */
-   
+
    msg_ref.raw = NULL;
    msg_ref.raw_size = sizeof(mac_msg_t);
-   
+
      /* Catch HIC header and add type/id info to msg_ref */
    msg_ref.msg_type     = HIC_MESSAGE_TYPE(pkt) & ~MAC_API_MSG_DIRECTION_BIT;
    msg_ref.msg_id       = HIC_MESSAGE_ID(pkt);
@@ -1246,7 +1246,7 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
       case HIC_MESSAGE_TYPE_MIB:
          skip_wrappers = FALSE;
          break;
-         
+
       case HIC_MESSAGE_TYPE_DATA:
          switch (msg_ref.msg_id)
          {
@@ -1254,9 +1254,9 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
             {
                mac_api_transid_t          trans_id;
                m80211_std_rate_encoding_t rate_used;
-               
+
                if(hic_size < MAC_DATA_CFM_MSG_SIZE) {
-                  DE_TRACE_INT(TR_DATA, "runt data_cfm (" TR_FSIZE_T ")\n", 
+                  DE_TRACE_INT(TR_DATA, "runt data_cfm (" TR_FSIZE_T ")\n",
                                TR_ASIZE_T(hic_size));
                   return WIFI_ENGINE_FAILURE;
                }
@@ -1264,11 +1264,11 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
                rate_used   = HIC_DATA_CFM_RATE_USED(hic_payload);
 
                rate_used = convert_rate(rate_used);
-              
-               DE_ASSERT(wifiEngineState.dataReqPending > 0 && 
+
+               DE_ASSERT(wifiEngineState.dataReqPending > 0 &&
 			                wifiEngineState.dataReqPending <= wifiEngineState.txPktWindowMax);
 
-               WIFI_LOCK();              
+               WIFI_LOCK();
                wifiEngineState.dataReqPending--;
                {
                   unsigned int prio;
@@ -1277,21 +1277,21 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
                   DE_ASSERT(wifiEngineState.dataReqByPrio[prio] > 0);
                   wifiEngineState.dataReqByPrio[prio]--;
                }
-             
+
 
                if ((wifiEngineState.dataReqPending == 0)&&(interface_enabled))
-               {  
-                  WIFI_UNLOCK();                   
-                  wei_release_resource_hic(RESOURCE_USER_DATA_PATH);   
+               {
+                  WIFI_UNLOCK();
+                  wei_release_resource_hic(RESOURCE_USER_DATA_PATH);
                }
                else
                {
-                  WIFI_UNLOCK();  
+                  WIFI_UNLOCK();
                }
-               
-               DE_TRACE_INT2(TR_PS, "HIC_MAC_DATA_CFM received (trans id %d, data req pending %d)\n", 
+
+               DE_TRACE_INT2(TR_PS, "HIC_MAC_DATA_CFM received (trans id %d, data req pending %d)\n",
                            			     trans_id, wifiEngineState.dataReqPending);
-                             
+
 #if (DE_CCX == CFG_INCLUDED)
                wei_ccx_metrics_on_cfm(trans_id);
 #endif
@@ -1300,14 +1300,14 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
                 * of that frame here. */
                if (WES_TEST_FLAG(WES_FLAG_ASSOC_BLOCKED))
                {
-                  
+
                   DE_TRACE_STATIC(TR_ASSOC, "ASSOC_BLOCKED set\n");
-                  DE_TRACE_INT2(TR_DATA, "DATA_CFM trans_id %d, save trans_id %d\n", 
+                  DE_TRACE_INT2(TR_DATA, "DATA_CFM trans_id %d, save trans_id %d\n",
                                           trans_id, wifiEngineState.last_eapol_trans_id);
                   log_transid(trans_id);
-                  
+
                   /* Was the last EAPOL frame confirmed? */
-                  if (wei_is_hmg_auto_mode() && 
+                  if (wei_is_hmg_auto_mode() &&
                       wifiEngineState.last_eapol_trans_id <= trans_id)
                   {
                      DE_TRACE_STATIC(TR_AUTH, "Deauthenticating due to Michael countermeasures.\n");
@@ -1319,7 +1319,7 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
                   wifiEngineState.current_tx_rate = rate_used;
                   log_transid(trans_id);
                }
-               
+
                if (transid)
                {
                   *transid = trans_id;
@@ -1328,13 +1328,13 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
                wei_ratemon_notify_data_cfm(rate_used);
                /* Notify roaming agent that tx rate might have changed */
                wei_roam_notify_data_cfm(rate_used);
-               
+
 #if (DE_CCX == CFG_INCLUDED)
                //DE_TRACE_STATIC(TR_ALWAYS, "NIKS: ccx_handle_wakeup called from data_cfm!\n");
                ccx_handle_wakeup();
 #endif
                /* Execute state machine to take care of any queued message. */
-               wei_sm_execute();  
+               wei_sm_execute();
 
                return (WIFI_ENGINE_SUCCESS_DATA_CFM);
             }
@@ -1347,7 +1347,7 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
                wifiEngineState.ps_data_ind_received = TRUE;
 #define MAC_DATA_IND_SIZE 8
                if(hic_size < MAC_DATA_IND_SIZE) {
-                  DE_TRACE_INT(TR_DATA, "runt data_ind (" TR_FSIZE_T ")\n", 
+                  DE_TRACE_INT(TR_DATA, "runt data_ind (" TR_FSIZE_T ")\n",
                                TR_ASIZE_T(hic_size));
                   return WIFI_ENGINE_FAILURE;
                }
@@ -1364,32 +1364,32 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
                {
                   *transid = trans_id;
                }
-               
+
                *vlanid_prio      = HIC_DATA_REQ_GET_VLANID_PRIO(hic_payload);
                *stripped_pkt     = HIC_DATA_IND_PAYLOAD_BUF(hic_payload);
                *stripped_pkt_len = HIC_DATA_IND_PAYLOAD_SIZE(hic_size);
-               
+
                status = WIFI_ENGINE_SUCCESS_DATA_IND;
 
                /* assume no SNAP headers */
                if (is_eapol_packet((unsigned char*)*stripped_pkt,
-                                   *stripped_pkt_len)) 
+                                   *stripped_pkt_len))
                {
                   if(wifiEngineState.eapol_handler != NULL) {
                      /* XXX This is bogus, we need a handle to the
                      complete packet for this to work, not just the
                      header. Luckily, on platforms that matter this
                      is the same. */
-                     if((*wifiEngineState.eapol_handler)(*stripped_pkt, 
+                     if((*wifiEngineState.eapol_handler)(*stripped_pkt,
                          *stripped_pkt_len))
                      status = WIFI_ENGINE_SUCCESS_ABSORBED;
                   }
-               } 
+               }
 #if (DE_CCX == CFG_INCLUDED)
 				else if (is_ccx_beacon_req_packet((unsigned char*)*stripped_pkt,
                                    *stripped_pkt_len, &channel, &duration, &active))
 				{
-					HandleRadioMeasurementReq(channel, duration, active);		
+					HandleRadioMeasurementReq(channel, duration, active);
 				}
 #endif
                else if (WiFiEngine_Is8021xPortClosed())
@@ -1411,7 +1411,7 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
                return (WIFI_ENGINE_FAILURE_NOT_IMPLEMENTED);
          }
          break;
-         
+
       case HIC_MESSAGE_TYPE_CTRL:
          break;
 
@@ -1425,7 +1425,7 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
             wei_send_cmd_raw(NULL, 0);
          }
          return WIFI_ENGINE_SUCCESS_ABSORBED;
-         
+
       case HIC_MESSAGE_TYPE_MGMT:
       default:
          use_static_buffer = FALSE;
@@ -1441,7 +1441,7 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
    }
    else
    {
-      /* Allocate a dynamic buffer for any kind of HIC message. */     
+      /* Allocate a dynamic buffer for any kind of HIC message. */
       msg_ref.raw = (mac_msg_t*)WrapperAllocStructure(NULL, msg_ref.raw_size);
 
       if(msg_ref.raw == NULL)
@@ -1457,7 +1457,7 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
    }
    else
    {
-      INIT_BLOB(&blob, hic_payload, hic_size); 
+      INIT_BLOB(&blob, hic_payload, hic_size);
       if (packer_Unpack(&msg_ref, &blob) == FALSE) /* Unpack the level 2 header */
       {
          DBG_PRINTBUF("Bad packet : ", (unsigned char *)pkt, pkt_len);
@@ -1468,7 +1468,7 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
    switch (msg_ref.msg_type)
    {
       case HIC_MESSAGE_TYPE_MIB:
-         wei_mib_schedule_cb(msg_ref.msg_id, (hic_interface_wrapper_t *)msg_ref.raw); 
+         wei_mib_schedule_cb(msg_ref.msg_id, (hic_interface_wrapper_t *)msg_ref.raw);
          switch (msg_ref.msg_id)
          {
             case MLME_GET_CFM:
@@ -1478,7 +1478,7 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
          }
          WiFiEngine_DispatchCallbacks();
          break;
-            
+
       case HIC_MESSAGE_TYPE_MGMT:
          DE_TRACE_STATIC2(TR_SM,"Management packet received with msg_ref.msg_id=%d\n",msg_ref.msg_id);
          switch(msg_ref.msg_id)
@@ -1587,14 +1587,14 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
          }
          WiFiEngine_DispatchCallbacks();
          break;
-         
+
       case HIC_MESSAGE_TYPE_CTRL:
          switch (msg_ref.msg_id)
          {
             case HIC_CTRL_SET_ALIGNMENT_CFM:
                /* ignore */
                break;
-            
+
             case HIC_CTRL_INIT_COMPLETED_CFM:
                Mlme_HandleHICInitCompleteConfirm((hic_ctrl_init_completed_cfm_t *)msg_ref.raw);
                break;
@@ -1611,14 +1611,14 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
             }
             break;
             case HIC_CTRL_HEARTBEAT_CFM:
-               wifiEngineState.hb_rx_ts = DriverEnvironment_GetTicks();               
+               wifiEngineState.hb_rx_ts = DriverEnvironment_GetTicks();
                break;
-            
+
             case HIC_CTRL_WAKEUP_IND:
             {
                Mlme_HandleHICWakeupInd((hic_ctrl_wakeup_ind_t *)msg_ref.raw);
                if(WiFiEngine_IsReasonHost((hic_ctrl_wakeup_ind_t *)msg_ref.raw))
-               {               
+               {
                   we_ind_send(WE_IND_PS_WAKEUP_IND,NULL);
                }
             }
@@ -1632,9 +1632,9 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
                DriverEnvironment_indicate(WE_IND_MAC_TIME, cfm, 0);
                break;
             }
-               
+
             default:
-            {               
+            {
                wei_sm_queue_sig(wei_message2signal(msg_ref.msg_id, msg_ref.msg_type, MGMT_MESSAGE_RX), SYSDEF_OBJID_HOST_MANAGER_TRAFFIC, wei_wrapper2param(msg_ref.raw), FALSE);
                /* Let the driver act upon the new message. */
                wei_sm_execute();
@@ -1711,8 +1711,8 @@ int   WiFiEngine_ProcessReceivedPacket(char *pkt, size_t pkt_len,
    }
 
    /* Execute state machine to take care of any queued message. */
-   wei_sm_execute();  
-      
+   wei_sm_execute();
+
 Cleanup:
    if ( (msg_ref.raw != NULL) && (msg_ref.raw != &static_msg.buffer) )
    {
@@ -1738,7 +1738,7 @@ static struct {
 int WiFiEngine_DebugStatsProcessSendPacket(int status)
 {
    // this is for subcategories of WIFI_ENGINE_FAILURE_RESOURCES
-   switch(status) { 
+   switch(status) {
       case WIFI_ENGINE_FAILURE_NOT_CONNECTED:
          return send_failure_status.not_connected++;
       case WIFI_ENGINE_FAILURE_COREDUMP:
@@ -1759,7 +1759,7 @@ int WiFiEngine_DebugStatsProcessSendPacket(int status)
 void WiFiEngine_DebugMsgProcessSendPacket(int status)
 {
    // this is for subcategories of WIFI_ENGINE_FAILURE_RESOURCES
-   switch(status) { 
+   switch(status) {
       case WIFI_ENGINE_FAILURE_NOT_CONNECTED:
          DE_TRACE_STATIC(TR_DATA, "FAILURE: SendPacket not connected\n");
          break;
@@ -1786,12 +1786,12 @@ void WiFiEngine_DebugMsgProcessSendPacket(int status)
 
 /*!
  * @brief Process a packet for sending
- * 
+ *
  * Takes a Ethernet II frame header and generates a message passing header for it.
  * The ethernet header is assumed to have the following layout :
  * <dst addr:6><src addr:6><type:2>...
  * The rest of the ethernet header buffer (if any) is ignored.
- * 
+ *
  * @param eth_hdr Input buffer (ethernet header)
  * @param eth_hdr_len Input buffer length (must be >= 14)
  * @param pkt_len Length of the complete data packet (in bytes)
@@ -1810,7 +1810,7 @@ void WiFiEngine_DebugMsgProcessSendPacket(int status)
  * Ignored for legacy association (no WMM)
  * @param trans_id_p Output buffer for the data transaction ID (can be NULL).
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS
  * - WIFI_ENGINE_FAILURE_INVALID_LENGTH if the input buffer size
  * was invalid (too small or too big).
@@ -1824,16 +1824,16 @@ int   WiFiEngine_ProcessSendPacket(char *eth_hdr, size_t eth_hdr_len, size_t pkt
    uint16_t uapsd_enabled_for_ac;
    size_t   mac_data_hdr_size;
    uint32_t trans_id;
-   char*    mac_data_hdr_p;                     
+   char*    mac_data_hdr_p;
    int      pad_len;
-                        
+
    DE_ASSERT(eth_hdr_len >= 14);
 
-   DE_TRACE_INT(TR_DATA_HIGH_RES, "WiFiEngine_ProcessSendPacket(pkt_len: " TR_FSIZE_T "\n", 
+   DE_TRACE_INT(TR_DATA_HIGH_RES, "WiFiEngine_ProcessSendPacket(pkt_len: " TR_FSIZE_T "\n",
                 TR_ASIZE_T(pkt_len));
    BAIL_IF_UNPLUGGED;
-   
-#ifdef USE_IF_REINIT   
+
+#ifdef USE_IF_REINIT
    WEI_ACTIVITY();
 #endif
 
@@ -1842,11 +1842,11 @@ int   WiFiEngine_ProcessSendPacket(char *eth_hdr, size_t eth_hdr_len, size_t pkt
    {
       return WIFI_ENGINE_FAILURE_NOT_CONNECTED;
    }
-   
+
    if(WiFiEngine_isCoredumpEnabled())
    {
       return WIFI_ENGINE_FAILURE_COREDUMP;
-   }  
+   }
 
    WIFI_LOCK();
    if (DriverEnvironment_acquire_trylock(&wifiEngineState.send_lock) == LOCK_LOCKED)
@@ -1857,7 +1857,7 @@ int   WiFiEngine_ProcessSendPacket(char *eth_hdr, size_t eth_hdr_len, size_t pkt
       WIFI_UNLOCK();
    if (wifiEngineState.dataReqPending >= wifiEngineState.txPktWindowMax)
    {
-      DE_ASSERT(wifiEngineState.dataReqPending <= 
+      DE_ASSERT(wifiEngineState.dataReqPending <=
       wifiEngineState.txPktWindowMax);
       DriverEnvironment_release_trylock(&wifiEngineState.send_lock);
       return WIFI_ENGINE_FAILURE_DATA_QUEUE_FULL;
@@ -1869,8 +1869,8 @@ int   WiFiEngine_ProcessSendPacket(char *eth_hdr, size_t eth_hdr_len, size_t pkt
       {
          WIFI_LOCK();
          if(!wei_request_resource_hic(RESOURCE_USER_DATA_PATH))
-         {               
-             DriverEnvironment_release_trylock(&wifiEngineState.send_lock);    
+         {
+             DriverEnvironment_release_trylock(&wifiEngineState.send_lock);
              //  TODO: rewrite wei_request_resource_hic(...) to return reason for denial so it can be passed on
              WIFI_UNLOCK();
              return WIFI_ENGINE_FAILURE_PS;
@@ -1878,7 +1878,7 @@ int   WiFiEngine_ProcessSendPacket(char *eth_hdr, size_t eth_hdr_len, size_t pkt
          WIFI_UNLOCK();
       }
    }
-   
+
    WIFI_LOCK();
    trans_id = wifiEngineState.pkt_cnt;
    wifiEngineState.pkt_cnt++;
@@ -1892,7 +1892,7 @@ int   WiFiEngine_ProcessSendPacket(char *eth_hdr, size_t eth_hdr_len, size_t pkt
       *trans_id_p = trans_id;
    }
 
-   
+
    /* Check 802.1X port */
    if (WiFiEngine_Is8021xPortClosed())
    {
@@ -1909,7 +1909,7 @@ int   WiFiEngine_ProcessSendPacket(char *eth_hdr, size_t eth_hdr_len, size_t pkt
       }
       else
       {
-         DriverEnvironment_release_trylock(&wifiEngineState.send_lock);    
+         DriverEnvironment_release_trylock(&wifiEngineState.send_lock);
          return WIFI_ENGINE_FAILURE_NOT_ACCEPTED;
       }
    }
@@ -1917,28 +1917,28 @@ int   WiFiEngine_ProcessSendPacket(char *eth_hdr, size_t eth_hdr_len, size_t pkt
    mac_data_hdr_size = WiFiEngine_GetDataHeaderSize();
    if (*hdr_len_p < mac_data_hdr_size)
    {
-      DE_TRACE_INT2(TR_DATA, "Invalid length (hdr_len_p " TR_FSIZE_T ", data hdr size " TR_FSIZE_T "\n", 
+      DE_TRACE_INT2(TR_DATA, "Invalid length (hdr_len_p " TR_FSIZE_T ", data hdr size " TR_FSIZE_T "\n",
                     TR_ASIZE_T(*hdr_len_p), TR_ASIZE_T(mac_data_hdr_size));
       DriverEnvironment_release_trylock(&wifiEngineState.send_lock);
       return WIFI_ENGINE_FAILURE_INVALID_LENGTH;
-   } 
-  
-   WIFI_LOCK();    
+   }
+
+   WIFI_LOCK();
    if(wifiEngineState.dataPathState == DATA_PATH_CLOSED)
    {
-      WIFI_UNLOCK(); 
+      WIFI_UNLOCK();
       wei_release_resource_hic(RESOURCE_USER_DATA_PATH);
-      DriverEnvironment_release_trylock(&wifiEngineState.send_lock);      
+      DriverEnvironment_release_trylock(&wifiEngineState.send_lock);
       return WIFI_ENGINE_FAILURE_DATA_PATH;
    }
 
-   wifiEngineState.dataReqPending++;  
+   wifiEngineState.dataReqPending++;
    wifiEngineState.dataReqByPrio[vlanid_prio & 7]++;
    DE_ASSERT(wifiEngineState.dataReqPending <=
 	     wifiEngineState.txPktWindowMax);
    if(wifiEngineState.dataReqPending == wifiEngineState.txPktWindowMax)
       DriverEnvironment_indicate(WE_IND_TX_QUEUE_FULL, NULL, 0);
-   WIFI_UNLOCK();  
+   WIFI_UNLOCK();
 
    pad_len = WiFiEngine_GetPaddingLength(mac_data_hdr_size + pkt_len);
    HIC_MESSAGE_LENGTH_SET(hdr, mac_data_hdr_size + pkt_len + pad_len);
@@ -1946,7 +1946,7 @@ int   WiFiEngine_ProcessSendPacket(char *eth_hdr, size_t eth_hdr_len, size_t pkt
    HIC_MESSAGE_ID(hdr)           = HIC_MAC_DATA_REQ;
    HIC_MESSAGE_HDR_SIZE(hdr)     = wifiEngineState.config.tx_hic_hdr_size;
    HIC_MESSAGE_PADDING_SET(hdr, pad_len);
-   
+
    uapsd_enabled_for_ac = wei_qos_get_ac_value(vlanid_prio & 0x07);
 
    /* Log to get WMM AC info fron the vlanid-prio that NDIS provides. */
@@ -1961,15 +1961,15 @@ int   WiFiEngine_ProcessSendPacket(char *eth_hdr, size_t eth_hdr_len, size_t pkt
    if(is_wpa_4way_final(eth_hdr, eth_hdr_len))
    {
       HIC_DATA_REQ_SET_SVC(mac_data_hdr_p, 0x0004);
-   } 
+   }
    else
    {
-      HIC_DATA_REQ_SET_SVC(mac_data_hdr_p, 0x0000);      
+      HIC_DATA_REQ_SET_SVC(mac_data_hdr_p, 0x0000);
    }
 
    *hdr_len_p = mac_data_hdr_size;
 
-   DE_TRACE_INT2(TR_PS_DEBUG, "HIC_MAC_DATA_REQ sent (trans id %d, dataReqPending %d)\n", 
+   DE_TRACE_INT2(TR_PS_DEBUG, "HIC_MAC_DATA_REQ sent (trans id %d, dataReqPending %d)\n",
 		 trans_id, wifiEngineState.dataReqPending);
 
    /* DBG_PRINTBUF("WiFiEngine_ProcessSendPacket() got packet ", (unsigned char *)pkt, pkt_len); */
@@ -1987,7 +1987,7 @@ int   WiFiEngine_ProcessSendPacket(char *eth_hdr, size_t eth_hdr_len, size_t pkt
 /*!
  * @brief Return the minimum size of a local transport header.
  *
- * @return 
+ * @return
  * - Returns the length of the header in bytes
  */
 uint16_t wei_get_hic_hdr_min_size()
@@ -1995,9 +1995,9 @@ uint16_t wei_get_hic_hdr_min_size()
    int                           size;
    Blob_t                        blob;
    m80211_mlme_host_header_t     m80211_mlme_host_header;
-   
+
    MEMSET(&m80211_mlme_host_header, 0, sizeof(m80211_mlme_host_header_t));
-   
+
    /* Calculate the header size including padding. */
    INIT_BLOB(&blob, NULL, BLOB_UNKNOWN_SIZE);
    HicWrapper_m80211_mlme_host_header_t(&m80211_mlme_host_header, &blob, ACTION_GET_SIZE);
@@ -2009,7 +2009,7 @@ uint16_t wei_get_hic_hdr_min_size()
 /*!
  * @brief Return the size of the mac data req header.
  *
- * @return 
+ * @return
  * - Returns the length of the header in bytes
  */
 #if 0
@@ -2022,8 +2022,8 @@ uint16_t wei_get_data_req_hdr_size()
    if(result == 0) {
       /* Calculate the Data Request header size. */
       INIT_BLOB(&blob, NULL, BLOB_UNKNOWN_SIZE);
-      HicWrapper_m80211_mac_data_req_header_t(&m80211_mac_data_req_header, 
-                                              &blob, 
+      HicWrapper_m80211_mac_data_req_header_t(&m80211_mac_data_req_header,
+                                              &blob,
                                               ACTION_GET_SIZE);
       result = BLOB_CURRENT_SIZE(&blob);
    }
@@ -2034,7 +2034,7 @@ uint16_t wei_get_data_req_hdr_size()
 /*!
  * @brief Return the size of a local data header
  *
- * @return 
+ * @return
  * - Returns the length of the header in bytes
  */
 uint16_t WiFiEngine_GetDataHeaderSize()
@@ -2045,7 +2045,7 @@ uint16_t WiFiEngine_GetDataHeaderSize()
 /*!
  * @brief Return required padding for given size of packet.
  */
-size_t 
+size_t
 WiFiEngine_GetPaddingLength(size_t data_packet_size)
 {
    size_t nr_bytes_added;
@@ -2056,18 +2056,18 @@ WiFiEngine_GetPaddingLength(size_t data_packet_size)
    else
    {
       nr_bytes_added = DE_SZ_ALIGN(data_packet_size, wifiEngineState.config.pdu_size_alignment) - data_packet_size;
-   }     
+   }
    return nr_bytes_added;
 }
 
 
 /* @brief Detect final WPA 4-way handshake message.
- * 
+ *
  * We need to delay the final 4-way handshake message until we've had
  * time to set the keys, but we also can't set the keys before we send
  * the message (since then it would be encrypted). This is solved by
  * delaying the frame in the firmware until encryption is enabled (for
- * a maximum of 50ms). 
+ * a maximum of 50ms).
  *
  * @param [in] frame       points to ethernet frame
  * @param [in] frame_len   size of ethernet frame
@@ -2097,12 +2097,12 @@ is_wpa_4way_final(const void *frame, size_t frame_len)
     * [20][ 2] packet length
     * more stuff follows...
     */
-   if(pkt[12] == 0x88 && pkt[13] == 0xb4) { /* WAPI ethernet frame */   
+   if(pkt[12] == 0x88 && pkt[13] == 0xb4) { /* WAPI ethernet frame */
      if(frame_len < 3+12+16+20) /* flags + addid + key + mic */
        return FALSE;
      if(pkt[16] != 1)
        return FALSE;
-   } else {  
+   } else {
      /* Ethernet frame layout (WPA):
       * [offset][size]
       * [ 0][ 6] dst address

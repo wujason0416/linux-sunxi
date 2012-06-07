@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // <copyright file="ctendpack_wince.h" company="Atheros">
 //    Copyright (c) 2008 Atheros Corporation.  All rights reserved.
-// 
+//
 //
 // Permission to use, copy, modify, and/or distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -20,4 +20,3 @@
 //==============================================================================
 // Author(s): ="Atheros"
 //==============================================================================
-

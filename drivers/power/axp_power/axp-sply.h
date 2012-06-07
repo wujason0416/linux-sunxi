@@ -382,7 +382,7 @@ struct axp_charger {
 	int vusb;
 	int iusb;
 	int ocv;
-	
+
 	int disvbat;
 	int disibat;
 

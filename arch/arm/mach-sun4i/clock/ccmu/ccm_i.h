@@ -47,4 +47,3 @@ struct core_pll_factor_t {
 extern int ccm_clk_get_pll_para(struct core_pll_factor_t *factor, __u64 rate);
 
 #endif /* #ifndef __AW_CCMU_I_H__ */
-

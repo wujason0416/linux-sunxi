@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-            Copyright (c) 2004 by Nanoradio AB 
+            Copyright (c) 2004 by Nanoradio AB
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
  All rights, title, ownership, or other interests in the
@@ -302,7 +302,7 @@ The first word is the current frame number, the second word is the total number 
                                     M80211_PDUOFFSET_CONTROL_FTYPE)&0xFF)
 
 #define MAC_MORE_FRAG(_p_frame) M80211_GET_MORE_FRAG(*(uint16_t *)(_p_frame))
-        
+
 #define M80211_PDUASSIGN_CONTROL_RETRY_SET(_p_frame)\
         {\
             uint16_t *temp = (uint16_t*)(_p_frame);\
@@ -314,7 +314,7 @@ The first word is the current frame number, the second word is the total number 
             uint16_t *temp = (uint16_t*)(_p_frame);\
             *temp &= ~(M80211_PDUMASK_CONTROL_RETRY << M80211_PDUOFFSET_CONTROL_RETRY);\
         }
-        
+
 #define M80211_PDUCHECK_CONTROL_RETRY(_p_frame)\
          (*(uint16_t*)(_p_frame) &\
          (M80211_PDUMASK_CONTROL_RETRY << M80211_PDUOFFSET_CONTROL_RETRY)) != 0 ? TRUE :FALSE
@@ -396,7 +396,7 @@ typedef enum
    AC_BK,
    AC_VI,
    AC_VO
-} m80211_access_category_t; 
+} m80211_access_category_t;
 
 typedef enum
 {
@@ -407,11 +407,11 @@ typedef enum
 
 typedef enum
 {
-   M80211_PM_DISABLED, 
+   M80211_PM_DISABLED,
    M80211_PM_ENABLED
 }m80211_station_pm_mode_t;
 
-typedef enum 
+typedef enum
 {
    Background_Queue, /* Lowest Priority */
    BestEffort_Queue,
@@ -432,15 +432,15 @@ typedef m802_mac_addr_t m80211_mac_addr_t;
 /*
  * Management MlmeStatus codes
  *
- * MlmeJoin.confirm(MlmeStatus), 
- * MlmeAuthenticate.confirm(MacAddr,AuthType,MlmeStatus), 
- * MlmeAssociate.confirm(MlmeStatus), 
- * MlmeDisassociate.confirm(MlmeStatus), 
- * MlmeDeauthenticate.confirm(MacAddr,MlmeStatus), 
- * MlmeReassociate.confirm(MlmeStatus), 
- * MlmePowermgt.confirm(MlmeStatus), 
- * MlmeReset.confirm(MlmeStatus), 
- * MlmeScan.confirm(BssDscrSet,MlmeStatus), 
+ * MlmeJoin.confirm(MlmeStatus),
+ * MlmeAuthenticate.confirm(MacAddr,AuthType,MlmeStatus),
+ * MlmeAssociate.confirm(MlmeStatus),
+ * MlmeDisassociate.confirm(MlmeStatus),
+ * MlmeDeauthenticate.confirm(MacAddr,MlmeStatus),
+ * MlmeReassociate.confirm(MlmeStatus),
+ * MlmePowermgt.confirm(MlmeStatus),
+ * MlmeReset.confirm(MlmeStatus),
+ * MlmeScan.confirm(BssDscrSet,MlmeStatus),
  * MlmeStart.confirm(MlmeStatus),
  * ...
  */
@@ -533,10 +533,10 @@ typedef uint16_t m80211_mgmt_reason_t;
 #define M80211_MGMT_REASON_CIPHER_SUITE_REJECTED                     24
 
 /*
- * MLME result codes 
+ * MLME result codes
  *
- * mlme_status/mlme_result can be internal codes from the 
- * x_mac. We will use code 2-9 for internal result codes 
+ * mlme_status/mlme_result can be internal codes from the
+ * x_mac. We will use code 2-9 for internal result codes
  * as these are reserced in the 802.11 standard.
  * (IEEE 802.11-2007, 7.3.1.9, Table 7-23)
  */
@@ -627,7 +627,7 @@ typedef uint8_t m80211_ie_len_t;
 #define WMM_IE_OUI_SUBTYPE_INFORMATION             0
 #define WMM_IE_OUI_SUBTYPE_PARAMETERS              1
 #define WMM_IE_OUI_SUBTYPE_TSPEC                   2
-#define WMM_IE_PROTOCOL_VERSION                    1 
+#define WMM_IE_PROTOCOL_VERSION                    1
 
 
 /* IE attribute field length definitions */
@@ -702,7 +702,7 @@ typedef uint8_t m80211_protect_type_t;
 #define M80211_PROTECT_TYPE_RX    1
 #define M80211_PROTECT_TYPE_TX    2
 #define M80211_PROTECT_TYPE_RX_TX 3
- 
+
 typedef uint16_t m80211_rsn_capabilities_t;
 #define M80211_RSN_CAPABILITY_PREAUTHENTICATION         0x0001
 #define M80211_RSN_CAPABILITY_NO_PAIRWISE               0x0002
@@ -827,25 +827,25 @@ typedef uint8_t m80211_azimuth_request_t;
 
 typedef uint8_t*        ie_ref_t;
 
-typedef struct 
+typedef struct
 {
    m80211_oui_id_t   id;
    m80211_oui_type_t type;
 }m80211_oui_t;
 
-typedef struct 
+typedef struct
 {
    m80211_oui_id_t       id;
    m80211_cipher_suite_t type;
 }m80211_cipher_suite_selector_t;
 
-typedef struct 
+typedef struct
 {
    m80211_oui_id_t    id;
    m80211_akm_suite_t type;
 }m80211_akm_suite_selector_t;
 
-typedef struct 
+typedef struct
 {
    uint8_t octet[M80211_IE_LEN_PMKID];
 }m80211_pmkid_selector_t;
@@ -858,7 +858,7 @@ typedef union GENERATE_WRAPPER_FUNCTIONS(802.11_MAC)
    m80211_pmkid_selector_t          pmkid;
 } suite_selector_t;
 
-typedef struct 
+typedef struct
 {
    char string[M80211_IE_LEN_COUNTRY_STRING];
 }m80211_country_string_t;
@@ -871,22 +871,22 @@ typedef struct
    int8_t   max_tx_power;
 }m80211_country_channels_t;
 
-typedef struct 
+typedef struct
 {
    int8_t max_dBm;
 }m80211_max_regulatory_power_t;
 
-typedef struct 
+typedef struct
 {
    int8_t tx_dBm;    /* Max allowed Tx power on antenna connector. <= Max regulatory power */
 }m80211_max_tx_power_t;
 
-typedef struct 
+typedef struct
 {
    int8_t tx_dBm;    /* Tx power used on antenna connector. */
 }m80211_tx_power_used_t;
 
-typedef struct 
+typedef struct
 {
    int8_t tx_dBm;    /* Transceiver noise floor on receiver antenna connector. */
 }m80211_trx_noise_floor_t;
@@ -904,26 +904,26 @@ typedef struct
    char            first_octet;
 }m80211_ie_format_t;
 
-typedef struct 
+typedef struct
 {
    m80211_ie_hdr_t hdr;
-   char            ssid[M80211_IE_MAX_LENGTH_SSID]; 
+   char            ssid[M80211_IE_MAX_LENGTH_SSID];
 }m80211_ie_ssid_t;
 
 
-typedef struct 
+typedef struct
 {
    m80211_ie_hdr_t hdr;
-   m80211_std_rate_encoding_t rates[M80211_IE_MAX_LENGTH_SUPPORTED_RATES]; 
+   m80211_std_rate_encoding_t rates[M80211_IE_MAX_LENGTH_SUPPORTED_RATES];
 }m80211_ie_supported_rates_t;
 
-typedef struct 
+typedef struct
 {
    m80211_ie_hdr_t hdr;
-   m80211_std_rate_encoding_t rates[M80211_IE_MAX_LENGTH_EXT_SUPPORTED_RATES]; 
+   m80211_std_rate_encoding_t rates[M80211_IE_MAX_LENGTH_EXT_SUPPORTED_RATES];
 }m80211_ie_ext_supported_rates_t;
 
-typedef struct 
+typedef struct
 {
    m80211_ie_hdr_t hdr;
    uint16_t        dwell_time;
@@ -932,10 +932,10 @@ typedef struct
    uint8_t         hop_index;
 }m80211_ie_fh_par_set_t;
 
-typedef struct 
+typedef struct
 {
    m80211_ie_hdr_t hdr;
-   uint8_t         channel; 
+   uint8_t         channel;
 }m80211_ie_ds_par_set_t;
 
 typedef struct
@@ -987,30 +987,30 @@ typedef struct
    m80211_ie_id_t            first_requested_ie;
 }m80211_ie_request_t;
 
-typedef struct 
+typedef struct
 {
    m80211_ie_hdr_t hdr;
-   uint8_t         challenge_text[M80211_IE_MAX_LENGTH_CHALLENGE_TEXT]; 
+   uint8_t         challenge_text[M80211_IE_MAX_LENGTH_CHALLENGE_TEXT];
 }m80211_ie_challenge_text_t;
 
 
-typedef struct 
+typedef struct
 {
    m80211_ie_hdr_t hdr;
    uint8_t         info;
 }m80211_ie_erp_t;
 
-typedef struct 
+typedef struct
 {
    m80211_ie_hdr_t                     hdr;
    uint16_t                            version;
-   m80211_cipher_suite_selector_t      group_cipher_suite;   
+   m80211_cipher_suite_selector_t      group_cipher_suite;
    uint16_t                            pairwise_cipher_suite_count;
    uint16_t                            akm_suite_count;
    uint16_t                            rsn_capabilities;
    uint16_t                            pmkid_count;
    /* The rsn_pool must be on a 32bit aligned adress. */
-   char*                               rsn_pool;       
+   char*                               rsn_pool;
 }m80211_ie_rsn_parameter_set_t;
 
 typedef struct
@@ -1099,7 +1099,7 @@ typedef struct
    ac_param_t           ac_be;
    ac_param_t           ac_bk;
    ac_param_t           ac_vi;
-   ac_param_t           ac_vo;   
+   ac_param_t           ac_vo;
 }m80211_ie_edca_parameter_set_t;
 
 typedef struct
@@ -1267,7 +1267,7 @@ typedef struct
    m80211_ie_ssid_t ssid;
 }beacon_rep_t;
 
-typedef union 
+typedef union
 {
    channel_load_req_t       channel_load_req;
    noise_histogram_req_t    noise_histogram_req;
@@ -1275,7 +1275,7 @@ typedef union
    lci_req_t                lci_req;
 }m80211k_request;
 
-typedef union 
+typedef union
 {
    uint8_t                  buf[200];
    channel_load_rep_t       channel_load_rep;
@@ -1283,23 +1283,23 @@ typedef union
    beacon_rep_t             beacon_rep;
 }m80211k_report;
 
-typedef struct 
+typedef struct
 {
    m80211_ie_hdr_t            hdr;
    uint8_t                    token;
    m80211_measurement_mode_t  mode;
    m80211_measurement_types_t type;
-   m80211k_request            req; 
-   uint8_t                    buf[200];   
+   m80211k_request            req;
+   uint8_t                    buf[200];
 }m80211_ie_measurement_request_t;
 
-typedef struct 
+typedef struct
 {
    m80211_ie_hdr_t                  hdr;
    uint8_t                          token;
    m80211_measurement_report_mode_t mode;
    m80211_measurement_types_t       type;
-   m80211k_report                   rep; 
+   m80211k_report                   rep;
 }m80211_ie_measurement_report_t;
 
 
@@ -1311,7 +1311,7 @@ typedef struct
 
 typedef struct
 {
-   meas_rep_hdr_t                     hdr;   
+   meas_rep_hdr_t                     hdr;
    m80211_ie_measurement_report_t     measurement;
 } m80211_radio_measurement_rep_t;
 
@@ -1338,11 +1338,11 @@ typedef struct
 
 typedef struct
 {
-   m80211_ie_hdr_t         hdr;    
-   uint8_t                 OUI_1;  
-   uint8_t                 OUI_2;      
-   uint8_t                 OUI_3;      
-   uint8_t                 OUI_type;   
+   m80211_ie_hdr_t         hdr;
+   uint8_t                 OUI_1;
+   uint8_t                 OUI_2;
+   uint8_t                 OUI_3;
+   uint8_t                 OUI_type;
 }m80211_ie_vendor_specific_hdr_t;
 
 typedef struct
@@ -1352,11 +1352,11 @@ typedef struct
 }m80211_ie_wapi_vendor_specific_hdr_t;
 
 /* bjru: added 2006-03-15 */
-typedef struct 
+typedef struct
 {
    m80211_ie_vendor_specific_hdr_t     hdr;
    m80211_rsn_version_t                version;
-   m80211_cipher_suite_selector_t      group_cipher_suite;   
+   m80211_cipher_suite_selector_t      group_cipher_suite;
    uint16_t                            pairwise_cipher_suite_count;
    uint16_t                            akm_suite_count;
    uint16_t                            rsn_capabilities;
@@ -1372,7 +1372,7 @@ typedef struct
     + (_wpa_parameter_set)->pairwise_cipher_suite_count*sizeof(m80211_cipher_suite_selector_t)))
 
 
-/* 
+/*
  * The following data type definition is according to the
  * Wi-Fi Protected Setup Spec Version 1.0h (December 2006)
  *
@@ -1395,9 +1395,9 @@ typedef struct
   char*                               wapi_pool;
 } m80211_ie_wapi_parameter_set_t;
 
-/* The four following data type definitions are according to the 
+/* The four following data type definitions are according to the
    "WMM (including WMM Power Save) Specification Version 1.1"
-   
+
    Note that these are not the same as the corresponding definitions in
    IEEE 802.11e which we don't support (yet) */
 
@@ -1430,20 +1430,20 @@ typedef struct
    m80211_ie_WMM_header_t           WMM_hdr;
    uint8_t                          WMM_Protocol_Version; /* == 0x01 */
    uint8_t                          WMM_QoS_Info;/* See fig. 6, page 9 in the WMM spec. */
-   uint8_t                          reserved;       
+   uint8_t                          reserved;
    AC_parameters_t                  AC_BE; /* Access Category Best Effort */
    AC_parameters_t                  AC_BK; /* Access Category Background */
    AC_parameters_t                  AC_VI; /* Access Category Video */
    AC_parameters_t                  AC_VO; /* Access Category Voice */
 }m80211_ie_WMM_parameter_element_t;
 
-typedef struct 
+typedef struct
 {
    m80211_ie_hdr_t         hdr;
    uint8_t                 requested_element_id;
 }m80211_ie_request_info_t;
 
-typedef struct 
+typedef struct
 {
    int32_t    count;
    int32_t    acc_size;
@@ -1760,7 +1760,7 @@ typedef struct
 /* Security related definitions */
 /********************************/
 
-typedef struct 
+typedef struct
 {
    uint8_t part[32];
 
@@ -1808,12 +1808,12 @@ typedef struct
    m80211_key_t key;
 }m80211_wep_key_t;
 
-typedef struct 
+typedef struct
 {
   m80211_mac_addr_t dot11WepKeyMappingAddress;
   bool_t            dot11WepKeyMappingWepOn;
   m80211_wep_key_t  dot11WepKeyMappingValue;
-  uint8_t           dot11WepKeyMappingRawStatus; 
+  uint8_t           dot11WepKeyMappingRawStatus;
 }dot11WepKeyMappingEntry;
 
 
@@ -1821,7 +1821,7 @@ typedef struct
 {
    m80211_wep_key_t dot11WepKeyMappingAddress;
 }dot11WepDefaultKeyEntry;
- 
+
 typedef struct
 {
    char prio;
@@ -1951,4 +1951,3 @@ typedef struct
 /* I N T E R F A C E  F U N C T I O N S **************************************/
 #endif    /* M80211_STDDEFS_H */
 /* END OF FILE ***************************************************************/
-

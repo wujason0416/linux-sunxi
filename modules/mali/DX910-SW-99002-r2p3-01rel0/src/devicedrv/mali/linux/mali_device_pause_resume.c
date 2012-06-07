@@ -1,9 +1,9 @@
 /**
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -31,7 +31,7 @@ int mali_dev_pause()
 {
 	int err = 0;
 	_mali_osk_lock_wait(lock, _MALI_OSK_LOCKMODE_RW);
-	if ((mali_dvfs_device_state ==  _MALI_DEVICE_SUSPEND) 
+	if ((mali_dvfs_device_state ==  _MALI_DEVICE_SUSPEND)
 	      || (mali_device_state == _MALI_DEVICE_SUSPEND) )
 	{
 		err = -EPERM;
@@ -51,7 +51,7 @@ int mali_dev_resume()
 {
 	int err = 0;
 	_mali_osk_lock_wait(lock, _MALI_OSK_LOCKMODE_RW);
-	if ((mali_dvfs_device_state == _MALI_DEVICE_RESUME) 
+	if ((mali_dvfs_device_state == _MALI_DEVICE_RESUME)
 	     || (mali_device_state == _MALI_DEVICE_SUSPEND) )
 	{
 		err = -EPERM;

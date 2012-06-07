@@ -61,16 +61,16 @@ uint32 GenerateDHKeyPair(dhm_context *dhm, uint8 *pubKey)
 	uint32 g;
 
 	/*mpi_self_test(1);*/
-	
+
 	/* 1. load the value of P */
 	if( mpi_read_binary(&dhm->P, DH_P_VALUE, BUF_SIZE_1536_BITS) != 0 ) {
-		wpa_printf(MSG_INFO, "GenerateKeyPair: failed to load P\n"); 
+		wpa_printf(MSG_INFO, "GenerateKeyPair: failed to load P\n");
 		return WSC_ERR_SYSTEM;
-	}	
+	}
 
 	/* 2. load the value of G */
 	g = htonl(DH_G_VALUE);
-   
+
 	if( mpi_read_binary(&dhm->G, (uint8 *)&g, 4) != 0 ) {
 		wpa_printf(MSG_INFO, "GenerateKeyPair: failed to load G\n");
 		return WSC_ERR_SYSTEM;
@@ -80,7 +80,7 @@ uint32 GenerateDHKeyPair(dhm_context *dhm, uint8 *pubKey)
 	dhm->len = 192;/*( mpi_msb( &dhm->P ) + 7 ) >> 3;*/
 
 	if( dhm_make_public(dhm, 16, pubKey, dhm->len, dhm_rand, NULL ) != 0) {
-		wpa_printf(MSG_INFO, "GenerateKeyPair: failed to load generate public key\n"); 
+		wpa_printf(MSG_INFO, "GenerateKeyPair: failed to load generate public key\n");
 		return WSC_ERR_SYSTEM;
 	}
 
@@ -100,11 +100,11 @@ void DeriveKey(uint8 *KDK,
 	uint8 hmac[SIZE_256_BITS];
 	uint32 hmacLen = 0, offset;
 	uint32 temp;
-	
+
 	wpa_printf(MSG_DEBUG, "DeriveKey: Deriving a key of %d bits\n", keyBits);
-	
+
 	iterations = 3;/* ((keyBits/8) + PRF_DIGEST_SIZE - 1)/PRF_DIGEST_SIZE;*/
-	
+
 	/*
 	 *  Prepare the input buffer. During the iterations, we need only replace the
 	 *  value of i at the start of the buffer.
@@ -114,15 +114,15 @@ void DeriveKey(uint8 *KDK,
 	os_memcpy(inPtr+SIZE_4_BYTES, prsnlString, 36);/*strlen(PERSONALIZATION_STRING));*/
 	temp = htonl(keyBits);
 	os_memcpy(inPtr+SIZE_4_BYTES+36/*strlen(PERSONALIZATION_STRING)*/, (uint8 *)&temp, SIZE_4_BYTES);
-	
+
 	offset = 0;
 	for(i = 0; i < iterations; i++) {
 		/* Set the current value of i at the start of the input buffer */
 		*(uint32 *)inPtr = htonl(i+1); /*i should start at 1 */
-		
+
 		hmac_sha256(KDK, SIZE_256_BITS, inPtr, 2*SIZE_4_BYTES+36/*strlen(PERSONALIZATION_STRING)*/, hmac);
 		hmacLen = 32;
-		
+
 		os_memcpy(output+offset, hmac, hmacLen);
 		offset+=hmacLen;
 		/*os_memcpy(*key+hmacLen, hmac, hmacLen);*/
@@ -141,8 +141,8 @@ void DeriveKey(uint8 *KDK,
 }
 
 uint8 ValidateMac(uint8 *data,
-		  uint32 data_len, 
-		  uint8 *hmac, 
+		  uint32 data_len,
+		  uint8 *hmac,
 		  uint8 *key)
 {
 	uint8 *dataMac;
@@ -156,7 +156,7 @@ uint8 ValidateMac(uint8 *data,
 
 	/* next, compare it against the received hmac */
 	wpa_printf(MSG_DEBUG, "ValidateMac: Verifying the first 64 bits of the generated HMAC\n");
-	
+
 	if(os_memcmp(dataMac, hmac, SIZE_64_BITS) != 0) {
 		wpa_printf(MSG_INFO, "ValidateMac: HMAC results don't match\n");
 		os_free(dataMac);

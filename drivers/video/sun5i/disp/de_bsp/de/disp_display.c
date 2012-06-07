@@ -27,11 +27,11 @@ __s32 BSP_disp_init(__disp_bsp_init_para * para)
             gdisp.screen[screen_id].layer_manage[i].para.prio = IDLE_PRIO;
         }
         gdisp.screen[screen_id].image_output_type = IMAGE_OUTPUT_LCDC;
-        
+
         gdisp.screen[screen_id].bright = 50;
         gdisp.screen[screen_id].contrast = 50;
         gdisp.screen[screen_id].saturation = 50;
-        
+
         gdisp.scaler[screen_id].bright = 32;
         gdisp.scaler[screen_id].contrast = 32;
         gdisp.scaler[screen_id].saturation = 32;
@@ -71,7 +71,7 @@ __s32 BSP_disp_exit(__u32 mode)
     if(mode == DISP_EXIT_MODE_CLEAN_ALL)
     {
         BSP_disp_close();
-        
+
         Scaler_Exit(0);
         //Scaler_Exit(1);
         Image_exit(0);
@@ -96,7 +96,7 @@ __s32 BSP_disp_exit(__u32 mode)
         //OSAL_InterruptDisable(INTC_IRQNO_SCALER1);
         //OSAL_UnRegISR(INTC_IRQNO_SCALER1,Scaler_event_proc,(void*)0);
     }
-    
+
     return DIS_SUCCESS;
 }
 
@@ -131,7 +131,7 @@ __s32 BSP_disp_close(void)
         	TVE_close(sel);
         }
     }
-    
+
 
     gdisp.screen[sel].status &= (IMAGE_USED_MASK & LCD_OFF & TV_OFF & VGA_OFF & HDMI_OFF);
     gdisp.screen[sel].lcdc_status &= (LCDC_TCON0_USED_MASK & LCDC_TCON1_USED_MASK);
@@ -140,7 +140,7 @@ __s32 BSP_disp_close(void)
 
 
 __s32 BSP_disp_print_reg(__bool b_force_on, __u32 id)
-{   
+{
     __u32 base = 0, size = 0;
     __u32 i = 0;
     unsigned char str[20];
@@ -152,19 +152,19 @@ __s32 BSP_disp_print_reg(__bool b_force_on, __u32 id)
             size = 0xa18;
             sprintf(str, "scaler0:\n");
             break;
-            
+
         case DISP_REG_SCALER1:
             base = gdisp.init_para.base_scaler1;
             size = 0xa18;
             sprintf(str, "scaler1:\n");
             break;
-            
+
         case DISP_REG_IMAGE0:
             base = gdisp.init_para.base_image0 + 0x800;
             size = 0xdff - 0x800;
             sprintf(str, "image0:\n");
             break;
-            
+
         case DISP_REG_IMAGE1:
             base = gdisp.init_para.base_image1 + 0x800;
             size = 0xdff - 0x800;
@@ -175,43 +175,43 @@ __s32 BSP_disp_print_reg(__bool b_force_on, __u32 id)
             size = 0x800;
             sprintf(str, "lcdc0:\n");
             break;
-            
+
         case DISP_REG_LCDC1:
             base = gdisp.init_para.base_lcdc1;
             size = 0x800;
             sprintf(str, "lcdc1:\n");
             break;
-            
+
         case DISP_REG_TVEC0:
             base = gdisp.init_para.base_tvec0;
             size = 0x20c;
             sprintf(str, "tvec0:\n");
             break;
-            
+
         case DISP_REG_TVEC1:
             base = gdisp.init_para.base_tvec1;
             size = 0x20c;
             sprintf(str, "tvec1:\n");
             break;
-            
+
         case DISP_REG_CCMU:
             base = gdisp.init_para.base_ccmu;
             size = 0x158;
             sprintf(str, "ccmu:\n");
             break;
-            
+
         case DISP_REG_PIOC:
             base = gdisp.init_para.base_pioc;
             size = 0x228;
             sprintf(str, "pioc:\n");
             break;
-            
+
         case DISP_REG_PWM:
             base = gdisp.init_para.base_pwm + 0x200;
             size = 0x0c;
             sprintf(str, "pwm:\n");
             break;
-            
+
         default:
             return DIS_FAIL;
     }
@@ -227,7 +227,7 @@ __s32 BSP_disp_print_reg(__bool b_force_on, __u32 id)
     for(i=0; i<size; i+=16)
     {
         __u32 reg[4];
-        
+
         reg[0] = sys_get_wvalue(base + i);
         reg[1] = sys_get_wvalue(base + i + 4);
         reg[2] = sys_get_wvalue(base + i + 8);
@@ -253,7 +253,6 @@ __s32 BSP_disp_print_reg(__bool b_force_on, __u32 id)
         }
 #endif
     }
-    
+
     return DIS_SUCCESS;
 }
-

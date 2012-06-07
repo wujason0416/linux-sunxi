@@ -63,4 +63,3 @@ void dram_power_save_process(void);
 unsigned int dram_power_up_process(void);
 
 #endif  /* __AW_DRAM_H__ */
-

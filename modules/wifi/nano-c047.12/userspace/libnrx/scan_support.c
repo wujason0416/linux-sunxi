@@ -127,7 +127,7 @@ output(int netno, const char *var, const char *val)
    int f = 0;
    for(p = val; *p != '\0'; p++)
       if(!isprint(*p) ||
-         isspace(*p) || 
+         isspace(*p) ||
          *p == '\'' ||
          *p == '"' ||
          *p == '$' ||
@@ -167,7 +167,7 @@ nrx_show_scan(nrx_context ctx, char *nets, size_t len)
    size_t l;
    int netno = -1;
    char tmp[64];
-   
+
    while(nrx_scan_get_event(ctx, nets, len, &p, &l) == 0) {
       if(l > sizeof(ev))
 	 memcpy(&ev, p, sizeof(ev));
@@ -176,7 +176,7 @@ nrx_show_scan(nrx_context ctx, char *nets, size_t len)
       switch(ev.cmd) {
          case SIOCGIWAP:
             netno++;
-            snprintf(tmp, sizeof(tmp), "%02x:%02x:%02x:%02x:%02x:%02x", 
+            snprintf(tmp, sizeof(tmp), "%02x:%02x:%02x:%02x:%02x:%02x",
                      (unsigned char)ev.u.ap.sa_data[0],
                      (unsigned char)ev.u.ap.sa_data[1],
                      (unsigned char)ev.u.ap.sa_data[2],
@@ -217,7 +217,7 @@ nrx_show_scan(nrx_context ctx, char *nets, size_t len)
             uint16_t flags;
             if(nrx_check_wx_version(ctx, 19) >= 0)
                flags = ev.u.point19.flags;
-            else 
+            else
                flags = ev.u.point.flags;
             if(!(flags & IW_ENCODE_DISABLED))
                strlcpy(tmp, "WEP", sizeof(tmp));
@@ -229,26 +229,26 @@ nrx_show_scan(nrx_context ctx, char *nets, size_t len)
          case IWEVQUAL:
             if((ev.u.qual.updated & IW_QUAL_QUAL_INVALID) == 0 &&
                ev.u.qual.qual != 0)
-               printf("NET_%d_QUAL=%d\n", netno, 
+               printf("NET_%d_QUAL=%d\n", netno,
                       (int)ev.u.qual.qual);
             if((ev.u.qual.updated & IW_QUAL_LEVEL_INVALID) == 0 &&
                ev.u.qual.level != 0)
-               printf("NET_%d_SIGNAL=%d\n", netno, 
+               printf("NET_%d_SIGNAL=%d\n", netno,
                       (int)ev.u.qual.level - 256);
             if((ev.u.qual.updated & IW_QUAL_NOISE_INVALID) == 0 &&
                ev.u.qual.noise != 0)
-               printf("NET_%d_NOISE=%d\n", netno, 
+               printf("NET_%d_NOISE=%d\n", netno,
                       (int)ev.u.qual.noise - 256);
             break;
          case SIOCGIWFREQ: {
             nrx_channel_t channel;
-            nrx_convert_frequency_to_channel(ctx, 
+            nrx_convert_frequency_to_channel(ctx,
                                              ev.u.freq.mantissa,
                                              &channel);
             printf("NET_%d_CHANNEL=%u\n", netno, channel);
-            break; 
+            break;
          }
-         case SIOCGIWRATE: 
+         case SIOCGIWRATE:
             format_rate(p + 4, l - 4, tmp, sizeof(tmp));
             output(netno, "RATE", tmp);
             break;
@@ -288,4 +288,3 @@ nrx_show_scan(nrx_context ctx, char *nets, size_t len)
    printf("NET_NUMNETS=%d\n", netno + 1);
    return 0;
 }
-

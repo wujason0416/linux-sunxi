@@ -14,4 +14,3 @@ int nrx_pcap_close(void);
 
 
 #endif /* __pcap_h__ */
-

@@ -26,31 +26,31 @@ typedef enum
    INTSIG_NET_ASSOCIATE,
    INTSIG_NET_START,
    INTSIG_NET_DEAUTHENTICATE,
-   INTSIG_NET_LEAVE_IBSS, 
+   INTSIG_NET_LEAVE_IBSS,
    INTSIG_NET_LEAVE_BSS,
    INTSIG_NET_REASSOCIATE,
-   INTSIG_NET_DISASSOCIATE, 
+   INTSIG_NET_DISASSOCIATE,
    INTSIG_POWER_UP,
    INTSIG_UNPLUG_TRAFFIC,
    INTSIG_UNPLUG_PS,
-   INTSIG_DEVICE_POWER_SLEEP,   
+   INTSIG_DEVICE_POWER_SLEEP,
    INTSIG_ENABLE_WMM_PS,
-   INTSIG_DISABLE_WMM_PS, 
+   INTSIG_DISABLE_WMM_PS,
    INTSIG_LEGACY_PS_CONFIGURATION_CHANGED,
    INTSIG_DISABLE_PS,
    INTSIG_ENABLE_PS,
    INTSIG_DEVICE_CONNECTED,
-   INTSIG_DEVICE_DISCONNECTED, 
+   INTSIG_DEVICE_DISCONNECTED,
    INTSIG_PS_SLEEP_FOREVER,
    INTSIG_EVAL_HCI
-   
+
 } HMG_Signals_e;
 
 // _type, _id and direction are all uint8_t
 #define wei_message2signal(_id,_type, _direction) (((uint32_t)_direction << 24) | (_type << 8) | (_id))
 
-#define RX_TYPE_ID(_type,_id) ((MGMT_MESSAGE_RX << 24)) | (_type << 8) | (_id)) 
-#define TX_TYPE_ID(_type,_id) ((MGMT_MESSAGE_TX << 24)) | (_type << 8) | (_id)) 
+#define RX_TYPE_ID(_type,_id) ((MGMT_MESSAGE_RX << 24)) | (_type << 8) | (_id))
+#define TX_TYPE_ID(_type,_id) ((MGMT_MESSAGE_TX << 24)) | (_type << 8) | (_id))
 
 //#define INTSIG_CASE(_id) ((INT_MESSAGE_TYPE << 24) | (_id))
 #define INTSIG_CASE(_id) ((_id))
@@ -82,4 +82,3 @@ typedef struct
 } StateVariables_t;
 
 #endif /* HMG_DEFS_H */
-

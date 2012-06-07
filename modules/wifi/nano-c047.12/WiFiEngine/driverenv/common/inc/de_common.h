@@ -10,7 +10,7 @@
 #include "sysdef.h" /* Must be first include */
 #include "wifi_engine.h"
 #include "wei_tailq.h"
- 
+
 #define DRIVERENVIRONMENT_FAILURE_NOT_ALLOWED -3
 #define DRIVERENVIRONMENT_FAILURE_DEFER -2
 #define DRIVERENVIRONMENT_BUSY -1
@@ -30,7 +30,7 @@ M A C R O ' S
    usage example:
      int x;
      size_t y;
-     DE_TRACE_INT(TR_XYZ, "x = %d, y = " TR_FSIZE_T() "\n", 
+     DE_TRACE_INT(TR_XYZ, "x = %d, y = " TR_FSIZE_T() "\n",
                   x, TR_ASIZE_T(y));
 */
 #ifndef TR_FSIZE_T
@@ -59,7 +59,7 @@ typedef struct
    void     *raw;
    int      raw_size;
    char     *packed;
-   int      packed_size;  
+   int      packed_size;
    int      msg_id;
    int      msg_type;
 } hic_message_context_t;

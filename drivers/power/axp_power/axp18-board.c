@@ -323,4 +323,3 @@ module_init(axp_board_init);
 MODULE_DESCRIPTION("Krosspower axp board");
 MODULE_AUTHOR("Donglu Zhang Krosspower");
 MODULE_LICENSE("GPL");
-

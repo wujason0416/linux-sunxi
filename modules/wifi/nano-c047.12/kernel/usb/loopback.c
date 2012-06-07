@@ -129,7 +129,7 @@ do_test(void* dummy)
 
       KDEBUG(TRANSPORT, "Loopback Pkt [%d]", count);
 
-      skb = dev_alloc_skb(sizeof *hdr + sizeof *echo + echo_size);  
+      skb = dev_alloc_skb(sizeof *hdr + sizeof *echo + echo_size);
       if (!skb) {
          retval = -ENOMEM;
          break;

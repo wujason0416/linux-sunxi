@@ -9,7 +9,7 @@
 ** Macro definitions.
 ************************************************/
 #define GET_REGISTRY_OBJECT(ObjectType, ObjectInstance) \
-   (ObjectType*)Registry_GetProperty(ID_#ObjectInstance)  
+   (ObjectType*)Registry_GetProperty(ID_#ObjectInstance)
 
 /************************************************
 ** Definition of generic registry base types
@@ -41,7 +41,7 @@ typedef m80211_ie_ds_par_set_t            rChannelSet;            /**< IE DS par
 #define MAX_NETWORKS 32       /* Max number of networks */
 
 /* This reflects the driver power save modes */
-typedef enum                                          
+typedef enum
 {
    PowerSave_Disabled_Permanently ,           /**< Power save is permanently off */
    PowerSave_Enabled_Activated_From_Start,    /**< Power management is enabled */
@@ -84,7 +84,7 @@ typedef struct
       rSSID              ssid;
       rBSSID             bssid;
       rBSS_Type          bssType;
-      
+
 } rScanPolicy;
 
 typedef struct                               /* Policy for how to connect to the network. */
@@ -122,7 +122,7 @@ typedef struct                                     /* Policy for how to connect 
    int              periodicScanRepetition;        /**< Number of repetitions for current scan period, default 1  */
 } rConnectionPolicy;
 
-typedef struct                               /* GeneralProperties. */ 
+typedef struct                               /* GeneralProperties. */
 {
    rBSSID            macAddress;             /**< MAC address of the device. */
 } rGeneralWiFiProperties;
@@ -177,7 +177,7 @@ typedef struct                               /* Network properties. */
 typedef struct                               /**< Power management properties for headset and phone . */
 {
    rPowerSaveMode    mode;                   /**< PM mode: active or power save. */
-   rBool             enablePsPoll;           /**< Enable legacy ps poll mode */   
+   rBool             enablePsPoll;           /**< Enable legacy ps poll mode */
    rBool             receiveAll_DTIM;        /**< Receive all DTIM. */
    rInterval         listenInterval;         /**< Beacon listen interval. */
    rTimeout          psTrafficTimeout;       /**< Traffic timeout after which device should go into power save used by firmware*/
@@ -201,7 +201,7 @@ typedef struct GENERATE_WRAPPER_FUNCTIONS(REGISTRY)
    rGeneralWiFiProperties        general;          /**< General WiFi properties. */
    rNetworkProperties            network;          /**< Network properties. */
    rPowerManagementProperties    powerManagement;  /**< Power management properties. */
-   rHostDriverProperties         hostDriver;       /**< Host Driver Properties. */ 
+   rHostDriverProperties         hostDriver;       /**< Host Driver Properties. */
 } rRegistry;
 
 extern const rRegistry DefaultRegistry;

@@ -243,7 +243,7 @@ static void bma250_late_resume(struct early_suspend *h);
 
 /**
  * gsensor_fetch_sysconfig_para - get config info from sysconfig.fex file.
- * return value:  
+ * return value:
  *                    = 0; success;
  *                    < 0; err
  */
@@ -254,9 +254,9 @@ static int gsensor_fetch_sysconfig_para(void)
 	__u32 twi_addr = 0;
 	char name[I2C_NAME_SIZE];
 	script_parser_value_type_t type = SCIRPT_PARSER_VALUE_TYPE_STRING;
-		
+
 	printk("========%s===================\n", __func__);
-	 
+
 	if(SCRIPT_PARSER_OK != (ret = script_parser_fetch("gsensor_para", "gsensor_used", &device_used, 1))){
 	                pr_err("%s: script_parser_fetch err.ret = %d. \n", __func__, ret);
 	                goto script_parser_fetch_err;
@@ -286,9 +286,9 @@ static int gsensor_fetch_sysconfig_para(void)
 			goto script_parser_fetch_err;
 		}
 		printk("%s: twi_id is %d. \n", __func__, twi_id);
-		
+
 		ret = 0;
-		
+
 	}else{
 		pr_err("%s: gsensor_unused. \n",  __func__);
 		ret = -1;
@@ -304,7 +304,7 @@ script_parser_fetch_err:
 
 /**
  * gsensor_detect - Device detection callback for automatic device creation
- * return value:  
+ * return value:
  *                    = 0; success;
  *                    < 0; err
  */
@@ -773,23 +773,23 @@ static void bma250_set_enable(struct device *dev, int enable)
 	mutex_lock(&bma250->enable_mutex);
 	if (enable) {
 		if (pre_enable ==0) {
-			bma250_set_mode(bma250->bma250_client, 
+			bma250_set_mode(bma250->bma250_client,
 							BMA250_MODE_NORMAL);
 			schedule_delayed_work(&bma250->work,
 				msecs_to_jiffies(atomic_read(&bma250->delay)));
 			atomic_set(&bma250->enable, 1);
 		}
-		
+
 	} else {
 		if (pre_enable ==1) {
-			bma250_set_mode(bma250->bma250_client, 
+			bma250_set_mode(bma250->bma250_client,
 							BMA250_MODE_SUSPEND);
 			cancel_delayed_work_sync(&bma250->work);
 			atomic_set(&bma250->enable, 0);
-		} 
+		}
 	}
 	mutex_unlock(&bma250->enable_mutex);
-	
+
 }
 
 static ssize_t bma250_enable_store(struct device *dev,
@@ -951,7 +951,7 @@ exit:
 static void bma250_early_suspend(struct early_suspend *h)
 {
 	struct bma250_data *data =
-		container_of(h, struct bma250_data, early_suspend);	
+		container_of(h, struct bma250_data, early_suspend);
 
 	mutex_lock(&data->enable_mutex);
 	if (atomic_read(&data->enable)==1) {
@@ -1015,7 +1015,7 @@ static int __init BMA250_init(void)
 {
 	int ret = -1;
 	bma_dbg("bma250: init\n");
-	
+
 	if(gsensor_fetch_sysconfig_para()){
 		printk("%s: err.\n", __func__);
 		return -1;
@@ -1025,7 +1025,7 @@ static int __init BMA250_init(void)
 	__func__, u_i2c_addr.normal_i2c[0], u_i2c_addr.normal_i2c[1]);
 
 	bma250_driver.detect = gsensor_detect;
-	
+
 	ret = i2c_add_driver(&bma250_driver);
 
 	return ret;
@@ -1042,4 +1042,3 @@ MODULE_LICENSE("GPL");
 
 module_init(BMA250_init);
 module_exit(BMA250_exit);
-

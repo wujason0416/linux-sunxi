@@ -32,7 +32,7 @@ void os_sleep(os_time_t sec, os_time_t usec)
 int os_get_time(struct os_time *t)
 {
 	DriverEnvironment_GetTimestamp_wall(&t->sec, &t->usec);
-	
+
 	return 0;
 }
 
@@ -44,20 +44,20 @@ int os_mktime(int year, int month, int day, int hour, int min, int sec,
 	/* days up to, but not including month n */
 	int m[] = { 0, 31, 59, 90, 120, 151,
 		    181, 212, 243, 273, 304, 334 };
-	
+
 	/* This isn't quite mktime, since it's supposed to take a
 	   local time and convert to time_t. But the time we get is
 	   not local but UTC, so this works correct. */
-	
+
 	/* XXX check parameters more thoroughly */
  	if (year < 1970 || year > 2037 ||
-	    month < 1 || month > 12 || 
+	    month < 1 || month > 12 ||
 	    day < 1 || day > 31 ||
- 	    hour < 0 || hour > 23 || 
-	    min < 0 || min > 59 || 
+ 	    hour < 0 || hour > 23 ||
+	    min < 0 || min > 59 ||
 	    sec < 0 || sec > 60)
  		return -1;
-	
+
 	days = 0;
 	days += (year - 1970) * 365;
 	days += (year - 1969) / 4; /* leap years */
@@ -66,11 +66,11 @@ int os_mktime(int year, int month, int day, int hour, int min, int sec,
 	if(month > 2 && year % 4 == 0)
 		days += 1;
 	*t = days * 86400 + hour * 3600 + min * 60 + sec;
- 	
-	
-	DE_TRACE9(TR_WPA, "%s: %04d-%02d-%02d %02d:%02d:%02d = %lu\n", 
+
+
+	DE_TRACE9(TR_WPA, "%s: %04d-%02d-%02d %02d:%02d:%02d = %lu\n",
 		  __func__, year, month, day, hour, min, sec, *t);
-	
+
 	return 0;
 }
 

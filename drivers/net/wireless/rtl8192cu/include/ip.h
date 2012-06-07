@@ -100,7 +100,7 @@ struct ip_options {
                 is_data:1,			/* Options in __data, rather than skb	*/
                 is_strictroute:1,		/* Strict source route			*/
                 srr_is_hit:1,			/* Packet destination addr was our one	*/
-                is_changed:1,			/* IP checksum more not valid		*/	
+                is_changed:1,			/* IP checksum more not valid		*/
                 rr_needaddr:1,			/* Need to record addr of outgoing dev	*/
                 ts_needtime:1,			/* Need to record timestamp		*/
                 ts_needaddr:1;			/* Need to record addr of outgoing dev  */

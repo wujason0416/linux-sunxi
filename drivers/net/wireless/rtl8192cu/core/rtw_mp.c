@@ -55,7 +55,7 @@ u32 read_macreg(_adapter *padapter, u32 addr, u32 sz)
 	}
 
 	return val;
-	
+
 }
 
 void write_macreg(_adapter *padapter, u32 addr, u32 val, u32 sz)
@@ -823,7 +823,7 @@ void	SetAntennaPathPower(PADAPTER pAdapter)
 {
 	Hal_SetAntennaPathPower(pAdapter);
 }
-	
+
 void SetTxPower(PADAPTER pAdapter)
 {
 	Hal_SetTxPower(pAdapter);
@@ -1011,7 +1011,7 @@ exit:
 }
 
 void fill_txdesc_for_mp(PADAPTER padapter, struct tx_desc *ptxdesc)
-{		
+{
 	struct mp_priv *pmp_priv = &padapter->mppriv;
 	_rtw_memcpy(ptxdesc, &(pmp_priv->tx.desc), TXDESC_SIZE);
 }
@@ -1263,7 +1263,7 @@ u32 mp_query_psd(PADAPTER pAdapter, u8 *data)
 	if (strlen(data) == 0) { //default value
 		psd_pts = 128;
 		psd_start = 64;
-		psd_stop = 128;   
+		psd_stop = 128;
 	} else {
 		sscanf(data, "pts=%d,start=%d,stop=%d", &psd_pts, &psd_start, &psd_stop);
 	}
@@ -1301,18 +1301,17 @@ u32 rtw_atoi(u8* s)
 	{
 	  if(s[i] >= '0' && s[i] <= '9')
 		 num = num * 10 + s[i] -'0';
-	  else if(s[0] == '-' && i==0) 
+	  else if(s[0] == '-' && i==0)
 		 flag =1;
-	  else 
+	  else
 		  break;
 	 }
 
 	if(flag == 1)
 	   num = num * -1;
 
-	 return(num); 
+	 return(num);
 
 }
 
 #endif
-

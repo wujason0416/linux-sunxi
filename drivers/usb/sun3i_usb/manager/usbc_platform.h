@@ -10,7 +10,7 @@
 *
 * Author 		: javen
 *
-* Description 	: USB¿ØÖÆÆ÷Éè±¸ĞÅÏ¢
+* Description 	: USBæ§åˆ¶å™¨è®¾å¤‡ä¿¡æ¯
 *
 * History 		:
 *      <author>    		<time>       	<version >    		<desc>
@@ -30,4 +30,3 @@ __s32 usbc1_platform_device_exit(void);
 __s32 usbc2_platform_device_exit(void);
 
 #endif   //__USBC_PLATFORM_H__
-

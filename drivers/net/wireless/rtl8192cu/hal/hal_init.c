@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -68,10 +68,10 @@ void rtw_sw_led_deinit(_adapter *padapter)
 		padapter->HalFunc.DeInitSwLeds(padapter);
 }
 
-uint	 rtw_hal_init(_adapter *padapter) 
+uint	 rtw_hal_init(_adapter *padapter)
 {
 	uint	status = _SUCCESS;
-	
+
 	padapter->hw_init_completed=_FALSE;
 
 	status = padapter->HalFunc.hal_init(padapter);
@@ -88,12 +88,12 @@ uint	 rtw_hal_init(_adapter *padapter)
 
 	return status;
 
-}	
+}
 
 uint	 rtw_hal_deinit(_adapter *padapter)
 {
 	uint	status = _SUCCESS;
-	
+
 _func_enter_;
 
 	status = padapter->HalFunc.hal_deinit(padapter);
@@ -105,16 +105,16 @@ _func_enter_;
 	{
 		RT_TRACE(_module_hal_init_c_,_drv_err_,("\n rtw_hal_deinit: hal_init fail\n"));
 	}
-	
+
 _func_exit_;
-	
+
 	return status;
-	
+
 }
 #ifdef DBG_CONFIG_ERROR_DETECT
 void	rtw_sreset_init(_adapter *padapter)
 {
 	if(padapter->HalFunc.sreset_init_value)
-		padapter->HalFunc.sreset_init_value(padapter); 
+		padapter->HalFunc.sreset_init_value(padapter);
 }
-#endif	
+#endif

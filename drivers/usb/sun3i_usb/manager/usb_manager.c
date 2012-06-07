@@ -10,7 +10,7 @@
 *
 * Author 		: javen
 *
-* Description 	: USB ¹ÜÀí³ÌĞò
+* Description 	: USB ç®¡ç†ç¨‹åº
 *
 * History 		:
 *      <author>    		<time>       	<version >    		<desc>
@@ -497,4 +497,3 @@ static void __exit usb_manager_exit(void)
 
 module_init(usb_manager_init);
 module_exit(usb_manager_exit);
-

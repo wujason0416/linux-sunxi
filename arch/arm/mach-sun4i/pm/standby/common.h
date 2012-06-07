@@ -71,4 +71,3 @@ void standby_mdelay(int ms);
 void standby_delay(int cycle);
 
 #endif  //__COMMON_H__
-

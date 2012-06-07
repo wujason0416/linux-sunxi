@@ -305,7 +305,7 @@ static __s32 _VirtualPageRead(__u32 nDieNum, __u32 nBlkNum, __u32 nPage, __u32 S
     }
 
 	return result;
-	
+
     #if 0
     if(result < 0)
     {
@@ -813,32 +813,32 @@ static __s32 _GetLastUsedPage(__u32 nDieNum, __u32 nBlock)
     {
         __u32   tmpBnkNum;
         __u8    tmpPageStatus;
-    
+
         tmpLowPage = 0;
         tmpHighPage = PAGE_CNT_OF_PHY_BLK - 1;
-    
+
         while(tmpLowPage <= tmpHighPage)
         {
             tmpPageStatus = FREE_PAGE_MARK;
             tmpMidPage = (tmpLowPage + tmpHighPage) / 2;
-    
+
             //if support bank align, there may be some free pages in the used page group
             for(tmpBnkNum=0; tmpBnkNum<INTERLEAVE_BANK_CNT; tmpBnkNum++)
             {
                 //read pages to check if the page is free
                 tmpPage = tmpMidPage * INTERLEAVE_BANK_CNT + tmpBnkNum;
                 _VirtualPageRead(nDieNum, nBlock, tmpPage, 0x3, FORMAT_PAGE_BUF, (void *)&tmpSpare);
-    
+
                 if((tmpSpare.PageStatus == FREE_PAGE_MARK) && (tmpSpare.LogicPageNum == 0xffff))
                 {
                     //current page is a free page
                     continue;
                 }
-    
+
                 tmpPageStatus &= DATA_PAGE_MARK;
                 tmpUsedPage = tmpPage;
             }
-    
+
             if(tmpPageStatus == FREE_PAGE_MARK)
             {
                 //look for the last table group in the front pages
@@ -850,22 +850,22 @@ static __s32 _GetLastUsedPage(__u32 nDieNum, __u32 nBlock)
                 tmpLowPage = tmpMidPage + 1;
             }
         }
-    
+
     }
     else
     {
-    
+
         tmpLowPage = 0;
         tmpHighPage = PAGE_CNT_OF_SUPER_BLK - 1;
-    
+
         while(tmpLowPage <= tmpHighPage)
         {
             tmpMidPage = (tmpLowPage + tmpHighPage) / 2;
-    
+
             //get the spare area data of the page to check if the page is free
             _VirtualPageRead(nDieNum, nBlock, tmpMidPage, 0x3, FORMAT_PAGE_BUF, (void *)&tmpSpare);
             tmpUsedPage = tmpMidPage;
-                
+
             if((tmpSpare.PageStatus == FREE_PAGE_MARK) && (tmpSpare.LogicPageNum == 0xffff))
             {
      		    //look for the last table group in the front pages
@@ -878,7 +878,7 @@ static __s32 _GetLastUsedPage(__u32 nDieNum, __u32 nBlock)
                 tmpLowPage = tmpMidPage + 1;
             }
         }
-    
+
     }
 
     return tmpUsedPage;
@@ -998,7 +998,7 @@ static __s32 _GetBlkLogicInfo(struct __ScanDieInfo_t *pDieInfo)
                     //set the bad flag of the physical block
                     tmpBadFlag = 1;
                 }
-			
+
                 if(tmpPage == 0)
                 {
                     //get the logical information of the physical block
@@ -1793,7 +1793,7 @@ static __s32 _FillZoneTblInfo(struct __ScanDieInfo_t *pDieInfo)
     for( ; tmpPhyBlk<SuperBlkCntOfDie; tmpPhyBlk++)
     {
         tmpLogicInfo = pDieInfo->pPhyBlk[tmpPhyBlk];
-        
+
         //added by penggang 20101206
         //the last block is degenrous, if it is free block, kick it as a bad block
         if(tmpPhyBlk == SuperBlkCntOfDie-1)
@@ -1803,13 +1803,13 @@ static __s32 _FillZoneTblInfo(struct __ScanDieInfo_t *pDieInfo)
                 FORMAT_DBG("[FORMAT_DBG] mark the last block as bad block \n");
                 pDieInfo->pPhyBlk[tmpPhyBlk] = BAD_BLOCK_INFO;
                 _WriteBadBlkFlag(pDieInfo->nDie, tmpPhyBlk);
-                
+
             }
         }
-        
+
         tmpLogicInfo = pDieInfo->pPhyBlk[tmpPhyBlk];
-        
-        
+
+
         //check if the block is a bad block
         if(tmpLogicInfo == BAD_BLOCK_INFO)
         {
@@ -2500,7 +2500,7 @@ __s32 FMT_Init(void)
     if(SUPPORT_EXT_INTERLEAVE)
     {
        if(NandStorageInfo.ChipCnt >=2)
-          LogicArchiPar.PageCntPerLogicBlk *= 2; 	
+          LogicArchiPar.PageCntPerLogicBlk *= 2;
     }
     LogicArchiPar.ZoneCntPerDie = (NandStorageInfo.BlkCntPerDie / NandStorageInfo.PlaneCntPerDie) / BLOCK_CNT_OF_ZONE;
 
@@ -2627,6 +2627,3 @@ void clear_NAND_ZI( void )
 {
     MEMSET(&PageCachePool, 0x00, sizeof(struct __NandPageCachePool_t));
 }
-
-
-

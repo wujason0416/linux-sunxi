@@ -21,8 +21,8 @@
 
 /*
  * L2 header can either be ETHERNET II:
- 0                   1                   2                   3   
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  | DESTINATION ADDRESS                                           |
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -34,8 +34,8 @@
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
  * Or it can come with a 802.2+SNAP header
- 0                   1                   2                   3   
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  | DESTINATION ADDRESS                                           |
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -59,8 +59,8 @@
 #define ETHERNET2_HDR_LEN 14
 /*
  * IP header from RFC791
- 0                   1                   2                   3   
- 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  |Version|  IHL  |Type of Service|          Total Length         |
  +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -150,7 +150,7 @@ wei_in_cksum(const void *data, size_t len, uint16_t psum)
    size_t index = 0;
    uint32_t sum = psum;
    int need_swap = FALSE;
-   
+
    /* make sure we're using two-byte aligned accesses below */
    if((unsigned int)ptr & 1) {
       need_swap = TRUE;
@@ -183,7 +183,7 @@ wei_in_cksum(const void *data, size_t len, uint16_t psum)
 #define PORT_BOOTPC 68
 #define BOOTREQUEST  1
 #define BOOTRESPONSE 2
-#define ARPHRD_ETHER 1   
+#define ARPHRD_ETHER 1
 
 
 #define ETH_MIN_SIZE  14
@@ -192,8 +192,8 @@ wei_in_cksum(const void *data, size_t len, uint16_t psum)
 #define UDP_HDR_LEN   8
 
 static uint16_t
-wei_udp_cksum(const unsigned char *ip_hdr, 
-              const unsigned char *udp_hdr, 
+wei_udp_cksum(const unsigned char *ip_hdr,
+              const unsigned char *udp_hdr,
               unsigned int udp_length)
 {
    const unsigned char udp_proto[2] = { 0, IPPROTO_UDP };
@@ -273,16 +273,16 @@ wei_dhcp_check_frame_type(const unsigned char *eth_hdr,
       return FALSE;
    }
    ip_length = GETU16(ip_hdr, IP_LENGTH);
-   if(ip_length < ip_hdr_len + UDP_HDR_LEN + DHCP_MIN_SIZE || 
+   if(ip_length < ip_hdr_len + UDP_HDR_LEN + DHCP_MIN_SIZE ||
       eth_hdr_len + ip_length > len) {
       DE_TRACE_STATIC(TR_DHCP, "bad ip length\n");
       return FALSE;
    }
-   
+
    /* UDP */
    udp_hdr = ip_hdr + ip_hdr_len;
    DE_TRACE_DATA(TR_DHCP, "UDP |", udp_hdr, UDP_HDR_LEN);
-   if(is_request) { 
+   if(is_request) {
       if(GETU16(udp_hdr, UDP_SPORT) != PORT_BOOTPC ||
          GETU16(udp_hdr, UDP_DPORT) != PORT_BOOTPS) {
          DE_TRACE_STATIC(TR_DHCP, "not boot port\n");
@@ -339,7 +339,7 @@ wei_dhcp_check_frame_type(const unsigned char *eth_hdr,
          return FALSE; /* already a broadcast response */
       }
    }
-   
+
    /* This frame seems like what we're interested in, but since we
     * alter the frame and recalculate the checksums, we need to make
     * sure it's correct to begin with. */
@@ -378,12 +378,12 @@ wei_dhcp_request_fixup(void *frame, size_t len)
    unsigned char *dhcp_hdr;
    uint16_t csum;
 
-   if(!wei_dhcp_check_frame_type(frame, len, TRUE, 
+   if(!wei_dhcp_check_frame_type(frame, len, TRUE,
                                  &ip_hdr, &udp_hdr, &dhcp_hdr))
       return;
 
    dhcp_hdr[DHCP_FLAGS] &= ~DHCP_FLAG_BROADCAST;
-   
+
    udp_hdr[UDP_CKSUM] = udp_hdr[UDP_CKSUM + 1] = 0; /* clear checksum */
 #if 1
    /* update UDP checksum, not strictly necessary */
@@ -393,8 +393,8 @@ wei_dhcp_request_fixup(void *frame, size_t len)
 #endif
 
    /* save the xid, so we can match against incoming responses */
-   DE_MEMCPY(wei_dhcp_active_xid, 
-             dhcp_hdr + DHCP_XID, 
+   DE_MEMCPY(wei_dhcp_active_xid,
+             dhcp_hdr + DHCP_XID,
              sizeof(wei_dhcp_active_xid));
 }
 
@@ -409,12 +409,12 @@ wei_dhcp_response_fixup(void *frame, size_t len)
 
    uint16_t csum;
 
-   if(!wei_dhcp_check_frame_type(frame, len, FALSE, 
+   if(!wei_dhcp_check_frame_type(frame, len, FALSE,
                                  &ip_hdr, &udp_hdr, &dhcp_hdr))
       return;
 
-   if(DE_MEMCMP(wei_dhcp_active_xid, 
-                dhcp_hdr + DHCP_XID, 
+   if(DE_MEMCMP(wei_dhcp_active_xid,
+                dhcp_hdr + DHCP_XID,
                 sizeof(wei_dhcp_active_xid)) != 0) {
       /* not the response we're waiting for */
       DE_TRACE_STATIC(TR_DHCP, "id mismatch");

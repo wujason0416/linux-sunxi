@@ -23,7 +23,7 @@ nrx_reg_open(struct nrx_px_softc *sc, struct inode *inode, struct file *file)
    ret = nrx_px_setsize(sc, 4096);
    if(ret < 0)
       return ret;
-      
+
    buf = nrx_px_data(sc);
    memset(buf, 0xff, nrx_px_size(sc));
 
@@ -61,11 +61,10 @@ nrx_reg_release(struct nrx_px_softc *sc, struct inode *inode, struct file *file)
 }
 
 struct nrx_px_entry reg_px_entry = {
-   .name = "registry", 
-   .mode = S_IRUSR|S_IWUSR, 
-   .blocksize = 1024, 
+   .name = "registry",
+   .mode = S_IRUSR|S_IWUSR,
+   .blocksize = 1024,
    .init = NULL,
    .open = nrx_reg_open,
    .release = nrx_reg_release
 };
-

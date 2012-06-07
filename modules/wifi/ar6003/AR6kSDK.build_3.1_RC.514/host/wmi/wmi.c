@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // Copyright (c) 2004-2010 Atheros Corporation.  All rights reserved.
-// 
+//
 //
 // Permission to use, copy, modify, and/or distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -397,7 +397,7 @@ wmi_init(void *devt, int devid)
 
     A_MEMZERO(&wmip->wmi_ht_cap[A_BAND_24GHZ], sizeof(WMI_SET_HT_CAP_CMD));
     A_MEMZERO(&wmip->wmi_ht_cap[A_BAND_5GHZ], sizeof(WMI_SET_HT_CAP_CMD));
-    
+
     wmip->wmi_ht_cap[A_BAND_24GHZ].enable = 1;
     wmip->wmi_ht_cap[A_BAND_5GHZ].enable = 1;
 
@@ -408,7 +408,7 @@ wmi_init(void *devt, int devid)
 
     wmip->wmi_user_ht[A_BAND_24GHZ] = 1;
     wmip->wmi_user_ht[A_BAND_5GHZ] = 1;
-    wmip->wmi_user_phy = WMI_11G_MODE; 
+    wmip->wmi_user_phy = WMI_11G_MODE;
     wmi_list[devid] = wmip;
     /*One time memory allocation for wmi virtual device structure*/
     if(pWmiPriv == NULL) {
@@ -1547,7 +1547,7 @@ wmi_connect_event_rx(struct wmi_t *wmip, A_UINT8 *datap, int len)
 {
     WMI_CONNECT_EVENT *ev;
     A_UINT8 *pie,*peie;
-    A_UINT32 phymode; 
+    A_UINT32 phymode;
     NETWORK_TYPE mode;
 
     if (len < sizeof(WMI_CONNECT_EVENT))
@@ -1589,11 +1589,11 @@ wmi_connect_event_rx(struct wmi_t *wmip, A_UINT8 *datap, int len)
         pie += pie[1] + 2;
     }
 
-    mode = A_WMI_GET_NETWORK_TYPE(wmip->wmi_devt); 
+    mode = A_WMI_GET_NETWORK_TYPE(wmip->wmi_devt);
     if (mode == INFRA_NETWORK){
        phymode = (ev->u.infra_ibss_bss.networkType & 0x0F00) >> 8;
        ev->u.infra_ibss_bss.networkType = INFRA_NETWORK;
-     
+
        switch(phymode)
         {
         case MODE_11G:
@@ -1694,7 +1694,7 @@ wmi_disconnect_event_rx(struct wmi_t *wmip, A_UINT8 *datap, int len)
     wmip->wmi_phyMode = wmip->wmi_user_phy;
     wmip->wmi_ht_cap[A_BAND_24GHZ].enable = wmip->wmi_user_ht[A_BAND_24GHZ];
     wmip->wmi_ht_cap[A_BAND_5GHZ].enable = wmip->wmi_user_ht[A_BAND_5GHZ];
-    
+
     A_WMI_DISCONNECT_EVENT(wmip->wmi_devt, ev->disconnectReason, ev->bssid,
                             ev->assocRespLen, ev->assocInfo, ev->protocolReasonStatus);
 
@@ -2010,13 +2010,13 @@ wmi_bssInfo_event_rx(struct wmi_t *wmip, A_UINT8 *datap, int len)
     }
 
     bih = (WMI_BSS_INFO_HDR *)datap;
-    
+
     if(bih->frameType == PROBEREQ_FTYPE) {
         if(A_WMI_AP_MODE_PROBE_RX(wmip->wmi_devt, datap, len) == A_OK) {
             return A_OK;
         }
     }
-    
+
     bss = wlan_find_node(&wmip->wmi_scan_table, bih->bssid);
 
     if (bih->rssi > 0) {
@@ -2174,7 +2174,7 @@ wmi_bssInfo_event_rx(struct wmi_t *wmip, A_UINT8 *datap, int len)
             len += (cached_ssid_len - beacon_ssid_len);
         }
 
-        /* 
+        /*
          * Some APs, like TP-LINK, will report a RSN with zero unicast cipher suites in probe resp.
          * Do not update the ni_buf if buf is invalid. It also handles other invalid IEs
          */
@@ -2334,7 +2334,7 @@ wmi_bssInfo_event_rx(struct wmi_t *wmip, A_UINT8 *datap, int len)
 err_exit:
     if (newNode) {
         if (status == A_OK) {
-            wlan_setup_node(&wmip->wmi_scan_table, bss, bih->bssid);            
+            wlan_setup_node(&wmip->wmi_scan_table, bss, bih->bssid);
         } else if (bss) {
             wlan_node_free(bss);
         }
@@ -4246,7 +4246,7 @@ wmi_create_pstream_cmd(struct wmi_t *wmip, WMI_CREATE_PSTREAM_CMD *params)
     if ((A_UINT32)params->tsid == (A_UINT32)WMI_IMPLICIT_PSTREAM) {
         LOCK_WMI(pWmiPriv);
         fatPipeExistsForAC = (pWmiPriv->wmi_fatPipeExists & (1 << params->trafficClass));
-        /* 
+        /*
          * EV#84204 target assert failure in _tx_aggr_drain_post_process()
          * To prevent the driver from sending the back-to-back CREATE_PSTREAM cmd
          */
@@ -6587,7 +6587,7 @@ wmi_set_mcast_filter_cmd(struct wmi_t *wmip, A_UINT8 *filter)
             return A_BAD_ADDRESS;
         }
     }
-  
+
 
     A_NETBUF_PUT(osbuf, sizeof(*cmd));
 
@@ -6603,7 +6603,7 @@ wmi_set_mcast_filter_cmd(struct wmi_t *wmip, A_UINT8 *filter)
     cmd->multicast_mac[1] = 0x00;
     cmd->multicast_mac[2] = 0x5e;
          cmd->multicast_mac[3] = filter[3]&0x7F;
-    }    
+    }
     cmd->multicast_mac[4] = filter[4];
     cmd->multicast_mac[5] = filter[5];
 
@@ -6651,7 +6651,7 @@ wmi_del_mcast_filter_cmd(struct wmi_t *wmip, A_UINT8 *filter)
     cmd->multicast_mac[1] = 0x00;
     cmd->multicast_mac[2] = 0x5e;
          cmd->multicast_mac[3] = filter[3]&0x7F;
-    }    
+    }
     cmd->multicast_mac[4] = filter[4];
     cmd->multicast_mac[5] = filter[5];
 

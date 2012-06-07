@@ -74,4 +74,3 @@ static inline __u32 raw_lib_udiv(__u32 dividend, __u32 divisior)
 
 
 #endif  //__STANDBY_I_H__
-

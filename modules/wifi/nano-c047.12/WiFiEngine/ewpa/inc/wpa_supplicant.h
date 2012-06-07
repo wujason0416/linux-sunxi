@@ -142,7 +142,7 @@ typedef enum wpa_event_type {
 typedef enum {
 	EVENT_INTERFACE_ADDED,
 	EVENT_INTERFACE_REMOVED
-} ievent_TYPE; 
+} ievent_TYPE;
 union wpa_event_data {
 	/**
 	 * struct assoc_info - Data for EVENT_ASSOC and EVENT_ASSOCINFO events

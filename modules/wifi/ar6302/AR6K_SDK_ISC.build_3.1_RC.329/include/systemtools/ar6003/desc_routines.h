@@ -21,6 +21,5 @@ extern void writeDescriptor ( A_UINT32	devNum, A_UINT32	descAddress, MDK_ATHEROS
 */
 
 void createDescriptors(A_UINT32 devNumIndex, A_UINT32 descBaseAddress,  A_UINT32 descInfo, A_UINT32 bufAddrIncrement, A_UINT32 descOp, A_UINT32 *descWords);
-       
-#endif
 
+#endif

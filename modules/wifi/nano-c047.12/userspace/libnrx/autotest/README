@@ -15,18 +15,18 @@ FILES
 
 The autotest environment consists of the following files:
 
-header2test:             : Parser for header files, which generates 
+header2test:             : Parser for header files, which generates
                            several outputs (such as stubs, help
                            functions, etc.) For mor information, type
                            ./header2test --help
 
 header2test.c            : Source code to header2test
 
-testprogram.in.c         : Source code containing bash scripts, which 
+testprogram.in.c         : Source code containing bash scripts, which
                            is a template for $(NRX_API_OUTPUT_FILE).
 
-replace_nanokey          : Output is the input file, except that bash 
-                           scripts are run and replaced with the result 
+replace_nanokey          : Output is the input file, except that bash
+                           scripts are run and replaced with the result
                            from running them. For more information,
                            type ./replace_nanokey --help
 
@@ -70,11 +70,11 @@ Keywords that can be used in header files in association to functions:
 NRX_API_EXCLUDE          : Function will be excluded.  Applies to
                            NRX_API_PROTOCOL_HEADERS.
 
-NRX_API_FOR_TESTING      : Function will be included, but hidden from 
-                           listing. Applies to NRX_API_PROTOCOL_HEADERS 
+NRX_API_FOR_TESTING      : Function will be included, but hidden from
+                           listing. Applies to NRX_API_PROTOCOL_HEADERS
                            and NRX_API_PRIVATE_HEADERS.
 
-NRX_API_NOT_IMPLEMENTED  : Function will be listed in the "Functions not 
+NRX_API_NOT_IMPLEMENTED  : Function will be listed in the "Functions not
                            yet completed" section.
 
 Should a function exist in the header file but not in the lib, a stub
@@ -94,19 +94,18 @@ an appropriate Linux error number on failure.
 To add a new variable type, you have to do these changes:
 
 testprogram.in.c         : Add an input function. Similar to main()
-                           the input function gets argc and argv from 
-                           the command line, which it has to process. 
-                           The function must return the number of 
-                           arguments in the command line that it has 
+                           the input function gets argc and argv from
+                           the command line, which it has to process.
+                           The function must return the number of
+                           arguments in the command line that it has
                            used. Also, add a print out function. It
-                           allways returns 0. 
+                           allways returns 0.
 
-header2test.c            : Both new functions above together with 
-                           variable type and name should be added to 
+header2test.c            : Both new functions above together with
+                           variable type and name should be added to
                            the variables[] vector.
 
 Some variables, such as vectors, may have different size. The length
 should preferably be handled internally by grouping vector and length
 into a struct. If this is not possible, you must handle this with the
 special variable size_t len.
-

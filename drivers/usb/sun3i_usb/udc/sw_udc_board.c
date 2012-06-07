@@ -10,7 +10,7 @@
 *
 * Author 		: javen
 *
-* Description 	: °å¼¶¿ØÖÆ
+* Description 	: æ¿çº§æŽ§åˆ¶
 *
 * Notes         :
 *
@@ -40,7 +40,7 @@
 #include  "sw_udc_board.h"
 
 //---------------------------------------------------------------
-//  ºê ¶¨Òå
+//  å® å®šä¹‰
 //---------------------------------------------------------------
 
 #define res_size(_r) (((_r)->end - (_r)->start) + 1)
@@ -314,8 +314,3 @@ __s32 sw_udc_io_exit(__u32 usbc_no, struct platform_device *pdev, sw_udc_io_t *s
 
 	return 0;
 }
-
-
-
-
-

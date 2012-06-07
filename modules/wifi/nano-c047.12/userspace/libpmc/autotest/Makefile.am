@@ -20,7 +20,7 @@ pmcpriv.c: $(top_srcdir)/../libnrx/autotest/testprogram.in.c $(top_builddir)/lib
 	done; fi
 
 header2test: $(top_srcdir)/../libnrx/autotest/header2test.c
-	gcc $(top_srcdir)/../libnrx/autotest/header2test.c -o header2test 
+	gcc $(top_srcdir)/../libnrx/autotest/header2test.c -o header2test
 
 pmcpriv_LDADD = $(top_builddir)/libpmc.a $(top_builddir)/../libnrx/libnrx.a
 
@@ -28,4 +28,3 @@ pmcpriv_LDADD = $(top_builddir)/libpmc.a $(top_builddir)/../libnrx/libnrx.a
 #	for i in `if [ -f $(srcdir)/pmcpriv ]; then $(srcdir)/pmcpriv --help | grep pmc_; fi` ; do \
 #	    rm -f $$i ; \
 #       done
-

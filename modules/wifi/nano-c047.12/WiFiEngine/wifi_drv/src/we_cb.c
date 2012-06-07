@@ -33,8 +33,8 @@ Asynchronous completions are requested by passing argument
  <pre>..., we_cb_container_t *cbc</pre>
 to selected API functions that support asynchronous completion.
 Completion callbacks are queued upon
-request and are moved to the callback queue 
-upon completion of the operation. 
+request and are moved to the callback queue
+upon completion of the operation.
 
 Completions are transaction-ID based. A completion is registered for a
 transaction ID and is scheduled for completion when a confirm with the
@@ -73,9 +73,9 @@ static driver_lock_t cb_lock;
 static void wei_cb_clear_cbc_registry_list(void)
 {
    we_cb_container_t *cbc;
- 
+
    DE_TRACE_STATIC(TR_WEI, "Clearing cb registry\n");
- 
+
    CBLOCK();
    while((cbc = WEI_TQ_FIRST(&cb_list_all)) != NULL) {
       CBUNLOCK();
@@ -134,7 +134,7 @@ void wei_cb_flush_pending_cb_tab(void)
  */
 void wei_cb_queue_pending_callback(we_cb_container_t *cbc)
 {
-   DE_TRACE_INT2(TR_CB, "Queueing cbc " TR_FPTR " for trans_id %d\n", 
+   DE_TRACE_INT2(TR_CB, "Queueing cbc " TR_FPTR " for trans_id %d\n",
                  TR_APTR(cbc), cbc->trans_id);
    CBLOCK();
    WEI_TQ_INSERT_TAIL(&cb_list_pending, cbc, cb_pending);
@@ -163,11 +163,11 @@ we_cb_container_t* wei_cb_find_pending_callback(uint32_t trans_id)
 }
 
 
-/*! 
+/*!
  * Check if the cbc is still on the list. Used in cases it might have been deleted.
- *  
+ *
  * @param cbc Pointer to a callback container.
- * @return 
+ * @return
  * - 1 when cbc can be used.
  * - 0 when cbc is no longer valid.
  */
@@ -196,15 +196,15 @@ int wei_cb_still_valid(we_cb_container_t *cbc)
 int WiFiEngine_CancelCallback(we_cb_container_t *cbc)
 {
    we_cb_container_t *cbc2;
-   
+
    DE_TRACE_PTR(TR_WEI, "Cancel cbc %p\n", cbc);
 
    /* cbc == NULL is necessary, but the other conditions just handle a symptom of an earlier bug. */
    if (cbc == NULL || cbc->cb == NULL)
       return WIFI_ENGINE_SUCCESS;
-   
+
    DE_TRACE_PTR(TR_CB, "invoking callback %p\n", cbc->cb);
-   
+
    /* remove from callback queue */
    CBLOCK();
    WEI_TQ_FOREACH(cbc2, &cb_list_cbq, cb_cbq)
@@ -266,7 +266,7 @@ void WiFiEngine_ScheduleCallback(we_cb_container_t *cbc)
  *
  * Execute the callback and free the data buffer. If the callback
  * is single shot then also free the cbc.
- * 
+ *
  * @param cbc Callback container to execute.
  * @retval WIFI_ENGINE_SUCCESS always succeeds
  */
@@ -303,11 +303,11 @@ int WiFiEngine_RunCallback(we_cb_container_t *cbc)
  * @param repeating 1 if the callback should be repeating, that is it will stay
  *                  on the pending callback queue and will be rescheduled
  *                  every time the trigger condition is satisfied.
- * @return A allocated, initialized callback container. Ready to use with 
+ * @return A allocated, initialized callback container. Ready to use with
  *         WiFiEngine functions with asynchronous completions. NULL on failure.
  */
-we_cb_container_t *WiFiEngine_BuildCBC(we_callback_t cb, 
-                                       void *ctx, 
+we_cb_container_t *WiFiEngine_BuildCBC(we_callback_t cb,
+                                       void *ctx,
                                        size_t ctx_len,
                                        int repeating)
 {

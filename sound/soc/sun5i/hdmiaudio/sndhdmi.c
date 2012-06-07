@@ -67,7 +67,7 @@ static int sndhdmi_startup(struct snd_pcm_substream *substream,
 static void sndhdmi_shutdown(struct snd_pcm_substream *substream,
 	struct snd_soc_dai *dai)
 {
-	
+
 }
 
 static int sndhdmi_hw_params(struct snd_pcm_substream *substream,
@@ -75,7 +75,7 @@ static int sndhdmi_hw_params(struct snd_pcm_substream *substream,
 	struct snd_soc_dai *dai)
 {
 	hdmi_para.sample_rate = params_rate(params);
-	
+
 	#ifdef HDMI
 		g_hdmi_func.hdmi_audio_enable(1, 1);
 
@@ -94,7 +94,7 @@ static int sndhdmi_set_dai_clkdiv(struct snd_soc_dai *codec_dai, int div_id, int
 {
 
 	hdmi_para.fs_between = div;
-	
+
 	return 0;
 }
 
@@ -136,12 +136,12 @@ EXPORT_SYMBOL(sndhdmi_dai);
 static int sndhdmi_soc_probe(struct snd_soc_codec *codec)
 {
 	struct sndhdmi_priv *sndhdmi;
-	
+
 	sndhdmi = kzalloc(sizeof(struct sndhdmi_priv), GFP_KERNEL);
 	if(sndhdmi == NULL){
 		printk("error at:%s,%d\n",__func__,__LINE__);
 		return -ENOMEM;
-	}		
+	}
 	snd_soc_codec_set_drvdata(codec, sndhdmi);
 
 	return 0;
@@ -162,8 +162,8 @@ static struct snd_soc_codec_driver soc_codec_dev_sndhdmi = {
 };
 
 static int __devinit sndhdmi_codec_probe(struct platform_device *pdev)
-{	
-	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_sndhdmi, &sndhdmi_dai, 1);	
+{
+	return snd_soc_register_codec(&pdev->dev, &soc_codec_dev_sndhdmi, &sndhdmi_dai, 1);
 }
 
 static int __devexit sndhdmi_codec_remove(struct platform_device *pdev)
@@ -186,15 +186,15 @@ static struct platform_driver sndhdmi_codec_driver = {
 };
 
 static int __init sndhdmi_codec_init(void)
-{	
-	int err = 0;	
+{
+	int err = 0;
 
 	if((err = platform_device_register(&sndhdmi_codec_device)) < 0)
 		return err;
 
 	if ((err = platform_driver_register(&sndhdmi_codec_driver)) < 0)
 		return err;
-		
+
 	return 0;
 }
 module_init(sndhdmi_codec_init);
@@ -208,4 +208,3 @@ module_exit(sndhdmi_codec_exit);
 MODULE_DESCRIPTION("SNDHDMI ALSA soc codec driver");
 MODULE_AUTHOR("Zoltan Devai, Christian Pellegrin <chripell@evolware.org>");
 MODULE_LICENSE("GPL");
-

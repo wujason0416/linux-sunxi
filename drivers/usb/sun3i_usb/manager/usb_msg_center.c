@@ -10,7 +10,7 @@
 *
 * Author 		: javen
 *
-* Description 	: USB 消息分发
+* Description 	: USB 娑堟伅鍒嗗彂
 *
 * History 		:
 *      <author>    		<time>       	<version >    		<desc>
@@ -472,4 +472,3 @@ s32 usb_msg_center_exit(struct usb_cfg *cfg)
 
 	return 0;
 }
-

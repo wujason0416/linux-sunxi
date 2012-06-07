@@ -27,9 +27,9 @@ static struct rfkill *sw_rfkill;
 static int rfkill_set_power(void *data, bool blocked)
 {
     unsigned int mod_sel = mmc_pm_get_mod_type();
-    
+
     RF_MSG("rfkill set power %d\n", blocked);
-    
+
     spin_lock(&bt_power_lock);
     switch (mod_sel)
     {
@@ -61,7 +61,7 @@ static int rfkill_set_power(void *data, bool blocked)
         default:
             RF_MSG("no bt module matched !!\n");
     }
-    
+
     spin_unlock(&bt_power_lock);
     msleep(100);
     return 0;
@@ -75,7 +75,7 @@ static int sw_rfkill_probe(struct platform_device *pdev)
 {
     int ret = 0;
 
-    sw_rfkill = rfkill_alloc(bt_name, &pdev->dev, 
+    sw_rfkill = rfkill_alloc(bt_name, &pdev->dev,
                         RFKILL_TYPE_BLUETOOTH, &sw_rfkill_ops, NULL);
     if (unlikely(!sw_rfkill))
         return -ENOMEM;
@@ -99,7 +99,7 @@ static int sw_rfkill_remove(struct platform_device *pdev)
 static struct platform_driver sw_rfkill_driver = {
     .probe = sw_rfkill_probe,
     .remove = sw_rfkill_remove,
-    .driver = { 
+    .driver = {
         .name = "sunxi-rfkill",
         .owner = THIS_MODULE,
     },
@@ -127,4 +127,3 @@ module_exit(sw_rfkill_exit);
 MODULE_DESCRIPTION("sunxi-rfkill driver");
 MODULE_AUTHOR("Aaron.yemao<leafy.myeh@allwinnertech.com>");
 MODULE_LICENSE(GPL);
-

@@ -2,7 +2,7 @@
 // Copyright (c) 2004-2010 Atheros Communications Inc.
 // All rights reserved.
 //
-// 
+//
 //
 // Permission to use, copy, modify, and/or distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -1296,21 +1296,21 @@ ar6000_softmac_update(AR_SOFTC_T *ar, A_UCHAR *eeprom_data, size_t eeprom_size)
         ptr_mac[4] = random_mac[4] = random32() & 0xff;
         ptr_mac[5] = random_mac[5] = random32() & 0xff;
     }
-    
+
     memset(macbuff,'\0',sizeof(macbuff));
 	rpcret = read_nv(WLAN_MAC_NV,macbuff, sizeof(macbuff));
-		
+
 	//in case reading wlan mac from nv fails. we still keep random mac function.
 	if (!rpcret && memcmp(macbuff,"\0\0\0\0\0\0\0\0",sizeof(macbuff))!=0) {
 		source = "nv item";
 		sprintf(ptr_mac,"%s",macbuff);
 		AR_DEBUG_PRINTF(ATH_DEBUG_WARN,("mac from nv: %x:%x:%x:%x:%x:%x\n",ptr_mac[0],ptr_mac[1],ptr_mac[2],ptr_mac[3],ptr_mac[4],ptr_mac[5]));
-	}	
-	
-#if 0    
+	}
+
+#if 0
     if ((A_REQUEST_FIRMWARE(&softmac_entry, "softmac", ((struct device *)ar->osDevInfo.pOSDevice))) == 0)
     {
-    		
+
         A_CHAR *macbuf = A_MALLOC_NOWAIT(softmac_entry->size+1);
         if (macbuf) {
             unsigned int softmac[6];
@@ -2215,9 +2215,9 @@ static int ar6000_ethtool_set_tx_csum(struct net_device *dev, u32 enable)
 {
     csumOffload = enable;
     if(enable){
-        dev->features |= NETIF_F_IP_CSUM; 
+        dev->features |= NETIF_F_IP_CSUM;
     } else {
-        dev->features &= ~NETIF_F_IP_CSUM; 
+        dev->features &= ~NETIF_F_IP_CSUM;
     }
     return 0;
 }
@@ -4989,9 +4989,9 @@ ar6000_rx(void *Context, HTC_PACKET *pPacket)
 #ifdef ATH_AR6K_11N_SUPPORT
                 multicastcheck_datap = (ATH_MAC_HDR *)A_NETBUF_DATA(skb);
 
-                if ((!(IEEE80211_IS_MULTICAST(multicastcheck_datap->dstMac))) && (arPriv->arNetworkType != AP_NETWORK)){ 
+                if ((!(IEEE80211_IS_MULTICAST(multicastcheck_datap->dstMac))) && (arPriv->arNetworkType != AP_NETWORK)){
                     aggr_process_recv_frm(get_aggr_ctx(arPriv, conn), tid, seq_no, is_amsdu, (void **)&skb);
-                 } 
+                 }
 #endif
                     ar6000_deliver_frames_to_nw_stack((void *) arPriv->arNetDev, (void *)skb);
                 }
@@ -5285,7 +5285,7 @@ ar6000_set_multicast_list(struct net_device *dev)
 #endif
     AR_SOFTC_DEV_T *arPriv = (AR_SOFTC_DEV_T *)ar6k_priv(dev);
     AR_SOFTC_T     *ar     = arPriv->arSoftc;
-        
+
     int i;
     A_BOOL enableAll, disableAll;
     enum {
@@ -5383,7 +5383,7 @@ ar6000_set_multicast_list(struct net_device *dev)
             }
         }
 
-        /* 
+        /*
          *  Pass 3: Add new filters to empty slots
          */
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 34)
@@ -5391,7 +5391,7 @@ ar6000_set_multicast_list(struct net_device *dev)
  			    j++, mc = mc->next) {
 #else
         netdev_for_each_mc_addr(ha, dev) {
-            
+
 #endif
             A_BOOL match;
             A_INT32 free;
@@ -5646,12 +5646,12 @@ ar6000_ap_mode_probe_rx(AR_SOFTC_DEV_T *arPriv, A_UINT8 *datap, int len)
     struct sk_buff *skb;
     WMI_BSS_INFO_HDR *bih = (WMI_BSS_INFO_HDR *)datap;
     A_UINT8 *buf = NULL;
-    
-    if((arPriv->arNetworkType != AP_NETWORK) || 
+
+    if((arPriv->arNetworkType != AP_NETWORK) ||
        (arPriv->arNetworkSubType != SUBTYPE_NONE)) {
         return A_ERROR;
     }
-    
+
     buf = datap + sizeof(WMI_BSS_INFO_HDR);
     len -= sizeof(WMI_BSS_INFO_HDR);
     len += 6; /* For adding MAC addr */
@@ -6193,7 +6193,7 @@ ar6000_disconnect_event(AR_SOFTC_DEV_T *arPriv, A_UINT8 reason, A_UINT8 *bssid,
     AR_SOFTC_T *ar = arPriv->arSoftc;
     A_BOOL bt30Devfound = FALSE;
 #ifdef P2P
-        if((arPriv->arNetworkSubType == SUBTYPE_P2PCLIENT) || (arPriv->arNetworkSubType == SUBTYPE_P2PGO) 
+        if((arPriv->arNetworkSubType == SUBTYPE_P2PCLIENT) || (arPriv->arNetworkSubType == SUBTYPE_P2PGO)
             || (arPriv->arNetworkSubType == SUBTYPE_P2PDEV)){
             if(!(IS_MAC_BCAST(bssid)))
                 p2p_clear_peers_authorized_flag(arPriv->p2p_ctx, bssid);
@@ -8713,4 +8713,3 @@ NETWORK_TYPE ar6000_get_network_type(AR_SOFTC_DEV_T *arPriv)
 {
     return (arPriv->arNetworkType);
 }
-

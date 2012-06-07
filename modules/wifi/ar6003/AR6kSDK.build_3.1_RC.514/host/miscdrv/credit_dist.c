@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // <copyright file="credit_dist.c" company="Atheros">
 //    Copyright (c) 2004-2010 Atheros Corporation.  All rights reserved.
-// 
+//
 //
 // Permission to use, copy, modify, and/or distribute this software for any
 // purpose with or without fee is hereby granted, provided that the above
@@ -414,4 +414,3 @@ A_STATUS ar6000_setup_credit_dist(HTC_HANDLE HTCHandle, COMMON_CREDIT_STATE_INFO
 
     return A_OK;
 }
-

@@ -1,14 +1,14 @@
 /*
  *
  * Copyright (c) 2007-2008 Nanoradio AB. All rights reserved.
- * 
+ *
  */
 
 /*
  * WPA Supplicant / Wi-Fi Simple Configuration 7C Proposal
  * Copyright (c) 2004-2005, Jouni Malinen <jkmaline@cc.hut.fi>
  * Copyright (c) 2005 Intel Corporation. All rights reserved.
- * 
+ *
  * Contact Information: Harsha Hegde  <harsha.hegde@intel.com>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -49,10 +49,10 @@ extern struct wpa_config *config;
 #define WSC_ID_NW_KEY               0x1027
 
 static int find_and_memcpy(
-      u8 *src, 
-      size_t src_len, 
-      u16 type, 
-      u8 *dst, 
+      u8 *src,
+      size_t src_len,
+      u16 type,
+      u8 *dst,
       size_t dst_len)
 {
    m80211_tlv_t tlv;
@@ -84,7 +84,7 @@ out:
    return err;
 }
 
-static void add_tlv_8bit_value(unsigned char *buf, size_t *len, unsigned char value_id, unsigned char value) 
+static void add_tlv_8bit_value(unsigned char *buf, size_t *len, unsigned char value_id, unsigned char value)
 {
 	/* TLV Type */
 	*(buf + *len) = 0x10; /* 0x10 is the first byte of all WPS TLV Types */
@@ -100,8 +100,8 @@ static void add_tlv_8bit_value(unsigned char *buf, size_t *len, unsigned char va
 	*(buf + *len) = value;
 	*len +=1;
 }
-	
-static void add_tlv_16bit_value(unsigned char *buf, size_t *len, unsigned char value_id, unsigned char value) 
+
+static void add_tlv_16bit_value(unsigned char *buf, size_t *len, unsigned char value_id, unsigned char value)
 {
 	/* TLV Type */
 	*(buf + *len) = 0x10;
@@ -120,7 +120,7 @@ static void add_tlv_16bit_value(unsigned char *buf, size_t *len, unsigned char v
 	*len +=1;
 }
 
-static void add_tlv_data(unsigned char *buf, size_t *len, unsigned char value_id, unsigned char *data, size_t data_len) 
+static void add_tlv_data(unsigned char *buf, size_t *len, unsigned char value_id, unsigned char *data, size_t data_len)
 {
 	/* TLV Type */
 	*(buf + *len) = 0x10;
@@ -139,10 +139,10 @@ static void add_tlv_data(unsigned char *buf, size_t *len, unsigned char value_id
 
 static uint32 BuildMessageM1(S_REGISTRATION_DATA *regInfo)
 {
-	uint8 primDevType[12] = { 0x10, 0x54, 0x00, 0x08, 
-				  0x00, 0x01, 0x00, 0x50, 
+	uint8 primDevType[12] = { 0x10, 0x54, 0x00, 0x08,
+				  0x00, 0x01, 0x00, 0x50,
 				  0xf2, 0x04, 0x00, 0x01};
-	uint8 osVersion[8] = {0x10, 0x2d, 0x00, 0x04, 
+	uint8 osVersion[8] = {0x10, 0x2d, 0x00, 0x04,
 			      0x80, 0x00, 0x00, 0x00};
 
 	uint8  *msg = regInfo->outMsg;
@@ -157,7 +157,7 @@ static uint32 BuildMessageM1(S_REGISTRATION_DATA *regInfo)
 	GenerateDHKeyPair(&dhm, regInfo->pke);
 
 	/*
-	 *  Now start composing the message. 
+	 *  Now start composing the message.
 	 */
 
 	*msg_len = 0;
@@ -190,11 +190,11 @@ static uint32 BuildMessageM1(S_REGISTRATION_DATA *regInfo)
 	add_tlv_8bit_value(msg, msg_len, 0x0d, 0x01);
 
 	/* Config Methods */
-	add_tlv_16bit_value(msg, msg_len, 0x08, 0x08); 
+	add_tlv_16bit_value(msg, msg_len, 0x08, 0x08);
 
 	/* WPS State */
 	add_tlv_8bit_value(msg, msg_len, 0x44, 0x01);
-  
+
 	/* Manufacturer */
 	add_tlv_data(msg, msg_len, 0x21, (unsigned char *)regInfo->p_enrolleeInfo->manufacturer, 16);
 
@@ -203,14 +203,14 @@ static uint32 BuildMessageM1(S_REGISTRATION_DATA *regInfo)
 
 	/* Model Number */
 	add_tlv_data(msg, msg_len, 0x24, (unsigned char *)regInfo->p_enrolleeInfo->modelNumber, 9);
-	
+
 	/* Serial Number */
-	add_tlv_data(msg, msg_len, 0x42, (unsigned char *)regInfo->p_enrolleeInfo->serialNumber, 16); 
+	add_tlv_data(msg, msg_len, 0x42, (unsigned char *)regInfo->p_enrolleeInfo->serialNumber, 16);
 
 	/* Primary Device Type */
 	os_memcpy(msg+*msg_len, primDevType, 12);
 	*msg_len += 12;
-  
+
 	/* Device Name */
 	add_tlv_data(msg, msg_len, 0x11, (unsigned char *)regInfo->p_enrolleeInfo->deviceName, 16);
 
@@ -228,10 +228,10 @@ static uint32 BuildMessageM1(S_REGISTRATION_DATA *regInfo)
 		wpa_printf(MSG_DEBUG, "PIN Device Password ID will be used.\n");
 		add_tlv_16bit_value(msg, msg_len, 0x12, 0x00);
 	}
-  
+
 	/* Config Error */
 	add_tlv_16bit_value(msg, msg_len, 0x09, 0x00);
-	
+
 	/* OS Version */
 	os_memcpy(msg+*msg_len, osVersion, 8);
 	*msg_len += 8;
@@ -247,14 +247,14 @@ static uint32 BuildMessageM1(S_REGISTRATION_DATA *regInfo)
 
 static uint32 ProcessMessageM2D(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 msg_len)
 {
-//	uint8       version, 
+//	uint8       version,
    uint8       msgType;
 	uint8       enrolleeNonce[SIZE_128_BITS];
 	uint8       registrarNonce[SIZE_128_BITS];
 	int          s;
 
 	wpa_printf(MSG_DEBUG, "ProcessMessageM2D: %d byte message\n", msg_len);
-	
+
 	/* First, deserialize (parse) the message. */
 //	version = msg[4];
 	msgType = msg[9];
@@ -266,12 +266,12 @@ static uint32 ProcessMessageM2D(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32
 	if(WSC_ID_MESSAGE_M2D != msgType)
 		return WSC_ERR_SYSTEM;
 
-	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_ENROLLEE_NONCE, 
+	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_ENROLLEE_NONCE,
 	      enrolleeNonce, SIZE_128_BITS);
 
-	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_REGISTRAR_NONCE, 
+	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_REGISTRAR_NONCE,
 	      registrarNonce, SIZE_128_BITS);
-	
+
 	/*
 	 *   Now start processing the message
 	 */
@@ -281,13 +281,13 @@ static uint32 ProcessMessageM2D(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32
 		wpa_printf(MSG_INFO,"ProcessMessageM2: Incorrect enrollee nonce\n");
 		return WSC_ERR_SYSTEM;
 	}
-	
+
 	/*
 	 *  to verify the hmac, we need to process the nonces, generate
 	 *  the DH secret, the KDK and finally the auth key
 	 */
 	os_memcpy(regInfo->registrarNonce, registrarNonce, SIZE_128_BITS);
-	
+
 	/* Store the received buffer */
 	os_memcpy(regInfo->inMsg, msg, msg_len);
 	regInfo->inMsg_len = msg_len;
@@ -297,7 +297,7 @@ static uint32 ProcessMessageM2D(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32
 
 static uint32 ProcessMessageM2(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 msg_len)
 {
-//	uint8       version, 
+//	uint8       version,
    uint8       msgType;
 	uint8       enrolleeNonce[SIZE_128_BITS];
 	uint8       registrarNonce[SIZE_128_BITS];
@@ -317,7 +317,7 @@ static uint32 ProcessMessageM2(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	int          s;
 
 	wpa_printf(MSG_DEBUG, "ProcessMessageM2: %d byte message\n", msg_len);
-	
+
 	/* First, deserialize (parse) the message. */
 //	version = msg[4];
 	msgType = msg[9];
@@ -329,15 +329,15 @@ static uint32 ProcessMessageM2(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	if(WSC_ID_MESSAGE_M2 != msgType)
 		return WSC_ERR_SYSTEM;
 
-	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_ENROLLEE_NONCE, 
-	      enrolleeNonce, SIZE_128_BITS); 
+	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_ENROLLEE_NONCE,
+	      enrolleeNonce, SIZE_128_BITS);
 
-	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_REGISTRAR_NONCE, 
+	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_REGISTRAR_NONCE,
 	      registrarNonce, SIZE_128_BITS);
-	
-	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_AUTHENTICATOR, 
+
+	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_AUTHENTICATOR,
 	      authenticator, SIZE_64_BITS);
-	
+
 	/*
 	 *   Now start processing the message
 	 */
@@ -347,7 +347,7 @@ static uint32 ProcessMessageM2(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 		wpa_printf(MSG_INFO,"ProcessMessageM2: Incorrect enrollee nonce\n");
 		return WSC_ERR_SYSTEM;
 	}
-	
+
 	/*
 	 *  to verify the hmac, we need to process the nonces, generate
 	 *  the DH secret, the KDK and finally the auth key
@@ -358,7 +358,7 @@ static uint32 ProcessMessageM2(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	 *  read the registrar's public key
 	 *  First store the raw public key (to be used for e/rhash computation)
 	 */
-	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_PUBLIC_KEY, 
+	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_PUBLIC_KEY,
               (uint8*)regInfo->pkr, SIZE_PUB_KEY);
 
 	if( ( ret = mpi_read_binary( &dhm.GY, (uint8*)regInfo->pkr, SIZE_PUB_KEY ) ) != 0 ) {
@@ -401,7 +401,7 @@ static uint32 ProcessMessageM2(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	os_free(kdkData);
 
 	/****** KDK generation *******/
-	
+
 	/****** Derivation of AuthKey, KeyWrapKey and EMSK ******/
 	/* 1. declare and initialize the appropriate buffers */
 	os_memcpy(pString, (uint8 *)PERSONALIZATION_STRING, strlen(PERSONALIZATION_STRING));
@@ -421,10 +421,10 @@ static uint32 ProcessMessageM2(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	os_free(keys);
 
 	/****** Derivation of AuthKey, KeyWrapKey and EMSK ******/
-	
+
 	/****** HMAC validation ******/
 	hmacDataLen = regInfo->outMsg_len + msg_len - 12;/*(sizeof(S_WSC_TLV_HEADER)+SIZE_64_BITS);*/
-	
+
 	hmacData = (uint8 *)os_malloc(hmacDataLen);
 	if(hmacData == NULL)
 		return WSC_ERR_SYSTEM;
@@ -482,23 +482,23 @@ static uint32 BuildMessageM3(S_REGISTRATION_DATA *regInfo)
 
 	/* copy first 128 bits into psk1; */
 	os_memcpy((uint8*)regInfo->psk1, hashBuf, SIZE_128_BITS);
-	
+
 	/* Hash 2nd half of passwd */
 	hmac_sha256((uint8*)regInfo->authKey, SIZE_256_BITS, pwdPtr+(pwdLen/2)+(pwdLen%2), pwdLen/2, hashBuf);
 
 	/* copy first 128 bits into psk2; */
 	os_memcpy((uint8*)regInfo->psk2, hashBuf, SIZE_128_BITS);
 	/****** PSK1 and PSK2 generation ******/
-	
+
 	/****** EHash1 and EHash2 generation ******/
 	os_get_random((uint8*)regInfo->es1, SIZE_128_BITS);
 	os_get_random((uint8*)regInfo->es2, SIZE_128_BITS);
-	
+
 	os_memcpy(ehashBuf, (uint8*)regInfo->es1, SIZE_128_BITS);
 	os_memcpy(ehashBuf+SIZE_128_BITS, (uint8*)regInfo->psk1, SIZE_128_BITS);
 	os_memcpy(ehashBuf+2*SIZE_128_BITS, (uint8*)regInfo->pke, SIZE_PUB_KEY);
 	os_memcpy(ehashBuf+2*SIZE_128_BITS+SIZE_PUB_KEY, (uint8*)regInfo->pkr, SIZE_PUB_KEY);
-	
+
 	hmac_sha256((uint8*)regInfo->authKey, SIZE_256_BITS, ehashBuf, 2*SIZE_128_BITS+2*SIZE_PUB_KEY, hashBuf);
 
 	os_memcpy((uint8*)regInfo->eHash1, hashBuf, SIZE_256_BITS);
@@ -507,7 +507,7 @@ static uint32 BuildMessageM3(S_REGISTRATION_DATA *regInfo)
 	os_memcpy(ehashBuf+SIZE_128_BITS, (uint8*)regInfo->psk2, SIZE_128_BITS);
 	os_memcpy(ehashBuf+2*SIZE_128_BITS, (uint8*)regInfo->pke, SIZE_PUB_KEY);
 	os_memcpy(ehashBuf+2*SIZE_128_BITS+SIZE_PUB_KEY, (uint8*)regInfo->pkr, SIZE_PUB_KEY);
-  
+
 	hmac_sha256((uint8*)regInfo->authKey, SIZE_256_BITS, ehashBuf, 2*SIZE_128_BITS+2*SIZE_PUB_KEY, hashBuf);
 
 	os_free(ehashBuf);
@@ -525,7 +525,7 @@ static uint32 BuildMessageM3(S_REGISTRATION_DATA *regInfo)
 
         /* Message */
         add_tlv_8bit_value(msg, msg_len, 0x22, WSC_ID_MESSAGE_M3);
-   
+
 	/* Registrar Nonce */
 	add_tlv_data(msg, msg_len, 0x39, regInfo->registrarNonce, SIZE_128_BITS);
 
@@ -556,7 +556,7 @@ static uint32 BuildMessageM3(S_REGISTRATION_DATA *regInfo)
 	*msg_len += SIZE_64_BITS;
 
 	wpa_printf(MSG_DEBUG, "BuildMessageM3: %d bytes\n", *msg_len);
-  
+
 	return WSC_SUCCESS;
 }
 
@@ -569,7 +569,7 @@ static uint32 BuildMessageM3(S_REGISTRATION_DATA *regInfo)
  *
  * Ex.
  *
- * WPS: Decrypted Settings - hexdump(len=48):   
+ * WPS: Decrypted Settings - hexdump(len=48):
  * 10 3f 00 10 61 66 2b 49 49 f8 b0 e2 70 57 78 02 7a e7 ad fe // R-SNonce1 4+16 bytes
  * 10 1e 00 08 32 48 6b 1c 34 b0 e0 41                         // Key Wrap Authenticator 4+8 bytes
  * 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10 10             // 16 bytes padding to fill block (0x10 = 16)
@@ -611,13 +611,13 @@ static uint32 ProcessMessageM4(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	if(WSC_ID_MESSAGE_M4 != msgType)
 		return WSC_ERR_SYSTEM;
 
-	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_ENROLLEE_NONCE, 
+	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_ENROLLEE_NONCE,
 	      enrolleeNonce, SIZE_128_BITS);
 
 	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_R_HASH1,
 	      rHash1, SIZE_256_BITS);
-	
-	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_R_HASH2, 
+
+	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_R_HASH2,
 	      rHash2, SIZE_256_BITS);
 
 	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_AUTHENTICATOR,
@@ -680,7 +680,7 @@ static uint32 ProcessMessageM4(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	}
 	os_memcpy(plainText, decrypted, plainTextLen);
 	os_free(decrypted);
-   
+
 	/*
 	 *  parse the plainText
 	 */
@@ -698,17 +698,17 @@ static uint32 ProcessMessageM4(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 		return WSC_ERR_SYSTEM;
 	}
 	/****** extract encrypted settings ******/
-	
+
 	/****** RHash1 validation ******/
 	/* 1. Save RS1 */
 	os_memcpy((uint8*)regInfo->rs1, rNonce, 16);
-	
+
 	/* 2. prepare the buffer */
 	rhashBuf = (uint8 *)os_malloc(2*SIZE_128_BITS+2*SIZE_PUB_KEY);
 	if(rhashBuf == NULL)
 		return WSC_ERR_SYSTEM;
 	os_memcpy(rhashBuf, (uint8*)regInfo->rs1, SIZE_128_BITS);
-	os_memcpy(rhashBuf+SIZE_128_BITS, (uint8*)regInfo->psk1, SIZE_128_BITS);  
+	os_memcpy(rhashBuf+SIZE_128_BITS, (uint8*)regInfo->psk1, SIZE_128_BITS);
 	os_memcpy(rhashBuf+2*SIZE_128_BITS, (uint8*)regInfo->pke, SIZE_PUB_KEY);
 	os_memcpy(rhashBuf+2*SIZE_128_BITS+SIZE_PUB_KEY, (uint8*)regInfo->pkr, SIZE_PUB_KEY);
 
@@ -721,7 +721,7 @@ static uint32 ProcessMessageM4(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	}
 	hmac_sha256((uint8*)regInfo->authKey, SIZE_256_BITS, rhashBuf, 2*SIZE_128_BITS+2*SIZE_PUB_KEY, hashBuf);
 	os_free(rhashBuf);
-	
+
 	/* 4. compare the mac to rhash1 */
 	if(os_memcmp((uint8*)regInfo->rHash1, hashBuf, SIZE_256_BITS)) {
 		wpa_printf(MSG_INFO, "ProcessMessageM4: RS1 hash doesn't match RHash1\n");
@@ -731,7 +731,7 @@ static uint32 ProcessMessageM4(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	os_free(hashBuf);
 	/* 5. Instead of steps 3 & 4, we could have called ValidateMac */
 	/****** RHash1 validation ******/
-	
+
 	/* Store the received buffer */
 	regInfo->inMsg_len = msg_len;
 	os_memcpy(regInfo->inMsg, msg, msg_len);
@@ -756,7 +756,7 @@ static uint32 BuildMessageM5(S_REGISTRATION_DATA *regInfo)
 	uint8  *msg = regInfo->outMsg;
 	uint32 *msg_len = &regInfo->outMsg_len;
 	uint8* encrypted = NULL;
-	
+
 	/* First, generate or gather the required data*/
 //	message = WSC_ID_MESSAGE_M5;
 
@@ -766,7 +766,7 @@ static uint32 BuildMessageM5(S_REGISTRATION_DATA *regInfo)
 
 	/* calculate the hmac and append the TLV to the buffer */
 	hmac_sha256((uint8*)regInfo->authKey, SIZE_256_BITS, TempEncData, 20, hmac);
-	
+
 	os_memcpy(encData, TempEncData, 20);
 	os_memcpy(encData+20, authenticatorHdr, 4);
 	os_memcpy(encData+20+4, hmac, 8);
@@ -817,7 +817,7 @@ static uint32 BuildMessageM5(S_REGISTRATION_DATA *regInfo)
 		return WSC_ERR_SYSTEM;
 	os_memcpy(hmacData, (uint8*)regInfo->inMsg, regInfo->inMsg_len);
 	os_memcpy(hmacData+regInfo->inMsg_len, msg, *msg_len);
-  
+
 	hmac_sha256((uint8*)regInfo->authKey, SIZE_256_BITS, hmacData, hmacDataLen, hmac1);
 	os_free(hmacData);
 
@@ -825,7 +825,7 @@ static uint32 BuildMessageM5(S_REGISTRATION_DATA *regInfo)
 	add_tlv_data(msg, msg_len, 0x05, hmac1, SIZE_64_BITS);
 
 	wpa_printf(MSG_DEBUG, "BuildMessageM5: %d bytes\n", *msg_len);
-  
+
 	return WSC_SUCCESS;
 }
 
@@ -843,7 +843,7 @@ static uint32 ProcessMessageM6(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	//uint32 plainTextLen = 0;
 	int   s;
 
-	wpa_printf(MSG_DEBUG, "ProcessMessageM6: %d byte message\n",msg_len);	
+	wpa_printf(MSG_DEBUG, "ProcessMessageM6: %d byte message\n",msg_len);
 
 	if(WSC_IN_MSG_LEN < msg_len)
 		return WSC_ERR_SYSTEM;
@@ -854,14 +854,14 @@ static uint32 ProcessMessageM6(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	/* First, deserialize (parse) the message. */
 //	version = msg[4];
 	msgType = msg[9];
-	
-	/* 
+
+	/*
 	 *  First and foremost, check the version and message number.
 	 *  Don't deserialize incompatible messages!
 	 */
 	if(WSC_ID_MESSAGE_M6 != msgType)
 		return WSC_ERR_SYSTEM;
-  
+
 	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_ENROLLEE_NONCE,
 	      enrolleeNonce, SIZE_128_BITS);
 
@@ -875,7 +875,7 @@ static uint32 ProcessMessageM6(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	/* the first 16 bytes are the iv */
 	iv = &cipherText[0];
 
-	/* 
+	/*
 	 *  Now start validating the message
 	 */
 
@@ -887,7 +887,7 @@ static uint32 ProcessMessageM6(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 		wpa_printf(MSG_INFO, "ProcessMessageM6: Incorrect enrollee nonce\n");
 		return WSC_ERR_SYSTEM;
 	}
-	
+
 	/****** HMAC validation ******/
 	hmacDataLen = regInfo->outMsg_len+msg_len-12;/*(sizeof(S_WSC_TLV_HEADER)+SIZE_64_BITS);*/
 
@@ -898,7 +898,7 @@ static uint32 ProcessMessageM6(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	os_memcpy(hmacData, (uint8*)regInfo->outMsg, regInfo->outMsg_len);
 	/* append the current message. Don't append the last TLV (auth) */
 	os_memcpy(hmacData+regInfo->outMsg_len, msg, msg_len-12);//(sizeof(S_WSC_TLV_HEADER)+SIZE_64_BITS));
-	
+
 	if(!ValidateMac(
 	             hmacData,
 	             hmacDataLen,
@@ -913,7 +913,7 @@ static uint32 ProcessMessageM6(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 
 #if 0
 	/* regInfo->rs2 is never used so skip this step */
-	wps_decrypt(cipherText, 
+	wps_decrypt(cipherText,
 		    sizeof(cipherText),
 		    iv,
 		    regInfo->keyWrapKey,
@@ -953,7 +953,7 @@ static uint32 ProcessMessageM6(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
  * 5. Encryption Type
  * 6. Network Key Index - If omitted, the Network Key Index defaults to 1.
  * 7. Network Key - Multiple instances of Network Key and its preceding Network Key Index may be included.
- * 8. <other...> Multiple attributes are permitted 
+ * 8. <other...> Multiple attributes are permitted
  * 9. Key Wrap Authenticator
  *
  */
@@ -979,14 +979,14 @@ static uint32 BuildMessageM7(S_REGISTRATION_DATA *regInfo)
 	encrSettings = os_malloc(encrSettingsLen);
 	if(encrSettings==NULL)
 		return WSC_ERR_SYSTEM;
-	
+
 	/* First, generate or gather the required data */
 //	message = WSC_ID_MESSAGE_M7;
-  
+
 	/* encrypted settings. */
 	os_memcpy(TempEsBuf, esNonce2Hdr, 4);
 	os_memcpy(TempEsBuf+4, regInfo->es2, SIZE_128_BITS);
-	
+
 	/* calculate the hmac and append the TLV to the buffer */
 	hmac_sha256(regInfo->authKey, SIZE_256_BITS, TempEsBuf, 20, hmac);
 
@@ -995,7 +995,7 @@ static uint32 BuildMessageM7(S_REGISTRATION_DATA *regInfo)
 	os_memcpy(esBuf+20+4, hmac, 8);
 
 	/*regInfo->staEncrSettings = (void *)esBuf; */
-  
+
 	encrypted = wps_encrypt(
 		esBuf,
 		32,
@@ -1010,7 +1010,7 @@ static uint32 BuildMessageM7(S_REGISTRATION_DATA *regInfo)
 	}
 	os_memcpy(cipherText, encrypted, cipherTextLen);
 	os_free(encrypted);
-	
+
 	/*
 	 *  Now assemble the message
 	 */
@@ -1028,31 +1028,31 @@ static uint32 BuildMessageM7(S_REGISTRATION_DATA *regInfo)
 
 	os_memcpy(encrSettings, iv, 16);
 	os_memcpy(encrSettings + 16, cipherText, cipherTextLen);
-  
+
 	/* Encryption Settings */
 	add_tlv_data(msg, msg_len, 0x18, encrSettings, SIZE_128_BITS+cipherTextLen);
 
 	os_free(encrSettings);
 
 	/* No vendor extension */
-  
+
 	/* Calculate the hmac */
 	hmacDataLen = regInfo->inMsg_len + (*msg_len);
-	
+
 	hmacData = (uint8 *)os_malloc(hmacDataLen);
 	if(hmacData == NULL)
 		return WSC_ERR_SYSTEM;
 	os_memcpy(hmacData, (uint8*)regInfo->inMsg, regInfo->inMsg_len);
 	os_memcpy(hmacData+regInfo->inMsg_len, msg, *msg_len);
-  
+
 	hmac_sha256((uint8*)regInfo->authKey, SIZE_256_BITS, hmacData, hmacDataLen, hmac1);
 	os_free(hmacData);
-       
+
 	/* Authenticator */
 	add_tlv_data(msg, msg_len, 0x05, hmac1, SIZE_64_BITS);
 
 	wpa_printf(MSG_DEBUG, "BuildMessageM7: %d bytes\n", *msg_len);
-  
+
 	return WSC_SUCCESS;
 }
 
@@ -1061,12 +1061,12 @@ static uint32 BuildMessageM7(S_REGISTRATION_DATA *regInfo)
  * Attributes in Encrypted Settings of M2, M8 if Enrollee is AP (page 59)
  *
  * Network Index - This attribute is only used if the Enrollee is an AP and
- *                 the Registrar wants to configure settings for a 
- *                 non-default network interface. If omitted, the Network 
+ *                 the Registrar wants to configure settings for a
+ *                 non-default network interface. If omitted, the Network
  *                 Index defaults to 1.
  * SSID
  * Authentication Type
- * Encryption Type 
+ * Encryption Type
  * Network Key Index - If omitted, the Network Key Index defaults to 1
  * Network Key -    Multiple instances of Network Key and its preceding Network
  *                  Key Index may be included.
@@ -1082,13 +1082,13 @@ static uint32 BuildMessageM7(S_REGISTRATION_DATA *regInfo)
  * 10 0e 00 74          // Credential: 0x74 = 116
  *    10 26 00 01 01    // Network Index
  *    10 45 00 20       // SSID: 0x20 = 32
- *       57 50 53 4d 41 58 53 53 49 44 30 31 32 33 34 35 
+ *       57 50 53 4d 41 58 53 53 49 44 30 31 32 33 34 35
  *       36 37 38 39 30 31 32 33 34 35 36 37 38 39 30 31 // WPSMAXSSID0123456789012345678901
  *    10 03 00 02 00 20 // Authentication Type
- *    10 0f 00 02 00 08 // Encryption Type 
+ *    10 0f 00 02 00 08 // Encryption Type
  *    10 28 00 01 01    // Network Key Index
  *    10 27 00 20       // Network Key
- *       57 50 53 4d 41 58 50 53 4b 30 31 32 33 34 35 36 
+ *       57 50 53 4d 41 58 50 53 4b 30 31 32 33 34 35 36
  *       37 38 39 30 31 32 33 34 35 36 37 38 39 30 31 32 // WPSMAXPSK01234567890123456789012
  *    10 20 00 06 8a ba 5e 5d 59 fd       // MAC Address
  *    10 1e 00 08 32 0c 52 f9 bd 23 17 f5 // Key Wrap Authenticator
@@ -1116,11 +1116,11 @@ static uint32 ProcessMessageM8(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	uint8* decrypted = NULL;
 
 	wpa_printf(MSG_DEBUG, "ProcessMessageM8: %d byte message\n",msg_len);
-	
+
 	/* First, deserialize (parse) the message. */
 //	version = msg[4];
 	msgType = msg[9];
-  
+
 	/* First and foremost, check the version and message number. */
 	/* Don't deserialize incompatible messages! */
 	if(WSC_ID_MESSAGE_M8 != msgType)
@@ -1130,15 +1130,15 @@ static uint32 ProcessMessageM8(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	      enrolleeNonce, SIZE_128_BITS);
 
 	FIND_AND_MEMCPY_OR_EXIT(WSC_ID_AUTHENTICATOR,
-	      authenticator, SIZE_64_BITS); 
-	
-	s = m80211_tlv_find(msg, msg_len, WSC_ID_ENCR_SETTINGS, &tlv, (void**)&tlv_data); 
+	      authenticator, SIZE_64_BITS);
+
+	s = m80211_tlv_find(msg, msg_len, WSC_ID_ENCR_SETTINGS, &tlv, (void**)&tlv_data);
 	if( s == FALSE || tlv.len > sizeof(cipherText) || tlv.len < SIZE_128_BITS)
 	{
-		/* none found or incorrect len */ 
-		wpa_printf(MSG_ERROR,"err parsing %04x: %d %d\n", 
-				WSC_ID_ENCR_SETTINGS, s, tlv.len); 
-		wpa_hexdump_ascii(MSG_ERROR, "tlv_buf: ", msg, msg_len); 
+		/* none found or incorrect len */
+		wpa_printf(MSG_ERROR,"err parsing %04x: %d %d\n",
+				WSC_ID_ENCR_SETTINGS, s, tlv.len);
+		wpa_hexdump_ascii(MSG_ERROR, "tlv_buf: ", msg, msg_len);
 		return WSC_ERR_SYSTEM;
 	}
 
@@ -1147,10 +1147,10 @@ static uint32 ProcessMessageM8(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	/* the first 16 bytes are the iv */
 	iv = &cipherText[0];
 
-	/* 
+	/*
 	 * Now start validating the message
 	 */
-	
+
 	/* confirm the enrollee nonce */
 	if(os_memcmp((uint8*)regInfo->enrolleeNonce,
 		  enrolleeNonce,
@@ -1169,7 +1169,7 @@ static uint32 ProcessMessageM8(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	os_memcpy(hmacData, (uint8*)regInfo->outMsg, regInfo->outMsg_len);
 	/* append the current message. Don't append the last TLV (auth) */
 	os_memcpy(hmacData+regInfo->outMsg_len, msg, msg_len-12);/*(sizeof(S_WSC_TLV_HEADER)+SIZE_64_BITS));*/
-	
+
 	if(!ValidateMac(hmacData, hmacDataLen, authenticator, (uint8*)regInfo->authKey)) {
 		wpa_printf(MSG_INFO, "ProcessMessageM8: HMAC validation failed\n");
 		os_free(hmacData);
@@ -1177,9 +1177,9 @@ static uint32 ProcessMessageM8(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	}
 	os_free(hmacData);
 	/****** HMAC validation ******/
-	
+
 	/****** extract encrypted settings ******/
-	
+
 	decrypted = wps_decrypt(cipherText,
 		cipherTextLen,
 		iv,
@@ -1195,13 +1195,13 @@ static uint32 ProcessMessageM8(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	os_free(decrypted);
 
 	wpa_hexdump_ascii(MSG_DEBUG, "Decrypted data from M8: ", plainText, plainTextLen);
-	
+
 	first_cred_len = *(uint8 *)(plainText+3);
 	if( *(uint8 *)(plainText+4+first_cred_len+1) == 0x0e) {
 		wpa_printf(MSG_DEBUG, "Multiple credentials found in M8 message");
 		multiple_creds = 1;
 	}
-		
+
 	/*
 	 *  store the connection credentials for WPA-PSK
 	 */
@@ -1212,7 +1212,7 @@ static uint32 ProcessMessageM8(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32 
 	*encrSettingsLen = *(uint8 *)(plainText+3) + 4;
 	os_memcpy(encrSettings, plainText, *encrSettingsLen);
 	}
-	
+
 	return WSC_SUCCESS;
 }
 
@@ -1240,7 +1240,7 @@ static uint32 BuildMessageDone(S_REGISTRATION_DATA *regInfo)
 	add_tlv_data(msg, msg_len, 0x39, regInfo->registrarNonce, SIZE_128_BITS);
 
 	wpa_printf(MSG_DEBUG, "BuildMessageDone: %d bytes\n", *msg_len);
-	
+
 	return WSC_SUCCESS;
 }
 
@@ -1268,7 +1268,7 @@ static uint32 BuildMessageAck(S_REGISTRATION_DATA *regInfo)
 	add_tlv_data(msg, msg_len, 0x39, regInfo->registrarNonce, SIZE_128_BITS);
 
 	wpa_printf(MSG_DEBUG, "BuildMessageAck: %d bytes\n", *msg_len);
-	
+
 	return WSC_SUCCESS;
 }
 
@@ -1278,9 +1278,9 @@ static uint32 ProcessMessageAck(S_REGISTRATION_DATA *regInfo, uint8 *msg, uint32
    uint8       msgType;
 	uint8       enrolleeNonce[SIZE_128_BITS];
 	uint8       registrarNonce[SIZE_128_BITS];
-	
+
 	wpa_printf(MSG_DEBUG, "ProcessMessageAck: %d byte message\n",msg_len);
-  
+
 	/* First, deserialize (parse) the message. */
 //	version = msg[4];
 	msgType = msg[9];
@@ -1324,11 +1324,11 @@ static void cleanup_wcs_registration_data(S_REGISTRATION_DATA *data)
 #define E(_name) if (data->_name) { os_free(data->_name); }
 
       E(password)
-      E(emsk)          
-      E(keyWrapKey)    
-      E(authKey)       
+      E(emsk)
+      E(keyWrapKey)
+      E(authKey)
       E(inMsg)
-      E(outMsg)        
+      E(outMsg)
       E(p_enrolleeInfo)
 
 #undef E
@@ -1344,7 +1344,7 @@ static void * eap_wsc_init(struct eap_sm *sm)
 
 	/* TODO: Pass these values through a configuration file or something like that */
 	uint8 uuid[16] = {0x22, 0x21, 0x02, 0x03, 0x04, 0x05,
-			  0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 
+			  0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B,
 			  0x0C, 0x0D, 0x0E, 0x0F};
 	uint8  macAddr[6];/* = {0x02, 0x00, 0x00, 0x00, 0x00, 0x6a}; */
 
@@ -1404,7 +1404,7 @@ static void * eap_wsc_init(struct eap_sm *sm)
 		cleanup_wcs_registration_data(data); \
 		return NULL; \
 	}
-	
+
 	E(p_enrolleeInfo, sizeof(S_DEVICE_INFO))
 	E(outMsg,         WSC_OUT_MSG_LEN)
 	E(inMsg,          WSC_IN_MSG_LEN)
@@ -1440,7 +1440,7 @@ static void * eap_wsc_init(struct eap_sm *sm)
 	data->e_lastMsgSent = MNONE;
 	data->staEncrSettings = NULL;
 	data->apEncrSettings = NULL;
-	
+
 	deviceInfo = data->p_enrolleeInfo;
 
 	os_memcpy((uint8*)deviceInfo->uuid, uuid, 16);
@@ -1450,13 +1450,13 @@ static void * eap_wsc_init(struct eap_sm *sm)
 	deviceInfo->connTypeFlags = connTypeFlags;
 	deviceInfo->configMethods = configMethods;
 	deviceInfo->scState = scState;
-	
+
 	os_memcpy((uint8*)deviceInfo->manufacturer, manufacturer, 16);
 	os_memcpy((uint8*)deviceInfo->modelName, modelName, 9);
 	os_memcpy((uint8*)deviceInfo->modelNumber, modelNumber, 9);
 	os_memcpy((uint8*)deviceInfo->serialNumber, serialNumber, 16);
 	os_memcpy((uint8*)deviceInfo->deviceName, deviceName, 16);
-  
+
 	deviceInfo->primDeviceCategory = primDeviceCategory;
 	deviceInfo->primDeviceOui = primDeviceOui;
 	deviceInfo->primDeviceSubCategory = primDeviceSubCategory;
@@ -1465,7 +1465,7 @@ static void * eap_wsc_init(struct eap_sm *sm)
 	deviceInfo->devPwdId = devPwdId;
 	deviceInfo->configError = configError;
 	deviceInfo->osVersion = osVersion;
-	
+
 	return data;
 }
 
@@ -1534,7 +1534,7 @@ int wps_get_auth_mode(int *auth_type)
    if(wps_creds.tlvs==NULL)
       return -1;
 
-   if(!m80211_tlv_find(wps_creds.tlvs, wps_creds.tlvs_len, 
+   if(!m80211_tlv_find(wps_creds.tlvs, wps_creds.tlvs_len,
             WSC_ID_AUTH_TYPE,
             &tlv, (void**)&tlv_data))
    {
@@ -1549,7 +1549,7 @@ int wps_get_auth_mode(int *auth_type)
 }
 
 
-/* 
+/*
  * 0x01: No encryption
  * 0x02: WEP encryption
  * 0x04: TKIP
@@ -1565,7 +1565,7 @@ int wps_get_encr_type(int *encr_type)
    if(wps_creds.tlvs==NULL)
       return -1;
 
-   if(!m80211_tlv_find(wps_creds.tlvs, wps_creds.tlvs_len, 
+   if(!m80211_tlv_find(wps_creds.tlvs, wps_creds.tlvs_len,
             WSC_ID_ENCR_TYPE,
             &tlv, (void**)&tlv_data))
    {
@@ -1580,7 +1580,7 @@ int wps_get_encr_type(int *encr_type)
 }
 
 /**
- * SSID is not a string, use wps_get_ssid_as_string() if you need it 
+ * SSID is not a string, use wps_get_ssid_as_string() if you need it
  * to be a string but it then needs to be at least 32+1=33 bytes long.
  */
 int wps_get_ssid(char *dst, size_t size)
@@ -1591,7 +1591,7 @@ int wps_get_ssid(char *dst, size_t size)
    if(wps_creds.tlvs==NULL)
       return -1;
 
-   if(!m80211_tlv_find(wps_creds.tlvs, wps_creds.tlvs_len, 
+   if(!m80211_tlv_find(wps_creds.tlvs, wps_creds.tlvs_len,
             WSC_ID_SSID,
             &tlv, (void**)&tlv_data))
    {
@@ -1601,7 +1601,7 @@ int wps_get_ssid(char *dst, size_t size)
    if(size<tlv.len)
       return -3;
 
-   os_memcpy(dst, tlv_data, tlv.len); 
+   os_memcpy(dst, tlv_data, tlv.len);
 
    return tlv.len;
 }
@@ -1642,7 +1642,7 @@ static int hex2byte(const char *hex)
 
 static int wep_hex2bytes(
       char *dst,
-      const char *hex, 
+      const char *hex,
       int hex_len)
 {
    char tmp[3];
@@ -1692,7 +1692,7 @@ int wps_get_key(char *dst, size_t size)
    if(wps_creds.tlvs==NULL)
       return -1;
 
-   if(!m80211_tlv_find(wps_creds.tlvs, wps_creds.tlvs_len, 
+   if(!m80211_tlv_find(wps_creds.tlvs, wps_creds.tlvs_len,
             WSC_ID_NW_KEY,
             &tlv, (void**)&tlv_data))
    {
@@ -1739,9 +1739,9 @@ int wps_get_key(char *dst, size_t size)
         tlv.len--;
    }
 #endif
-   
+
    os_memset(dst, 0, size);
-   os_memcpy(dst, tlv_data, tlv.len); 
+   os_memcpy(dst, tlv_data, tlv.len);
 
    return tlv.len;
 }
@@ -1768,7 +1768,7 @@ int wps_get_wep_key_index(int *index)
 }
 
 /**
- * validate the tlv credentials so that everything needed is present 
+ * validate the tlv credentials so that everything needed is present
  *
  */
 int wps_validate_credentials(u8 *buf, size_t len)
@@ -1810,7 +1810,7 @@ int wps_validate_credentials(u8 *buf, size_t len)
             }
             break;
 
-         case WSC_ID_NW_KEY: 
+         case WSC_ID_NW_KEY:
             if(tlv.len>0) v_key = 1;
             break;
 
@@ -1863,10 +1863,10 @@ static int wps_parseConnCredentials(u8 *encrSettings, size_t encrSettingsLen)
         wpa_config_set_network_defaults(ssid_conf);
 	ssid_conf->use_wps = 2;
 
-        /*                                                                                                                                                           
-	 *  Parse encrSettings and store the values to the wpa_ssid context of wpa_supplicant                                                                             
-	 */                                                                                                           
-               
+        /*
+	 *  Parse encrSettings and store the values to the wpa_ssid context of wpa_supplicant
+	 */
+
 	/* SSID */
         offset = 0;
         offset = wps_findTlv((u8 *)encrSettings, encrSettingsLen, WSC_ID_SSID);
@@ -1895,7 +1895,7 @@ static int wps_parseConnCredentials(u8 *encrSettings, size_t encrSettingsLen)
         case 0x01: /* No encryption or Open WEP encryption */
                 ssid_conf->key_mgmt = WPA_KEY_MGMT_NONE;
                 break;
-        case 0x02: /* WPA-PSK */                                                                                                                            
+        case 0x02: /* WPA-PSK */
                 ssid_conf->key_mgmt = WPA_KEY_MGMT_PSK;
                 ssid_conf->proto = WPA_PROTO_WPA;
                 break;
@@ -1934,7 +1934,7 @@ static int wps_parseConnCredentials(u8 *encrSettings, size_t encrSettingsLen)
 
         switch(encr_type) {
         case 0x01: /* No encryption */
-        case 0x02: /* WEP encryption */                                                                                                                                                           
+        case 0x02: /* WEP encryption */
                 break;
         case 0x04: /* TKIP */
 		ssid_conf->pairwise_cipher = WPA_CIPHER_TKIP;
@@ -1961,7 +1961,7 @@ static int wps_parseConnCredentials(u8 *encrSettings, size_t encrSettingsLen)
                         return -1;
 
                 wep_key_index = *(u8 *)(encrSettings+offset+4);
-                ssid_conf->wep_tx_keyidx = wep_key_index -1; /*zero based index*/                                                                                               
+                ssid_conf->wep_tx_keyidx = wep_key_index -1; /*zero based index*/
 
                 offset = 0;
                 offset = wps_findTlv((u8 *)encrSettings, encrSettingsLen, WSC_ID_NW_KEY);
@@ -1983,24 +1983,24 @@ static int wps_parseConnCredentials(u8 *encrSettings, size_t encrSettingsLen)
                 passphrase_len = *(encrSettings+offset+3);
 		os_memcpy(lpsk, (u8 *)(encrSettings+offset+4), passphrase_len);
 		lpsk[passphrase_len]='\0';
-		
+
 		if(passphrase_len == 64) {
 			if(wpa_config_set(ssid_conf, "psk", lpsk, 1) != 0) {
-				return -1;                      
-			}                                       
-		} else {                                        
+				return -1;
+			}
+		} else {
 			DE_SNPRINTF(str, sizeof(str), "\"%s\"", lpsk);
 			if(wpa_config_set(ssid_conf, "psk", str, 1) != 0) {
 				return -1;
 			}
 		}
 
-		os_memcpy(WPSEncryptionKey, 
-			  lpsk, 
+		os_memcpy(WPSEncryptionKey,
+			  lpsk,
 			  passphrase_len + 1);
 
 		/* wpa_config_update_psk(ssid_conf); */
-	} 
+	}
 	/*eapol_sm_notify_config(wpa_s->eapol, NULL, NULL);*/
 	return 0;
 }
@@ -2041,7 +2041,7 @@ static u8 * eap_wsc_process(struct eap_sm *sm, void *priv,
 	u8 msgType = 0;
 
 	req = (const struct eap_hdr *) reqData;
-	
+
 	wpa_printf(MSG_INFO, "EAP-WSC : Received packet(len=%lu) ",
 		   (unsigned long) reqDataLen);
 
@@ -2060,7 +2060,7 @@ static u8 * eap_wsc_process(struct eap_sm *sm, void *priv,
 
 	eap_wsc_header[0] = 0x02; /* EAP-Response */
 	eap_wsc_header[1] = sm->reqId; /* Identifier */
-	
+
 	/* Check the last message that we sent */
 	switch(wscRegData->e_lastMsgSent) {
 	case MNONE:
@@ -2125,21 +2125,21 @@ static u8 * eap_wsc_process(struct eap_sm *sm, void *priv,
 		if (encrSettings == NULL)
 			return NULL;
 		err = ProcessMessageM8(wscRegData, (u8 *)(reqData+14), reqDataLen-14, encrSettings, &encrSettingsLen);
-		if(WSC_SUCCESS != err) 
+		if(WSC_SUCCESS != err)
          os_free(encrSettings);
 		MESSAGE_ERROR_CHECK
-         
+
 		wscRegData->e_lastMsgSent = M8;
-      
+
 		err = BuildMessageDone(wscRegData);
-		if(WSC_SUCCESS != err) 
+		if(WSC_SUCCESS != err)
          os_free(encrSettings);
 		MESSAGE_ERROR_CHECK
 
 		os_memcpy(eap_wsc_header+4, eap_wsc_header_DONE, 10);
 		wscRegData->e_lastMsgSent = DONE;
 		if(FALSE == wps_validate_credentials(encrSettings+4, *(u8 *)(encrSettings+3)))
-		{ 
+		{
 			os_free(encrSettings);
 			return NULL;
 		}
@@ -2165,7 +2165,7 @@ static u8 * eap_wsc_process(struct eap_sm *sm, void *priv,
 	*(u16 *)(eap_wsc_header+2) = bswap_16(wscRegData->outMsg_len + 14);
 	os_memcpy(resp, eap_wsc_header, 14);
 	os_memcpy(resp+14, wscRegData->outMsg, wscRegData->outMsg_len);
-	
+
 	*respDataLen = wscRegData->outMsg_len + 14;
 	ret->ignore = FALSE;
 	ret->decision = DECISION_COND_SUCC;
@@ -2188,7 +2188,7 @@ static u8 * eap_wsc_process(struct eap_sm *sm, void *priv,
 		wps_scan(15); /* This should be necessary when 5.1.3/5.1.5 is done automatically */
 #endif
 	}
-	
+
 	return resp;
 }
 
@@ -2201,11 +2201,11 @@ int eap_peer_wsc_register(void)
 				    EAP_VENDOR_IETF, EAP_TYPE_WSC, "WSC");
 	if (eap == NULL)
 		return -1;
-	
+
 	eap->init = eap_wsc_init;
 	eap->deinit = eap_wsc_deinit;
 	eap->process = eap_wsc_process;
-	
+
 	ret = eap_peer_method_register(eap);
 	if (ret)
 		eap_peer_method_free(eap);
@@ -2219,5 +2219,3 @@ int eap_peer_wsc_register(void)
 /* c-basic-offset: 8 */
 /* indent-tabs-mode: t */
 /* End: */
-
-

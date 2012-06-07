@@ -9,7 +9,7 @@ S T R U C T U R E S / E X T E R N A L S
 ******************************************************************************/
 
 #define MAX_CANDIDATE_INFO 16
-typedef struct 
+typedef struct
 {
    m80211_mac_addr_t            bssId;
    int32_t         rssi_info;
@@ -21,7 +21,7 @@ extern int             num_candidates;
 extern m80211_ie_ssid_t candidatesOfSsid;
 
 typedef bool_t (*mlme_primitive_fn_t)(hic_message_context_t* msg_ref, int param);
-typedef int    (*mlme_send_fn_t)(hic_message_context_t *ctx); 
+typedef int    (*mlme_send_fn_t)(hic_message_context_t *ctx);
 
 typedef int (*mlme_scan_filter_t)(mlme_bss_description_t *bss_p);
 void mlme_set_scan_filter(mlme_scan_filter_t filter);
@@ -50,9 +50,9 @@ F U N C T I O N  P R O T O Y P E S
 ******************************************************************************/
 bool_t   Mlme_Send(mlme_primitive_fn_t mlme_primitive, int param, mlme_send_fn_t send_fn);
 
-int      Mlme_CreateScanRequest(hic_message_context_t* msg_ref, uint8_t scan_type, 
-                                uint32_t job_id, 
-                                uint16_t channel_interval, uint32_t probe_delay, 
+int      Mlme_CreateScanRequest(hic_message_context_t* msg_ref, uint8_t scan_type,
+                                uint32_t job_id,
+                                uint16_t channel_interval, uint32_t probe_delay,
                                 uint16_t min_ch_time, uint16_t max_ch_time);
 bool_t   Mlme_HandleScanInd(hic_message_context_t* msg_ref);
 int      Mlme_CreateJoinRequest(hic_message_context_t* msg_ref, int dummy);
@@ -81,9 +81,9 @@ bool_t   Mlme_CreateMIBSetRawRequest(hic_message_context_t* msg_ref, mib_id_t mi
 #endif
 bool_t   Mlme_CreatePowerManagementRequest(hic_message_context_t* msg_ref, int mode);
 bool_t   Mlme_HandlePowerManagementConfirm(m80211_mlme_power_mgmt_cfm_t *cfm_p);
-bool_t   Mlme_CreateSetKeyRequest(hic_message_context_t* msg_ref, int key_idx, size_t key_len, 
-                                  const void *key, m80211_cipher_suite_t suite, 
-                                  m80211_key_type_t key_type, bool_t config_by_authenticator, 
+bool_t   Mlme_CreateSetKeyRequest(hic_message_context_t* msg_ref, int key_idx, size_t key_len,
+                                  const void *key, m80211_cipher_suite_t suite,
+                                  m80211_key_type_t key_type, bool_t config_by_authenticator,
                                   m80211_mac_addr_t *bssid, receive_seq_cnt_t *rsc);
 bool_t   Mlme_CreateDeleteKeyRequest(hic_message_context_t* msg_ref, int key_idx, m80211_key_type_t key_type, m80211_mac_addr_t *bssid);
 bool_t   Mlme_CreateSetProtectionReq(hic_message_context_t* msg_ref, m80211_mac_addr_t *bssid,
@@ -120,7 +120,7 @@ bool_t   Mlme_HandleHICInterfaceSleepForeverConfirm(hic_ctrl_sleep_forever_cfm_t
 bool_t   Mlme_HandleHICInitCompleteConfirm(hic_ctrl_init_completed_cfm_t *cfm_p);
 bool_t   Mlme_InitBssDescription(mlme_bss_description_t* bss_p);
 bool_t   Mlme_HandleMichaelMICFailureInd(m80211_mlme_michael_mic_failure_ind_t *ind);
-bool_t   Mlme_CreateMIBSetTriggerRequest(hic_message_context_t* msg_ref, mib_id_t mib_id, 
+bool_t   Mlme_CreateMIBSetTriggerRequest(hic_message_context_t* msg_ref, mib_id_t mib_id,
                    uint32_t          gating_trig_id,
                    uint32_t          supv_interval,
                    int32_t           level,
@@ -138,37 +138,37 @@ bool_t Mlme_CreateMIBSetGatingtriggerRequest(hic_message_context_t* msg_ref,
                                              uint32_t *trans_id);
 
 /* New scan interface */
-int Mlme_CreateSetScanParamRequest(hic_message_context_t* msg_ref, 
+int Mlme_CreateSetScanParamRequest(hic_message_context_t* msg_ref,
                                    m80211_nrp_mlme_scan_config_t *sp,
                                    uint32_t *trans_id);
 bool_t Mlme_HandleSetScanParamCfm(hic_message_context_t* msg_ref);
-int Mlme_CreateAddScanFilterRequest(hic_message_context_t* msg_ref, 
+int Mlme_CreateAddScanFilterRequest(hic_message_context_t* msg_ref,
                                     m80211_nrp_mlme_add_scanfilter_req_t *sp,
                                     uint32_t *trans_id);
 bool_t Mlme_HandleAddScanFilterCfm(hic_message_context_t* msg_ref);
-int Mlme_CreateRemoveScanFilterRequest(hic_message_context_t* msg_ref, 
+int Mlme_CreateRemoveScanFilterRequest(hic_message_context_t* msg_ref,
                                        m80211_nrp_mlme_remove_scanfilter_req_t *sp,
                                        uint32_t *trans_id);
 bool_t Mlme_HandleRemoveScanFilterCfm(hic_message_context_t* msg_ref);
-int Mlme_CreateAddScanJobRequest(hic_message_context_t* msg_ref, 
+int Mlme_CreateAddScanJobRequest(hic_message_context_t* msg_ref,
                                  m80211_nrp_mlme_add_scanjob_req_t *sp,
                                  uint32_t *trans_id);
 bool_t Mlme_HandleAddScanJobCfm(hic_message_context_t* msg_ref);
-int Mlme_CreateRemoveScanJobRequest(hic_message_context_t* msg_ref, 
+int Mlme_CreateRemoveScanJobRequest(hic_message_context_t* msg_ref,
                                     m80211_nrp_mlme_remove_scanjob_req_t *sp,
                                     uint32_t *trans_id);
 bool_t Mlme_HandleRemoveScanJobCfm(hic_message_context_t* msg_ref);
-int Mlme_CreateSetScanJobStateRequest(hic_message_context_t* msg_ref, 
+int Mlme_CreateSetScanJobStateRequest(hic_message_context_t* msg_ref,
                                       m80211_nrp_mlme_set_scanjobstate_req_t *sp,
                                       uint32_t *trans_id);
 bool_t Mlme_HandleSetScanJobStateCfm(hic_message_context_t* msg_ref);
-int Mlme_CreateGetScanFilterRequest(hic_message_context_t* msg_ref, 
+int Mlme_CreateGetScanFilterRequest(hic_message_context_t* msg_ref,
                                     m80211_nrp_mlme_get_scanfilter_req_t *sp,
                                     uint32_t *trans_id);
 bool_t Mlme_HandleGetScanFilterCfm(hic_message_context_t* msg_ref);
 
 
-int Mlme_CreateScanCountryInfoRequest(hic_message_context_t* msg_ref, 
+int Mlme_CreateScanCountryInfoRequest(hic_message_context_t* msg_ref,
                                       m80211_ie_country_t *ci);
 bool_t Mlme_HandleScanCountryInfoCfm(hic_message_context_t* msg_ref);
 #if (DE_CCX == CFG_INCLUDED)
@@ -180,8 +180,8 @@ int    Mlme_CreateFWStatsRequest(hic_message_context_t* msg_ref, bool_t init, ui
 void   Mlme_HandleFWStatsCfm(hic_message_context_t *msg_ref);
 #endif //DE_CCX
 
-bool_t Mlme_CreateConsoleRequest(hic_message_context_t *msg_ref, 
-             const char *command, 
+bool_t Mlme_CreateConsoleRequest(hic_message_context_t *msg_ref,
+             const char *command,
              uint32_t *trans_id);
 
 bool_t Mlme_CreateSyncRequest(hic_message_context_t* msg_ref,

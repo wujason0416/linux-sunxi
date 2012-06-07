@@ -1,9 +1,9 @@
-/* wlmSampleTests.cpp : Sample test program which uses the 
+/* wlmSampleTests.cpp : Sample test program which uses the
  * 		Wireless LAN Manufacturing (WLM) Test Library.
  *
  * Copyright (C) 2011, Broadcom Corporation
  * All Rights Reserved.
- * 
+ *
  * This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
  * the contents of this file may not be disclosed to third parties, copied
  * or duplicated in any form, in whole or in part, without the prior
@@ -281,7 +281,7 @@ static int testJoinNetwork(char *ssid, WLM_AUTH_MODE authMode,
 /* Test joining a network */
 static void testJoinNetworkNone()
 {
-	/* requires an AP with the SSID, authentication, and encryption 
+	/* requires an AP with the SSID, authentication, and encryption
 	 * configured to match these settings
 	 */
 	TEST(testJoinNetwork("WLM_NONE", WLM_WPA_AUTH_DISABLED, WLM_ENCRYPT_NONE, 0),
@@ -291,7 +291,7 @@ static void testJoinNetworkNone()
 /* Test joining a WEP network */
 static void testJoinNetworkWep()
 {
-	/* requires an AP with the SSID, authentication, and encryption 
+	/* requires an AP with the SSID, authentication, and encryption
 	 * configured to match these settings
 	 */
 	TEST(testJoinNetwork("WLM_WEP", WLM_WPA_AUTH_DISABLED, WLM_ENCRYPT_WEP,
@@ -302,7 +302,7 @@ static void testJoinNetworkWep()
 /* Test joining a WPA TKIP network */
 static void testJoinNetworkWpaTkip()
 {
-	/* requires an AP with the SSID, authentication, and encryption 
+	/* requires an AP with the SSID, authentication, and encryption
 	 * configured to match these settings
 	 */
 	TEST(testJoinNetwork("WLM_WPA_TKIP", WLM_WPA_AUTH_PSK, WLM_ENCRYPT_TKIP,
@@ -312,7 +312,7 @@ static void testJoinNetworkWpaTkip()
 /* Test joining a WPA AES network */
 static void testJoinNetworkWpaAes()
 {
-	/* requires an AP with the SSID, authentication, and encryption 
+	/* requires an AP with the SSID, authentication, and encryption
 	 * configured to match these settings
 	 */
 	TEST(testJoinNetwork("WLM_WPA_AES", WLM_WPA_AUTH_PSK, WLM_ENCRYPT_AES,
@@ -322,7 +322,7 @@ static void testJoinNetworkWpaAes()
 /* Test joining a WPA2 TKIP network */
 static void testJoinNetworkWpa2Tkip()
 {
-	/* requires an AP with the SSID, authentication, and encryption 
+	/* requires an AP with the SSID, authentication, and encryption
 	 * configured to match these settings
 	 */
 	TEST(testJoinNetwork("WLM_WPA2_TKIP", WLM_WPA2_AUTH_PSK, WLM_ENCRYPT_TKIP,
@@ -332,7 +332,7 @@ static void testJoinNetworkWpa2Tkip()
 /* Test joining a WPA2 AES network */
 static void testJoinNetworkWpa2Aes()
 {
-	/* requires an AP with the SSID, authentication, and encryption 
+	/* requires an AP with the SSID, authentication, and encryption
 	 * configured to match these settings
 	 */
 	TEST(testJoinNetwork("WLM_WPA2_AES", WLM_WPA2_AUTH_PSK, WLM_ENCRYPT_AES,

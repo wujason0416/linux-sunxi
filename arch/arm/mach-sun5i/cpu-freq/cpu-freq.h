@@ -62,5 +62,3 @@ struct sun4i_cpu_freq_t {
 extern struct cpufreq_frequency_table sun4i_freq_tbl[];
 
 #endif  /* #ifndef __SUN4I_CPU_FREQ_H__ */
-
-

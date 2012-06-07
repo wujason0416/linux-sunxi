@@ -10,7 +10,7 @@
 *
 * Author 		: javen
 *
-* Description 	: USB 主机控制器驱动服务函数集
+* Description 	: USB 涓绘満鎺у埗鍣ㄩ┍鍔ㄦ湇鍔″嚱鏁伴泦
 *
 * History 		:
 *      <author>    		<time>       	<version >    		<desc>
@@ -90,8 +90,3 @@ int sw_usb_enable_hcd(__u32 usbc_no)
     return 0;
 }
 EXPORT_SYMBOL(sw_usb_enable_hcd);
-
-
-
-
-

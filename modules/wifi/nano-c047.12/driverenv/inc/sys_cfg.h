@@ -66,4 +66,3 @@ SWEDEN
 #define SCANREQ_NOWAIT    1 /* don't wait for scan to complete */
 
 #endif   /* SYS_CFG_H */
-

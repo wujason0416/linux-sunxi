@@ -57,7 +57,7 @@ __s32 LML_ReadReclaim(__u32 nPage)
     #if CFG_SUPPORT_READ_RECLAIM
 
 	LOGICCTL_ERR("[LOGICCTL_ERR] read reclaim go\n");
-	
+
     //flush the page cache to nand flash first, because need use the buffer
     result = LML_FlushPageCache();
     if(result < 0)
@@ -83,5 +83,3 @@ __s32 LML_ReadReclaim(__u32 nPage)
     #endif
     return 0;
 }
-
-

@@ -24,7 +24,7 @@ o_nrx_enable_link_monitoring (nrx_context ctx,
                                      miss_thres);
    if(ret != 0)
       return ret;
-   
+
    handle = nrx_register_link_monitoring_callback (ctx, *thr_id, cb, cb_ctx);
    if(handle == 0)
       return ENOMEM;
@@ -54,7 +54,7 @@ o_nrx_disable_conn_lost_notification (nrx_context ctx)
    return nrx_cancel_custom_event_by_id (ctx, "CONNLOST", 0);
 }
 
- 
+
 static inline int
 o_nrx_enable_rssi_threshold (nrx_context ctx,
                              int32_t *thr_id,
@@ -76,7 +76,7 @@ o_nrx_enable_rssi_threshold (nrx_context ctx,
                                     type);
    if(ret != 0)
       return ret;
-   
+
    handle = nrx_register_rssi_threshold_callback (ctx,
                                                   *thr_id,
                                                   cb,
@@ -111,7 +111,7 @@ o_nrx_enable_per_threshold (nrx_context ctx,
 {
    int ret;
    nrx_callback_handle handle;
-   
+
    ret = nrx_enable_per_threshold (ctx,
                                    thr_id,
                                    chk_period,
@@ -119,7 +119,7 @@ o_nrx_enable_per_threshold (nrx_context ctx,
                                    dir);
    if(ret != 0)
       return ret;
-   
+
    handle = nrx_register_per_threshold_callback (ctx,
                                                  *thr_id,
                                                  cb,
@@ -128,7 +128,7 @@ o_nrx_enable_per_threshold (nrx_context ctx,
       return ENOMEM;
    return 0;
 }
- 
+
 static inline int
 o_nrx_disable_per_threshold (nrx_context ctx,
                              int thr_id)
@@ -154,7 +154,7 @@ o_nrx_enable_scan_notification (nrx_context ctx,
       return ENOMEM;
    return 0;
 }
- 
+
 static inline int
 o_nrx_disable_scan_notification (nrx_context ctx)
 {

@@ -46,13 +46,13 @@ extern void *       ace_hsram;
 
 #define ACE_ENGINE_MAX_FREQ      150000000            //150M
 
-//ace reset mask                            
+//ace reset mask
 #define ACE_RESET_MASK                      (1<<0)
-//ace reset mode                            
+//ace reset mode
 #define ACE_RESET_DISABLE                   (0)
 #define ACE_RESET_ENABLE                    (1)
 
-//ace ce enable mask                        
+//ace ce enable mask
 #define ACE_CE_ENABLE_MASK                  (1<<4)
 //ace ae enable mask
 #define ACE_AE_ENABLE_MASK                  (1<<0)
@@ -62,7 +62,7 @@ typedef struct __ACE_MODULE_USE_STAT{
     __ace_module_type_e aeUseCnt;
 }__ace_module_use_stat_t;
 
-//ace module enable mode                        
+//ace module enable mode
 #define ACE_MODULE_DISABLE                      (0)
 #define ACE_MODULE_ENABLE                       (1)
 

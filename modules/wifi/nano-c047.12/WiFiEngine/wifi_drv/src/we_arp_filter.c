@@ -166,7 +166,7 @@ arp_filter_cb(we_cb_container_t *cbc)
       return 1;
 
    if(cbc->status < 0) {
-      DE_TRACE_INT(TR_ARP_FILTER, "CBC returned with exit status %d\n", 
+      DE_TRACE_INT(TR_ARP_FILTER, "CBC returned with exit status %d\n",
                    cbc->status);
    } else if(cbc->status == MIB_RESULT_OK) {
       /* ok */
@@ -174,7 +174,7 @@ arp_filter_cb(we_cb_container_t *cbc)
       DE_TRACE_STATIC(TR_ARP_FILTER, "too many addresses configured\n");
       wei_arp_filter_forward_all(TRUE);
    } else if(cbc->status > 0) {
-      DE_TRACE_INT(TR_ARP_FILTER, "MIB set returned with exit status %d\n", 
+      DE_TRACE_INT(TR_ARP_FILTER, "MIB set returned with exit status %d\n",
                    cbc->status);
       wei_arp_filter_forward_all(TRUE);
    }
@@ -210,7 +210,7 @@ wei_arp_filter_update(void)
    WEI_TQ_FOREACH(m, &arp_list, arp_next) {
       num_addrs++;
    }
-   
+
    if(num_addrs == 0) {
       mib_size = sizeof(arp_policy);
       filter = (struct fw_arp_filter*)&arp_policy;
@@ -218,9 +218,9 @@ wei_arp_filter_update(void)
       mib_size = sizeof(*filter) + (num_addrs - 1) * sizeof(ip_addr_t);
       filter = (struct fw_arp_filter *)DriverEnvironment_Malloc(mib_size);
    }
-   
+
    if(filter == NULL) {
-      DE_TRACE_STATIC(TR_ARP_FILTER, 
+      DE_TRACE_STATIC(TR_ARP_FILTER,
                       "failed to allocate memory for filter MIB\n");
       WiFiEngine_FreeCBC(cbc);
       return wei_arp_filter_forward_all(TRUE);
@@ -232,7 +232,7 @@ wei_arp_filter_update(void)
       filter->addresses[num_addrs] = m->arp_address;
       num_addrs++;
    }
-   
+
    status = WiFiEngine_SetMIBAsynch(MIB_dot11ARPFilterMode,
                                     NULL,
                                     (char*)filter,
@@ -240,7 +240,7 @@ wei_arp_filter_update(void)
                                     cbc);
 
    if(status != WIFI_ENGINE_SUCCESS) {
-      DE_TRACE_INT(TR_ARP_FILTER, 
+      DE_TRACE_INT(TR_ARP_FILTER,
                    "WiFiEngine_SetMIBAsynch returned %d\n", status);
       WiFiEngine_FreeCBC(cbc);
    }
@@ -262,7 +262,7 @@ static int guess_autoconf(ip_addr_t addr)
  * @brief Determine is any dynamic address has been configured.
  *
  * This function returns true if there is at least one dynamically
- * configured IPv4 address in the ARP filter cache. 
+ * configured IPv4 address in the ARP filter cache.
  *
  * A dynamically configured address is defines as either an address
  * that has been marked as dynamic, or an address with unknown status,
@@ -289,7 +289,7 @@ wei_arp_filter_have_dynamic_address(void)
    WEI_TQ_FOREACH(m, &arp_list, arp_next) {
       if(m->arp_mode == ARP_FILTER_DYNAMIC)
          return TRUE;
-      if(m->arp_mode == ARP_FILTER_UNKNOWN && 
+      if(m->arp_mode == ARP_FILTER_UNKNOWN &&
          !guess_autoconf(m->arp_address))
          return TRUE;
    }
@@ -414,11 +414,11 @@ WiFiEngine_ARPFilterDisable(void)
  * @return This function can also return anything
  *         WiFiEngine_SendMIBSet returns.
  */
-int WiFiEngine_ConfigARPFilter(arp_policy_t mode, 
+int WiFiEngine_ConfigARPFilter(arp_policy_t mode,
                                ip_addr_t ip)
 {
    int status;
-   
+
    if(mode == ARP_HANDLE_NONE_FORWARD_ALL) {
       return WiFiEngine_ARPFilterDisable();
    }
@@ -435,7 +435,7 @@ int WiFiEngine_ConfigARPFilter(arp_policy_t mode,
     * basically flawed, since if someone ARP:s for us, there is a good
     * chance they will send us a frame just after the ARP response, in
     * which case we will have to wake up anyway.
-    * 
+    *
     * Leave these as unsupported until a really good use case can be
     * provided. */
    return WIFI_ENGINE_FAILURE_NOT_ACCEPTED;
@@ -443,4 +443,3 @@ int WiFiEngine_ConfigARPFilter(arp_policy_t mode,
 /*------------------------------------------------------------*/
 
 /** @} */ /* End of we_arp_filter group */
-

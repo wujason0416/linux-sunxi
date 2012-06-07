@@ -21,7 +21,7 @@ nrxpriv.c: $(srcdir)/testprogram.in.c $(top_builddir)/libnrx.a $(top_srcdir)/nrx
 	done; fi
 
 header2test: $(srcdir)/header2test.c
-	gcc $(srcdir)/header2test.c -o header2test 
+	gcc $(srcdir)/header2test.c -o header2test
 
 nrxpriv_LDADD = ../libnrx.a
 
@@ -31,4 +31,3 @@ CLEANFILES = nrxpriv.c
 #	for i in `if [ -f $(srcdir)/nrxpriv ]; then $(srcdir)/nrxpriv --help | grep nrx_; fi` ; do \
 #	    rm -f $$i ; \
 #       done
-

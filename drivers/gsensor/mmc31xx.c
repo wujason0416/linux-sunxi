@@ -104,7 +104,7 @@ static int mmc31xx_i2c_tx_data(char *buf, int len)
 			.buf	= buf,
 		}
 	};
-	
+
 	for (i = 0; i < MMC31XX_RETRY_COUNT; i++) {
 		if (i2c_transfer(this_client->adapter, msg, 1) >= 0) {
 			break;
@@ -129,7 +129,7 @@ static int mmc31xx_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
-static int mmc31xx_ioctl(struct inode *inode, struct file *file, 
+static int mmc31xx_ioctl(struct inode *inode, struct file *file,
 	unsigned int cmd, unsigned long arg)
 {
 	void __user *pa = (void __user *)arg;
@@ -173,7 +173,7 @@ static int mmc31xx_ioctl(struct inode *inode, struct file *file,
 		vec[1] = data[2] << 8 | data[3];
 		vec[2] = data[4] << 8 | data[5];
 	#if DEBUG
-		printk("[X - %04x] [Y - %04x] [Z - %04x]\n", 
+		printk("[X - %04x] [Y - %04x] [Z - %04x]\n",
 			vec[0], vec[1], vec[2]);
 	#endif
 		if (copy_to_user(pa, vec, sizeof(vec))) {
@@ -214,7 +214,7 @@ static int mmc31xx_ioctl(struct inode *inode, struct file *file,
 		vec[1] = data[2] << 8 | data[3];
 		vec[2] = data[4] << 8 | data[5];
 	#if DEBUG
-		printk("[X - %04x] [Y - %04x] [Z - %04x]\n", 
+		printk("[X - %04x] [Y - %04x] [Z - %04x]\n",
 			vec[0], vec[1], vec[2]);
 	#endif
 		if (copy_to_user(pa, vec, sizeof(vec))) {
@@ -300,8 +300,8 @@ static int mmc31xx_remove(struct i2c_client *client)
 
 	return 0;
 }
-static int mmc31xx_detect(struct i2c_client *client, int kind, struct i2c_board_info *info) 
-{    
+static int mmc31xx_detect(struct i2c_client *client, int kind, struct i2c_board_info *info)
+{
 	strcpy(info->type, MMC31XX_DEV_NAME);
 	return 0;
 }
@@ -315,7 +315,7 @@ static const struct i2c_device_id mmc31xx_id[] = {
 /*----------------------------------------------------------------------------*/
 static struct i2c_driver mmc31xx_i2c_driver = {
     .driver = {
-        .owner = THIS_MODULE, 
+        .owner = THIS_MODULE,
         .name  = MMC31XX_DEV_NAME,
     },
 	.probe      = mmc31xx_probe,
@@ -324,18 +324,18 @@ static struct i2c_driver mmc31xx_i2c_driver = {
 #if 0
 	.suspend    = mmc31xx_suspend,
 	.resume     = mmc31xx_resume,
-#endif 
+#endif
 	.id_table = mmc31xx_id,
 	.address_data = &mmc31xx_addr_data,
 };
 
-static int mmc31xx_platform_probe(struct platform_device *pdev) 
+static int mmc31xx_platform_probe(struct platform_device *pdev)
 {
 	if(i2c_add_driver(&mmc31xx_i2c_driver))
 	{
 		pr_info("add driver error\n");
 		return -1;
-	} 
+	}
 	return 0;
 }
 
@@ -361,7 +361,7 @@ static struct i2c_driver mmc31xx_driver = {
 /*----------------------------------------------------------------------------*/
 static struct platform_driver mmc31xx_sensor_driver = {
 	.probe      = mmc31xx_platform_probe,
-	.remove     = mmc31xx_platform_remove,    
+	.remove     = mmc31xx_platform_remove,
 	.driver     = {
 		.name  = "mmc31xx",
 		.owner = THIS_MODULE,
@@ -371,22 +371,22 @@ static struct platform_driver mmc31xx_sensor_driver = {
 static int __init mmc31xx_init(void)
 {
 	pr_info("mmc31xx driver: init\n");
-	
+
 	if(platform_driver_register(&mmc31xx_sensor_driver))
 	{
 		pr_info("failed to register driver");
 		return 0;
 	}
-	return 0;   
+	return 0;
 	//return i2c_add_driver(&mmc31xx_driver);
 }
 
 static void __exit mmc31xx_exit(void)
 {
 	pr_info("mmc31xx driver: exit\n");
-	
+
 	platform_driver_unregister(&mmc31xx_sensor_driver);
-	
+
 
 
 	//i2c_del_driver(&mmc31xx_driver);
@@ -398,4 +398,3 @@ module_exit(mmc31xx_exit);
 MODULE_AUTHOR("Robbie Cao<hjcao@memsic.com>");
 MODULE_DESCRIPTION("MEMSIC MMC31XX Magnetic Sensor Driver");
 MODULE_LICENSE("GPL");
-

@@ -8,4 +8,3 @@ TARGETPATH=.
 
 
 SOURCES=application.c driverenv.c
-

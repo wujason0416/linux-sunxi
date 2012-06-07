@@ -1009,15 +1009,15 @@ int   WiFiEngine_8021xPortClose(void);
 #define WiFiEngine_Is8021xPortClosed() (!WES_TEST_FLAG(WES_FLAG_8021X_PORT_OPEN))
 int   WiFiEngine_IsTxKeyPresent(void);
 #if DE_PMKID_CACHE_SUPPORT == CFG_ON
-int   WiFiEngine_PMKID_Add(const m80211_mac_addr_t *bssid, 
+int   WiFiEngine_PMKID_Add(const m80211_mac_addr_t *bssid,
                            const m80211_pmkid_value *pmkid);
-int   WiFiEngine_PMKID_Remove(const m80211_mac_addr_t *bssid, 
+int   WiFiEngine_PMKID_Remove(const m80211_mac_addr_t *bssid,
                               const m80211_pmkid_value *pmkid);
 int   WiFiEngine_PMKID_Clear(void);
-unsigned int WiFiEngine_PMKID_Get(m80211_bssid_info *pmkid, 
-                                  unsigned int npmkid, 
+unsigned int WiFiEngine_PMKID_Get(m80211_bssid_info *pmkid,
+                                  unsigned int npmkid,
                                   const m80211_mac_addr_t *bssid);
-int   WiFiEngine_PMKID_Set(const m80211_bssid_info *pmkid, 
+int   WiFiEngine_PMKID_Set(const m80211_bssid_info *pmkid,
                            unsigned int npmkid);
 #endif
 int   WiFiEngine_GetEncryptionMode(WiFiEngine_Encryption_t* encryptionMode);

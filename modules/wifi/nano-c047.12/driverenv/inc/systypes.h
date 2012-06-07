@@ -1,6 +1,6 @@
 /*******************************************************************************
 
-            Copyright (c) 2004 by Nanoradio AB 
+            Copyright (c) 2004 by Nanoradio AB
 
 This software is copyrighted by and is the sole property of Nanoradio AB.
 All rights, title, ownership, or other interests in the software remain the
@@ -13,7 +13,7 @@ consent of Nanoradio AB.
 
 Nanoradio AB reserves the right to modify this software without notice.
 
-Nanoradio AB 
+Nanoradio AB
 Torshamnsgatan 39                       info@nanoradio.se
 164 40 Kista                            http://www.nanoradio.se
 SWEDEN
@@ -26,7 +26,7 @@ SWEDEN
 #define SYSTYPES_H
 
 /* No external includes in kernel mode (for Linux) */
-#if HAVE_ANSI_INTTYPES 
+#if HAVE_ANSI_INTTYPES
 #ifdef  __KERNEL__
 #include <linux/version.h>
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 19)
@@ -177,25 +177,25 @@ typedef struct
    #define CONST        const
    #define DATA_UBYTEINT            unsigned char
    #define IDATA_UBYTEINT           unsigned char
-   #define IDATA_UWORDINT           unsigned short int 
+   #define IDATA_UWORDINT           unsigned short int
    #define DATA_CHAR                unsigned char
    #define IDATA_CHAR               unsigned char
    #define XRAM_UBYTEINT            unsigned char
    #define XRAM_BYTEINT             signed   char
-   #define XRAM_UWORDINT            unsigned short int 
-   
-   #define DATA                                  
+   #define XRAM_UWORDINT            unsigned short int
+
+   #define DATA
    #define IO_CHAR         volatile unsigned char
    #define IO_UBYTEINT     volatile unsigned char
    #define IO_BYTEINT      volatile signed   char
-   #define IO_UWORDINT     volatile unsigned short int  
-   #define IO_WORDINT      volatile signed   short int 
+   #define IO_UWORDINT     volatile unsigned short int
+   #define IO_WORDINT      volatile signed   short int
 
    #define ROM_STORAGE(_type)           _type             /* Object in read-only memory */
    #define ROM_STORAGE_PTR(_type)       _type *           /* Pointer to object in read-only memory */
    #define ROM_STORAGE_ROM_PTR(_type)   _type *          /* Read-only pointer to object in read-only memory */
 
-   #define STATIC_CONST static const 
+   #define STATIC_CONST static const
 
 #endif /*#ifndef SYSTYPES_H*/
 /******************************** END OF FILE *********************************/

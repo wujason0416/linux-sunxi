@@ -291,7 +291,7 @@ typedef enum {
 /**
  * struct eap_sm - EAP state machine data
  */
-struct eap_sm { 
+struct eap_sm {
 	EAP_state_TYPE EAP_state;
 	/* Long-term local variables */
 	EapType selectedMethod;

@@ -166,13 +166,13 @@ static long ecs_ctrl_ioctl(struct file *file, unsigned int cmd, unsigned long ar
 		if (copy_from_user(parms, pa, sizeof(parms)))
 			return -EFAULT;
 		/* acceleration x-axis */
-		input_set_abs_params(ecs_data_device, ABS_X, 
+		input_set_abs_params(ecs_data_device, ABS_X,
 			parms[0], parms[1], parms[2], parms[3]);
 		/* acceleration y-axis */
-		input_set_abs_params(ecs_data_device, ABS_Y, 
+		input_set_abs_params(ecs_data_device, ABS_Y,
 			parms[0], parms[1], parms[2], parms[3]);
 		/* acceleration z-axis */
-		input_set_abs_params(ecs_data_device, ABS_Z, 
+		input_set_abs_params(ecs_data_device, ABS_Z,
 			parms[0], parms[1], parms[2], parms[3]);
 		break;
 	case ECOMPASS_IOC_GET_APARMS:
@@ -181,13 +181,13 @@ static long ecs_ctrl_ioctl(struct file *file, unsigned int cmd, unsigned long ar
 		if (copy_from_user(parms, pa, sizeof(parms)))
 			return -EFAULT;
 		/* magnetic raw x-axis */
-		input_set_abs_params(ecs_data_device, ABS_HAT0X, 
+		input_set_abs_params(ecs_data_device, ABS_HAT0X,
 			parms[0], parms[1], parms[2], parms[3]);
 		/* magnetic raw y-axis */
-		input_set_abs_params(ecs_data_device, ABS_HAT0Y, 
+		input_set_abs_params(ecs_data_device, ABS_HAT0Y,
 			parms[0], parms[1], parms[2], parms[3]);
 		/* magnetic raw z-axis */
-		input_set_abs_params(ecs_data_device, ABS_BRAKE, 
+		input_set_abs_params(ecs_data_device, ABS_BRAKE,
 			parms[0], parms[1], parms[2], parms[3]);
 		break;
 	case ECOMPASS_IOC_GET_MPARMS:
@@ -196,7 +196,7 @@ static long ecs_ctrl_ioctl(struct file *file, unsigned int cmd, unsigned long ar
 		if (copy_from_user(parms, pa, sizeof(parms)))
 			return -EFAULT;
 		/* orientation yaw */
-		input_set_abs_params(ecs_data_device, ABS_RX, 
+		input_set_abs_params(ecs_data_device, ABS_RX,
 			parms[0], parms[1], parms[2], parms[3]);
 		break;
 	case ECOMPASS_IOC_GET_OPARMS_YAW:
@@ -205,7 +205,7 @@ static long ecs_ctrl_ioctl(struct file *file, unsigned int cmd, unsigned long ar
 		if (copy_from_user(parms, pa, sizeof(parms)))
 			return -EFAULT;
 		/* orientation pitch */
-		input_set_abs_params(ecs_data_device, ABS_RY, 
+		input_set_abs_params(ecs_data_device, ABS_RY,
 			parms[0], parms[1], parms[2], parms[3]);
 		break;
 	case ECOMPASS_IOC_GET_OPARMS_PITCH:
@@ -214,7 +214,7 @@ static long ecs_ctrl_ioctl(struct file *file, unsigned int cmd, unsigned long ar
 		if (copy_from_user(parms, pa, sizeof(parms)))
 			return -EFAULT;
 		/* orientation roll */
-		input_set_abs_params(ecs_data_device, ABS_RZ, 
+		input_set_abs_params(ecs_data_device, ABS_RZ,
 			parms[0], parms[1], parms[2], parms[3]);
 		break;
 	case ECOMPASS_IOC_GET_OPARMS_ROLL:
@@ -289,35 +289,35 @@ static int __init ecompass_init(void)
 
 	/* 32768 == 1g, range -4g ~ +4g */
 	/* acceleration x-axis */
-	input_set_abs_params(ecs_data_device, ABS_X, 
+	input_set_abs_params(ecs_data_device, ABS_X,
 		-32768*4, 32768*4, 0, 0);
 	/* acceleration y-axis */
-	input_set_abs_params(ecs_data_device, ABS_Y, 
+	input_set_abs_params(ecs_data_device, ABS_Y,
 		-32768*4, 32768*4, 0, 0);
 	/* acceleration z-axis */
-	input_set_abs_params(ecs_data_device, ABS_Z, 
+	input_set_abs_params(ecs_data_device, ABS_Z,
 		-32768*4, 32768*4, 0, 0);
 
 	/* 32768 == 1gauss, range -4gauss ~ +4gauss */
 	/* magnetic raw x-axis */
-	input_set_abs_params(ecs_data_device, ABS_HAT0X, 
+	input_set_abs_params(ecs_data_device, ABS_HAT0X,
 		-32768*4, 32768*4, 0, 0);
 	/* magnetic raw y-axis */
-	input_set_abs_params(ecs_data_device, ABS_HAT0Y, 
+	input_set_abs_params(ecs_data_device, ABS_HAT0Y,
 		-32768*4, 32768*4, 0, 0);
 	/* magnetic raw z-axis */
-	input_set_abs_params(ecs_data_device, ABS_BRAKE, 
+	input_set_abs_params(ecs_data_device, ABS_BRAKE,
 		-32768*4, 32768*4, 0, 0);
 
 	/* 65536 == 360degree */
 	/* orientation yaw, 0 ~ 360 */
-	input_set_abs_params(ecs_data_device, ABS_RX, 
+	input_set_abs_params(ecs_data_device, ABS_RX,
 		0, 65536, 0, 0);
 	/* orientation pitch, -180 ~ 180 */
-	input_set_abs_params(ecs_data_device, ABS_RY, 
+	input_set_abs_params(ecs_data_device, ABS_RY,
 		-65536/2, 65536/2, 0, 0);
 	/* orientation roll, -90 ~ 90 */
-	input_set_abs_params(ecs_data_device, ABS_RZ, 
+	input_set_abs_params(ecs_data_device, ABS_RZ,
 		-65536/4, 65536/4, 0, 0);
 
 	ecs_data_device->name = ECS_DATA_DEV_NAME;
@@ -363,4 +363,3 @@ module_exit(ecompass_exit);
 MODULE_AUTHOR("Robbie Cao<hjcao@memsic.com>");
 MODULE_DESCRIPTION("MEMSIC eCompass Driver");
 MODULE_LICENSE("GPL");
-

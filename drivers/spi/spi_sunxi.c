@@ -1,7 +1,7 @@
 /*
  * (C) Copyright 2010-2015
  * Allwinner Technology Co., Ltd. <www.allwinnertech.com>
- * 
+ *
  * Pan Nan <pannan@allwinnertech.com>
  * Victor Wei <weiziheng@allwinnertech.com>
  *
@@ -244,7 +244,7 @@ void aw_spi_restore_state(u32 master, void *base_addr)
 {
     u32 reg_val = readl(base_addr + SPI_CTL_REG);
 
-/* 
+/*
  * config spi control register
  * | 15 |  14  |  13  |  12  |  11  |  10  |  9  |  8  |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
  * | DHB|  DDB |     SS      | SMC  |  XCH |TFRST|RFRST|SSCTL| MSB | TBW |SSPOL| POL | PHA | MOD | EN  |
@@ -442,7 +442,7 @@ void aw_spi_set_bc_wtc(u32 tx_len, u32 rx_len, void *base_addr)
     reg_val |= ( SPI_BC_BC_MASK & (tx_len+rx_len) );
     writel(reg_val, base_addr + SPI_BC_REG);
     //spi_msg("\n-- BC = %d --\n", readl(base_addr + SPI_BC_REG));
-    
+
     reg_val = readl(base_addr + SPI_TC_REG);
     reg_val &= ~SPI_TC_WTC_MASK;
     reg_val |= (SPI_TC_WTC_MASK & tx_len);
@@ -547,7 +547,7 @@ static struct sw_dma_client spi_dma_client[] = {
  * it can do this in the isr,too.
  * @ buf: client's id
  * @ size:
- * @ result: 
+ * @ result:
  */
 static void spi_sunxi_dma_cb(struct sw_dma_chan *dma_ch, void *buf, int size, enum sw_dma_buffresult result)
 {
@@ -577,11 +577,11 @@ static void spi_sunxi_dma_cb(struct sw_dma_chan *dma_ch, void *buf, int size, en
 }
 
 
-/*  
- * config dma src and dst address, 
- * io or linear address, 
- * drq type, 
- * then enqueue 
+/*
+ * config dma src and dst address,
+ * io or linear address,
+ * drq type,
+ * then enqueue
  * but not trigger dma start
  */
 static int spi_sunxi_config_dma(struct sunxi_spi *aw_spi, void *buf, unsigned int len)
@@ -660,7 +660,7 @@ static int spi_sunxi_start_dma(struct sunxi_spi *aw_spi)
     /* change the state of the dma channel, dma start */
     ret = sw_dma_ctrl(aw_spi->dma_id, SW_DMAOP_START);
     /* set the channel's flags to a given state */
-    ret += sw_dma_setflags(aw_spi->dma_id, SW_DMAF_AUTOSTART);  
+    ret += sw_dma_setflags(aw_spi->dma_id, SW_DMAF_AUTOSTART);
     return ret;
 }
 
@@ -740,7 +740,7 @@ static void spi_sunxi_cs_control(struct spi_device *spi, bool on)
 	}
 }
 
-/* 
+/*
  * change the properties of spi device with spi transfer.
  * every spi transfer must call this interface to update the master to the excute transfer
  * set clock frequecy, bits per word, mode etc...
@@ -773,16 +773,16 @@ static int spi_sunxi_xfer_setup(struct spi_device *spi, struct spi_transfer *t)
 	}
 	/* set cs */
 	aw_spi_set_cs(spi->chip_select, base_addr);
-    /* 
-     *  master: set spi module clock; 
+    /*
+     *  master: set spi module clock;
      *  set the default frequency	10MHz
      */
     aw_spi_set_master(base_addr);
    	if(config->max_speed_hz > SPI_MAX_FREQUENCY) {
 	    return -EINVAL;
-	} 
+	}
     aw_spi_set_clk(config->max_speed_hz, clk_get_rate(aw_spi->mclk), base_addr);
-    /* 
+    /*
      *  master : set POL,PHA,SSOPL,LMTF,DDB,DHB; default: SSCTL=0,SMC=1,TBW=0.
      *  set bit width-default: 8 bits
      */
@@ -805,7 +805,7 @@ static int spi_sunxi_xfer(struct spi_device *spi, struct spi_transfer *t)
 	unsigned char *rx_buf = (unsigned char *)t->rx_buf;
 	unsigned char *tx_buf = (unsigned char *)t->tx_buf;
 	int ret = 0;
-    
+
     //spi_msg("Begin transfer, txbuf %p, rxbuf %p, len %d\n", t->tx_buf, t->rx_buf, t->len);
 	if (!t->tx_buf && !t->rx_buf && t->len)
 		return -EINVAL;
@@ -830,10 +830,10 @@ static int spi_sunxi_xfer(struct spi_device *spi, struct spi_transfer *t)
         aw_spi_set_bc_wtc(0, rx_len, base_addr);
     }
     /*
-     * 1. Tx/Rx error irq,process in IRQ; 
+     * 1. Tx/Rx error irq,process in IRQ;
      * 2. Transfer Complete Interrupt Enable
      */
-    aw_spi_enable_irq(SPI_INTEN_TC|SPI_INTEN_ERR, base_addr);	
+    aw_spi_enable_irq(SPI_INTEN_TC|SPI_INTEN_ERR, base_addr);
 	//read
 	if(rx_buf) {
 		if(rx_len > BULK_DATA_BOUNDARY) { /* dma */
@@ -843,7 +843,7 @@ static int spi_sunxi_xfer(struct spi_device *spi, struct spi_transfer *t)
             #else
             aw_spi_sel_dma_type(1, base_addr);
             #endif
-            
+
     		/* rxFIFO 1/4 full dma request enable,when 16 or more than 16 bytes */
             aw_spi_enable_dma_irq(SPI_DRQEN_RHF, base_addr);
     		aw_spi->dma_dir = SW_DMA_RDEV;
@@ -857,12 +857,12 @@ static int spi_sunxi_xfer(struct spi_device *spi, struct spi_transfer *t)
     		spi_sunxi_config_dma(aw_spi, (void *)rx_buf, rx_len);
     		spi_sunxi_start_dma(aw_spi);
             //hex_dump("spi_regs + 0x8:", base_addr+8, 0x58, 2);
-            //hex_dump("dma regs:", (void __iomem*)SW_VA_DMAC_IO_BASE, 0x400, 2);				
+            //hex_dump("dma regs:", (void __iomem*)SW_VA_DMAC_IO_BASE, 0x400, 2);
 		}
 		else{
 		    unsigned int poll_time = 0x7ffff;
             //spi_msg(" rx -> by ahb\n");
-            
+
 			/* SMC=1,XCH trigger the transfer */
             //hex_dump("spi_regs + 0x8:", base_addr+8, 0x58, 2);
 		    aw_spi_start_xfer(base_addr);
@@ -883,7 +883,7 @@ static int spi_sunxi_xfer(struct spi_device *spi, struct spi_transfer *t)
 
     //hex_dump("spi_regs + 0x8:", base_addr+8, 0x58, 2);
 	/* SMC=1,XCH trigger the transfer */
-    aw_spi_start_xfer(base_addr);	
+    aw_spi_start_xfer(base_addr);
 	// write
 	if(tx_buf){
 		if(t->len <= BULK_DATA_BOUNDARY) {
@@ -933,7 +933,7 @@ out:
     if(aw_spi->dma_dir != SW_DMA_RWNULL) {
         spi_sunxi_release_dma(aw_spi);
     }
-	return ret;	
+	return ret;
 }
 
 /* spi core xfer process */
@@ -997,8 +997,8 @@ static void spi_sunxi_work(struct work_struct *work)
 			}
 		}
 		/*
-		 * spi message complete,succeed or failed 	
-		 * return value 
+		 * spi message complete,succeed or failed
+		 * return value
 		 */
 		msg->status = status;
 		/* wakup the uplayer caller,complete one message */
@@ -1084,7 +1084,7 @@ static int spi_sunxi_transfer(struct spi_device *spi, struct spi_message *msg)
 	spin_unlock_irqrestore(&aw_spi->lock, flags);
 
     /* return immediately and wait for completion in the uplayer caller. */
-	return 0; 
+	return 0;
 }
 
 /* interface 2, setup the frequency and default status */
@@ -1104,7 +1104,7 @@ static int spi_sunxi_setup(struct spi_device *spi)
     }
    	if(spi->max_speed_hz > SPI_MAX_FREQUENCY) {
 	    return -EINVAL;
-	} 
+	}
 	if (!config) {
 		config = kzalloc(sizeof *config, GFP_KERNEL);
 		if (!config)
@@ -1158,18 +1158,18 @@ static int spi_sunxi_set_gpio(struct sunxi_spi *aw_spi, bool on)
 			 * PI10    	SPI1_CLK
 			 * PI11    	SPI1_MOSI
 			 * PI12	    SPI1_MISO
-			 */       
-            #ifndef SYS_SPI_PIN      
+			 */
+            #ifndef SYS_SPI_PIN
 		    unsigned int  reg_val = readl(_Pn_CFG1(8));
 			/* set spi function */
 		    reg_val &= ~0x77777;
 		    reg_val |=  0x22222;
-		    writel(reg_val, _Pn_CFG1(8));		               
+		    writel(reg_val, _Pn_CFG1(8));
             /* set pull up */
     		reg_val = readl(_Pn_PUL1(8));
     		reg_val &= ~(0x3ff<<16);
     		reg_val |=  (0x155<<16);
-    		writel(reg_val, _Pn_PUL1(8));    		
+    		writel(reg_val, _Pn_PUL1(8));
     		/* no need to set driver,default is driver 1. */
     		#else
             aw_spi->gpio_hdle = gpio_request_ex("spi1_para", NULL);
@@ -1240,7 +1240,7 @@ static int spi_sunxi_set_mclk(struct sunxi_spi *aw_spi, u32 mod_clk)
         default:
             return -1;
     }
-    
+
     if (IS_ERR(source_clock))
 	{
 		ret = PTR_ERR(source_clock);
@@ -1295,7 +1295,7 @@ static int spi_sunxi_hw_init(struct sunxi_spi *aw_spi)
 		clk_put(aw_spi->mclk);
 		return -1;
     }
-    //hex_dump("ccmu regs:", (void __iomem*)SW_VA_CCM_IO_BASE, 0x200, 2);    
+    //hex_dump("ccmu regs:", (void __iomem*)SW_VA_CCM_IO_BASE, 0x200, 2);
 
 	/* 1. enable the spi module */
 	aw_spi_enable_bus(base_addr);
@@ -1412,7 +1412,7 @@ static int __init spi_sunxi_probe(struct platform_device *pdev)
 	master->num_chipselect  = pdata->num_cs;
     //master->dma_alignment   = 8; //  should be set to 32  ??
     //master->flags           = SPI_MASTER_HALF_DUPLEX; // temporay not support duplex
-    
+
 	/* the spi->mode bits understood by this driver: */
 	master->mode_bits       = SPI_CPOL | SPI_CPHA | SPI_CS_HIGH| SPI_LSB_FIRST;
     /* update the cs bitmap */

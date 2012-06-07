@@ -24,17 +24,17 @@ KERNELDIR ?= /lib/modules/$(shell uname -r)/build
 PWD       := $(shell pwd)
 
 default:
-	echo KERNELDIR = $(KERNELDIR) 
+	echo KERNELDIR = $(KERNELDIR)
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
 
 endif
 
 
 
-clean: 
+clean:
 	rm -rf *.o *~ core .depend .*.cmd *.ko *.mod.c .tmp_versions
 
-depend .depend dep: 
+depend .depend dep:
 	$(CC) $(CFLAGS) -M *.c > .depend
 
 ifeq (.depend,$(wildcard .depend))

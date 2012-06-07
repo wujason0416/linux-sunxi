@@ -69,4 +69,3 @@
 #define MXC6202X_IOC_READTEMP		_IOR(MXC6202X_IOM, 0x06, int)
 
 #endif /* __MXC6202X_H__ */
-

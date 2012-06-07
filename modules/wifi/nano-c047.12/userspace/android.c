@@ -1,11 +1,11 @@
 /* Copyright (C) 2009 Nanoradio AB */
 
 /* Implements glibc stuff which is missing from bionic library */
- 
+
 #ifdef ANDROID
 
 #include "android.h"
-#include <stdlib.h>     
+#include <stdlib.h>
 #include <stdarg.h>
 #include <errno.h>
 

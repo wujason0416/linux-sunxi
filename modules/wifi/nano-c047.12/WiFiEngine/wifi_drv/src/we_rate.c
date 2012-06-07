@@ -93,12 +93,12 @@ WiFiEngine_rate_ieee2native(uint8_t rate)
    return rate;
 }
 
-/* 
+/*
  * This table provide a mapping between internal rate masks and
  * protocol rate codes.  Each rate is coded as a 32-bit integer,
  * currently with three fields: domain, mask bit position, and
  * ratecode. The remaining 17 bits are reserved:
- * 
+ *
  *  domain[2] | reserved[17] | bitposition[5] | code[8]
  *   BG-rates: domain == 0, code == speed in 500kbit/s units
  *   HT-rates: domain == 1, code == MCS index
@@ -188,7 +188,7 @@ static int wei_rate_table_mib_callback(we_cb_container_t *cbc)
 static uint32_t wei_get_ratedef_from_rateindex(uint32_t rate_index)
 {
    unsigned int i;
-   
+
    for (i = 0; i < wifiEngineState.rate_table_len; i++) {
       if(rate_index == WE_RATE_ENTRY_BITPOS(wifiEngineState.rate_table[i]))
          return wifiEngineState.rate_table[i];
@@ -212,7 +212,7 @@ int
 WiFiEngine_GetRateIndexLinkspeed(uint32_t rate_index, uint32_t *linkspeed)
 {
    uint32_t ratedef;
-   
+
    ratedef = wei_get_ratedef_from_rateindex(rate_index);
 
    if(WE_RATE_ENTRY_IS_BG(ratedef)) {
@@ -284,7 +284,7 @@ wei_set_enabled_ht_rates_from_registry(void)
    unsigned int rate_mask;
 
    REGISTRY_RLOCK();
-   bwp = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);  
+   bwp = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
    val = bwp->ht_rates;
    REGISTRY_RUNLOCK();
 
@@ -310,9 +310,9 @@ wei_rate_configure(void)
       return WIFI_ENGINE_FAILURE_RESOURCES;
    }
 
-   status = WiFiEngine_GetMIBAsynch(MIB_dot11SupportedRateTable, 
+   status = WiFiEngine_GetMIBAsynch(MIB_dot11SupportedRateTable,
 				    cbc);
-			 
+
    return status;
 }
 
@@ -337,5 +337,3 @@ WiFiEngine_RateCodeToBitposition(unsigned int rate_domain,
 
 
 /** @} */ /* End of we_rate group */
-
-

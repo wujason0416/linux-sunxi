@@ -5,43 +5,43 @@
 #include "mac_mib_defs.h"
 
 /** \defgroup SCAN Scan
- * \brief The Scan functions are used to configure and set up scan jobs based on scan filters 
+ * \brief The Scan functions are used to configure and set up scan jobs based on scan filters
  * to provide for both rapid scanning and scanning to conserve power in different situations.
- * 	  
+ *
  * \b Definitions:
- * 
- * \par Scan configuration	
+ *
+ * \par Scan configuration
  * Configuration parameters common to all scan jobs.
- * 
+ *
  * \par Scan job
- * A scan job scans for a BSS/IBSS according to the common parameters in the scan configuration, 
- * specific job parameters and an associated scan filter. A scan job may be configured to run in 
- * connected mode or disconnected mode, or in both modes. It can be started as a directed scan 
+ * A scan job scans for a BSS/IBSS according to the common parameters in the scan configuration,
+ * specific job parameters and an associated scan filter. A scan job may be configured to run in
+ * connected mode or disconnected mode, or in both modes. It can be started as a directed scan
  * or set up as a periodic scan. By default a new scan job is suspended and must be activated by the host.
- * 
+ *
  * \par Scan filter
- * Specific set of filter definitions associated with a scan job 
+ * Specific set of filter definitions associated with a scan job
  * and used to filter out specific BSS:s/IBSS:s
- * 
- * \par Active scan	
- * The station transmits a probe request frame with a specific SSID/BSSID on a channel. If there is 
- * a BSS on the channel that matches the SSID, the AP in that BSS will respond by sending a probe 
- * response frame to the scanning station. Alternatively, in an IBSS, the station that sent the latest 
+ *
+ * \par Active scan
+ * The station transmits a probe request frame with a specific SSID/BSSID on a channel. If there is
+ * a BSS on the channel that matches the SSID, the AP in that BSS will respond by sending a probe
+ * response frame to the scanning station. Alternatively, in an IBSS, the station that sent the latest
  * Beacon frame in that IBSS will respond.
- * 
- * \par Passive scan	
- * The station listens for beacons on one channel at a time, and extracts a description of any BSS 
- * available from the frames received. 
- * 
+ *
+ * \par Passive scan
+ * The station listens for beacons on one channel at a time, and extracts a description of any BSS
+ * available from the frames received.
+ *
  * \par Directed scan
- * A scan job trigged by the host application with certain scan parameters in order to get an updated 
+ * A scan job trigged by the host application with certain scan parameters in order to get an updated
  * list of available networks.
- * 
+ *
  * \par Periodic scan
  * One or more scan jobs that are configured to run periodically.
- * 
+ *
  * See the <em>NRX700 Scan Function Description</em> (15516/2-NRX700) for further
- * details about the NRX700 Scan implementation. 
+ * details about the NRX700 Scan implementation.
  */
 
 /* CHECK: In general, which calls, if any, are reset on disassociation and what
@@ -85,9 +85,9 @@
  *                    in the scan job. If an ssid is not specified for the scan
  *                    job, then the probe request will be broadcasted.
  * @param sn_pol Bitmask that defines the notification policy. This defines
- *           when the host should be invoked. The host can be notified 
+ *           when the host should be invoked. The host can be notified
  * - as soon as the first network is found (FIRST_HIT)
- *   (notified at most once per scan job per scan period). 
+ *   (notified at most once per scan job per scan period).
  * - when a scan job is complete (JOB_COMPLETE)
  *   (notified once per scan job per scan period)
  * - when all scan jobs in a scan period is complete (ALL_DONE)
@@ -106,11 +106,11 @@
  * @param scan_period Time in ms between scans. If this parameter is 0
  *                    the device will never scan by itself. Otherwise it
  *                    will periodically initiate a new scan when this
- *                    period has passed since the last scan was completed. 
+ *                    period has passed since the last scan was completed.
  *                    This parameter is not used when the device is associated.
  *                    The maximum value is 2^32-1 ms.
- * @param probe_delay Time in microseconds spent on the channel before sending 
- *                    the first probe request. This parameter will only be used 
+ * @param probe_delay Time in microseconds spent on the channel before sending
+ *                    the first probe request. This parameter will only be used
  *                    for active scan.
  *                    The minimum value is 1 and maximum is 2^16-1 microseconds.
  * @param pa_ch_time The time in TU (1 TU = 1024 microseconds) spent on
@@ -136,7 +136,7 @@
  *                    value is 2^16-1 TU.  The value must be larger than
  *                    min_ch_time.
  * @param as_scan_period Time in ms between scans when the device is
- *                    associated. 
+ *                    associated.
  *                    If this parameter is 0 the device will never scan when
  *                    associated. Otherwise it will periodically initiate a
  *                    new scan when this period has passed since the last scan
@@ -144,9 +144,9 @@
  *                    This parameter affects traffic throughput and latency,
  *                    shorter times degrade performance more.
  *                    This parameter is only used when the device is associated.
- *                    The maximum value is 2^32-1 ms. 
+ *                    The maximum value is 2^32-1 ms.
   * @param as_min_ch_time The minimum time in TU (1 TU = 1024 microseconds) spent on
- *                    each channel when the device is associated. If the medium is 
+ *                    each channel when the device is associated. If the medium is
  *                    idle during this time, scanning proceeds to the next channel.
  *                    Otherwise the device keeps listening for probe responses
  *                    in the channel for as_max_ch_time.
@@ -158,26 +158,26 @@
  *                    associated.
  *                    The minimum value is 0. The maximum value is 2^16-1 TU.
  *                    The value must be larger than as_min_ch_time.
- * @param max_scan_period Maximum time in ms between scan periods when disconnected. 
- *                    This parameter is used as a limitation of the scan period when 
+ * @param max_scan_period Maximum time in ms between scan periods when disconnected.
+ *                    This parameter is used as a limitation of the scan period when
  *                    the nominal scan period doubles after every period_repetition.
- *                    The maximum value is 2^32-1 ms. 
+ *                    The maximum value is 2^32-1 ms.
  *                    Scenario: scan_period = 5000, max_scan_period = 50000
  *                       gives the following periods 5000, 10000, 20000, 40000, 50000
- *                       period doubled until 40000 reached, then it will stay with 50000 
- * @param max_as_scan_period Maximum time in ms between scan periods when connected. 
- *                    This parameter is used as a limitation of the scan period when 
+ *                       period doubled until 40000 reached, then it will stay with 50000
+ * @param max_as_scan_period Maximum time in ms between scan periods when connected.
+ *                    This parameter is used as a limitation of the scan period when
  *                    the nominal scan period doubles after every period_repetition.
- *                    The maximum value is 2^32-1 ms. 
+ *                    The maximum value is 2^32-1 ms.
  *                    Scenario: as_scan_period = 5000, max_as_scan_period = 50000
  *                       gives the following periods 5000, 10000, 20000, 40000, 50000
- *                       period doubled until 40000 reached, then it will stay with 50000 
+ *                       period doubled until 40000 reached, then it will stay with 50000
  *
  * @param period_repetition Number of repetitions of a scan period before it is doubled.
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
- *  
+ *
  */
 int
 nrx_conf_scan(nrx_context ctx,
@@ -205,7 +205,7 @@ nrx_conf_scan(nrx_context ctx,
    NRX_CHECK(probe_delay>=1);
    NRX_CHECK(period_repetition>=1);
    NRX_CHECK(rate == 0 || _nrx_is_supp_rate(rate));
-   
+
 #define MS2TU(T) ((T) - (T) / 43)
 
    param.preamble       = (int)preamble;
@@ -251,7 +251,7 @@ nrx_conf_scan(nrx_context ctx,
  *
  * @param state The state that the scan job should be set to.
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  *
@@ -279,7 +279,7 @@ nrx_set_scan_job_state(nrx_context ctx,
  * host. Several scan filters can be defined. They are identified by
  * the sf_id parameter. There is a
  * limit to the number of scan filters that can exist in the device so
- * this call may fail if the current limit is passed. 
+ * this call may fail if the current limit is passed.
  * The scan filters will be associated to scan jobs (see nrx_add_scan_job) and
  * will therefore be used whenever the job is executued (periodic or
  * triggered).
@@ -300,12 +300,12 @@ nrx_set_scan_job_state(nrx_context ctx,
  * @param threshold_type Type of threshold, ABSOLUTE(0) or RELATIVE(1) to the connected STA
  *                       Relative type only active when connected.
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
- * 
+ *
  */
-int 
+int
 nrx_add_scan_filter(nrx_context ctx,
 		    int32_t *sf_id,
 		    nrx_bss_type_t bss_type,
@@ -332,7 +332,7 @@ nrx_add_scan_filter(nrx_context ctx,
    return ret;
 }
 
-/*! 
+/*!
  * @ingroup SCAN
  * @brief <b>Delete a scan filter</b>
  *
@@ -340,16 +340,16 @@ nrx_add_scan_filter(nrx_context ctx,
  * can be deleted for proper operation. If a scan filter that is in use
  * by a scan job is deleted then the scan job will continue to execute
  * without a scan filter. Such a scan job will use any new filters that have
- * the same id as a previously deleted filter. 
- * 
+ * the same id as a previously deleted filter.
+ *
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  * @param sf_id A user supplied scan filter id. This identifies the scan
  *              filter to be deleted. The scan filter id -1 is reserved and cannot be used.
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
- * 
+ *
  */
 int
 nrx_delete_scan_filter(nrx_context ctx,
@@ -380,9 +380,9 @@ nrx_delete_scan_filter(nrx_context ctx,
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  * @param sj_id The scan job id output buffer. This identifies the scan
- *              job so that several scan jobs can be defined. 
+ *              job so that several scan jobs can be defined.
  *              The ID value is filled in by this function call.
- * @param ssid Defines the SSID that the scan job should look for. 
+ * @param ssid Defines the SSID that the scan job should look for.
  *             A zero-length SSID counts as a "broadcast" SSID
  *             that will cause all SSIDs to be scanned for.
  * @param bssid A BSSID to scan for. If this is set to the broadcast BSSID
@@ -402,9 +402,9 @@ nrx_delete_scan_filter(nrx_context ctx,
  *              Valid priorities are in the range 1-128, e.g 128 is prioritized.
  * @param ap_exclude May be either 0 or 1. When set to 1 the AP which the
  *                   device is associated with should be exluded from the scan
- *                   result. This means that scan result information and 
- *                   scan notifications triggered by this AP will not be 
- *                   forwarded to the host. However, this AP will still be 
+ *                   result. This means that scan result information and
+ *                   scan notifications triggered by this AP will not be
+ *                   forwarded to the host. However, this AP will still be
  *                   included in the scan results list presented by e.g
  *                   nrx_get_scan_list().
  *
@@ -413,11 +413,11 @@ nrx_delete_scan_filter(nrx_context ctx,
  *              should be set to -1 if no filter should be used.
  * @param run_every_nth_period Defines how often the scan job should be executed
  *
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  * - TODO if no more scan jobs can be created.
- * 
+ *
  */
 int
 nrx_add_scan_job(nrx_context ctx,
@@ -451,7 +451,7 @@ nrx_add_scan_job(nrx_context ctx,
 
    if(ch_list.len > sizeof(param.channels))
       return EINVAL;
-   
+
    for(i = 0; i < ch_list.len; i++) {
       if((ch_list.channel[i] & 0xff00) != 0)
          return EINVAL;
@@ -481,12 +481,12 @@ nrx_add_scan_job(nrx_context ctx,
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  * @param sj_id A scan job id. This identifies the scan
- *              job to be deleted. 
- * @return 
+ *              job to be deleted.
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  * - EBUSY if the scan job is currently executing.
- * 
+ *
  */
 int
 nrx_delete_scan_job(nrx_context ctx,
@@ -509,8 +509,8 @@ struct nrx_scan_notification_t {
 /*!
  * @internal
  *
- * This function will filter so that only messages subscribed for 
- * are passed along to the user's callback.  
+ * This function will filter so that only messages subscribed for
+ * are passed along to the user's callback.
  *
  */
 static int
@@ -524,7 +524,7 @@ nrx_handle_scan_notification(nrx_context ctx,
    struct nrx_we_custom_data *cdata = (struct nrx_we_custom_data *)event_data;
    nrx_scan_notif_t notif;
    int i;
-   
+
    if(operation == NRX_CB_CANCEL) {
       (*priv->handler)(ctx, NRX_CB_CANCEL, NULL, 0, priv->user_data);
       free(priv);
@@ -539,8 +539,8 @@ nrx_handle_scan_notification(nrx_context ctx,
       }
    }
    if (((int)notif.pol & (int)priv->sn_pol) != 0) {
-      (*priv->handler)(ctx, operation, &notif, 
-                          sizeof(notif), 
+      (*priv->handler)(ctx, operation, &notif,
+                          sizeof(notif),
                           priv->user_data);
    } else {
       /* Message format incorrect. This should never happen */
@@ -558,7 +558,7 @@ nrx_handle_scan_notification(nrx_context ctx,
  * time (until disabled) when the condition specified by sn_pol is met.
  *
  * This function can be called several times, e.g. with different notification
- * policies for different callbacks. 
+ * policies for different callbacks.
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
  * @param sn_pol Bitmask that defines the notification policy. This
@@ -579,7 +579,7 @@ nrx_handle_scan_notification(nrx_context ctx,
  *
  * @param cb Callback that is invoked to notify the caller that
  *        a directed scan sequence has completed.  The callback is
- *        invoked with operation NRX_CB_TRIGGER on a successful 
+ *        invoked with operation NRX_CB_TRIGGER on a successful
  *        notification.
  *        It will be passed a pointer to nrx_scan_notif_t, containing
  *        the policy that triggered the callback and the job id for
@@ -590,12 +590,12 @@ nrx_handle_scan_notification(nrx_context ctx,
  *               be passed to the callback on invocation. This is for
  *               caller use only, it will not be parsed or modified in
  *               any way by this library. This parameter can be NULL.
- * @return 
+ * @return
  * - Pointer to callback handle if success.
  * - 0 if error.
  *
  */
-nrx_callback_handle 
+nrx_callback_handle
 nrx_register_scan_notification_handler(nrx_context ctx,
                                        nrx_sn_pol_t sn_pol,
                                        nrx_callback_t cb,
@@ -611,7 +611,7 @@ nrx_register_scan_notification_handler(nrx_context ctx,
    sn->sn_pol    = sn_pol;
    sn->handler   = cb;
    sn->user_data = cb_ctx;
-   return nrx_register_custom_event(ctx, "SCANNOTIFICATION", 0, 
+   return nrx_register_custom_event(ctx, "SCANNOTIFICATION", 0,
                                     nrx_handle_scan_notification, sn);
 }
 
@@ -626,7 +626,7 @@ nrx_register_scan_notification_handler(nrx_context ctx,
  * @param handle A handle previously obtained from
  * nrx_register_scan_notification_handler. The handle will no longer be
  * valid after this call.
- * 
+ *
  * @return
  * - 0 on success.
  * - EINVAL on invalid parameters, e.g. the callback is not registered.
@@ -656,13 +656,13 @@ nrx_cancel_scan_notification_handler(nrx_context ctx,
  * Note that scan jobs that are in state SUSPENDED cannot be triggered.
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
- * @param sj_id A scan job id to trigger. 
+ * @param sj_id A scan job id to trigger.
  * @param channel_interval interval in ms between channels
- * @return 
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  * - EBUSY if a directed scan is already in progress (RELEASE 5).
- * 
+ *
  */
 int
 nrx_trigger_scan_ex(nrx_context ctx,
@@ -693,19 +693,19 @@ nrx_trigger_scan_ex(nrx_context ctx,
  * Note that scan jobs that are in state SUSPENDED cannot be triggered.
  *
  * @param ctx NRX context that was created by the call to nrx_init_context().
- * @param sj_id A scan job id to trigger. 
- * @return 
+ * @param sj_id A scan job id to trigger.
+ * @return
  * - 0 on success.
  * - EINVAL on invalid arguments.
  * - EBUSY if a directed scan is already in progress (RELEASE 5).
- * 
+ *
  */
 int
 nrx_trigger_scan(nrx_context ctx,
                  int32_t sj_id)
 {
    return nrx_trigger_scan_ex(ctx,
-                              sj_id, 
+                              sj_id,
                               100); /* DEFAULT_CHANNEL_INTERVAL */ /* channel_interval; */
 }
 
@@ -718,9 +718,9 @@ nrx_trigger_scan(nrx_context ctx,
  *
  * Flushes the scan list
  *
- * @return 
+ * @return
  * - 0 on success.
- * 
+ *
  */
 int
 nrx_flush_scanlist(nrx_context ctx)
@@ -742,8 +742,8 @@ nrx_flush_scanlist(nrx_context ctx)
  * @param action Defines if ssid should be added (NRX_SSID_ADD)
  *        or removed (NRX_SSID_REMOVE) to/from the pool.
  * @param ssid  String containing ssid octets, the string "any" will be passed as a NULL ssid.
- * @return always return EOPNOTSUPP 
- * 
+ * @return always return EOPNOTSUPP
+ *
  */
 int
 nrx_scan_adm_ssid_pool(nrx_context ctx,
@@ -765,8 +765,8 @@ nrx_scan_adm_ssid_pool(nrx_context ctx,
  *        removed (NRX_SSID_REMOVE) to/from the scan job.
  * @param job_id Defines to which scan job the ssid shuold be Added/Removed to/from
  * @param ssid  String containing ssid octets, the string "any" will be passed as a NULL ssid.
- * @return always return EOPNOTSUPP 
- * 
+ * @return always return EOPNOTSUPP
+ *
  */
 int
 nrx_scan_adm_job_ssid(nrx_context ctx,
@@ -788,7 +788,7 @@ nrx_scan_get_event(nrx_context context,
    uint8_t *start = (uint8_t *)scan_buf;
    uint8_t *end = start + scan_size;
    uint8_t *p = (uint8_t *)*event;
-   
+
    if(p == NULL) {
       p = start;
    } else {
@@ -807,4 +807,3 @@ nrx_scan_get_event(nrx_context context,
    *event = p;
    return 0;
 }
-                   

@@ -121,9 +121,9 @@ int show_help()
    int j;
    printf("This progam's options:\n");
    for (j = 0; j < ELEMENTS_IN_VECTOR(options); j++)
-      printf("    %s, %-11s %-5s %s\n", 
-             options[j].arg_short, 
-             options[j].arg_name, 
+      printf("    %s, %-11s %-5s %s\n",
+             options[j].arg_short,
+             options[j].arg_name,
              options[j].opt_type == INT ? "<n>" : "",
              options[j].help_text);
 }
@@ -154,14 +154,14 @@ int doxy_beautification(char *outbuf, int len, const char *doxygen)
          indentation = 0;
       ch++;
    }
-   
+
    while (*ch) {
       int ind = 0;
       int newlines = 0;
       while (*ch && *ch!='\r' && *ch!='\n') {
          if (*ch == '<' && *(ch-1) != '\\') /* remove html tags */
             bracket = 1;
-         if (!bracket) 
+         if (!bracket)
                *outbuf++ = *ch;
          if (*ch == '>' && *(ch-1) != '\\')
             bracket = 0;
@@ -236,7 +236,7 @@ int doxy_get_keyword_data(char *outbuf, int len, const char *text, const char *t
         p = doxy_find_tag(p, tag, key)) /* loop over tags */
    {
       /* Add to string */
-      while (*p 
+      while (*p
              && i+2 < len       /* check size */
              && !(*(p-1) == '\n' && *p == '\n') /* two linefeeds in a row => end of section */
              && !((*p == '@' || *p =='\\') && IS_ALPHA(*(p+1))) ) /* new @tag */
@@ -251,7 +251,7 @@ int doxy_get_keyword_data(char *outbuf, int len, const char *text, const char *t
 
       outbuf[i++] = ' ';
       outbuf[i] = '\0';
-      
+
       for (i = i - 1 ; i >= 0  && (outbuf[i] == ' ' || outbuf[i] == '\n'); i--) /* Remove trailing spaces */
          outbuf[i] = '\0';
    }
@@ -288,7 +288,7 @@ int variable_type_and_name_separaor(const char *buf, char *type, char *name)
    for (p = &buf[strlen(buf)-1]; p > buf && *p != ' ' && *p != '*'; p--); // Find last space
    ASSERT(p > buf);
    ASSERT(strlen(p+1));
-   if (*p == ' ') 
+   if (*p == ' ')
       strncpy(type, buf, p-buf);
    else
       strncpy(type, buf, (p-buf) + 1);
@@ -302,7 +302,7 @@ int variable_type_and_name_separaor(const char *buf, char *type, char *name)
 enum mode_t { SEARCHING, FUNC_NAME, FUNC_VAR, FUNC_END};
 char *modes[] = { "SEARCHING", "FUNC_NAME", "FUNC_VAR", "FUNC_END"};
 
-int read_to_separator(FILE *fin, function_t *function) 
+int read_to_separator(FILE *fin, function_t *function)
 {
    enum mode_t mode = SEARCHING;
 
@@ -322,13 +322,13 @@ int read_to_separator(FILE *fin, function_t *function)
    memset(function, 0, sizeof(function_t));
 
    *buf = '\0';
-   
+
    while (1) {
       prev = ch;
 
       ch = (char)fgetc(fin);
       DEBUG_MED("%c", ch);
-      
+
       if (feof(fin))
          if (mode == SEARCHING) {
             DEBUG_HIGH("End of file.\n");
@@ -404,7 +404,7 @@ int read_to_separator(FILE *fin, function_t *function)
          DEBUG_LOW("</REM>");
       }
       if (comment || comment_line) {
-         if (mode == SEARCHING) 
+         if (mode == SEARCHING)
             doxygen[doxy++] = ch;
          continue;
       }
@@ -431,7 +431,7 @@ int read_to_separator(FILE *fin, function_t *function)
          DEBUG_LOW("</PARENTHESIS %d>", parenthesis);
          if (parenthesis == 0) {
             mode = FUNC_END;
-            variable_type_and_name_separaor(buf, 
+            variable_type_and_name_separaor(buf,
                                             function->variables[function->var_count].type,
                                             function->variables[function->var_count].name);
             function->var_count++;
@@ -478,7 +478,7 @@ int read_to_separator(FILE *fin, function_t *function)
       if (ch == ',') {
          ASSERT(mode == FUNC_VAR);
          ASSERT(function->var_count < ELEMENTS_IN_VECTOR(function->variables));
-         variable_type_and_name_separaor(buf, 
+         variable_type_and_name_separaor(buf,
                                          function->variables[function->var_count].type,
                                          function->variables[function->var_count].name);
          function->var_count++;
@@ -512,7 +512,7 @@ int read_to_separator(FILE *fin, function_t *function)
          FATAL("Buffer full\n");
       }
 
-      
+
    } // while 1
 
    return 1;
@@ -559,7 +559,7 @@ int add_to_function_list(FILE *fin)
          last = element;
       }
    }
-   
+
    return 0;
 }
 
@@ -588,7 +588,7 @@ int dump_function(const function_t *function)
    printf("%s %s(", function->type, function->name);
    for (i = 0; i < function->var_count; i++)
       printf(
-         "%s %s%s", 
+         "%s %s%s",
          function->variables[i].type,
          function->variables[i].name,
          i < function->var_count - 1 ? ", " : ""
@@ -599,7 +599,7 @@ int dump_function(const function_t *function)
 int dump_all_functions()
 {
    function_list_t *element;
-   
+
    for (element = list; element != NULL; element = element->next) {
       dump_function(&element->function);
       printf(";\n");
@@ -611,8 +611,8 @@ int dump_all_functions()
 int dump_all_func_names()
 {
    function_list_t *element;
-   
-   for (element = list; element != NULL; element = element->next) 
+
+   for (element = list; element != NULL; element = element->next)
       printf("%s\n", element->function.name);
 
    return 0;
@@ -623,11 +623,11 @@ int dump_vars()
 {
    function_list_t *element;
    int i;
-   
+
    for (element = list; element != NULL; element = element->next) {
       for (i = 0; i < element->function.var_count; i++)
          printf(
-            "%s\n", 
+            "%s\n",
             element->function.variables[i].type
             );
    }
@@ -649,13 +649,13 @@ int create_call_switch()
       "/* int ret        - Will contain test outcome, 0 means success. */\n"
       "/****************************************************************/\n"
       );
-   
+
    printf("   ");
    for (element = list; element != NULL; element = element->next) {
       printf(
          "if (!strcmp(testobj, \"%s\")) {\n"
          "      ret = test_%s(argc, argv);\n"
-         "   }\n", 
+         "   }\n",
          element->function.name, element->function.name);
       if (element->next != NULL)
          printf("   else ");
@@ -741,7 +741,7 @@ var_entry_t variables[] = {
    {"nrx_thr_dir_t",        NULL, INPUT, "nrx_thr_dir_t %s;", "defines_str_32(&%s, argv);", "len=-1;", "%s", "printf(\"0x%%X\", %s);", "Integer/defines"},
    {"nrx_traffic_type_t",   NULL, INPUT, "nrx_traffic_type_t %s;", "defines_str_32(&%s, argv);", "len=-1;", "%s", "printf(\"0x%%X\", %s);", "Integer/defines"},
    {"nrx_job_flags_t",      NULL, INPUT, "nrx_job_flags_t %s;", "defines_str_32(&%s, argv);", "len=-1;", "%s", "printf(\"0x%%X\", %s);", "Integer/defines"},
-   {"nrx_antenna_t",        NULL, INPUT, "nrx_antenna_t %s;", "init_nrx_antenna_t(&%s, argv);", "len=-1;", "%s", "print_nrx_antenna_t(&%s);", "Antenna. Format: NRX_ANTENNA_1 or NRX_ANTENNA_2"},   
+   {"nrx_antenna_t",        NULL, INPUT, "nrx_antenna_t %s;", "init_nrx_antenna_t(&%s, argv);", "len=-1;", "%s", "print_nrx_antenna_t(&%s);", "Antenna. Format: NRX_ANTENNA_1 or NRX_ANTENNA_2"},
    {"nrx_sp_len_t",         NULL, INPUT, "nrx_sp_len_t %s;", "init_nrx_sp_len_t(&%s, argv);", "len=-1;", "%s", "print_nrx_sp_len_t(&%s);", "Scan period length. Format: NRX_SP_LEN_ALL, NRX_SP_LEN_2, NRX_SP_LEN_4, NRX_SP_LEN_6"},
    {"nrx_scan_dlv_pol_t",   NULL, INPUT, "nrx_scan_dlv_pol_t %s;", "init_nrx_scan_dlv_pol_t(&%s, argv);", "len=-1;", "%s", "print_nrx_scan_dlv_pol_t(&%s);", "Scan dlv pol. Format: NRX_SCAN_DLV_POL_FIRST or NRX_SCAN_DLV_POL_BEST"},
    {"nrx_scan_job_state_t", NULL, INPUT, "nrx_scan_job_state_t %s;", "init_nrx_scan_job_state_t(&%s, argv);", "len=-1;", "%s", "print_nrx_scan_job_state_t(&%s);", "Scan state. Format: NRX_SCAN_JOB_STATE_SUSPENDED or NRX_SCAN_JOB_STATE_RUNNING"},
@@ -759,16 +759,16 @@ var_entry_t *find_variable(const variable_t *var)
 {
    int v;
    for (v = 0; v < ELEMENTS_IN_VECTOR(variables); v++)
-      if (!strcmp(var->type, variables[v].type) && 
+      if (!strcmp(var->type, variables[v].type) &&
           (variables[v].name == NULL || !strcmp(var->name, variables[v].name)) )
          break;
-   if (v == ELEMENTS_IN_VECTOR(variables)) 
+   if (v == ELEMENTS_IN_VECTOR(variables))
       FATAL("Could not find variable type %s\n", var->type);
 
    return &variables[v];
 }
 
-int create_brief_function(const function_t *function) 
+int create_brief_function(const function_t *function)
 {
    printf("const char brief_%s[] = \"%s\";\n\n", function->name, function->brief);
 
@@ -780,10 +780,10 @@ int create_help_function(const function_t *function)
    int i;
    int has_input = 0, has_output = 0;
    var_entry_t *var;
-   
+
    printf("int help_%s()\n", function->name);
    printf("{\n");
-   
+
    // Overview of API
    if (function->help[0]) {
       const char *ch = function->help;
@@ -795,18 +795,18 @@ int create_help_function(const function_t *function)
             printf("\\");
          if (*ch == '%')
             printf("%%");
-         
+
          if (*ch == '\n')
             printf("\\n\");\n   printf(\"     ");
          else
             printf("%c", *ch);
-         
+
          ch++;
          if (*ch == '\0')
             printf("\\n\");\n");
       }
    }
-      
+
    // Usage stuff
    for (i = 0; i < function->var_count; i++) {
       if (find_variable(&function->variables[i])->direction == INPUT)
@@ -845,7 +845,7 @@ int create_help_function(const function_t *function)
    }
    printf("\n   return 0;\n"
           "}\n\n");
-   
+
    return 0;
 }
 
@@ -933,7 +933,7 @@ int create_test_function(const function_t *function)
                    "      FATAL(\"Too few inputs\\n\");\n");
             printf("   fwd = ");
          }
-         else 
+         else
             printf("   ");
          printf(var->initialization, function->variables[i].name);
          printf("\n");
@@ -966,7 +966,7 @@ int create_test_function(const function_t *function)
    }
    printf(");\n");
    if(ret_void) {
-   } else { 
+   } else {
       if(ret_handler) {
          printf("   if(ret == 0)\n");
       } else {
@@ -1034,7 +1034,7 @@ int create_all_test_functions()
 {
    function_list_t *element;
    int i;
-   
+
    for (element = list; element != NULL; element = element->next) {
       printf("\n"
              "/****************************************************************\n"
@@ -1084,7 +1084,7 @@ int create_all_stubs()
 {
    function_list_t *element;
    int i;
-   
+
    for (element = list; element != NULL; element = element->next) {
       create_stub(&element->function);
    }
@@ -1111,7 +1111,7 @@ int main(int argc, char *argv[])
       show_help();
       return 1;
    }
-   
+
    add_to_function_list(stdin);
 
    if (settings.dump_func)
@@ -1133,7 +1133,7 @@ int main(int argc, char *argv[])
       create_all_stubs();
 
    free_function_list();
-   
+
    return 0;
 
 }

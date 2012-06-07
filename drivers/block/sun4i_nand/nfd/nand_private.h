@@ -12,7 +12,7 @@ typedef struct
 {
 	__u8    mid;
 	__u32   used;
-	
+
 } __drv_nand_t;
 
 typedef struct
@@ -44,4 +44,3 @@ extern block_device_operations nand_dev_op;
 //extern __dev_devop_t nand_dev_op;
 
 #endif /*_NAND_PRIVATE_H_*/
-

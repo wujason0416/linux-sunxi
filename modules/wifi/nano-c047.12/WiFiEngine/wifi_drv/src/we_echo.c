@@ -45,7 +45,7 @@ This module implements the WiFiEngine echo function.
 /*!
  * @brief Prepare echo-request to target.
  *
- * See comment 'WiFiEngine_SendTargetEchoRequest' for complete 
+ * See comment 'WiFiEngine_SendTargetEchoRequest' for complete
  * comment
  */
 int WiFiEngine_SendTargetEchoRequest_Prepare(char * buffer, int size)
@@ -84,17 +84,17 @@ int WiFiEngine_SendTargetEchoRequest_Prepare(char * buffer, int size)
 
    if(!wei_request_resource_hic(RESOURCE_USER_DATA_PATH))
    {
-      DriverEnvironment_release_trylock(&wifiEngineState.send_lock);    
+      DriverEnvironment_release_trylock(&wifiEngineState.send_lock);
       // TODO: rewrite wei_request_resource_hic(...) to return reason for denial so it can be passed on
       return WIFI_ENGINE_FAILURE_PS;
    }
- 
+
    if(wifiEngineState.dataPathState == DATA_PATH_CLOSED)
    {
       wei_release_resource_hic(RESOURCE_USER_DATA_PATH);
-      DriverEnvironment_release_trylock(&wifiEngineState.send_lock);      
+      DriverEnvironment_release_trylock(&wifiEngineState.send_lock);
       return WIFI_ENGINE_FAILURE_DATA_PATH;
-   }   
+   }
 
    hdrMsgLength = size;
    HIC_MESSAGE_LENGTH_SET(buffer, hdrMsgLength);
@@ -130,13 +130,13 @@ int WiFiEngine_SendTargetEchoRequest_Prepare(char * buffer, int size)
 int WiFiEngine_SendTargetEchoRequest(char * buffer, int size)
 {
    int result;
-   
+
    result = WiFiEngine_SendTargetEchoRequest_Prepare(buffer, size);
    if(result != WIFI_ENGINE_SUCCESS)
    {
       return result;
-   }   
-      
+   }
+
    if(DriverEnvironment_HIC_Send(buffer,size) != DRIVERENVIRONMENT_SUCCESS)
    {
       return WIFI_ENGINE_FAILURE_DATA_PATH;

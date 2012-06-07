@@ -112,7 +112,7 @@ int synchronous_ConfigureScan(struct net_device *dev,
                               uint32_t max_as_scan_period,
                               uint8_t  period_repetition)
 {
-   FUNCTION_BODY(WiFiEngine_ConfigureScan, 
+   FUNCTION_BODY(WiFiEngine_ConfigureScan,
                  preamble,
                  rate,
                  probes_per_ch,
@@ -196,11 +196,11 @@ int synchronous_RemoveScanJob(struct net_device *dev,
 
 
 int synchronous_SetScanJobState(struct net_device *dev,
-                                int32_t sj_id, 
+                                int32_t sj_id,
                                 uint8_t state)
 {
    FUNCTION_BODY(WiFiEngine_SetScanJobState,
-                 sj_id, 
+                 sj_id,
                  state,
                  cbc);
 }

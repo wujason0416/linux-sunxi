@@ -71,7 +71,7 @@ int WiFiEngine_ActivateRegionChannels(void)
 
    rBasicWiFiProperties*   basic;
 
-   basic   = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic); 
+   basic   = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
 
    status = WiFiEngine_GetRegionalChannels(&channels);
    if(status != WIFI_ENGINE_SUCCESS)
@@ -88,7 +88,7 @@ int WiFiEngine_ActivateRegionChannels(void)
    cie = (m80211_ie_country_t *)WrapperAllocStructure(NULL, sizeof(*cie));
    if(cie == NULL)
       return WIFI_ENGINE_FAILURE_RESOURCES;
-   cie->channel_info = (m80211_country_channels_t *)WrapperAttachStructure(cie, 
+   cie->channel_info = (m80211_country_channels_t *)WrapperAttachStructure(cie,
                                               tcount * sizeof(*cie->channel_info));
    if(cie->channel_info == NULL) {
       WrapperFreeStructure(cie);
@@ -166,7 +166,7 @@ int WiFiEngine_isCoredumpEnabled(void)
 
 /*!
  * @brief Informs firmware the the initi sequence is complete.
- *      
+ *
  *
  * @param void
  *
@@ -177,11 +177,11 @@ void WiFiEngine_Init_Complete(void)
 {
    if (Mlme_Send(Mlme_CreateInitCompleteReq, 0, wei_send_cmd))
    {
-      DE_TRACE_STATIC(TR_SM, "Sending HIC_CTRL_INIT_COMPLETED_REQ\n");            
+      DE_TRACE_STATIC(TR_SM, "Sending HIC_CTRL_INIT_COMPLETED_REQ\n");
    }
-   else 
+   else
    {
-      DE_TRACE_STATIC(TR_SM, "Failed to create HIC_CTRL_INIT_COMPLETED_REQ)\n");              
+      DE_TRACE_STATIC(TR_SM, "Failed to create HIC_CTRL_INIT_COMPLETED_REQ)\n");
       DE_BUG_ON(1, "Mlme_CreateSleepForeverReq() failed in WiFiEngine_SoftShutdown()\n");
    }
 
@@ -203,7 +203,7 @@ int WiFiEngine_SetHmgMode(WiFiEngine_HmgMode_t mode)
    properties = (rHostDriverProperties *)Registry_GetProperty(ID_hostDriver);
 
    properties->hmgAutoMode = mode;
-           
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -227,7 +227,7 @@ int WiFiEngine_SetLvl1AdaptiveTxRate(uint8_t mode)
 }
 
 /*!
- * @brief Set the power save traffic timeout. 
+ * @brief Set the power save traffic timeout.
  *
  * This is the time after which the target should go to sleep if no
  * traffic has been received.
@@ -239,7 +239,7 @@ int WiFiEngine_SetLvl1AdaptiveTxRate(uint8_t mode)
 int WiFiEngine_SetPSTrafficTimeout(uint32_t timeout)
 {
    rPowerManagementProperties *power;
-   
+
    REGISTRY_WLOCK();
 
    power = (rPowerManagementProperties *)Registry_GetProperty(ID_powerManagement);
@@ -247,7 +247,7 @@ int WiFiEngine_SetPSTrafficTimeout(uint32_t timeout)
 
    power->psTrafficTimeout = timeout;
    REGISTRY_WUNLOCK();
-   
+
    if ( WiFiEngine_SendMIBSet(MIB_dot11PSTrafficTimeout,
                          NULL, (char *)&timeout, sizeof timeout)
         == WIFI_ENGINE_SUCCESS)
@@ -259,7 +259,7 @@ int WiFiEngine_SetPSTrafficTimeout(uint32_t timeout)
 }
 
 /*!
- * @brief Set the wmm power save period. 
+ * @brief Set the wmm power save period.
  *
  * This is the time after which the target should go to sleep if no
  * traffic has been received.
@@ -271,7 +271,7 @@ int WiFiEngine_SetPSTrafficTimeout(uint32_t timeout)
 int WiFiEngine_SetPSWMMPeriod(uint32_t timeout)
 {
    rBasicWiFiProperties*   basic;
-   
+
    REGISTRY_WLOCK();
 
    basic   = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
@@ -279,7 +279,7 @@ int WiFiEngine_SetPSWMMPeriod(uint32_t timeout)
 
    basic->wmmPsPeriod = timeout;
    REGISTRY_WUNLOCK();
-   
+
    if ( WiFiEngine_SendMIBSet(MIB_dot11PSWMMPeriod,
                          NULL, (char *)&timeout, sizeof timeout)
         == WIFI_ENGINE_SUCCESS)
@@ -293,7 +293,7 @@ int WiFiEngine_SetPSWMMPeriod(uint32_t timeout)
 
 
 /*!
- * @brief Set the pspoll power save period. 
+ * @brief Set the pspoll power save period.
  *
  * This is the time after which the target should go to sleep if no
  * traffic has been received.
@@ -304,7 +304,7 @@ int WiFiEngine_SetPSWMMPeriod(uint32_t timeout)
  */
 int WiFiEngine_SetPSPollPeriod(uint32_t timeout)
 {;
-   
+
    if ( WiFiEngine_SendMIBSet(MIB_dot11PSPollPeriod,
                          NULL, (char *)&timeout, sizeof timeout)
         == WIFI_ENGINE_SUCCESS)
@@ -317,7 +317,7 @@ int WiFiEngine_SetPSPollPeriod(uint32_t timeout)
 }
 
 /*!
- * @brief Set the listen interval, used in power save. 
+ * @brief Set the listen interval, used in power save.
  *
  * This is the time after which the target should go to sleep if no
  * traffic has been received.
@@ -328,7 +328,7 @@ int WiFiEngine_SetPSPollPeriod(uint32_t timeout)
  */
 int WiFiEngine_SetMibListenInterval(uint16_t interval)
 {
-   
+
    if ( WiFiEngine_SendMIBSet(MIB_dot11ListenInterval,
                          NULL, (char *)&interval, sizeof interval)
         == WIFI_ENGINE_SUCCESS)
@@ -341,7 +341,7 @@ int WiFiEngine_SetMibListenInterval(uint16_t interval)
 }
 
 /*!
- * @brief Set the receive all dtim flag, used in power save. 
+ * @brief Set the receive all dtim flag, used in power save.
  *
  * This is the time after which the target should go to sleep if no
  * traffic has been received.
@@ -352,7 +352,7 @@ int WiFiEngine_SetMibListenInterval(uint16_t interval)
  */
 int WiFiEngine_SetReceiveAllDTIM(bool_t all_dtim)
 {
-   
+
    if ( WiFiEngine_SendMIBSet(MIB_dot11ReceiveAllDTIM,
                          NULL, (char *)&all_dtim, sizeof all_dtim)
         == WIFI_ENGINE_SUCCESS)
@@ -365,18 +365,18 @@ int WiFiEngine_SetReceiveAllDTIM(bool_t all_dtim)
 }
 
 /*!
- * @brief Set the use pspoll flag, used in power save. 
+ * @brief Set the use pspoll flag, used in power save.
  *
  * This is the time after which the target should go to sleep if no
  * traffic has been received.
  *
- * @param use_ps_poll, TRUE if powersave pspoll shall be used 
+ * @param use_ps_poll, TRUE if powersave pspoll shall be used
  *
  * @return Always returns WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_SetUsePsPoll(bool_t use_ps_poll)
 {
-   
+
    if ( WiFiEngine_SendMIBSet(MIB_dot11UsePSPoll,
                          NULL, (char *)&use_ps_poll, sizeof use_ps_poll)
         == WIFI_ENGINE_SUCCESS)
@@ -388,10 +388,10 @@ int WiFiEngine_SetUsePsPoll(bool_t use_ps_poll)
 
 }
 
-   
+
 
 /*!
- * @brief Sets a flag that enables or disables beacon skipping. 
+ * @brief Sets a flag that enables or disables beacon skipping.
  *.
  *
  * @param skip (0=disable, 1=enable)
@@ -399,7 +399,7 @@ int WiFiEngine_SetUsePsPoll(bool_t use_ps_poll)
  * @return Always returns WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_SetDtimBeaconSkipping(uint32_t skip)
-{  
+{
    if ( WiFiEngine_SendMIBSet(MIB_dot11dtimBeaconSkipping,
                          NULL, (char *)&skip, sizeof skip)
         == WIFI_ENGINE_SUCCESS)
@@ -425,12 +425,12 @@ int WiFiEngine_SetDtimBeaconSkipping(uint32_t skip)
  *         otherwise WIFI_ENGINE_FAILURE
  */
 int WiFiEngine_LinksupervisionTimeout(uint32_t link_to, uint32_t null_to)
-{  
+{
    uint32_t timeouts[2];
 
    timeouts[0] = link_to*1000;
-   timeouts[1] = null_to*1000;  
-   
+   timeouts[1] = null_to*1000;
+
    if ( WiFiEngine_SendMIBSet(MIB_dot11LinksupervisionTimeout,
                          NULL, (char *)&timeouts, sizeof timeouts)
         == WIFI_ENGINE_SUCCESS)
@@ -454,7 +454,7 @@ int WiFiEngine_LinksupervisionTimeout(uint32_t link_to, uint32_t null_to)
  *         otherwise WIFI_ENGINE_FAILURE
  */
 int WiFiEngine_SetCompatibilityMask(uint16_t capability)
-{  
+{
    if ( WiFiEngine_SendMIBSet(MIB_dot11compatibilityMask,
                          NULL, (char *)&capability, sizeof capability)
         == WIFI_ENGINE_SUCCESS)
@@ -477,7 +477,7 @@ int WiFiEngine_SetCompatibilityMask(uint16_t capability)
 int WiFiEngine_SetListenInterval(uint16_t interval)
 {
    rPowerManagementProperties *power;
-   
+
    REGISTRY_WLOCK();
 
    power = (rPowerManagementProperties *)Registry_GetProperty(ID_powerManagement);
@@ -501,7 +501,7 @@ int WiFiEngine_SetListenInterval(uint16_t interval)
 int WiFiEngine_GetListenInterval(uint16_t *interval)
 {
    rPowerManagementProperties *power;
-   
+
    REGISTRY_RLOCK();
    power = (rPowerManagementProperties *)Registry_GetProperty(ID_powerManagement);
    DE_ASSERT(power != NULL);
@@ -522,7 +522,7 @@ int WiFiEngine_GetListenInterval(uint16_t *interval)
 int WiFiEngine_GetDelayStartOfPs(uint16_t *delay)
 {
    rPowerManagementProperties *power;
-   
+
    REGISTRY_RLOCK();
    power = (rPowerManagementProperties *)Registry_GetProperty(ID_powerManagement);
    DE_ASSERT(power != NULL);
@@ -540,14 +540,14 @@ int WiFiEngine_GetDelayStartOfPs(uint16_t *delay)
 int WiFiEngine_SetReceiveDTIM(unsigned int enabled)
 {
    rPowerManagementProperties *power;
-   
+
    REGISTRY_WLOCK();
 
    power = (rPowerManagementProperties *)Registry_GetProperty(ID_powerManagement);
    DE_ASSERT(power != NULL);
 
    power->receiveAll_DTIM = enabled;
-   REGISTRY_WUNLOCK(); 
+   REGISTRY_WUNLOCK();
 
    return WIFI_ENGINE_SUCCESS;
 }
@@ -608,22 +608,22 @@ int WiFiEngine_EnableLinkSupervision(int enable)
 {
    uint8_t flag;
    rBasicWiFiProperties *basic;
-   
+
    flag = (uint8_t)enable;
-   
+
    REGISTRY_WLOCK();
    basic = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
    DE_ASSERT(basic != NULL);
    basic->linkSupervision.enable = flag;
    REGISTRY_WUNLOCK();
-   
+
    if (WiFiEngine_SendMIBSet(MIB_dot11LinkMonitoring,
                              NULL, (char *)&flag, sizeof(flag))
        != WIFI_ENGINE_SUCCESS)
    {
       return WIFI_ENGINE_FAILURE;
    }
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -640,7 +640,7 @@ int WiFiEngine_EnableLinkSupervision(int enable)
  * before deauthentication.
  *
  * @param beacons Minimum number of missed beacons before firmware
- *        will assume link is terminated. 0 will disable this 
+ *        will assume link is terminated. 0 will disable this
  *        criteria.
  *
  * @return WIFI_ENGINE_SUCCESS on success,
@@ -650,9 +650,9 @@ int WiFiEngine_SetLinkSupervisionBeaconFailCount(unsigned int beacons)
 {
    uint32_t xu32;
    rBasicWiFiProperties *basic;
-   
+
    xu32=beacons;
-   
+
    REGISTRY_WLOCK();
    basic = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
    DE_ASSERT(basic != NULL);
@@ -682,7 +682,7 @@ int WiFiEngine_SetLinkSupervisionBeaconFailCount(unsigned int beacons)
  * before deauthentication.
  *
  * @param beacons Minimum number of missed beacons before firmware
- *        will assume link is terminated. 0 will disable this 
+ *        will assume link is terminated. 0 will disable this
  *        criteria.
  *
  * @return WIFI_ENGINE_SUCCESS on success,
@@ -693,9 +693,9 @@ int WiFiEngine_SetLinkSupervisionBeaconWarningCount(unsigned int beacons)
 #if 0 /* has been depricated in fw */
    uint32_t xu32;
    rBasicWiFiProperties *basic;
-   
+
    xu32=beacons;
-   
+
    REGISTRY_WLOCK();
    basic = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
    DE_ASSERT(basic != NULL);
@@ -722,7 +722,7 @@ int WiFiEngine_SetLinkSupervisionBeaconWarningCount(unsigned int beacons)
  *
  * Sets the minimum time since last heard beacon that should have
  * elapsed before link monitoring will generate a deauthentication
- * indication. 
+ * indication.
  *
  * Link monitoring must be enabled in firmware for this function to
  * have an effect. Both the criteria of this function and
@@ -835,9 +835,9 @@ int WiFiEngine_SetLinkSupervisionTxFailureCount(unsigned int count)
  * the link will be determined faulty.
  *
  * @param roundtrip_fail_limit Should no reply have been received
- *        after this number of transmitted messages, the link is 
+ *        after this number of transmitted messages, the link is
  *        determined faulty. 0 will disable the roundtrip feature.
- * 
+ *
  * @return
  *  - WIFI_ENGINE_SUCCESS on success,
  *  - WIFI_ENGINE_FAILURE on failure.
@@ -879,7 +879,7 @@ int WiFiEngine_SetLinkSupervisionRoundtripCount(unsigned int count)
  *        feature inject its own packets to the recently connected
  *        AP. Each interval is at least 100 ms and could be
  *        considerably longer in power save mode. Should this be set
- *        to 0, there will be no silent period and, thereby, packets 
+ *        to 0, there will be no silent period and, thereby, packets
  *        are injected immediately after an AP is connected. Should
  *        this be 0xffffffff, the feature will work in passive mode
  *        only and not inject any packets of its own.
@@ -916,12 +916,12 @@ int WiFiEngine_SetLinkSupervisionRoundtripSilent(unsigned int intervals)
  * @brief Set the msg size alignment for lower-level drivers.
  *
  * The target will pad messages in the RX direction so that they are
- * always at least min_size bytes long and always an even multiple of 
+ * always at least min_size bytes long and always an even multiple of
  * size_alignment bytes. This call will configure the device with the
  * new settings if the hardware is present (WiFiEngine_Plug() has been called).
  * Otherwise it will just change driver settings, these will be set in
  * the device when WiFiEngine_Plug() is called.
- * @param min_size Minimum packet size (in bytes). All messages from the device 
+ * @param min_size Minimum packet size (in bytes). All messages from the device
  *        will be at least this long.
  * @param size_alignment Message size alignment. All messages will have a size
  *        that's an even multiple of this number.
@@ -938,7 +938,7 @@ int WiFiEngine_SetLinkSupervisionRoundtripSilent(unsigned int intervals)
  *        (SDIO interrupt). If the value is HIC_CTRL_HOST_ATTENTION_GPIO there is two
  *        different GPIO-pins to use for interrupt:
  *
- *         ! fpga version ! chip type     ! GPIO     ! host attention  
+ *         ! fpga version ! chip type     ! GPIO     ! host attention
  *         -------------------------------------------------------------
  *         !   any        ! chip on board ! default  !  0x00
  *         -------------------------------------------------------------
@@ -949,18 +949,18 @@ int WiFiEngine_SetLinkSupervisionRoundtripSilent(unsigned int intervals)
  *         !   R5>=A      ! chip on board ! SDIO DAT2! 0x62
  *         -------------------------------------------------------------
  *         *) Always zero in older fpga
- * @param byte_swap_mode Enable or disable byte swapping. To use 16 bit SPI transfer swapping must be 
+ * @param byte_swap_mode Enable or disable byte swapping. To use 16 bit SPI transfer swapping must be
  *        enabled.possible values are:
  *        HIC_CTRL_ALIGN_SWAP_NO_BYTESWAP    (0x00) disables byte swapping
  *        HIC_CTRL_ALIGN_SWAP_16BIT_BYTESWAP (0x00) enables byte swapping
  * @param host_wakeup Set host wakeup interrupt pin, set to 0xFF to disable host wakeup
  * @param force_interval Force an minimum interval between HIC messages from target [unit 1/10th msec]
- *                                                 
- * @return 
+ *
+ * @return
  * - WIFI_ENGINE_SUCCESS
  * - WIFI_ENGINE_FAILURE_INVALID_DATA if the rx_hdr_size was too small.
  */
-int WiFiEngine_SetMsgSizeAlignment(uint16_t min_size, 
+int WiFiEngine_SetMsgSizeAlignment(uint16_t min_size,
                                    uint16_t size_alignment,
                                    uint8_t rx_hdr_size,
                                    uint8_t tx_hdr_size,
@@ -978,7 +978,7 @@ int WiFiEngine_SetMsgSizeAlignment(uint16_t min_size,
    /* Make sure that the size alignemnt is a power-of-two */
    DE_ASSERT((wifiEngineState.config.pdu_size_alignment &
               (wifiEngineState.config.pdu_size_alignment - 1)) == 0);
-   
+
    wifiEngineState.config.min_pdu_size       = min_size;
    wifiEngineState.config.pdu_size_alignment = size_alignment;
    wifiEngineState.config.byte_swap_mode     = byte_swap_mode;
@@ -999,18 +999,18 @@ int WiFiEngine_SetMsgSizeAlignment(uint16_t min_size,
          (wifiEngineState.fpga_version[1] == '4') &&
          (wifiEngineState.fpga_version[2] >= 'B'))
       {
-         /* If using module and fpga has a revision string 
-            equal to or greater than R4B use extended GPIO1 
+         /* If using module and fpga has a revision string
+            equal to or greater than R4B use extended GPIO1
             pin for interrupt */
          wifiEngineState.config.host_attention = HIC_CTRL_ALIGN_HATTN_VAL_POLICY_GPIO;
          wifiEngineState.config.host_attention |= HIC_CTRL_ALIGN_HATTN_VAL_OVERRIDE_DEFAULT_PARAM;
-         wifiEngineState.config.host_attention |= HIC_CTRL_ALIGN_HATTN_VAL_GPIOPARAMS_GPIO_TYPE_EXT; 
+         wifiEngineState.config.host_attention |= HIC_CTRL_ALIGN_HATTN_VAL_GPIOPARAMS_GPIO_TYPE_EXT;
          wifiEngineState.config.host_attention |= (1 << HIC_CTRL_ALIGN_HATTN_OFFSET_GPIOPARAMS_GPIO_ID);
       }
       else if(wifiEngineState.chip_type == WE_USE_HTOL)
       {
          wifiEngineState.config.host_attention = HIC_CTRL_ALIGN_HATTN_VAL_POLICY_NATIVE_SDIO;
-      }      
+      }
       else if((wifiEngineState.fpga_version[1] == '8') &&
               (wifiEngineState.fpga_version[2] >= 'A'))
       {
@@ -1022,11 +1022,11 @@ int WiFiEngine_SetMsgSizeAlignment(uint16_t min_size,
       {
          /* Use native sdio interrupt */
          wifiEngineState.config.host_attention = HIC_CTRL_ALIGN_HATTN_VAL_POLICY_NATIVE_SDIO;
-      }      
+      }
       else
       {
-         /* Use default GPIO-pin use normal pin for interrupt */ 
-         wifiEngineState.config.host_attention = host_attention;         
+         /* Use default GPIO-pin use normal pin for interrupt */
+         wifiEngineState.config.host_attention = host_attention;
       }
    }
    /* Data rx hdr size includes HIC header */
@@ -1065,7 +1065,7 @@ int WiFiEngine_SetMsgSizeAlignment(uint16_t min_size,
  * After this call all messages indicated by the device will
  * be padded accordingly.
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS, on success
  * - WIFI_ENGINE_FAILURE, otherwise
  */
@@ -1078,7 +1078,7 @@ int WiFiEngine_CommitPDUSizeAlignment(void)
 
    wifiEngineState.config.tx_window_size = wifiEngineState.txPktWindowMax;
 
-   if (Mlme_CreateSetAlignmentReq(&msg_ref, wifiEngineState.config.min_pdu_size, 
+   if (Mlme_CreateSetAlignmentReq(&msg_ref, wifiEngineState.config.min_pdu_size,
                                   wifiEngineState.config.pdu_size_alignment,
                                   wifiEngineState.config.rx_hic_hdr_size,
                                   0, /* trans_id */
@@ -1089,7 +1089,7 @@ int WiFiEngine_CommitPDUSizeAlignment(void)
                                   wifiEngineState.config.tx_window_size))
    {
       DE_TRACE6(TR_WEI,"Sending SetAlignmentReq: min_size %d, size_alignment %d, rx_size %d, att %d, swap %d\n",
-                wifiEngineState.config.min_pdu_size, 
+                wifiEngineState.config.min_pdu_size,
                 wifiEngineState.config.pdu_size_alignment,
                 wifiEngineState.config.rx_hic_hdr_size,
                 wifiEngineState.config.host_attention,
@@ -1100,10 +1100,10 @@ int WiFiEngine_CommitPDUSizeAlignment(void)
                 wifiEngineState.config.tx_window_size);
       status = wei_send_cmd(&msg_ref);
       Mlme_ReleaseMessageContext(msg_ref);
-      if (status != WIFI_ENGINE_SUCCESS) 
-      { 
-         return WIFI_ENGINE_FAILURE; 
-      } 
+      if (status != WIFI_ENGINE_SUCCESS)
+      {
+         return WIFI_ENGINE_FAILURE;
+      }
    }
    else
    {
@@ -1111,7 +1111,7 @@ int WiFiEngine_CommitPDUSizeAlignment(void)
       Mlme_ReleaseMessageContext(msg_ref);
       return WIFI_ENGINE_FAILURE;
    }
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -1137,7 +1137,7 @@ int WiFiEngine_CommitPDUSizeAlignmentAsynch(we_cb_container_t *cbc)
 
    Mlme_CreateMessageContext(msg_ref);
 
-   if (Mlme_CreateSetAlignmentReq(&msg_ref, wifiEngineState.config.min_pdu_size, 
+   if (Mlme_CreateSetAlignmentReq(&msg_ref, wifiEngineState.config.min_pdu_size,
                                   wifiEngineState.config.pdu_size_alignment,
                                   0, /* trans_id */
                                   HIC_CTRL_HOST_ATTENTION_SDIO))
@@ -1146,17 +1146,17 @@ int WiFiEngine_CommitPDUSizeAlignmentAsynch(we_cb_container_t *cbc)
                wifiEngineState.config.min_pdu_size, wifiEngineState.config.pdu_size_alignment);
       status = wei_send_cmd(&msg_ref);
       Mlme_ReleaseMessageContext(msg_ref);
-      if (status != WIFI_ENGINE_SUCCESS) 
-      { 
-         return WIFI_ENGINE_FAILURE; 
-      } 
+      if (status != WIFI_ENGINE_SUCCESS)
+      {
+         return WIFI_ENGINE_FAILURE;
+      }
    }
    else
    {
       DE_TRACE("Failed to create alignment request\n");
       Mlme_ReleaseMessageContext(msg_ref);
    }
-#endif   
+#endif
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -1164,8 +1164,8 @@ int WiFiEngine_CommitPDUSizeAlignmentAsynch(we_cb_container_t *cbc)
  * Get a release info string for the driver.
  *
  * @param dst Output buffer. The string is NUL-terminated.
- * @param len Size of the output buffer. 
- * @return 
+ * @param len Size of the output buffer.
+ * @return
  * - WIFI_ENGINE_SUCCESS on success.
  * - WIFI_ENGINE_FAILURE_INVALID_LENGTH if dst was too short.
  */
@@ -1190,8 +1190,8 @@ int WiFiEngine_GetReleaseInfo(char *dst, size_t len)
  * Get a release info string for the firmware.
  *
  * @param dst Output buffer. The string is NUL-terminated.
- * @param len Size of the output buffer. 
- * @return 
+ * @param len Size of the output buffer.
+ * @return
  * - WIFI_ENGINE_SUCCESS on success.
  * - WIFI_ENGINE_FAILURE_INVALID_LENGTH if dst was too short.
  */
@@ -1227,7 +1227,7 @@ int WiFiEngine_GetReadHistory(char *outbuf, int offset, size_t *outlen)
 int WiFiEngine_SetMultiDomainCapability(uint8_t mode)
 {
    rBasicWiFiProperties *basic;
-   
+
    REGISTRY_WLOCK();
 
    basic = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
@@ -1235,7 +1235,7 @@ int WiFiEngine_SetMultiDomainCapability(uint8_t mode)
 
    basic->multiDomainCapabilityEnabled = mode;
    REGISTRY_WUNLOCK();
-   
+
    if ( WiFiEngine_SendMIBSet(MIB_dot11MultiDomainCapabilityEnabled,
                          NULL, (char *)&mode, sizeof mode)
         == WIFI_ENGINE_SUCCESS)
@@ -1276,40 +1276,40 @@ int WiFiEngine_SetBackgroundScanMode(uint8_t mode)
  * @param ssid Pointer to a SSID for which to scan. This can be NULL, in which case
  *             the background scan will only probe for the SSID with which we're
  *             currently associated.
- * @return 
- * - WIFI_ENGINE_SUCCESS on success. 
+ * @return
+ * - WIFI_ENGINE_SUCCESS on success.
  * - WIFI_ENGINE_FAILURE otherwise.
  */
 int WiFiEngine_ConfigureBackgroundScan(uint16_t scan_period, uint16_t probe_delay,
                                        uint16_t min_channel_time, uint16_t max_channel_time,
-                                       uint8_t *channel_list, int channel_list_len, 
+                                       uint8_t *channel_list, int channel_list_len,
                                        m80211_ie_ssid_t *ssid)
 {
    uint32_t                flag;
-   
+
    if (WiFiEngine_SendMIBSet(MIB_dot11backgroundScanPeriod,
-                             NULL, (char *)&scan_period, 
+                             NULL, (char *)&scan_period,
                              sizeof scan_period)
         != WIFI_ENGINE_SUCCESS)
    {
       return WIFI_ENGINE_FAILURE;
    }
    if ( WiFiEngine_SendMIBSet(MIB_dot11backgroundScanProbeDelay,
-                              NULL, (char *)&probe_delay, 
+                              NULL, (char *)&probe_delay,
                               sizeof probe_delay)
         != WIFI_ENGINE_SUCCESS)
    {
       return WIFI_ENGINE_FAILURE;
    }
    if ( WiFiEngine_SendMIBSet(MIB_dot11backgroundScanMinChannelTime,
-                              NULL, (char *)&min_channel_time, 
+                              NULL, (char *)&min_channel_time,
                               sizeof min_channel_time)
         != WIFI_ENGINE_SUCCESS)
    {
       return WIFI_ENGINE_FAILURE;
    }
    if ( WiFiEngine_SendMIBSet(MIB_dot11backgroundScanMaxChannelTime,
-                              NULL, (char *)&max_channel_time, 
+                              NULL, (char *)&max_channel_time,
                               sizeof max_channel_time)
         != WIFI_ENGINE_SUCCESS)
    {
@@ -1349,10 +1349,10 @@ int WiFiEngine_ConfigureBackgroundScan(uint16_t scan_period, uint16_t probe_dela
  * associated net will be assumed (if present).
  *
  * @param dst Output buffer.
- * @param len IN : Pointer to the length of the output buffer. OUT : 
+ * @param len IN : Pointer to the length of the output buffer. OUT :
  *  bytes used of the output buffer, or the length needed if
  *  the buffer was too short (returns WIFI_ENGINE_FAILURE_INVALID_LENGTH).
- * @param ssid The SSID for the network. When this parameter is NULL 
+ * @param ssid The SSID for the network. When this parameter is NULL
  *  the network will be selected only on BSSID.
  * @param bssid The BSSID for the network. When this parameter is
  *  NULL the network will be selected only on SSID.
@@ -1361,7 +1361,7 @@ int WiFiEngine_ConfigureBackgroundScan(uint16_t scan_period, uint16_t probe_dela
  * - WIFI_ENGINE_FAILURE_INVALID_LENGTH if the input buffer was too small
  * - WIFI_ENGINE_FAILURE_NOT_ACCEPTED if no matching net was found
  */
-int WiFiEngine_GetNetIEs(char *dst, size_t *len, m80211_ie_ssid_t *ssid, 
+int WiFiEngine_GetNetIEs(char *dst, size_t *len, m80211_ie_ssid_t *ssid,
                             m80211_mac_addr_t *bssid)
 {
    WiFiEngine_net_t *net = NULL;
@@ -1386,7 +1386,7 @@ int WiFiEngine_GetNetIEs(char *dst, size_t *len, m80211_ie_ssid_t *ssid,
       {
          return WIFI_ENGINE_FAILURE_NOT_ACCEPTED;
       }
-   }   
+   }
    if (NULL == net && ssid)
    {
       net = wei_netlist_get_net_by_ssid(*ssid);
@@ -1425,7 +1425,7 @@ int WiFiEngine_ConfigUDPBroadcastFilter(uint32_t bitmask)
 
 /*!
  * @brief Enable/disable Bluetooth coexistence.
- * 
+ *
  * @param enable True enables and false disables BT co-existence.
  *
  * @return WIFI_ENGINE_SUCCESS or WIFI_ENGINE_FAILURE on failure.
@@ -1434,7 +1434,7 @@ int WiFiEngine_EnableBTCoex(bool_t enable)
 {
    rBasicWiFiProperties *basic;
    uint8_t en8 = enable;
-   
+
    REGISTRY_WLOCK();
 
    basic = (rBasicWiFiProperties*)Registry_GetProperty(ID_basic);
@@ -1442,7 +1442,7 @@ int WiFiEngine_EnableBTCoex(bool_t enable)
 
    basic->enableBTCoex = enable;
    REGISTRY_WUNLOCK();
-   
+
    if ( WiFiEngine_SendMIBSet(MIB_dot11btCoexEnabled,
                          NULL, (char *)&en8, sizeof en8)
         == WIFI_ENGINE_SUCCESS)
@@ -1455,14 +1455,14 @@ int WiFiEngine_EnableBTCoex(bool_t enable)
 
 
 /*!
- * @brief Configures BT coexistence 
+ * @brief Configures BT coexistence
  *
  * @param bt_vendor Vendor of Bluetooth hardware
- *                   - 0x00 = CSR, 
- *                   - 0x01 = Broadcom, 
- *                   - 0x02 = STMicroelectronics, 
+ *                   - 0x00 = CSR,
+ *                   - 0x01 = Broadcom,
+ *                   - 0x02 = STMicroelectronics,
  *                   - 0x03-0xFF = RESERVED
- * @param pta_mode  Vendor specific definition of PTA interface. 
+ * @param pta_mode  Vendor specific definition of PTA interface.
  *                  Settings CSR:
  *                   - 0x00 = 2-wire scheme
  *                   - 0x01 = 3-wire scheme
@@ -1472,10 +1472,10 @@ int WiFiEngine_EnableBTCoex(bool_t enable)
  *                  Settings STMicroelectronics:
  *                   - 0x00 = 3-wire scheme
  *                   - 0x01 = 4-wire scheme
- * @param pta_def  Vector with max five bytes, where for each byte bit 0..3 in each 
- *                  nibble specifies gpio_coex_pin id, and bit 4 defines active logic 
- *                  level. For each PTA interface wire from Bluetooth, specify which 
- *                  gpio_coex_pin id (0 to 4) the wire is connected to and its 
+ * @param pta_def  Vector with max five bytes, where for each byte bit 0..3 in each
+ *                  nibble specifies gpio_coex_pin id, and bit 4 defines active logic
+ *                  level. For each PTA interface wire from Bluetooth, specify which
+ *                  gpio_coex_pin id (0 to 4) the wire is connected to and its
  *                  active logic level (0="Low", 1="High").
  *                  For CSR 2-wire scheme specify wires in the following order:
  *                   - BT_Priority
@@ -1506,17 +1506,17 @@ int WiFiEngine_EnableBTCoex(bool_t enable)
  *                   - Status
  *                   - Freq
  * @param len Length of pta_def vector.
- * @param antenna_dual  0=Single, 1=Dual. 
+ * @param antenna_dual  0=Single, 1=Dual.
  * @param antenna_sel0  0=Don't use AntSel0, 1=Use AntSel0.
  * @param antenna_sel1  0=Don't use AntSel1, 1=Use AntSel1.
- * @param antenna_level0 Logical level for AntSel0 in position BT, 0="Low", 1="High". 
- * @param antenna_level1 Logical level for AntSel1 in position BT, 0="Low", 1="High". 
+ * @param antenna_level0 Logical level for AntSel0 in position BT, 0="Low", 1="High".
+ * @param antenna_level1 Logical level for AntSel1 in position BT, 0="Low", 1="High".
  *
  * @return WIFI_ENGINE_SUCCESS or WIFI_ENGINE_FAILURE on failure.
  */
-int WiFiEngine_ConfigBTCoex(uint8_t bt_vendor,  
-                            uint8_t pta_mode, 
-                            uint8_t *pta_def, 
+int WiFiEngine_ConfigBTCoex(uint8_t bt_vendor,
+                            uint8_t pta_mode,
+                            uint8_t *pta_def,
                             int len,
                             uint8_t antenna_dual,
                             uint8_t antenna_sel0,
@@ -1572,7 +1572,7 @@ int WiFiEngine_ConfigBTCoex(uint8_t bt_vendor,
 /*!
  * @brief Set antenna diversity mode.
  *
- * @param antenna_mode Diversity mode: 
+ * @param antenna_mode Diversity mode:
  *        0: use default setting (currently antenna #1)
  *        1: use antenna #1
  *        2: use antenna #2
@@ -1587,15 +1587,15 @@ int WiFiEngine_SetAntennaDiversityMode(uint32_t antenna_mode, int32_t rssi_thres
    if (antenna_mode < 1 || antenna_mode > 3)    /* Sanity check */
       return WIFI_ENGINE_FAILURE;
 
-   if ( WiFiEngine_SendMIBSet(MIB_dot11diversityAntennaMask, 
+   if ( WiFiEngine_SendMIBSet(MIB_dot11diversityAntennaMask,
                               NULL, (char *)&antenna_mode, sizeof antenna_mode)
         != WIFI_ENGINE_SUCCESS)
       return WIFI_ENGINE_FAILURE;
 
-   if (antenna_mode == 3) 
-      if ( WiFiEngine_SendMIBSet(MIB_dot11diversityRssiThreshold, 
+   if (antenna_mode == 3)
+      if ( WiFiEngine_SendMIBSet(MIB_dot11diversityRssiThreshold,
                                  NULL, (char *)&rssi_threshold, sizeof rssi_threshold)
-           != WIFI_ENGINE_SUCCESS) 
+           != WIFI_ENGINE_SUCCESS)
          return WIFI_ENGINE_FAILURE;
 
    return WIFI_ENGINE_SUCCESS;
@@ -1618,7 +1618,7 @@ int WiFiEngine_IsAssocWMM(void)
 
 /*!@
  * @brief Set the TX packet window size.
- * 
+ *
  * The TX pkt window controls how many data packets may be simultaneously
  * outstanding to the device. When win_size number of packets have been
  * transmitted to the device no further packets will be transmitted until
@@ -1626,7 +1626,7 @@ int WiFiEngine_IsAssocWMM(void)
  *
  * @param win_size The size (in packets) of the TX packet window.
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS on success.
  * - WIFI_ENGINE_FAILURE_INVALID_DATA if the window size was invalid.
  */
@@ -1644,10 +1644,10 @@ int WiFiEngine_SetTxPktWindow(uint8_t win_size)
 
 /*!@
  * @brief Check TX packet window status.
- * 
+ *
  * Check if the tx window is full or not.
  *
- * @return 
+ * @return
  * - TRUE if full
  * - FALSE if not full
  */
@@ -1699,13 +1699,13 @@ int WiFiEngine_EnableLinkMonitoring(int32_t miss_thres,
       DE_TRACE_STATIC(TR_NOISE, "Failed to create MIB Trigger\n");
       return WIFI_ENGINE_FAILURE;
    }
-                                 
+
 
    return WIFI_ENGINE_SUCCESS;
 }
 
 #ifdef USE_IF_REINIT
-/*! 
+/*!
  * @brief Quiesce the driver.
  *
  * The driver will disable activities asynchronous activities that it
@@ -1718,7 +1718,7 @@ int WiFiEngine_EnableLinkMonitoring(int32_t miss_thres,
 int WiFiEngine_Quiesce(void)
 {
    DriverEnvironment_DisableTimers();
-   
+
    return WIFI_ENGINE_SUCCESS;
 }
 #endif
@@ -1727,7 +1727,7 @@ int WiFiEngine_Quiesce(void)
 /*!
  * @brief Renable those activities that were disabled by WiFiEngine_Quiesce().
  *
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS
  */
 int WiFiEngine_UnQuiesce(void)
@@ -1753,9 +1753,9 @@ int WiFiEngine_RegisterInactivityCallback(i_func_t cb)
    DE_TRACE_PTR(TR_NOISE, "Registering inactivity callback %p\n", cb);
 
    inactivity_h = we_ind_register(
-         WE_IND_ACTIVITY_TIMEOUT, 
-         "WE_IND_ACTIVITY_TIMEOUT", 
-         cb, 
+         WE_IND_ACTIVITY_TIMEOUT,
+         "WE_IND_ACTIVITY_TIMEOUT",
+         cb,
          NULL,
          RELEASE_IND_ON_UNPLUG,
          NULL);
@@ -1794,7 +1794,7 @@ static int inactivity_detect_cb(void *data, size_t len)
 {
    UNREF(data);
    UNREF(len);
-   if ( DriverEnvironment_GetTicks() - wifiEngineState.activity_ts > 
+   if ( DriverEnvironment_GetTicks() - wifiEngineState.activity_ts >
         DriverEnvironment_msec_to_ticks(registry.network.basic.activityTimeout) )
    {
       DriverEnvironment_indicate(WE_IND_ACTIVITY_TIMEOUT, NULL, 0);
@@ -1806,7 +1806,7 @@ static int inactivity_detect_cb(void *data, size_t len)
 #ifdef USE_IF_REINIT
 /*!
  * @brief Set the activity timeout.
- * 
+ *
  * The inactivity event will be triggered when no rx/tx activity has happened
  * for the timeout period.
  *
@@ -1829,10 +1829,10 @@ int WiFiEngine_SetActivityTimeout(uint32_t timeout, uint32_t inact_check_interva
    if (timeout)
    {
       WE_CHECK(inact_check_interval > 0);
-      if (DriverEnvironment_RegisterTimerCallback(inact_check_interval, 
-                                                  wifiEngineState.inactivity_timer_id, 
-                                                  inactivity_detect_cb, 
-                                                  1 ) != 1) 
+      if (DriverEnvironment_RegisterTimerCallback(inact_check_interval,
+                                                  wifiEngineState.inactivity_timer_id,
+                                                  inactivity_detect_cb,
+                                                  1 ) != 1)
       {
          DE_TRACE_STATIC(TR_NOISE, "No inactivity callback registered, DE was busy\n");
       }
@@ -1889,14 +1889,14 @@ void WiFiEngine_Registry_Write(char* registry_cache)
  *
  * @return WIFI_ENGINE_SUCCESS on success
  *         WIFI_ENGINE_FAILURE on any error.
- *         
+ *
  */
 int WiFiEngine_SyncRequest(void)
 {
    hic_message_context_t   msg_ref;
    int                status;
    uint32_t trans_id;
-   
+
    BAIL_IF_UNPLUGGED;
    Mlme_CreateMessageContext(msg_ref);
 
@@ -1917,12 +1917,12 @@ int WiFiEngine_SyncRequest(void)
 
 /*!
  * @brief Register a indication callback
- * 
+ *
  * The callback will be executed when the defined indication occurs.
  * Each indication can have at most one registered callback, this
  * call will fail if there was a callback already registered for the
  * indication. Note that WiFiEngine may register indication callbacks
- * and if those are removed it may affect the correct functioning 
+ * and if those are removed it may affect the correct functioning
  * of WiFiEngine.
  *
  * @param type The type of indication to register the callback for.
@@ -1933,8 +1933,8 @@ int WiFiEngine_SyncRequest(void)
  */
 #if 0
 // deprecated by we_ind_register and we_ind_cond_register
-int WiFiEngine_RegisterIndHandler(we_indication_t type, 
-                                  we_ind_cb_t cb, 
+int WiFiEngine_RegisterIndHandler(we_indication_t type,
+                                  we_ind_cb_t cb,
                                   const void *ctx)
 {
    if(ctx != NULL) {
@@ -1947,9 +1947,9 @@ int WiFiEngine_RegisterIndHandler(we_indication_t type,
 
 /*!
  * @brief Deregister a indication callback
- * 
+ *
  * Note that WiFiEngine may register indication callbacks
- * and if those are removed it may affect the correct functioning 
+ * and if those are removed it may affect the correct functioning
  * of WiFiEngine.
  *
  * @param type The type of indication to deregister the callback for.
@@ -1959,8 +1959,8 @@ int WiFiEngine_RegisterIndHandler(we_indication_t type,
  */
 #if 0
 // deprecated by we_ind_deregister
-int WiFiEngine_DeregisterIndHandler(we_indication_t type, 
-                                    we_ind_cb_t cb, 
+int WiFiEngine_DeregisterIndHandler(we_indication_t type,
+                                    we_ind_cb_t cb,
                                     const void *ctx)
 {
    if(ctx != NULL) {
@@ -1976,7 +1976,7 @@ int WiFiEngine_DeregisterIndHandler(we_indication_t type,
  *
  * @param type The type of indication to check.
  * @param cb The callback function to check for.
- * @return 
+ * @return
  * - WIFI_ENGINE_SUCCESS if the callback is registered on the
  *                       specified indication.
  * - WIFI_ENGINE_FAILURE if the callback was not registered
@@ -1992,7 +1992,7 @@ int WiFiEngine_IsIndHandlerRegistered(we_indication_t type,
    {
       return WIFI_ENGINE_SUCCESS;
    }
-   
+
    return WIFI_ENGINE_FAILURE;
 }
 #endif

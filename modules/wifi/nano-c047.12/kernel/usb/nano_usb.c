@@ -44,7 +44,7 @@ struct nrxdev {
    unsigned              rcvpipe;       /* Bulk IN pipe */
    unsigned              sndpipe;       /* Bulk OUT pipe */
    unsigned              vendor;
-   unsigned              mask_id;   
+   unsigned              mask_id;
    unsigned              fpga_ver;
    unsigned              rca;           /* Relative Card Address */
    uint8_t               cmdbuf[8];
@@ -280,7 +280,7 @@ sdio_init(struct nrxdev *dev)
       /* Extract RCA from response */
       dev->rca = (dev->rspbuf[1] << 8) | dev->rspbuf[2];
       /* Select card */
-      err = sdio_cmd(dev, MMC_SELECT_CARD, dev->rca << 16); 
+      err = sdio_cmd(dev, MMC_SELECT_CARD, dev->rca << 16);
    }
 
    return err;
@@ -311,7 +311,7 @@ nrx_reset(struct nrxdev *dev)
    }
 #endif
 
-   /* Await reset of chip - measured to approx 8 ms */  
+   /* Await reset of chip - measured to approx 8 ms */
    mdelay(20);
 
    return err;
@@ -414,7 +414,7 @@ bulk_in_callback(struct urb *urb)
    }
 }
 
-static void 
+static void
 nano_usb_rx_worker(
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,20)
    void *device
@@ -477,7 +477,7 @@ nano_tx(struct sk_buff *skb, void *data)
       dev_kfree_skb(skb);
       return -ENOMEM;
    }
-   
+
    if (skb_headroom(skb) < 3) {
       /* No headroom left -> reallocate */
       struct sk_buff *skb2 = skb_realloc_headroom(skb, 3);
@@ -589,7 +589,7 @@ nano_ctrl(uint32_t command, uint32_t arg, void *data)
       case NANONET_BOOT:
          /* Not needed */
          break;
-          
+
       case NANONET_INIT_SDIO:
          KDEBUG(TRANSPORT, "NANONET_INIT_SDIO %u", arg);
          retval = sdio_init(dev);
@@ -744,7 +744,7 @@ static DEVICE_ATTR(counters, 0644, show_counters, set_counters);
 
 static struct nanonet_create_param create_param = {
    .size           = sizeof(struct nanonet_create_param),
-   .chip_type      = CHIP_TYPE_UNKNOWN,   
+   .chip_type      = CHIP_TYPE_UNKNOWN,
    .send           = nano_tx,
    .fw_download    = nano_download,
    .control        = nano_ctrl,
@@ -890,7 +890,7 @@ nano_usb_probe(struct usb_interface *interface, const struct usb_device_id *id)
       goto error;
    }
 
-   INIT_WORK (&dev->rx_work, nano_usb_rx_worker 
+   INIT_WORK (&dev->rx_work, nano_usb_rx_worker
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,20)
               ,(void*)dev
 #endif

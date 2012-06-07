@@ -30,7 +30,7 @@
 /**************************************************************************/
 
 
-#ifndef UCOS_H       
+#ifndef UCOS_H
 #define UCOS_H
 #include "ucos_defs.h"
 

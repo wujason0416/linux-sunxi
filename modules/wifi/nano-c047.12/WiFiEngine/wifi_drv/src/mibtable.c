@@ -31,7 +31,7 @@ int wei_have_mibtable(void)
 
 #if DE_MIB_TABLE_SUPPORT == CFG_ON
 int
-wei_get_mib_object(const mib_id_t *mib_id, 
+wei_get_mib_object(const mib_id_t *mib_id,
                    mib_object_entry_t *entry)
 {
    mib_object_reference_type_t type;

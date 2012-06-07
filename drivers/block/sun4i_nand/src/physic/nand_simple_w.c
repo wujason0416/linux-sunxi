@@ -7,7 +7,7 @@
 *history :
 *	v0.1  2008-03-26 Richard
 * v0.2  2009-9-3 penggang modified for 1615
-*			
+*
 *********************************************************************************************************/
 #include "../include/nand_type.h"
 #include "../include/nand_physic.h"
@@ -340,4 +340,3 @@ __s32 PHY_SimpleErase (struct boot_physical_param *eraseop )
 	return ret;
 
 }
-

@@ -19,7 +19,7 @@
 
 #include <mach/io.h>
 #include <mach/hardware.h>
-#include <mach/platform.h>  
+#include <mach/platform.h>
 #include <asm/hardware/vic.h>
 
 	.macro getioaddr, rp, rv
@@ -88,7 +88,6 @@
         add \irqnr, \irqnr, #1
         movs    \irqstat, \irqstat, lsr #1
         bne 4002b
-        
+
 5000:
         .endm
-

@@ -187,7 +187,7 @@
  *	Changed "-xt" option to do both forward and reverse traceroute
  *	Changed to use brief output by default ("-v" for old default behavior)
  * V4.0.1, Rob Scott, 10-Oct-03
- *	Added IPv6 code 
+ *	Added IPv6 code
  *	Changed inet get functions to protocol independent versions
  *	Added fakepoll for hosts without poll() (macosx)
  *	Added ifdefs to only include setprio if os supports it (non-win)
@@ -479,7 +479,7 @@ static struct	sigaction savesigact;
 
 #define P_LOSS_FMT		" data_loss=%.5f"
 #define P_LOSS_FMT_BRIEF	" data_loss=%.5f"
-#define P_LOSS_FMT_INTERVAL	" data_loss=%.5f" 
+#define P_LOSS_FMT_INTERVAL	" data_loss=%.5f"
 #define P_DROP_FMT		" drop=%lld pkt=%lld"
 #define P_DROP_FMT_BRIEF	" drop=%lld pkt=%lld"
 #define P_DROP_FMT_INTERVAL	" drop=%lld pkt=%lld"
@@ -767,7 +767,7 @@ Usage (transmitter): nuttcp [-t] [-options] [ctl_addr/]host [3rd-party] [<in]\n\
 	-f-drops	don't give packet drop info on brief output (UDP)\n\
 	-f-percentloss	don't give %%loss info on brief output (UDP)\n\
 	-fparse		generate key=value parsable output\n\
-";	
+";
 
 char stats[128];
 char srvrbuf[4096];
@@ -1404,7 +1404,7 @@ main( int argc, char **argv )
 				fflush(stderr);
 				exit(1);
 			}
-			else if (interval == 0.0) 
+			else if (interval == 0.0)
 				interval = 1.0;
 			if (*cp1)
 				ch = *(cp1 + strlen(cp1) - 1);
@@ -2812,7 +2812,7 @@ doit:
 					struct sockaddr_in peer;
 					socklen_t peerlen = sizeof(peer);
 					if (getpeername(fd[0],
-						      (struct sockaddr *)&peer, 
+						      (struct sockaddr *)&peer,
 						      &peerlen) < 0) {
 						err("getpeername");
 					}
@@ -2824,7 +2824,7 @@ doit:
 					struct sockaddr_in me;
 					socklen_t melen = sizeof(me);
 					if (getsockname(fd[0],
-				    			(struct sockaddr *)&me, 
+				    			(struct sockaddr *)&me,
 							&melen) < 0) {
 						err("getsockname");
 					}
@@ -2862,7 +2862,7 @@ doit:
 					    multicast);
 				fprintf(stdout, "\n");
 				if (timeout)
-				    fprintf(stdout,"nuttcp-t%s: time_limit=%.2f\n", 
+				    fprintf(stdout,"nuttcp-t%s: time_limit=%.2f\n",
 				    ident, timeout);
 				if ((rate != MAXRATE) || tos)
 				    fprintf(stdout,"nuttcp-t%s:", ident);
@@ -2998,7 +2998,7 @@ doit:
 			if (nodelay && !udp) {
 				struct protoent *p;
 				p = getprotobyname("tcp");
-				if( p && setsockopt(fd[stream_idx], p->p_proto, TCP_NODELAY, 
+				if( p && setsockopt(fd[stream_idx], p->p_proto, TCP_NODELAY,
 				    (void *)&one, sizeof(one)) < 0)
 					err("setsockopt: nodelay");
 				if ((stream_idx == nstream) && (brief <= 0))
@@ -3177,7 +3177,7 @@ doit:
 
 				if (format & PARSE) {
 					fprintf(stdout,
-						"nuttcp%s%s: connect=%s", 
+						"nuttcp%s%s: connect=%s",
 						trans?"-t":"-r", ident,
 						tmphost);
 					if (trans && datamss) {
@@ -3187,7 +3187,7 @@ doit:
 				}
 				else {
 					fprintf(stdout,
-						"nuttcp%s%s: connect to %s", 
+						"nuttcp%s%s: connect to %s",
 						trans?"-t":"-r", ident,
 						tmphost);
 					if (trans && datamss) {
@@ -3282,7 +3282,7 @@ doit:
 			if (af == AF_INET) {
 			    struct sockaddr_in peer;
 			    socklen_t peerlen = sizeof(peer);
-			    if (getpeername(fd[stream_idx], (struct sockaddr *) &peer, 
+			    if (getpeername(fd[stream_idx], (struct sockaddr *) &peer,
 					&peerlen) < 0) {
 				err("getpeername");
 			    }
@@ -3293,7 +3293,7 @@ doit:
 
 				if (format & PARSE) {
 					fprintf(stdout,
-						"nuttcp%s%s: accept=%s", 
+						"nuttcp%s%s: accept=%s",
 						trans?"-t":"-r", ident,
 						tmphost);
 					if (trans && datamss) {
@@ -3303,7 +3303,7 @@ doit:
 				}
 				else {
 					fprintf(stdout,
-						"nuttcp%s%s: accept from %s", 
+						"nuttcp%s%s: accept from %s",
 						trans?"-t":"-r", ident,
 						tmphost);
 					if (trans && datamss) {
@@ -3319,7 +3319,7 @@ doit:
 			else if (af == AF_INET6) {
 			    struct sockaddr_in6 peer;
 			    socklen_t peerlen = sizeof(peer);
-			    if (getpeername(fd[stream_idx], (struct sockaddr *) &peer, 
+			    if (getpeername(fd[stream_idx], (struct sockaddr *) &peer,
 					&peerlen) < 0) {
 				err("getpeername");
 			    }
@@ -3329,7 +3329,7 @@ doit:
 					  tmphost, sizeof(tmphost));
 				if (format & PARSE) {
 				    fprintf(stdout,
-					    "nuttcp%s%s: accept=%s", 
+					    "nuttcp%s%s: accept=%s",
 					    trans?"-t":"-r", ident,
 					    tmphost);
 				    if (trans && datamss) {
@@ -3338,7 +3338,7 @@ doit:
 				}
 				else {
 				    fprintf(stdout,
-					    "nuttcp%s%s: accept from %s", 
+					    "nuttcp%s%s: accept from %s",
 					    trans?"-t":"-r", ident,
 					    tmphost);
 				    if (trans && datamss) {
@@ -3815,14 +3815,14 @@ doit:
 			char tmphost[ADDRSTRLEN] = "\0";
 			char tmphost2[ADDRSTRLEN] = "\0";
 			socklen_t peerlen = sizeof(peer);
-			if (getpeername(fd[0], (struct sockaddr *)&peer, 
+			if (getpeername(fd[0], (struct sockaddr *)&peer,
 					&peerlen) < 0) {
 				err("getpeername");
 			}
 			if (client && (irvers >= 50505)) {
 				struct sockaddr_in me;
 				socklen_t melen = sizeof(me);
-				if (getsockname(fd[0], (struct sockaddr *)&me, 
+				if (getsockname(fd[0], (struct sockaddr *)&me,
 						&melen) < 0) {
 					err("getsockname");
 				}
@@ -3848,12 +3848,12 @@ doit:
 
 				if (format & PARSE)
 					fprintf(stdout,
-						"nuttcp%s%s: multicast_source=%s multicast_group=%s\n", 
+						"nuttcp%s%s: multicast_source=%s multicast_group=%s\n",
 						trans?"-t":"-r", ident,
 						tmphost, tmphost2);
 				else
 					fprintf(stdout,
-						"nuttcp%s%s: receiving from multicast source %s on group %s\n", 
+						"nuttcp%s%s: receiving from multicast source %s on group %s\n",
 						trans?"-t":"-r", ident,
 						tmphost, tmphost2);
 			}
@@ -3951,7 +3951,7 @@ doit:
 		if (fcntl(0, F_SETFL, flags) < 0)
 			err("fcntl 2");
 	}
-	if (sinkmode) {      
+	if (sinkmode) {
 		register int cnt = 0;
 		if (trans)  {
 			if(udp) {
@@ -4018,7 +4018,7 @@ doit:
 						tmpbuf[0] = '\0';
 						if ((recv(fd[0], tmpbuf, 1,
 							  MSG_OOB) == -1) &&
-						    (errno == EINVAL)) 
+						    (errno == EINVAL))
 							recv(fd[0], tmpbuf,
 							     1, 0);
 						if (tmpbuf[0] == 'A')
@@ -4836,7 +4836,7 @@ prep_timer()
 
 /*
  *			R E A D _ T I M E R
- * 
+ *
  */
 double
 read_timer( char *str, int len )

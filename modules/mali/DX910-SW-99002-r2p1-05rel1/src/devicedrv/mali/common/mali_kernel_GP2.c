@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -489,7 +489,7 @@ static void maligp_reset_hard( mali_core_renderunit *core )
 
 	mali_core_renderunit_register_write(core, reset_wait_target_register, reset_default_value); /* set it back to the default */
 	mali_core_renderunit_register_write(core, MALIGP2_REG_ADDR_MGMT_INT_CLEAR, MALIGP2_REG_VAL_IRQ_MASK_ALL);
-	
+
 
 }
 
@@ -1430,7 +1430,7 @@ _mali_osk_errcode_t maligp_signal_power_up( mali_bool queue_only )
 
 	return( mali_core_subsystem_signal_power_up( &subsystem_maligp, 0, queue_only ) );
 }
-	
+
 _mali_osk_errcode_t maligp_signal_power_down( mali_bool immediate_only )
 {
 	MALI_DEBUG_PRINT(4, ("Mali GP: signal power down core - immediate_only: %d\n", immediate_only ));

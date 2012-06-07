@@ -76,7 +76,7 @@ void sun5i_snd_txctrl_hdmiaudio(struct snd_pcm_substream *substream, int on)
 
 	hdmi_para.channel_num = substream->runtime->channels;
 	g_hdmi_func.hdmi_set_audio_para(&hdmi_para);
-	
+
 	reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_TXCHSEL);
 	reg_val &= ~0x7;
 	reg_val |= SUN5I_TXCHSEL_CHNUM(substream->runtime->channels);
@@ -94,7 +94,7 @@ void sun5i_snd_txctrl_hdmiaudio(struct snd_pcm_substream *substream, int on)
 	reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 	reg_val &= ~SUN5I_HDMIAUDIOCTL_SDO3EN;
 	reg_val &= ~SUN5I_HDMIAUDIOCTL_SDO2EN;
-	reg_val &= ~SUN5I_HDMIAUDIOCTL_SDO1EN;	
+	reg_val &= ~SUN5I_HDMIAUDIOCTL_SDO1EN;
 	reg_val &= ~SUN5I_HDMIAUDIOCTL_SDO0EN;
 	switch(substream->runtime->channels) {
 		case 1:
@@ -108,7 +108,7 @@ void sun5i_snd_txctrl_hdmiaudio(struct snd_pcm_substream *substream, int on)
 			reg_val |= SUN5I_HDMIAUDIOCTL_SDO0EN | SUN5I_HDMIAUDIOCTL_SDO1EN | SUN5I_HDMIAUDIOCTL_SDO2EN; break;
 		case 7:
 		case 8:
-			reg_val |= SUN5I_HDMIAUDIOCTL_SDO0EN | SUN5I_HDMIAUDIOCTL_SDO1EN | SUN5I_HDMIAUDIOCTL_SDO2EN | SUN5I_HDMIAUDIOCTL_SDO3EN; break;	
+			reg_val |= SUN5I_HDMIAUDIOCTL_SDO0EN | SUN5I_HDMIAUDIOCTL_SDO1EN | SUN5I_HDMIAUDIOCTL_SDO2EN | SUN5I_HDMIAUDIOCTL_SDO3EN; break;
 		default:
 			reg_val |= SUN5I_HDMIAUDIOCTL_SDO0EN; break;
 	}
@@ -116,88 +116,88 @@ void sun5i_snd_txctrl_hdmiaudio(struct snd_pcm_substream *substream, int on)
 
 	//flush TX FIFO
 	reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOFCTL);
-	reg_val |= SUN5I_HDMIAUDIOFCTL_FTX;	
+	reg_val |= SUN5I_HDMIAUDIOFCTL_FTX;
 	writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOFCTL);
-	
+
 	//clear TX counter
 	writel(0, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOTXCNT);
 
-	if (on) {		
+	if (on) {
 		/* hdmiaudio TX ENABLE */
 		reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 		reg_val |= SUN5I_HDMIAUDIOCTL_TXEN;
 		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
-				
+
 		/* enable DMA DRQ mode for play */
 		reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOINT);
 		reg_val |= SUN5I_HDMIAUDIOINT_TXDRQEN;
 		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOINT);
-		
+
 		//Global Enable Digital Audio Interface
 		reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 		reg_val |= SUN5I_HDMIAUDIOCTL_GEN;
-		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);	
+		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 	}else{
 		/* HDMIAUDIO TX DISABLE */
 		reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 		reg_val &= ~SUN5I_HDMIAUDIOCTL_TXEN;
 		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
-				
+
 		/* DISBALE dma DRQ mode */
 		reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOINT);
 		reg_val &= ~SUN5I_HDMIAUDIOINT_TXDRQEN;
 		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOINT);
-				
+
 		//Global disable Digital Audio Interface
 		reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 		reg_val &= ~SUN5I_HDMIAUDIOCTL_GEN;
-		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);	
-	}		
+		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
+	}
 }
 
 void sun5i_snd_rxctrl_hdmiaudio(struct snd_pcm_substream *substream, int on)
 {
 	u32 reg_val;
-	
+
 	//flush RX FIFO
 	reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOFCTL);
-	reg_val |= SUN5I_HDMIAUDIOFCTL_FRX;	
+	reg_val |= SUN5I_HDMIAUDIOFCTL_FRX;
 	writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOFCTL);
 
 	//clear RX counter
 	writel(0, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIORXCNT);
-	
-	if (on) {			
+
+	if (on) {
 		/* HDMIAUDIO RX ENABLE */
 		reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 		reg_val |= SUN5I_HDMIAUDIOCTL_RXEN;
 		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
-				
+
 		/* enable DMA DRQ mode for record */
 		reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOINT);
 		reg_val |= SUN5I_HDMIAUDIOINT_RXDRQEN;
 		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOINT);
-				
+
 		//Global Enable Digital Audio Interface
 		reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 		reg_val |= SUN5I_HDMIAUDIOCTL_GEN;
-		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);			
-	} else {		
+		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
+	} else {
 		/* HDMIAUDIO RX DISABLE */
 		reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 		reg_val &= ~SUN5I_HDMIAUDIOCTL_RXEN;
 		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
-				
+
 		/* DISBALE dma DRQ mode */
 		reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOINT);
 		reg_val &= ~SUN5I_HDMIAUDIOINT_RXDRQEN;
 		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOINT);
-					
+
 		//Global disable Digital Audio Interface
 		reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 		reg_val &= ~SUN5I_HDMIAUDIOCTL_GEN;
 		writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
-	}		
+	}
 }
 
 static inline int sun5i_snd_is_clkmaster(void)
@@ -212,7 +212,7 @@ static int sun5i_hdmiaudio_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt
 
 	//SDO ON
 	reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
-	reg_val |= (SUN5I_HDMIAUDIOCTL_SDO0EN | SUN5I_HDMIAUDIOCTL_SDO1EN | SUN5I_HDMIAUDIOCTL_SDO2EN | SUN5I_HDMIAUDIOCTL_SDO3EN); 
+	reg_val |= (SUN5I_HDMIAUDIOCTL_SDO0EN | SUN5I_HDMIAUDIOCTL_SDO1EN | SUN5I_HDMIAUDIOCTL_SDO2EN | SUN5I_HDMIAUDIOCTL_SDO3EN);
 	writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 
 	/* master or slave selection */
@@ -228,7 +228,7 @@ static int sun5i_hdmiaudio_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt
 			return -EINVAL;
 	}
 	writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
-	
+
 	/* pcm or hdmiaudio mode selection */
 	reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 	reg_val1 = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOFAT0);
@@ -259,7 +259,7 @@ static int sun5i_hdmiaudio_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt
 	}
 	writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 	writel(reg_val1, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOFAT0);
-	
+
 	/* DAI signal inversions */
 	reg_val1 = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOFAT0);
 	switch(fmt & SND_SOC_DAIFMT_INV_MASK) {
@@ -281,13 +281,13 @@ static int sun5i_hdmiaudio_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt
 			break;
 	}
 	writel(reg_val1, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOFAT0);
-	
+
 	/* word select size */
 	reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOFAT0);
 	reg_val &= ~SUN5I_HDMIAUDIOFAT0_WSS_32BCLK;
 	if(sun5i_hdmiaudio.ws_size == 16)
 		reg_val |= SUN5I_HDMIAUDIOFAT0_WSS_16BCLK;
-	else if(sun5i_hdmiaudio.ws_size == 20) 
+	else if(sun5i_hdmiaudio.ws_size == 20)
 		reg_val |= SUN5I_HDMIAUDIOFAT0_WSS_20BCLK;
 	else if(sun5i_hdmiaudio.ws_size == 24)
 		reg_val |= SUN5I_HDMIAUDIOFAT0_WSS_24BCLK;
@@ -298,16 +298,16 @@ static int sun5i_hdmiaudio_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt
 	/* PCM REGISTER setup */
 	reg_val = sun5i_hdmiaudio.pcm_txtype&0x3;
 	reg_val |= sun5i_hdmiaudio.pcm_rxtype<<2;
-	
+
 	if(!sun5i_hdmiaudio.pcm_sync_type)
-		reg_val |= SUN5I_HDMIAUDIOFAT1_SSYNC;							//short sync		
+		reg_val |= SUN5I_HDMIAUDIOFAT1_SSYNC;							//short sync
 	if(sun5i_hdmiaudio.pcm_sw == 16)
 		reg_val |= SUN5I_HDMIAUDIOFAT1_SW;
-			
+
 	reg_val |=((sun5i_hdmiaudio.pcm_start_slot - 1)&0x3)<<6;		//start slot index
-		
+
 	reg_val |= sun5i_hdmiaudio.pcm_lsb_first<<9;			//MSB or LSB first
-		
+
 	if(sun5i_hdmiaudio.pcm_sync_period == 256)
 		reg_val |= 0x4<<12;
 	else if (sun5i_hdmiaudio.pcm_sync_period == 128)
@@ -317,7 +317,7 @@ static int sun5i_hdmiaudio_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt
 	else if (sun5i_hdmiaudio.pcm_sync_period == 32)
 		reg_val |= 0x1<<12;
 	writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOFAT1);
-	
+
 	/* set FIFO control register */
 	reg_val = 0 & 0x3;
 	reg_val |= (0 & 0x1)<<2;
@@ -333,7 +333,7 @@ static int sun5i_hdmiaudio_hw_params(struct snd_pcm_substream *substream,
 {
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct sun5i_dma_params *dma_data;
-	
+
 	/* play or record */
 	if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 		dma_data = &sun5i_hdmiaudio_pcm_stereo_out;
@@ -341,7 +341,7 @@ static int sun5i_hdmiaudio_hw_params(struct snd_pcm_substream *substream,
 		dma_data = &sun5i_hdmiaudio_pcm_stereo_in;
 
 	snd_soc_dai_set_dma_data(rtd->cpu_dai, substream, dma_data);
-	
+
 	return 0;
 }
 
@@ -350,7 +350,7 @@ static int sun5i_hdmiaudio_trigger(struct snd_pcm_substream *substream,
 {
 	int ret = 0;
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-	struct sun5i_dma_params *dma_data = 
+	struct sun5i_dma_params *dma_data =
 					snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
 
 	switch (cmd) {
@@ -380,8 +380,8 @@ static int sun5i_hdmiaudio_trigger(struct snd_pcm_substream *substream,
 	return ret;
 }
 
-//freq:   1: 22.5792MHz   0: 24.576MHz  
-static int sun5i_hdmiaudio_set_sysclk(struct snd_soc_dai *cpu_dai, int clk_id, 
+//freq:   1: 22.5792MHz   0: 24.576MHz
+static int sun5i_hdmiaudio_set_sysclk(struct snd_soc_dai *cpu_dai, int clk_id,
                                  unsigned int freq, int dir)
 {
 	if (!freq) {
@@ -396,7 +396,7 @@ static int sun5i_hdmiaudio_set_sysclk(struct snd_soc_dai *cpu_dai, int clk_id,
 static int sun5i_hdmiaudio_set_clkdiv(struct snd_soc_dai *cpu_dai, int div_id, int div)
 {
 	u32 reg;
-	
+
 	switch (div_id) {
 	case SUN5I_DIV_MCLK:
 		if(div <= 8)
@@ -433,7 +433,7 @@ static int sun5i_hdmiaudio_set_clkdiv(struct snd_soc_dai *cpu_dai, int div_id, i
 	default:
 		return -EINVAL;
 	}
-	
+
 	//diable MCLK output when high samplerate
 	reg = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCLKD);
 	if(!(reg & 0xF)) {
@@ -443,7 +443,7 @@ static int sun5i_hdmiaudio_set_clkdiv(struct snd_soc_dai *cpu_dai, int div_id, i
 		reg |= SUN5I_HDMIAUDIOCLKD_MCLKOEN;
 		writel(reg, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCLKD);
 	}
-	
+
 	return 0;
 }
 
@@ -454,7 +454,7 @@ u32 sun5i_hdmiaudio_get_clockrate(void)
 EXPORT_SYMBOL_GPL(sun5i_hdmiaudio_get_clockrate);
 
 static int sun5i_hdmiaudio_dai_probe(struct snd_soc_dai *dai)
-{			
+{
 	return 0;
 }
 static int sun5i_hdmiaudio_dai_remove(struct snd_soc_dai *dai)
@@ -495,17 +495,17 @@ static int sun5i_hdmiaudio_suspend(struct snd_soc_dai *cpu_dai)
 	reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 	reg_val &= ~SUN5I_HDMIAUDIOCTL_GEN;
 	writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
-	
+
 	hdmiaudioregsave();
 	//release the module clock
 	clk_disable(hdmiaudio_moduleclk);
 
 	clk_disable(hdmiaudio_apbclk);
-	
+
 	//printk("[HDMIAUDIO]PLL2 0x01c20008 = %#x, line = %d\n", *(volatile int*)0xF1C20008, __LINE__);
 	printk("[HDMIAUDIO]SPECIAL CLK 0x01c20068 = %#x, line= %d\n", *(volatile int*)0xF1C20068, __LINE__);
 	printk("[HDMIAUDIO]SPECIAL CLK 0x01c200B8 = %#x, line = %d\n", *(volatile int*)0xF1C200B8, __LINE__);
-	
+
 	return 0;
 }
 
@@ -516,21 +516,21 @@ static int sun5i_hdmiaudio_resume(struct snd_soc_dai *cpu_dai)
 
 	//release the module clock
 	clk_enable(hdmiaudio_apbclk);
-	
+
 	//release the module clock
 	clk_enable(hdmiaudio_moduleclk);
-	
+
 	hdmiaudioregrestore();
 
 	//Global Enable Digital Audio Interface
 	reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 	reg_val |= SUN5I_HDMIAUDIOCTL_GEN;
 	writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
-	
+
 	//printk("[HDMIAUDIO]PLL2 0x01c20008 = %#x, line = %d\n", *(volatile int*)0xF1C20008, __LINE__);
 	printk("[HDMIAUDIO]SPECIAL CLK 0x01c20068 = %#x, line= %d\n", *(volatile int*)0xF1C20068, __LINE__);
 	printk("[HDMIAUDIO]SPECIAL CLK 0x01c200B8 = %#x, line = %d\n", *(volatile int*)0xF1C200B8, __LINE__);
-	
+
 	return 0;
 }
 
@@ -540,7 +540,7 @@ static struct snd_soc_dai_ops sun5i_hdmiaudio_dai_ops = {
 	.hw_params 	= sun5i_hdmiaudio_hw_params,
 	.set_fmt 		= sun5i_hdmiaudio_set_fmt,
 	.set_clkdiv = sun5i_hdmiaudio_set_clkdiv,
-	.set_sysclk = sun5i_hdmiaudio_set_sysclk, 
+	.set_sysclk = sun5i_hdmiaudio_set_sysclk,
 };
 static struct snd_soc_dai_driver sun5i_hdmiaudio_dai = {
 	.probe 		= sun5i_hdmiaudio_dai_probe,
@@ -559,7 +559,7 @@ static struct snd_soc_dai_driver sun5i_hdmiaudio_dai = {
 		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S20_3LE | SNDRV_PCM_FMTBIT_S24_LE,},
 	.symmetric_rates = 1,
 	.ops = &sun5i_hdmiaudio_dai_ops,
-};		
+};
 
 static int __devinit sun5i_hdmiaudio_dev_probe(struct platform_device *pdev)
 {
@@ -569,11 +569,11 @@ static int __devinit sun5i_hdmiaudio_dev_probe(struct platform_device *pdev)
 	sun5i_hdmiaudio.regs = ioremap(SUN5I_HDMIAUDIOBASE, 0x100);
 	if (sun5i_hdmiaudio.regs == NULL)
 		return -ENXIO;
-		
+
 	sun5i_hdmiaudio.ccmregs = ioremap(SUN5I_CCMBASE, 0x100);
 	if (sun5i_hdmiaudio.ccmregs == NULL)
 		return -ENXIO;
-		
+
 	sun5i_hdmiaudio.ioregs = ioremap(0x01C20800, 0x100);
 	if (sun5i_hdmiaudio.ioregs == NULL)
 		return -ENXIO;
@@ -585,7 +585,7 @@ static int __devinit sun5i_hdmiaudio_dev_probe(struct platform_device *pdev)
 	}
 
 	hdmiaudio_pllx8 = clk_get(NULL, "audio_pllx8");
-	
+
 	//hdmiaudio pll2clk
 	hdmiaudio_pll2clk = clk_get(NULL, "audio_pll");
 
@@ -596,24 +596,24 @@ static int __devinit sun5i_hdmiaudio_dev_probe(struct platform_device *pdev)
 		printk("try to set parent of hdmiaudio_moduleclk to hdmiaudio_pll2ck failed! line = %d\n",__LINE__);
 	}
 
-	
+
 	if(clk_set_rate(hdmiaudio_moduleclk, 24576000/8)){
 		printk("set hdmiaudio_moduleclk clock freq to 24576000 failed! line = %d\n", __LINE__);
 	}
-		
+
 
 	if(-1 == clk_enable(hdmiaudio_moduleclk)){
 		printk("open hdmiaudio_moduleclk failed! line = %d\n", __LINE__);
 	}
-	
+
 	reg_val = readl(sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 	reg_val |= SUN5I_HDMIAUDIOCTL_GEN;
 	writel(reg_val, sun5i_hdmiaudio.regs + SUN5I_HDMIAUDIOCTL);
 
 	ret = snd_soc_register_dai(&pdev->dev, &sun5i_hdmiaudio_dai);
-	
+
 	iounmap(sun5i_hdmiaudio.ioregs);
-	
+
 	return 0;
 }
 
@@ -624,7 +624,7 @@ static int __devexit sun5i_hdmiaudio_dev_remove(struct platform_device *pdev)
 
 	//release pllx8clk
 	clk_put(hdmiaudio_pllx8);
-	
+
 	//release pll2clk
 	clk_put(hdmiaudio_pll2clk);
 
@@ -646,25 +646,25 @@ static struct platform_driver sun5i_hdmiaudio_driver = {
 	.driver = {
 		.name = "sun5i-hdmiaudio",
 		.owner = THIS_MODULE,
-	},	
+	},
 };
 
 static int __init sun5i_hdmiaudio_init(void)
 {
 	int err = 0;
-		
+
 	if((err = platform_device_register(&sun5i_hdmiaudio_device))<0)
 		return err;
 
 	if ((err = platform_driver_register(&sun5i_hdmiaudio_driver)) < 0)
 		return err;
-			
+
 	return 0;
 }
 module_init(sun5i_hdmiaudio_init);
 
 static void __exit sun5i_hdmiaudio_exit(void)
-{	
+{
 	platform_driver_unregister(&sun5i_hdmiaudio_driver);
 }
 module_exit(sun5i_hdmiaudio_exit);

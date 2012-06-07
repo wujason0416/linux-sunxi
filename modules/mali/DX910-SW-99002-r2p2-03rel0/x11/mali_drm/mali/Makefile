@@ -16,5 +16,3 @@ ccflags-y = -Iinclude/drm
 mali_drm-y := mali_drv.o
 
 obj-$(CONFIG_DRM_MALI)   += mali_drm.o
-
-

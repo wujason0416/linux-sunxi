@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -16,14 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
  *
  *
- 
+
 ******************************************************************************/
 #ifndef __RTL8192C_CMD_H_
 #define __RTL8192C_CMD_H_
 
 
 enum cmd_msg_element_id
-{	
+{
 	NONE_CMDMSG_EID,
 	AP_OFFLOAD_EID=0,
 	SET_PWRMODE_EID=1,
@@ -102,4 +102,3 @@ int rtl8192c_IOL_exec_cmds_sync(ADAPTER *adapter, struct xmit_frame *xmit_frame,
 #endif //CONFIG_IOL
 
 #endif
-

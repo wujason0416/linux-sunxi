@@ -506,4 +506,3 @@ int clk_reset(struct clk *clk, int reset)
     return ret;
 }
 EXPORT_SYMBOL(clk_reset);
-

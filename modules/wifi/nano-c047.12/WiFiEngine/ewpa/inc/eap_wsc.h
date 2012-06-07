@@ -211,16 +211,16 @@ typedef struct {
 #define WSC_IN_MSG_LEN 768
 #define WSC_OUT_MSG_LEN 768
 typedef struct {
-	/* 
-	 * pointers and uint32_t first to ensure 
-	 * alignment and to make it easier to debug 
+	/*
+	 * pointers and uint32_t first to ensure
+	 * alignment and to make it easier to debug
 	 */
 	uint8       *password;
 	uint32      password_len;
 
 	uint8       *authKey;
 	uint32      authKey_len;
-	
+
 	uint8       *keyWrapKey;
 	uint32      keyWrapKey_len;
 
@@ -229,7 +229,7 @@ typedef struct {
 
 	uint8       *x509csr;
 	uint32      x509csr_len;
-	
+
 	uint8       *x509Cert;
 	uint32      x509Cert_len;
 
@@ -267,7 +267,7 @@ typedef struct {
 	uint8       eHash2[SIZE_256_BITS];
 	uint8       es1[SIZE_128_BITS];
 	uint8       es2[SIZE_128_BITS];
-	
+
 	uint8       rHash1[SIZE_256_BITS];
 	uint8       rHash2[SIZE_256_BITS];
 	uint8       rs1[SIZE_128_BITS];

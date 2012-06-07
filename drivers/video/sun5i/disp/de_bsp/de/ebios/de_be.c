@@ -3,7 +3,7 @@
 
 __u32 image_reg_base[2] = {0,0};//DISE_REGS_BASE;
 
-__u32  csc_tab[192] = 
+__u32  csc_tab[192] =
 {
     //Y/G   Y/G      Y/G      Y/G      U/R      U/R     U/R        U/R     V/B      V/B       V/B       V/B
     //bt601
@@ -31,19 +31,19 @@ __u32  csc_tab[192] =
     0x0274,0x00bb,0x003f,0x0100,0x1ea5,0x1f98,0x01c1,0x0800,0x1e67,0x01c1,0x1fd7,0x0800 //rgb2yuv
 };
 
-__u32  image_enhance_tab[224] = 
+__u32  image_enhance_tab[224] =
 {
     //csc convert table
     0x00000107,0x00000204,0x00000064,0x00004000,0xffffff69,0xfffffed7,0x000001c1,0x00020000,
     0x000001c1,0xfffffe88,0xffffffb8,0x00020000,0x00000000,0x00000000,0x00000000,0x00000400,
     0x000004a7,0x00000000,0x00000662,0xfffc845b,0x000004a7,0xfffffe70,0xfffffcc0,0x00021df3,
     0x000004a7,0x00000812,0x00000000,0xfffbac4a,0x00000000,0x00000000,0x00000000,0x00000400,
-    
+
     0x000000bb,0x00000274,0x0000003f,0x00004000,0xffffff99,0xfffffea6,0x000001c1,0x00020000,
     0x000001c1,0xfffffe68,0xffffffd8,0x00020000,0x00000000,0x00000000,0x00000000,0x00000400,
     0x000004a7,0x00000000,0x0000072c,0xfffc1f7d,0x000004a7,0xffffff26,0xfffffdde,0x000133f7,
     0x000004a7,0x00000875,0x00000000,0xfffb7aa0,0x00000000,0x00000000,0x00000000,0x00000400,
-    
+
     0x00000132,0x00000258,0x00000075,0x00000000,0xffffff54,0xfffffead,0x00000200,0x00020000,
     0x00000200,0xfffffe54,0xffffffad,0x00020000,0x00000000,0x00000000,0x00000000,0x00000400,
     0x00000400,0x00000000,0x0000059b,0xfffd3213,0x00000400,0xfffffe9f,0xfffffd25,0x00021ec5,
@@ -68,7 +68,7 @@ __u32  image_enhance_tab[224] =
     0x00000074,0x00000074,0x00000073,0x00000072,0x00000071,0x0000006f,0x0000006e,0x0000006d
 };
 
-__u32  fir_tab[672] = 
+__u32  fir_tab[672] =
 {
     0x00004000,0x000140ff,0x00033ffe,0x00043ffd,0x00063efc,0xff083dfc,0x000a3bfb,0xff0d39fb,
     0xff0f37fb,0xff1136fa,0xfe1433fb,0xfe1631fb,0xfd192ffb,0xfd1c2cfb,0xfd1f29fb,0xfc2127fc,
@@ -86,7 +86,7 @@ __u32  fir_tab[672] =
     0x00142c00,0x00152b00,0x00172900,0x00182800,0x001a2600,0x001b2500,0x001d2300,0x001e2200,
     0x00202000,0x00211f00,0x00221e00,0x00241c00,0x00251b00,0x00271900,0x00281800,0x002a1600,
     0x002b1500,0x002d1300,0x012d1200,0x022e1000,0x032e0f00,0x042f0d00,0x052f0c00,0x072f0a00,
-    
+
     0x000b2a0b,0x000d2a09,0x000e2a08,0x000f2a07,0x00102a06,0x00122905,0x00132904,0x00142903,
     0x00162802,0x00172702,0x00182701,0x001a2600,0x001b2500,0x001c2400,0x001d2300,0x001e2200,
     0x00202000,0x00211f00,0x00221e00,0x00231d00,0x00241c00,0x00261a00,0x01261900,0x02271700,
@@ -103,7 +103,7 @@ __u32  fir_tab[672] =
     0x00162109,0x00182008,0x00182008,0x01191f07,0x011a1f06,0x021b1e05,0x021b1e05,0x031c1d04,
     0x031d1d03,0x041d1c03,0x051e1b02,0x051e1b02,0x061f1a01,0x071f1901,0x07201801,0x08201800,
     0x09201700,0x0a201600,0x0a211500,0x0b211400,0x0c211300,0x0d201300,0x0d211200,0x0e211100,
-    
+
     0x00102010,0x0011200f,0x0012200e,0x0012200e,0x0013200d,0x00151f0c,0x00151f0c,0x01151f0b,
     0x01161e0b,0x01171e0a,0x02171e09,0x02181d09,0x03191d07,0x03191c08,0x041a1c06,0x041a1c06,
     0x051b1b05,0x061b1b04,0x061c1a04,0x071c1904,0x071d1903,0x081d1803,0x091d1802,0x091e1702,
@@ -120,7 +120,7 @@ __u32  fir_tab[672] =
     0x0714180d,0x0714180d,0x0715180c,0x0815170c,0x0815170c,0x0915170b,0x0915170b,0x0916160b,
     0x0a16160a,0x0a16160a,0x0b161609,0x0b161609,0x0b171509,0x0c171508,0x0c181507,0x0d171507,
     0x0d181407,0x0e181406,0x0e181406,0x0f181306,0x0f191305,0x10181305,0x10181305,0x10191205,
-    
+
     0x06111811,0x06121711,0x06121711,0x06131710,0x0713170f,0x0713170f,0x0713170f,0x0813170e,
     0x0813170e,0x0814160e,0x0914160d,0x0914160d,0x0914160d,0x0a14160c,0x0a14160c,0x0a15150c,
     0x0b15150b,0x0b15150b,0x0c15150a,0x0c15150a,0x0c16140a,0x0d161409,0x0d161409,0x0d161409,
@@ -137,7 +137,7 @@ __u32  fir_tab[672] =
     0x0d111210,0x0d12120f,0x0d12120f,0x0e11120f,0x0e11120f,0x0e11120f,0x0e12120e,0x0e12120e,
     0x0e12120e,0x0e12120e,0x0e12120e,0x0f11120e,0x0f11120e,0x0f11120e,0x0f12120d,0x0f12120d,
     0x0f12110e,0x0f12110e,0x0f12110e,0x0f12110e,0x1012110d,0x1012110d,0x1012110d,0x1012110d,
-    
+
     0x00400000,0x023e0000,0x043c0000,0x063a0000,0x08380000,0x0a360000,0x0c340000,0x0e320000,
     0x10300000,0x122e0000,0x142c0000,0x162a0000,0x18280000,0x1a260000,0x1c240000,0x1e220000,
     0x20200000,0x221e0000,0x241c0000,0x261a0000,0x28180000,0x2a160000,0x2c140000,0x2e120000,
@@ -154,7 +154,7 @@ __u32  fir_tab[672] =
     0x1e220000,0x1e220000,0x1e220000,0x1f210000,0x1f210000,0x1f210000,0x1f210000,0x20200000,
     0x20200000,0x20200000,0x211f0000,0x211f0000,0x211f0000,0x211f0000,0x221e0000,0x221e0000,
     0x221e0000,0x231d0000,0x231d0000,0x231d0000,0x231d0000,0x241c0000,0x241c0000,0x241c0000,
-    
+
     0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,
     0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,
     0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,0x40000000,
@@ -164,8 +164,8 @@ __u32  fir_tab[672] =
 __s32 DE_Set_Reg_Base(__u32 sel, __u32 address)
 {
 	image_reg_base[sel] = address;
-	// memset((void*)(image0_reg_base+0x800), 0,0x1000-0x800); 
-	    	
+	// memset((void*)(image0_reg_base+0x800), 0,0x1000-0x800);
+
 	return 0;
 }
 
@@ -178,8 +178,8 @@ __u32 DE_Get_Reg_Base(__u32 sel)
 
 __u32 DE_BE_Reg_Init(__u32 sel)
 {
-	memset((void*)(image_reg_base[sel]+0x800), 0,0x1000-0x800); 
-	
+	memset((void*)(image_reg_base[sel]+0x800), 0,0x1000-0x800);
+
 	return 0;
 }
 
@@ -193,7 +193,7 @@ __s32 DE_BE_Set_SystemPalette(__u32 sel, __u32 * pbuffer, __u32 offset,__u32 siz
     {
         size = DE_BE_PALETTE_TABLE_SIZE;
     }
-    
+
 	psrc_cur = pbuffer;
 	pdest_cur = (__u32*)(DE_Get_Reg_Base(sel)+DE_BE_PALETTE_TABLE_ADDR_OFF  + offset);
 	pdest_end = pdest_cur + (size>>2);
@@ -202,7 +202,7 @@ __s32 DE_BE_Set_SystemPalette(__u32 sel, __u32 * pbuffer, __u32 offset,__u32 siz
     {
     	*(volatile __u32 *)pdest_cur++ = *psrc_cur++;
     }
-    
+
    return 0;
 }
 
@@ -216,26 +216,26 @@ __s32 DE_BE_Get_SystemPalette(__u32 sel, __u32 *pbuffer, __u32 offset,__u32 size
     {
         size = DE_BE_PALETTE_TABLE_SIZE;
     }
-	
+
 	psrc_cur = (__u32*)(DE_Get_Reg_Base(sel)+DE_BE_PALETTE_TABLE_ADDR_OFF + offset);
 	pdest_cur = pbuffer;
 	pdest_end = pdest_cur + (size>>2);
-	
+
     while(pdest_cur < pdest_end)
     {
     	*(volatile __u32 *)pdest_cur++ = *psrc_cur++;
     }
 
-    return 0;	
+    return 0;
 }
 
 __s32 DE_BE_Enable(__u32 sel)
 {
     DE_BE_WUINT32(sel,DE_BE_MODE_CTL_OFF,DE_BE_RUINT32(sel, DE_BE_MODE_CTL_OFF) | (0x01<<1));//start
-    DE_BE_WUINT32(sel,DE_BE_MODE_CTL_OFF,DE_BE_RUINT32(sel, DE_BE_MODE_CTL_OFF) | 0x01);//enable  
-    
+    DE_BE_WUINT32(sel,DE_BE_MODE_CTL_OFF,DE_BE_RUINT32(sel, DE_BE_MODE_CTL_OFF) | 0x01);//enable
+
     return 0;
-}   
+}
 
 __s32 DE_BE_Disable(__u32 sel)
 {
@@ -243,7 +243,7 @@ __s32 DE_BE_Disable(__u32 sel)
     DE_BE_WUINT32(sel,DE_BE_MODE_CTL_OFF,DE_BE_RUINT32(sel, DE_BE_MODE_CTL_OFF) & 0xfffffffe);//disable
 
     return 0;
-} 
+}
 
 // 0:lcd0 only; 1:lcd1 only
 // 2:lcd0+fe0; 3:lcd1+fe0
@@ -263,7 +263,7 @@ __s32 DE_BE_Output_Select(__u32 sel, __u32 out_sel)
     }
 
     return 0;
-}   
+}
 
 __s32 DE_BE_Set_BkColor(__u32 sel, __disp_color_t bkcolor)
 {
@@ -277,17 +277,17 @@ __s32 DE_BE_Set_ColorKey(__u32 sel, __disp_color_t ck_max,__disp_color_t  ck_min
     DE_BE_WUINT32(sel,DE_BE_CLRKEY_MAX_OFF,(ck_max.alpha<<24) | (ck_max.red<<16) | (ck_max.green<<8) | ck_max.blue);
     DE_BE_WUINT32(sel,DE_BE_CLRKEY_MIN_OFF,(ck_min.alpha<<24) | (ck_min.red<<16) | (ck_min.green<<8) | ck_min.blue);
     DE_BE_WUINT32(sel,DE_BE_CLRKEY_CFG_OFF,(ck_red_match<<4) | (ck_green_match<<2) | ck_blue_match);
-    
+
     return 0;
 }
 
 __s32 DE_BE_Cfg_Ready(__u32 sel)
 {
     __u32 tmp;
-    
+
     tmp = DE_BE_RUINT32(sel, DE_BE_FRMBUF_CTL_OFF);
     DE_BE_WUINT32(sel, DE_BE_FRMBUF_CTL_OFF, tmp | (0x1<<1) | 0x1);//bit1:enable, bit0:ready
-    
+
     return 0;
 }
 
@@ -322,17 +322,17 @@ __s32 DE_BE_Sprite_Set_Global_Alpha(__u32 sel, __u8 alpha_val)
 
     tmp = DE_BE_RUINT32(sel, DE_BE_SPRITE_ALPHA_CTRL_OFF);
     tmp = (tmp & 0x00ffffff) | (alpha_val << 24);
-    
+
 	DE_BE_WUINT32(sel, DE_BE_SPRITE_ALPHA_CTRL_OFF,tmp);
 	return 0;
-}      
+}
 
 __s32 DE_BE_Sprite_Block_Set_Pos(__u32 sel, __u8 blk_idx,__s16 x,__s16 y)
 {
 	__u32 reg = 0;
 
 	reg = DE_BE_RUINT32IDX(sel, DE_BE_SPRITE_POS_CTRL_OFF,blk_idx);
-	
+
   	DE_BE_WUINT32IDX(sel, DE_BE_SPRITE_POS_CTRL_OFF,blk_idx,reg | ((y&0xffff)<<16) | (x&0xffff));
    	return 0;
 }
@@ -342,7 +342,7 @@ __s32 DE_BE_Sprite_Block_Set_Size(__u32 sel, __u8 blk_idx,__u32 xsize,__u32 ysiz
 	__u32 tmp = 0;
 
 	tmp = DE_BE_RUINT32IDX(sel, DE_BE_SPRITE_ATTR_CTRL_OFF,blk_idx) & 0x0000003f;
-	
+
 	DE_BE_WUINT32IDX(sel, DE_BE_SPRITE_ATTR_CTRL_OFF,blk_idx,tmp | (ysize<<20) | (xsize<<8));
 	return 0;
 }
@@ -379,8 +379,8 @@ __s32 DE_BE_Sprite_Set_Palette_Table(__u32 sel, __u32 address, __u32 offset, __u
     {
     	*(volatile __u32 *)pdest_cur++ = *psrc_cur++;
     }
-    
-    return 0;	
+
+    return 0;
 }
 
 //brightness -100~100
@@ -399,7 +399,7 @@ __s32 DE_BE_Set_Enhance(__u8 sel,__u32 brightness, __u32 contrast, __u32 saturai
 	brightness = brightness>100?100:(brightness<0?0:brightness);
 	contrast = contrast>100?100:(contrast<0?0:contrast);
 	saturaion = saturaion>100?100:(saturaion<0?0:saturaion);
-	
+
 	brightness = (brightness-50) * 10;
 	saturaion = saturaion * 10 / 50;
 	contrast = contrast * 10 / 50;
@@ -423,17 +423,17 @@ __s32 DE_BE_Set_Enhance(__u8 sel,__u32 brightness, __u32 contrast, __u32 saturai
 	Rg = (Rg > max_rgb)?max_rgb:((Rg < min_rgb)?min_rgb:Rg);
 	Rb = (Rb > max_rgb)?max_rgb:((Rb < min_rgb)?min_rgb:Rb);
 	Rc = (Rc > max_c)?max_c:((Rc < min_c)?min_c:Rc);
-	
+
 	Gr = (Gr > max_rgb)?max_rgb:((Gr < min_rgb)?min_rgb:Gr);
 	Gg = (Gg > max_rgb)?max_rgb:((Gg < min_rgb)?min_rgb:Gg);
 	Gb = (Gb > max_rgb)?max_rgb:((Gb < min_rgb)?min_rgb:Gb);
 	Gc = (Gc > max_c)?max_c:((Gc < min_c)?min_c:Gc);
-	
+
 	Br = (Br > max_rgb)?max_rgb:((Br < min_rgb)?min_rgb:Br);
 	Bg = (Bg > max_rgb)?max_rgb:((Bg < min_rgb)?min_rgb:Bg);
 	Bb = (Bb > max_rgb)?max_rgb:((Bb < min_rgb)?min_rgb:Bb);
 	Bc = (Bc > max_c)?max_c:((Bc < min_c)?min_c:Bc);
-    
+
     DE_BE_WUINT32(sel, DE_BE_OUT_COLOR_R_COEFF_OFF + 0, (__s32)Rr);
     DE_BE_WUINT32(sel, DE_BE_OUT_COLOR_R_COEFF_OFF + 4, (__s32)Rg);
     DE_BE_WUINT32(sel, DE_BE_OUT_COLOR_R_COEFF_OFF + 8, (__s32)Rb);
@@ -448,7 +448,7 @@ __s32 DE_BE_Set_Enhance(__u8 sel,__u32 brightness, __u32 contrast, __u32 saturai
     DE_BE_WUINT32(sel, DE_BE_OUT_COLOR_B_COEFF_OFF + 4, (__s32)Bg);
     DE_BE_WUINT32(sel, DE_BE_OUT_COLOR_B_COEFF_OFF + 8, (__s32)Bb);
     DE_BE_WUINT32(sel, DE_BE_OUT_COLOR_B_CONSTANT_OFF, (__s32)Bc);
-    
+
     return 0;
 }
 
@@ -462,7 +462,7 @@ __s32 DE_BE_enhance_enable(__u32 sel, __bool enable)
 __s32 DE_BE_deflicker_enable(__u32 sel, __bool enable)
 {
 	DE_BE_WUINT32(sel, DE_BE_MODE_CTL_OFF,(DE_BE_RUINT32(sel, DE_BE_MODE_CTL_OFF)&(~(1<<4))) | (enable<<4));
-	
+
     return 0;
 }
 
@@ -470,14 +470,14 @@ __s32 DE_BE_deflicker_enable(__u32 sel, __bool enable)
 __s32 DE_BE_output_csc_enable(__u32 sel, __bool enable)
 {
 	DE_BE_WUINT32(sel, DE_BE_MODE_CTL_OFF,(DE_BE_RUINT32(sel, DE_BE_MODE_CTL_OFF)&(~(1<<5))) | (enable<<5));
-	
+
     return 0;
 }
 
 __s32 DE_BE_Set_Outitl_enable(__u32 sel, __bool enable)
 {
 	DE_BE_WUINT32(sel, DE_BE_MODE_CTL_OFF,(DE_BE_RUINT32(sel, DE_BE_MODE_CTL_OFF)&(~(1<<28))) | (enable<<28));
-	
+
     return 0;
 }
 
@@ -499,7 +499,7 @@ __s32 DE_BE_Output_Cfg_Csc_Coeff(__u32 sel, __bool bout_yuv, __u32 out_color_ran
 		DE_BE_WUINT32(sel, DE_BE_VB_CONSTANT_OFF, (DE_BE_RUINT32(sel, DE_BE_VB_CONSTANT_OFF) & 0x0000ffff) | (0x0800<<16));
 		DE_BE_output_csc_enable(sel, 1);
 	}
-	else 
+	else
 	{
     	if(out_color_range == DISP_COLOR_RANGE_16_255)
         {
@@ -551,7 +551,7 @@ __s32 DE_BE_set_display_size(__u32 sel, __u32 width, __u32 height)
 __s32 DE_BE_get_display_width(__u32 sel)
 {
     __u32 tmp;
-    
+
     tmp = DE_BE_RUINT32(sel, DE_BE_DISP_SIZE_OFF) & 0x0000ffff;
 
     return tmp + 1;
@@ -560,7 +560,7 @@ __s32 DE_BE_get_display_width(__u32 sel)
 __s32 DE_BE_get_display_height(__u32 sel)
 {
     __u32 tmp;
-    
+
     tmp = (DE_BE_RUINT32(sel, DE_BE_DISP_SIZE_OFF) & 0xffff0000)>>16;
 
     return tmp + 1;
@@ -587,18 +587,17 @@ __s32 DE_BE_DisableINT(__u8 sel, __u32 irqsrc)
 }
 
 __u32 DE_BE_QueryINT(__u8 sel)
-{	
+{
 	__u32 ret = 0;
 
 	ret = DE_BE_RUINT32(sel, DE_BE_INT_FLAG_OFF);
-	
+
 	return ret;
 }
 
 __u32 DE_BE_ClearINT(__u8 sel,__u32 irqsrc)
 {
 	DE_BE_WUINT32(sel, DE_BE_INT_FLAG_OFF,irqsrc);
-	
+
 	return 0;
 }
-

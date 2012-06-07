@@ -6,7 +6,7 @@
 
 /** @defgroup PRIO Priority mapping
  * @brief Manipulate TOS/DSCP/802.1d/WMM priority maps.
- * 
+ *
  * To use WMM effectively, there needs to be a way to specify which
  * traffic class each application should use. One way of doing this is
  * via the IP-TOS field. The IP-TOS is an eight bit field in the IP
@@ -20,7 +20,7 @@
  * By default the driver is setup to map the DSCP Class Selector code
  * points (RFC2474) to IEEE802.1d user priority in a one-to-one
  * fashion. This means that Class Selector code point 0 is mapped to
- * user priority 0 (Best Effort) etc. 
+ * user priority 0 (Best Effort) etc.
  *
  * Note that Class Selector code point N was chosen to be identical to
  * a TOS field with no TOS bits sets and a precedence of N.
@@ -137,8 +137,8 @@ nrx_priomap_clear(nrx_context ctx, nrx_priomap *priomap)
  */
 int
 nrx_priomap_get(nrx_context ctx,
-                nrx_priomap priomap, 
-                uint8_t tos, 
+                nrx_priomap priomap,
+                uint8_t tos,
                 uint8_t *uprio)
 {
    NRX_ASSERT(ctx != NULL);
@@ -170,13 +170,13 @@ nrx_priomap_get(nrx_context ctx,
  */
 int
 nrx_priomap_set(nrx_context ctx,
-                nrx_priomap *priomap, 
-                uint8_t tos, 
+                nrx_priomap *priomap,
+                uint8_t tos,
                 uint8_t uprio)
 {
    unsigned int mask = 0xf0;
    uint8_t *p;
-   
+
    NRX_ASSERT(ctx != NULL);
    NRX_CHECK(priomap != NULL);
    NRX_CHECK(uprio < 8);
@@ -187,7 +187,7 @@ nrx_priomap_set(nrx_context ctx,
       mask >>= 4;
    }
    *p = (*p & mask) | uprio;
-   
+
    return 0;
 }
 
@@ -215,8 +215,8 @@ nrx_priomap_set(nrx_context ctx,
  */
 int
 nrx_priomap_set_dscp(nrx_context ctx,
-                     nrx_priomap *priomap, 
-                     uint8_t dscp, 
+                     nrx_priomap *priomap,
+                     uint8_t dscp,
                      uint8_t uprio)
 {
    int ret;
@@ -233,7 +233,7 @@ nrx_priomap_set_dscp(nrx_context ctx,
 
    ret = nrx_priomap_set(ctx, priomap, DSCP(0, dscp, 2), uprio);
    if(ret != 0) return ret;
-   
+
    ret = nrx_priomap_set(ctx, priomap, DSCP(0, dscp, 3), uprio);
    if(ret != 0) return ret;
 
@@ -250,7 +250,7 @@ nrx_priomap_mod_dscp_cs(nrx_context ctx,
                         unsigned int uprio)
 {
    nrx_priomap_mod_dscp(priomap, DSCP(cs, 0, 0), uprio);
-   
+
    return 0;
 }
 
@@ -265,7 +265,7 @@ nrx_priomap_mod_tos_precedence(nrx_context ctx,
          nrx_priomap_mod(priomap, (p << 5) | t, map[p]);
       }
    }
-   
+
    return 0;
 }
 
@@ -280,7 +280,7 @@ nrx_priomap_mod_tos_routing(nrx_context ctx,
          nrx_priomap_mod(priomap, (p << 5) | t, map[p]);
       }
    }
-   
+
    return 0;
 }
 
@@ -329,7 +329,7 @@ nrx_priomap_mod_linear_8021d(nrx_context ctx,
    int i;
    for(i = 0; i < 8; i++)
       nrx_priomap_mod_dscp_cs(priomap, i, i);
-   
+
    return 0;
 }
 #endif

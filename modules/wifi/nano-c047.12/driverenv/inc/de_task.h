@@ -104,7 +104,7 @@ void DriverEnvironment_SetPriorityThreadLow(void);
 /*!
  * \brief Release a lock
  *
- * Release a spinlock-type lock. 
+ * Release a spinlock-type lock.
  * @param lock (driver_lock_t *)
  */
 #ifdef WIFI_DEBUG_ON
@@ -119,7 +119,7 @@ void DriverEnvironment_SetPriorityThreadLow(void);
 #endif
 
 /*!
- * \brief Initialize a trylock. 
+ * \brief Initialize a trylock.
  * This lock must allow blocking operations (such as I/O)
  * while it is being held. A atomic test-and-set-type lock is sufficient.
  * @param lock (driver_trylock_t *)
@@ -127,11 +127,11 @@ void DriverEnvironment_SetPriorityThreadLow(void);
 void DriverEnvironment_init_trylock(driver_trylock_t *lock);
 
 /*!
- * \brief Attempt to Acquire a trylock. 
+ * \brief Attempt to Acquire a trylock.
  * This lock must allow blocking operations (such as I/O)
- * while it is being held. 
+ * while it is being held.
  * @param lock (driver_trylock_t *)
- * @return (driver_trylock_t) If the lock is held when this function is called it should 
+ * @return (driver_trylock_t) If the lock is held when this function is called it should
  * immediatly return LOCK_LOCKED without having acquired the lock. If the lock
  * is free then the call should Acquire the lock and return LOCK_UNLOCKED
  * (that is, it returns the previous state of the lock).
@@ -146,7 +146,7 @@ void           DriverEnvironment_release_trylock(driver_trylock_t *lock);
 
 
 /*!
- * \brief Acquire a read lock. 
+ * \brief Acquire a read lock.
  * This must block a write lock acquire on the same
  * lock while the read lock is held. Several consumers may acquire the same
  * read lock at the same time.

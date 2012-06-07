@@ -97,7 +97,7 @@ static void avs_register_iomem(struct avs_dev *devp)
 
     /* request mem for ccmu */
     res = request_mem_region(CCMU_REGS_pBASE, 1024, "ccmu");
-    if (res == NULL)    {   
+    if (res == NULL)    {
         printk("Cannot reserve region for ccmu\n");
         goto err_out;
     }
@@ -141,7 +141,7 @@ static void avs_iomem_unregister(struct avs_dev *devp)
  *             AVS Counter control,
  *             Physical memory control,
  *             module clock/freq control.
- */ 
+ */
 long avsdev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 {
     long   ret;
@@ -149,7 +149,7 @@ long avsdev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 	spinlock_t *lock;
 	struct avs_dev *devp;
-	
+
 	ret = 0;
 	devp = filp->private_data;
 	lock = &devp->lock;
@@ -162,7 +162,7 @@ long avsdev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
             v = readl(devp->iomap_addrs.regs_ccmu + 0xc40);
 
 			spin_unlock(lock);
-			return v;		
+			return v;
 
         case IOCTL_CONFIG_AVS2:
 			spin_lock(lock);
@@ -177,7 +177,7 @@ long avsdev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 			spin_unlock(lock);
             break;
-            
+
         case IOCTL_RESET_AVS2:
 			spin_lock(lock);
 
@@ -185,7 +185,7 @@ long avsdev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 			spin_unlock(lock);
             break;
-            
+
         case IOCTL_PAUSE_AVS2:
 			spin_lock(lock);
 
@@ -195,7 +195,7 @@ long avsdev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
 
 			spin_unlock(lock);
             break;
-            
+
         case IOCTL_START_AVS2:
 			spin_lock(lock);
 
@@ -209,20 +209,20 @@ long avsdev_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
         default:
             break;
     }
-    
+
     return ret;
 }
 
 static int avsdev_open(struct inode *inode, struct file *filp)
-{   
+{
 	struct avs_dev *devp;
 	devp = container_of(inode->i_cdev, struct avs_dev, cdev);
 	filp->private_data = devp;
-	
+
 	if (down_interruptible(&devp->sem)) {
 		return -ERESTARTSYS;
 	}
-	
+
 	// init other resource here
 
 	up(&devp->sem);
@@ -232,15 +232,15 @@ static int avsdev_open(struct inode *inode, struct file *filp)
 }
 
 static int avsdev_release(struct inode *inode, struct file *filp)
-{   
+{
 	struct avs_dev *devp;
-	
+
 	devp = filp->private_data;
 
 	if (down_interruptible(&devp->sem)) {
 		return -ERESTARTSYS;
 	}
-	
+
 	/* release other resource here */
 
 	up(&devp->sem);
@@ -249,10 +249,10 @@ static int avsdev_release(struct inode *inode, struct file *filp)
 
 void avsdev_vma_open(struct vm_area_struct *vma)
 {
-    printk(KERN_NOTICE "avsdev VMA open, virt %lx, phys %lx\n", 
+    printk(KERN_NOTICE "avsdev VMA open, virt %lx, phys %lx\n",
 		vma->vm_start, vma->vm_pgoff << PAGE_SHIFT);
 	return;
-} 
+}
 
 void avsdev_vma_close(struct vm_area_struct *vma)
 {
@@ -284,7 +284,7 @@ static int avsdev_mmap(struct file *filp, struct vm_area_struct *vma)
         io_ram = 0;
     }
 
-    if (io_ram == 0) {   
+    if (io_ram == 0) {
         /* Set reserved and I/O flag for the area. */
         vma->vm_flags |= VM_RESERVED | VM_IO;
 
@@ -307,12 +307,12 @@ static int avsdev_mmap(struct file *filp, struct vm_area_struct *vma)
             return -EAGAIN;
         }
     }
-    
+
     vma->vm_ops = &avsdev_remap_vm_ops;
     avsdev_vma_open(vma);
-    
-    return 0; 
-} 
+
+    return 0;
+}
 
 static struct file_operations avsdev_fops = {
     .owner   = THIS_MODULE,
@@ -331,7 +331,7 @@ static int __init avsdev_init(void)
 
 	printk("[tt]----- avs_dev driver load... ----\n");
 	if (g_dev_major) {
-		dev = MKDEV(g_dev_major, g_dev_minor);	
+		dev = MKDEV(g_dev_major, g_dev_minor);
 		ret = register_chrdev_region(dev, 1, "avs_dev");
 	} else {
 		ret = alloc_chrdev_region(&dev, g_dev_minor, 1, "avs_dev");
@@ -352,7 +352,7 @@ static int __init avsdev_init(void)
 	memset(avs_devp, 0, sizeof(struct avs_dev));
 
 	init_MUTEX(&avs_devp->sem);
-	
+
 	/* request resources and ioremap */
 	printk("[tt]-----      register iomem      ----\n");
 	avs_register_iomem(avs_devp);
@@ -370,7 +370,7 @@ static int __init avsdev_init(void)
 	}
 
     avs_devp->class = class_create(THIS_MODULE, "avs_dev");
-    avs_devp->dev   = device_create(avs_devp->class, NULL, devno, NULL, "avs_dev"); 
+    avs_devp->dev   = device_create(avs_devp->class, NULL, devno, NULL, "avs_dev");
 
 	printk("[tt]--- avs_dev driver load ok!! -----\n");
 	return 0;
@@ -391,7 +391,7 @@ static void __exit avsdev_exit(void)
 		class_destroy(avs_devp->class);
 	}
 
-	unregister_chrdev_region(dev, 1);	
+	unregister_chrdev_region(dev, 1);
 
 	if (avs_devp) {
 		kfree(avs_devp);

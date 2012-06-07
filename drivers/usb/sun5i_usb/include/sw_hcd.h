@@ -10,7 +10,7 @@
 *
 * Author 		: javen
 *
-* Description 	: °å¼¶¿ØÖÆ
+* Description 	: æ¿çº§æ§åˆ¶
 *
 * Notes         :
 *
@@ -108,4 +108,3 @@ int sw_usb_enable_hcd1(void);
 int sw_usb_disable_hcd2(void);
 int sw_usb_enable_hcd2(void);
 #endif   //__SW_HCD_H__
-

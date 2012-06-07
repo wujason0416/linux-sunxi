@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -489,7 +489,7 @@ static void maligp_reset_hard( mali_core_renderunit *core )
 
 	mali_core_renderunit_register_write(core, reset_wait_target_register, reset_default_value); /* set it back to the default */
 	mali_core_renderunit_register_write(core, MALIGP2_REG_ADDR_MGMT_INT_CLEAR, MALIGP2_REG_VAL_IRQ_MASK_ALL);
-	
+
 
 }
 
@@ -585,7 +585,7 @@ static void maligp_initialize_registers_mgmt(mali_core_renderunit *core )
 	{
 		mali_core_renderunit_register_write_relaxed(core, default_mgmt_regs[i].address, default_mgmt_regs[i].value);
 	}
-	_mali_osk_write_mem_barrier(); 
+	_mali_osk_write_mem_barrier();
 }
 
 
@@ -716,8 +716,8 @@ static _mali_osk_errcode_t subsystem_maligp_start_job(mali_core_job * job, mali_
 	_mali_osk_write_mem_barrier();
 
 #if MALI_TIMELINE_PROFILING_ENABLED
-	_mali_profiling_add_event(MALI_PROFILING_EVENT_TYPE_SINGLE | MALI_PROFILING_MAKE_EVENT_CHANNEL_GP(core->core_number) | MALI_PROFILING_EVENT_REASON_SINGLE_HW_FLUSH, 
-	                          jobgp->user_input.frame_builder_id, jobgp->user_input.flush_id, 0, 0, 0); 
+	_mali_profiling_add_event(MALI_PROFILING_EVENT_TYPE_SINGLE | MALI_PROFILING_MAKE_EVENT_CHANNEL_GP(core->core_number) | MALI_PROFILING_EVENT_REASON_SINGLE_HW_FLUSH,
+	                          jobgp->user_input.frame_builder_id, jobgp->user_input.flush_id, 0, 0, 0);
 	_mali_profiling_add_event(MALI_PROFILING_EVENT_TYPE_START|MALI_PROFILING_MAKE_EVENT_CHANNEL_GP(core->core_number), jobgp->pid, jobgp->tid, 0, 0, 0);
 #endif
 
@@ -1449,7 +1449,7 @@ _mali_osk_errcode_t maligp_signal_power_up( mali_bool queue_only )
 
 	return( mali_core_subsystem_signal_power_up( &subsystem_maligp, 0, queue_only ) );
 }
-	
+
 _mali_osk_errcode_t maligp_signal_power_down( mali_bool immediate_only )
 {
 	MALI_DEBUG_PRINT(4, ("Mali GP: signal power down core - immediate_only: %d\n", immediate_only ));

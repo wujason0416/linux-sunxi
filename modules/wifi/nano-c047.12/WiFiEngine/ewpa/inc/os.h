@@ -425,8 +425,8 @@ void os_free(void *ptr);
 #define os_strdup _nrx_os_strdup
 char * os_strdup(const char *s);
 
-#ifndef inline 
-#define inline 
+#ifndef inline
+#define inline
 #endif
 
 #if !defined(__linux__)

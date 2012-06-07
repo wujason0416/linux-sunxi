@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2011, Broadcom Corporation
  * All Rights Reserved.
- * 
+ *
  * This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
  * the contents of this file may not be disclosed to third parties, copied
  * or duplicated in any form, in whole or in part, without the prior
@@ -2129,7 +2129,7 @@ int wlmRxIQEstGet(float *val, int sampleCount, int ant)
 	int sample_count = sampleCount;  /* [0, 16], default: maximum 15 sample counts */
 	int antenna = ant ;       /* [0, 3], default: antenna 0 */
 	int err;
-	uint8 resolution = 1;     /* resolution default to 0.25dB */ 
+	uint8 resolution = 1;     /* resolution default to 0.25dB */
 	float x, y;
 
 	/* default: resolution 1 (coarse), samples = 1024 (2^10) and antenna 3 */

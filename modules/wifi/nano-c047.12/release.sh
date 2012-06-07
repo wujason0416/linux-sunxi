@@ -45,7 +45,7 @@ create_dir ()
 wifi-source()
 {
     make PLATFORM=$PLATFORM clean
-    
+
     local TRANSPORT=`grep TRANSPORT platform/$PLATFORM/platform.inc | sed s/.*=//`
     local HOST_PLATFORM_SRC_DIR=`grep HOST_PLATFORM_SRC_DIR platform/$PLATFORM/platform.inc | sed s/.*=//`
     local KERNEL=`grep KERNEL_MAJOR_VERSION platform/$PLATFORM/platform.inc | sed s/.*=//`
@@ -64,14 +64,14 @@ wifi-source()
     if [ "$PLATFORM" = "pmc" ]; then
 	    cp -LRf userspace/libpmc $TMP_DIR/userspace
     fi
-    
+
     # Ugly: Makefile breaks if timestamps are not updated after cvs export
     touch userspace/libnrx/*.c
 
     cp -LRf kernel/ic $TMP_DIR/kernel
     mkdir -p $TMP_DIR/kernel/$TRANSPORT
     cp -Lf kernel/$TRANSPORT/* $TMP_DIR/kernel/$TRANSPORT
-    
+
     cp -LRf kernel/$TRANSPORT/$HOST_PLATFORM_SRC_DIR $TMP_DIR/kernel/$TRANSPORT
     cp -LRf WiFiEngine $TMP_DIR
     rm -Rf $TMP_DIR/WiFiEngine/_osedrv
@@ -130,7 +130,7 @@ sdio-source()
     tar cvzf $OBJ_DIR/SdioDriver-$RELEASE_VERSION.tar.gz $TMP_DIR
 
     make transport PLATFORM=$PLATFORM
-    
+
     if [ ! -f obj/nano_$TRANSPORT$SUFFIX ]; then
 	echo "Broken SDIO source tree, fix release.sh"
 	return
@@ -234,7 +234,7 @@ do-cd-release()
     make all strip PLATFORM=$PLATFORM CONFIG=release
 
     # Get firmware
-    xmac 
+    xmac
 
     # Cross compile tools
     make ettcp PLATFORM=$PLATFORM
@@ -242,7 +242,7 @@ do-cd-release()
     make iw PLATFORM=$PLATFORM
     make wpa-supplicant PLATFORM=$PLATFORM
     make hic-proxy PLATFORM=$PLATFORM
-   
+
     if [ "$KERNEL" = "2.6" ]; then
 	SUFFIX=.ko
     else
@@ -344,7 +344,7 @@ do-iv-release()
     # Update release tag
     sed -i {s/"Release info not updated in build"/"$RELEASE_VERSION"/} WiFiEngine/wifi_drv/inc/release_tag.h
 
-    for PLATFORM in neomagic26 imx31 ubuntu ubuntu-kdb; do 
+    for PLATFORM in neomagic26 imx31 ubuntu ubuntu-kdb; do
 	mkdir -p $IV_TMP_DIR/$RELEASE_VERSION/$PLATFORM
 	rm -Rf $OBJ_DIR/*
 
@@ -370,7 +370,7 @@ do-iv-release()
 	cp $OBJ_DIR/local XMAC_MAJOR_VERSION=`echo $XMAC_VERSION | sed -e 's%^\([0-9]*\)\.\([0-9]*\)\..*%\1.\2%'`pmcpriv $IV_TMP_DIR/$RELEASE_VERSION/$PLATFORM/
 
 	rm -Rf $OBJ_DIR/*
-  
+
 	make clean PLATFORM=$PLATFORM
 	make PLATFORM=$PLATFORM CONFIG=release
 	cd -
@@ -379,7 +379,7 @@ do-iv-release()
 	for suffix in mod ko; do
 	    for module in nano_if nano_pci nano_sdio; do
 		file=$OBJ_DIR/$module.$suffix
-		if [ -e $file ]; then 
+		if [ -e $file ]; then
 		    cp $file $IV_TMP_DIR/$RELEASE_VERSION/$PLATFORM/$module-release.$suffix
 		fi
 	    done
@@ -388,7 +388,7 @@ do-iv-release()
     done
 
     mkdir -p $IV_TMP_DIR/$RELEASE_VERSION/docs/headers/
-    cp userspace/libnrx/nrx_proto.h userspace/libnrx/nrx_lib.h $IV_TMP_DIR/$RELEASE_VERSION/docs/headers/        
+    cp userspace/libnrx/nrx_proto.h userspace/libnrx/nrx_lib.h $IV_TMP_DIR/$RELEASE_VERSION/docs/headers/
     if [ "$PLATFORM" = "pmc" ]; then
 	    cp userspace/libpmc/pmc_proto.h $IV_TMP_DIR/$RELEASE_VERSION/docs/headers/
     fi
@@ -412,31 +412,31 @@ clean()
 while getopts :r:x:e:k:p:c: option; do
 
     case $option in
- 	r)  
+ 	r)
  	    RELEASE_VERSION=$OPTARG
  	    ;;
-	
- 	x)  
+
+ 	x)
  	    XMAC_VERSION=$OPTARG
  	    ;;
 
- 	e)  
+ 	e)
  	    XTEST_VERSION=$OPTARG
  	    ;;
 
- 	k)  
+ 	k)
  	    KERNEL=$OPTARG
  	    ;;
 
- 	p)  
+ 	p)
  	    PLATFORM=$OPTARG
  	    ;;
-	
- 	c)  
+
+ 	c)
  	    CHIP_REVISION=$OPTARG
  	    ;;
-	
- 	\?) 
+
+ 	\?)
 	usage
 	exit 2
 	;;
@@ -447,18 +447,18 @@ done
 shift $(($OPTIND - 1))
 case $1 in
 
-    iv | do-iv-release) 
+    iv | do-iv-release)
  	do-iv-release
  	;;
 
-    cd | do-cd-release) 
+    cd | do-cd-release)
  	do-cd-release
  	;;
 
     xmac)
- 	xmac 
+ 	xmac
  	;;
-    
+
     xtest)
  	xtest
  	;;
@@ -478,9 +478,9 @@ case $1 in
     clean)
 	clean
 	;;
-    
-    *) 
+
+    *)
     usage
-    exit 2 	
+    exit 2
  	;;
 esac

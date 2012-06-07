@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -16,13 +16,13 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
  *
  *
- 
+
 ******************************************************************************/
 #ifndef __RTW_PWRCTRL_H_
 #define __RTW_PWRCTRL_H_
 
 #include <drv_conf.h>
-#include <osdep_service.h>		
+#include <osdep_service.h>
 #include <drv_types.h>
 
 #ifdef CONFIG_HAS_EARLYSUSPEND
@@ -30,13 +30,13 @@
 #endif //CONFIG_HAS_EARLYSUSPEND
 
 
-#define FW_PWR0	0	
+#define FW_PWR0	0
 #define FW_PWR1 	1
 #define FW_PWR2 	2
 #define FW_PWR3 	3
 
 
-#define HW_PWR0	7	
+#define HW_PWR0	7
 #define HW_PWR1 	6
 #define HW_PWR2 	2
 #define HW_PWR3	0
@@ -105,7 +105,7 @@ struct reportpwrstate_parm {
 	unsigned char mode;
 	unsigned char state; //the CPWM value
 	unsigned short rsvd;
-}; 
+};
 
 
 typedef _sema _pwrlock;
@@ -198,11 +198,11 @@ struct	pwrctrl_priv {
 	u32	cur_ps_level;
 	u32	reg_rfps_level;
 
-	
+
 
 #ifdef CONFIG_PCI_HCI
 	//just for PCIE ASPM
-	u8	b_support_aspm; // If it supports ASPM, Offset[560h] = 0x40, otherwise Offset[560h] = 0x00. 
+	u8	b_support_aspm; // If it supports ASPM, Offset[560h] = 0x40, otherwise Offset[560h] = 0x00.
 	u8	b_support_backdoor;
 
 	//just for PCIE ASPM
@@ -214,10 +214,10 @@ struct	pwrctrl_priv {
 
 	uint 	ips_enter_cnts;
 	uint 	ips_leave_cnts;
-	
+
 	_timer 	ips_check_timer;
 
-	u8	ips_mode; 
+	u8	ips_mode;
 	u8	ips_mode_req; // used to accept the mode setting request, will update to ipsmode later
 
 	u8	bLeisurePs;
@@ -232,14 +232,14 @@ struct	pwrctrl_priv {
 
 	u8		bInternalAutoSuspend;
 	u8		bInSuspend;
-	u8		bSupportRemoteWakeup;	
+	u8		bSupportRemoteWakeup;
 	_timer 	pwr_state_check_timer;
 	int		pwr_state_check_interval;
 	u8		pwr_state_check_cnts;
 	uint 		bips_processing;
 
 	int 		ps_flag;
-	
+
 	rt_rf_power_state	rf_pwrstate;//cur power state
 	//rt_rf_power_state 	current_rfpwrstate;
 	rt_rf_power_state	change_rfpwrstate;
@@ -247,10 +247,10 @@ struct	pwrctrl_priv {
 	u8		wepkeymask;
 	u8		bHWPowerdown;//if support hw power down
 	u8		bHWPwrPindetect;
-	u8		bkeepfwalive;		
+	u8		bkeepfwalive;
 	u8		brfoffbyhw;
 	unsigned long PS_BBRegBackup[PSBBREG_TOTALCNT];
-	
+
 	#ifdef CONFIG_RESUME_IN_WORKQUEUE
 	struct workqueue_struct *rtw_workqueue;
 	_workitem resume_work;
@@ -265,7 +265,7 @@ struct	pwrctrl_priv {
 	android_early_suspend_t early_suspend;
 	u8 do_late_resume;
 	#endif
-	
+
 };
 
 #define rtw_get_ips_mode_req(pwrctrlpriv) \
@@ -279,7 +279,7 @@ struct	pwrctrl_priv {
 		/*DBG_871X("%s _rtw_set_pwr_state_check_timer(%p, %d)\n", __FUNCTION__, (pwrctrlpriv), (ms));*/ \
 		_set_timer(&(pwrctrlpriv)->pwr_state_check_timer, (ms)); \
 	} while(0)
-	
+
 #define rtw_set_pwr_state_check_timer(pwrctrlpriv) \
 	_rtw_set_pwr_state_check_timer((pwrctrlpriv), (pwrctrlpriv)->pwr_state_check_interval)
 

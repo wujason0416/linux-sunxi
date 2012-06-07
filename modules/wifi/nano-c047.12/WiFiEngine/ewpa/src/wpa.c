@@ -1802,8 +1802,8 @@ static int wpa_supplicant_pairwise_gtk(struct wpa_sm *sm,
 	/*
 	 * Even if the group cipher is wrong, the key is correct and
 	 * based on its length we can assume that the group
-	 * cipher is TKIP. This is needed in the case that we get 
-	 * wrong WPS group cipher from the AP. 
+	 * cipher is TKIP. This is needed in the case that we get
+	 * wrong WPS group cipher from the AP.
 	 */
  	if (wpa_supplicant_check_group_cipher(sm->group_cipher,
  					      gtk_len, gtk_len,
@@ -3417,7 +3417,7 @@ int wpa_sm_rx_eapol(struct wpa_sm *sm, const u8 *src_addr,
 	u8 *tmp;
 	int ret = -1;
 	struct wpa_peerkey *peerkey = NULL;
-	
+
 	if(sm == NULL)
 	{
 		DE_BUG_ON(1,"(sm == NULL) in wpa_sm_rx_eapol");

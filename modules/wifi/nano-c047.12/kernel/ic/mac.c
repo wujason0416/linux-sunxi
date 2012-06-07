@@ -25,18 +25,18 @@
 #define RWLOCK_RTRYLOCK(X) spin_trylock(X)
 #define RWLOCK_WTRYLOCK(X) spin_trylock(X)
 #else
-#define RWLOCK struct semaphore 
+#define RWLOCK struct semaphore
 #ifdef init_MUTEX
 #define RWLOCK_INIT(X) init_MUTEX(X)
 #else
-#define RWLOCK_INIT(X) sema_init(X, 1) 
+#define RWLOCK_INIT(X) sema_init(X, 1)
 #endif
 #define RWLOCK_RLOCK(X) down(X)
 #define RWLOCK_WLOCK(X) down(X)
-#define RWLOCK_RUNLOCK(X) up(X) 
+#define RWLOCK_RUNLOCK(X) up(X)
 #define RWLOCK_WUNLOCK(X) up(X)
 #define RWLOCK_RTRYLOCK(X) !down_trylock(X)
-#define RWLOCK_WTRYLOCK(X) !down_trylock(X) 
+#define RWLOCK_WTRYLOCK(X) !down_trylock(X)
 #endif
 
 RWLOCK mac_lock;
@@ -111,7 +111,7 @@ macaddr_valid(uint8_t *data, size_t data_len)
 {
    if(data == NULL || data_len != 6)
       return FALSE;
-   
+
    if(data[0] & 0x1)
       return FALSE;
 
@@ -134,11 +134,11 @@ int sn_to_mac(char* mac)
 {
 	char mac_buf[16];
 	const char sn[] = "\xAA\xAA\xAA";	// Instead of your chip ID
-	
+
 	memcpy(mac_buf, MAC_PREFIX, 3);
 	memcpy(mac_buf+3, sn, 3);
 	memcpy(mac, mac_buf, 6);
-	
+
 	return TRUE;
 }
 #endif
@@ -149,7 +149,7 @@ int get_mac_addr(char* mac)
 	char filename[128];
 	char filebuf[128];
 	RWLOCK_INIT(&mac_lock);
-	
+
 	RWLOCK_WLOCK(&mac_lock);
 	memset(filebuf, 0, 128);
 	//printk("%s : enter\n", __func__);
@@ -207,7 +207,7 @@ int get_mac_addr(char* mac)
 	memcpy(filebuf, MAC_PREFIX, strlen(MAC_PREFIX));
 
 	mac_write_file(filebuf, 6, filename);
-	
+
 _exit:
 	RWLOCK_WUNLOCK(&mac_lock);
 	memcpy(mac, filebuf, 6);

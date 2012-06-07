@@ -10,7 +10,7 @@
 *
 * Author 		: javen
 *
-* Description 	: USB ¼ì²â
+* Description 	: USB æ£€æµ‹
 *
 * History 		:
 *      <author>    		<time>       	<version >    		<desc>
@@ -59,4 +59,3 @@ __s32 usb_hw_scan_init(struct usb_cfg *cfg);
 __s32 usb_hw_scan_exit(struct usb_cfg *cfg);
 
 #endif   //__USB_HW_SCAN_H__
-

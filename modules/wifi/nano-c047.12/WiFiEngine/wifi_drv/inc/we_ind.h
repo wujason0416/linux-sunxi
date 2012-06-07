@@ -27,10 +27,10 @@ void my_release(void* priv)
 }
 
 handler = WiFiEngine_Register_Ind_Handler(
-   WE_IND_TYPE, 
-   WE_IND_TYPE#, 
+   WE_IND_TYPE,
+   WE_IND_TYPE#,
    my_ind,
-   my_release, 
+   my_release,
    0,
    my_priv_data_that_will_be_freed_by_release_on_deregister);
 
@@ -44,7 +44,7 @@ if (we_ind_deregister(handler)
 
 
 Example 2: (safe self-deregister from within an indication; not using deregister_on_ind flag)
----------- 
+----------
 use this with caution for this is a potential well of race conditions
 
 ...
@@ -95,7 +95,7 @@ typedef struct iobject {
  */
 void we_ind_init(void);
 
-/* 
+/*
  * Register a new indication
  */
 struct iobject* we_ind_register(
@@ -106,29 +106,29 @@ struct iobject* we_ind_register(
             int release_on_mask,
             void *priv);
 
-/* 
+/*
  * Register a new indication
  */
 int we_ind_cond_register(
-            struct iobject **hhandler, 
-            wi_msg_id_t id, 
-            wi_msg_string_t msg, 
+            struct iobject **hhandler,
+            wi_msg_id_t id,
+            wi_msg_string_t msg,
             i_func_t func,
             i_release_t release,
             int release_on_mask,
             void *priv);
 
-/* 
+/*
  * Deregister an old indication
  */
 int we_ind_deregister(struct iobject *handler);
 
-/* 
+/*
  * Deregister and assign NULL to an old indication
  */
 int we_ind_deregister_null(struct iobject **handler);
 
-/* 
+/*
  * Send an indication
  *
  * The indication will be recived by all registed handlers at the point
@@ -137,10 +137,10 @@ int we_ind_deregister_null(struct iobject **handler);
  */
 int we_ind_send(wi_msg_id_t id, wi_msg_param_t param);
 
-/* 
+/*
  * Count number of registered indications
  *
- * for debugging only 
+ * for debugging only
  */
 int we_ind_count(wi_msg_id_t id);
 int we_ind_count_all(void);

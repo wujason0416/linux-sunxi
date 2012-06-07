@@ -1,7 +1,7 @@
 // sdio.h
 //
 // SDIO specific definitions
-// 
+//
 //
 #ifndef __sdio_h__
 #define __sdio_h__
@@ -56,7 +56,7 @@ typedef unsigned int UINT;
 /* XXX this conflicts with CLOCK_CONTROL_OFFSET */
 #define HOST_ATTENTION_OFFSET    0x18
 #define HOST_ATTENTION_SW        0x00
-#define HOST_ATTENTION_GPIO1     0x01 
+#define HOST_ATTENTION_GPIO1     0x01
 
 #define FPGA_VERSION_OFFSET      0x1C
 
@@ -90,7 +90,7 @@ typedef unsigned int UINT;
 #define SDIO_DMA_INPUT_INT     0x0001
 
 
-// Interrupts status bits 
+// Interrupts status bits
 #define SDIO_OUTPUT_GATE   0x0001
 #define SDIO_INPUT_GATE    0x0002
 #define SDIO_OUTPUT_INT    0x0001

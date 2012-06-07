@@ -1,4 +1,4 @@
-/** @defgroup we_roam WiFiEngine scan and connect 
+/** @defgroup we_roam WiFiEngine scan and connect
  *
  * \brief  This module scan for (hidden) networks and connects to them if disconnected.
  * (use on linux/winXX, use with connection manager/roaming agent)
@@ -45,7 +45,7 @@ struct sac_state_s {
    struct iobject *core_dump_h;
 };
 
-static struct sac_state_s sac_state = { 
+static struct sac_state_s sac_state = {
    SCAN_NOT_CONFIGURED,
    NO_SCAN_JOB,
    NULL,
@@ -81,11 +81,11 @@ static void we_init(void)
          WE_IND_SCAN_COMPLETE, "SAC: WE_IND_SCAN_COMPLETE",
          scan_complete_ind, NULL,0,NULL);
 
-   we_ind_cond_register(&sac_state.con_lost_h, 
-         WE_IND_CM_DISCONNECTED, "SAC: WE_IND_CM_DISCONNECTED", 
+   we_ind_cond_register(&sac_state.con_lost_h,
+         WE_IND_CM_DISCONNECTED, "SAC: WE_IND_CM_DISCONNECTED",
          disconnected_ind, NULL,0,NULL);
 
-   we_ind_cond_register(&sac_state.core_dump_h, 
+   we_ind_cond_register(&sac_state.core_dump_h,
          WE_IND_CORE_DUMP_START, "SAC: WE_IND_CORE_DUMP_START",
          coredump_start_ind, NULL,0,NULL);
 }
@@ -124,10 +124,10 @@ int WiFiEngine_sac_start(void)
    build_profile(&p);
 
    WiFiEngine_GetBSSType(&type);
-   if(type == M80211_CAPABILITY_ESS) 
+   if(type == M80211_CAPABILITY_ESS)
    {
       WiFiEngine_net_t* elected_net;
-      
+
       /* filtering will be done by default we_filter_out_net(...) */
       elected_net = WiFiEngine_elect_net(NULL,NULL,TRUE);
       if (elected_net)
@@ -137,7 +137,7 @@ int WiFiEngine_sac_start(void)
       }
       else
          return create_and_start_scan_job(&p);
-   } 
+   }
    else
    {
       /* IBSS does not require scanning, just start the net! */
@@ -156,8 +156,8 @@ int WiFiEngine_sac_stop(void)
    remove_scan_job();
 
    we_ind_deregister_null(&sac_state.scan_h);
-   we_ind_deregister_null(&sac_state.con_lost_h); 
-   we_ind_deregister_null(&sac_state.core_dump_h); 
+   we_ind_deregister_null(&sac_state.con_lost_h);
+   we_ind_deregister_null(&sac_state.core_dump_h);
 
    we_cm_disconnect(sac_state.cm_session);
    sac_state.cm_session = NULL;
@@ -167,7 +167,7 @@ int WiFiEngine_sac_stop(void)
 
 static void scan_complete_ind(wi_msg_param_t param, void *priv)
 {
-   m80211_nrp_mlme_scannotification_ind_t *ind = param;   
+   m80211_nrp_mlme_scannotification_ind_t *ind = param;
    WiFiEngine_bss_type_t type;
 
    DE_TRACE_STATIC(TR_NOISE, "ENTRY\n");
@@ -189,8 +189,8 @@ static void disconnected_ind(wi_msg_param_t param, void *priv)
    if(param != sac_state.cm_session)
       return;
 
-   if(sac_state.cm_session) { 
-      sac_state.cm_session = NULL; 
+   if(sac_state.cm_session) {
+      sac_state.cm_session = NULL;
 
       /* looking for new candidates is not desirable when we work under
          the supplicant! So this "auto reconnect" capability should be
@@ -211,7 +211,7 @@ static void connect(WiFiEngine_net_t* net)
 {
    if(!net)
       return;
-   
+
    DE_TRACE_STATIC(TR_NOISE, "ENTRY\n");
 
    stop_scan_job();
@@ -234,17 +234,17 @@ static int create_and_start_scan_job(net_profile_s *conf)
 
    WiFiEngine_GetRegionalChannels(&channels);
 
-   if (WiFiEngine_AddScanJob(&sac_state.scan_job_id, 
-            conf->ssid, 
-            conf->bssid, 
+   if (WiFiEngine_AddScanJob(&sac_state.scan_job_id,
+            conf->ssid,
+            conf->bssid,
             ACTIVE_SCAN, /* needed to find hidden nets */
-            channels, 
+            channels,
             IDLE_MODE,
-            9 /* prio ??? */, 
-            0  /* exclude ap */, 
-            -1 /* filter */, 
-            1  /* run_every_nth_period */, 
-            NULL) 
+            9 /* prio ??? */,
+            0  /* exclude ap */,
+            -1 /* filter */,
+            1  /* run_every_nth_period */,
+            NULL)
          != WIFI_ENGINE_SUCCESS)
    {
       sac_state.scan_job_id = NO_SCAN_JOB;
@@ -311,9 +311,9 @@ void wei_cm_scan_unplug(void)
   remove_scan_job();
 
   we_ind_deregister_null(&sac_state.scan_h);
-  we_ind_deregister_null(&sac_state.con_lost_h); 
-  we_ind_deregister_null(&sac_state.core_dump_h); 
-  
+  we_ind_deregister_null(&sac_state.con_lost_h);
+  we_ind_deregister_null(&sac_state.core_dump_h);
+
   we_cm_disconnect(sac_state.cm_session);
   sac_state.cm_session = NULL;
 }

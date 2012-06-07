@@ -4,7 +4,7 @@
 
 /*! \file
 
-  \brief 
+  \brief
 */
 /*****************************************************************************/
 #ifndef HIC_DEFS_H
@@ -24,7 +24,7 @@
 #define HIC_MESSAGE_TYPE_FLASH_PRG   5
 #define HIC_MESSAGE_TYPE_CUSTOM      6
 #define HIC_MESSAGE_TYPE_CTRL        7
-#define HIC_MESSAGE_TYPE_DLM         8 
+#define HIC_MESSAGE_TYPE_DLM         8
 #define HIC_MESSAGE_TYPE_NUM_TYPES   9
 #endif
 
@@ -62,7 +62,7 @@
 /* Used when receiving data from MAC-layer */
 
 /** @defgroup Group1 Error codes
- *  
+ *
  *  @{
  */
 
@@ -71,13 +71,13 @@
 typedef enum
 {
    HIC_RC_OK = 0,
-   HIC_RC_UNKNOWN_SIGNAL_RECEIVED,      /*!< 1 = Unknown message received from host */ 
-   HIC_RC_UNDEFINED_CALLBACK,           /*!< 2 = Not used */ 
-   NO_RESOURCES,                        /*!< 3 = Not used */ 
-   HIC_RC_INVALID_MESSAGE_TYPE_RECEIVED /*!< 4 = Unknown type of message received from host */  
+   HIC_RC_UNKNOWN_SIGNAL_RECEIVED,      /*!< 1 = Unknown message received from host */
+   HIC_RC_UNDEFINED_CALLBACK,           /*!< 2 = Not used */
+   NO_RESOURCES,                        /*!< 3 = Not used */
+   HIC_RC_INVALID_MESSAGE_TYPE_RECEIVED /*!< 4 = Unknown type of message received from host */
 }hic_rc_t;
 
-/** @} */ 
+/** @} */
 
 #if 0
 typedef uint16_t hic_message_length_t;

@@ -34,7 +34,7 @@ Contains platform independent code for starting and stoping WIFI.
 /*                              STATIC VARIABLES                              */
 /******************************************************************************/
 
-static callback_fuctions* s_callbacks; //pointer to the callback-structure 
+static callback_fuctions* s_callbacks; //pointer to the callback-structure
                                        //supplied by the app
 
 
@@ -50,7 +50,7 @@ static int driver_started(we_cb_container_t *cbc);
 
 /*!
  * @brief Starts WiFi-driver and hardware.
- * 
+ *
  * The driver will start and then make a callback when it is ready for action!
  *
  * @param mode          Selects which mode to start in (test or normal)
@@ -74,7 +74,7 @@ int nrwifi_startup(driver_mode mode, callback_fuctions* callback_fn)
 
    s_callbacks = callback_fn;
 
-   
+
 
    switch(mode)
    {
@@ -85,7 +85,7 @@ int nrwifi_startup(driver_mode mode, callback_fuctions* callback_fn)
       case WLAN_MODE_RFTEST:
          type = FW_TYPE_X_TEST;
          break;
-         
+
          default:
          DE_TRACE_INT(TR_ALWAYS, "Error, bad mode in nrwifi_startup(mode= %u)\n",mode);
          if(s_callbacks->startup_done_cb)
@@ -128,7 +128,7 @@ int nrwifi_startup(driver_mode mode, callback_fuctions* callback_fn)
       WiFiEngine_Shutdown(0);
       if(s_callbacks->startup_done_cb)
          s_callbacks->startup_done_cb(WIFI_ENGINE_FAILURE,mode);
-      return WIFI_ENGINE_FAILURE;      
+      return WIFI_ENGINE_FAILURE;
    }
 
    status = WiFiEngine_SetMsgSizeAlignment(  DE_MSG_MIN_SIZE,
@@ -163,7 +163,7 @@ int nrwifi_startup(driver_mode mode, callback_fuctions* callback_fn)
    }
 
    //If the application have supplied a callback for extra initialization-code
-   //This is where MAC-address will be set, mibs will be loaded.... 
+   //This is where MAC-address will be set, mibs will be loaded....
    if(s_callbacks)
    {
       if(s_callbacks->before_config_cb)
@@ -188,7 +188,7 @@ int nrwifi_startup(driver_mode mode, callback_fuctions* callback_fn)
    //sent to target
    cbc = WiFiEngine_BuildCBC(driver_started, (void*) mode, 0, 0);
    WiFiEngine_GetMIBAsynch(MIB_dot11MACAddress, cbc);
-      
+
    return WIFI_ENGINE_SUCCESS;
 }
 
@@ -211,4 +211,3 @@ static int driver_started(we_cb_container_t *cbc)
    if(s_callbacks) s_callbacks->startup_done_cb(status, (driver_mode)cbc->ctx);
    return 0;
 }
-

@@ -227,4 +227,3 @@
 
 
 #endif //ifndef __NAND_DRV_CFG_H
-

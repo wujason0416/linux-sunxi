@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
-/*! 
+/*!
  * @internal
  * @brief Formats a buffer on stdout.
  *
@@ -35,4 +35,3 @@ nrx_printbuf(const void *data, size_t len, const char *prefix)
       printf("\n");
    }
 }
-

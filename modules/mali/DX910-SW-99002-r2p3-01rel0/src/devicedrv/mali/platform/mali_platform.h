@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -55,7 +55,7 @@ _mali_osk_errcode_t mali_platform_deinit(void);
 /** @brief Platform specific powerdown sequence of MALI
  *
  * Call as part of platform init if there is no PMM support, else the
- * PMM will call it. 
+ * PMM will call it.
  * There are three power modes defined:
  *  1) MALI_POWER_MODE_ON
  *  2) MALI_POWER_MODE_LIGHT_SLEEP
@@ -64,7 +64,7 @@ _mali_osk_errcode_t mali_platform_deinit(void);
  * for idle timer (software timer defined in mali_pmm_policy_jobcontrol.h) duration, MALI transitions
  * to MALI_POWER_MODE_LIGHT_SLEEP mode during timeout if there are no more jobs queued.
  * MALI power management module transitions to MALI_POWER_MODE_DEEP_SLEEP mode when OS does system power
- * off. 
+ * off.
  * Customer has to add power down code when MALI transitions to MALI_POWER_MODE_LIGHT_SLEEP or MALI_POWER_MODE_DEEP_SLEEP
  * mode.
  * MALI_POWER_MODE_ON mode is entered when the MALI is to powered up. Some customers want to control voltage regulators during

@@ -1,9 +1,9 @@
 /*
  * Copyright (C) 2010-2011 ARM Limited. All rights reserved.
- * 
+ *
  * This program is free software and is provided to you under the terms of the GNU General Public License version 2
  * as published by the Free Software Foundation, and any use by you of this program is subject to the terms of such GNU licence.
- * 
+ *
  * A copy of the licence is included with the program, and can also be obtained from Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
@@ -217,7 +217,7 @@ _mali_osk_errcode_t register_resources( _mali_osk_resource_t **arch_configuratio
 		      (arch_resource->type < RESOURCE_TYPE_COUNT) &&
 		      (NULL != resource_handler[arch_resource->type])
 		   )
-		{	
+		{
 #if USING_MALI_PMM
 			if((arch_resource->type != PMU) && (is_pmu_first_resource == 1))
 			{
@@ -817,7 +817,7 @@ _mali_osk_errcode_t mali_core_signal_power_up( mali_pmm_core_id core, mali_bool 
 	case MALI_PMM_CORE_L2:
 		if( !queue_only )
 		{
-			/* Enable L2 cache due to power up */			
+			/* Enable L2 cache due to power up */
 			mali_kernel_l2_cache_do_enable();
 
 			/* Invalidate the cache on power up */
@@ -843,10 +843,10 @@ _mali_osk_errcode_t mali_core_signal_power_up( mali_pmm_core_id core, mali_bool 
 		MALI_DEBUG_PRINT_ERROR( ("Unknown core signalled with power up: %d\n", core) );
 		MALI_ERROR( _MALI_OSK_ERR_INVALID_ARGS );
 	}
-	
+
 	MALI_SUCCESS;
 }
-	
+
 _mali_osk_errcode_t mali_core_signal_power_down( mali_pmm_core_id core, mali_bool immediate_only )
 {
 	switch( core )
@@ -876,7 +876,7 @@ _mali_osk_errcode_t mali_core_signal_power_down( mali_pmm_core_id core, mali_boo
 		MALI_DEBUG_PRINT_ERROR( ("Unknown core signalled with power down: %d\n", core) );
 		MALI_ERROR( _MALI_OSK_ERR_INVALID_ARGS );
 	}
-	
+
 	MALI_SUCCESS;
 }
 

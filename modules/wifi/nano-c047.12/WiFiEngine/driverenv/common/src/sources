@@ -44,4 +44,3 @@ MSC_OPTIMIZATION = /O1 /Os
 
 
 SOURCES=de_common.c
-

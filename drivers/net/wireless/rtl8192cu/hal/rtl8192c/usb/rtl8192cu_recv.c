@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110, USA
  *
  *
- 
+
 ******************************************************************************/
 #define _RTL8192CU_RECV_C_
 #include <drv_conf.h>
@@ -65,7 +65,7 @@ int	rtl8192cu_init_recv_priv(_adapter *padapter)
 	int	i, res = _SUCCESS;
 	struct recv_buf *precvbuf;
 
-#ifdef CONFIG_RECV_THREAD_MODE	
+#ifdef CONFIG_RECV_THREAD_MODE
 	_rtw_init_sema(&precvpriv->recv_sema, 0);//will be removed
 	_rtw_init_sema(&precvpriv->terminate_recvthread_sema, 0);//will be removed
 #endif
@@ -312,11 +312,11 @@ void rtl8192cu_update_recvframe_attrib_from_recvstat(union recv_frame *precvfram
 	{
 		bPacketMatchBSSID = ((!IsFrameTypeCtrl(precvframe->u.hdr.rx_data)) && !icverr && !crcerr &&
 			_rtw_memcmp(get_hdr_bssid(precvframe->u.hdr.rx_data), get_bssid(&padapter->mlmepriv), ETH_ALEN));
-			
+
 		bPacketToSelf = bPacketMatchBSSID &&  (_rtw_memcmp(get_da(precvframe->u.hdr.rx_data), myid(&padapter->eeprompriv), ETH_ALEN));
 
 		bPacketBeacon = (GetFrameSubType(precvframe->u.hdr.rx_data) ==  WIFI_BEACON);
-	
+
 
 		pphy_info = (struct phy_stat *)(prxstat+1);
 
@@ -337,7 +337,7 @@ void rtl8192cu_update_recvframe_attrib_from_recvstat(union recv_frame *precvfram
 			u8 *sa;
 			struct sta_info *psta=NULL;
 			struct sta_priv *pstapriv = &padapter->stapriv;
-			
+
 			sa = get_sa(precvframe->u.hdr.rx_data);
 
 			psta = rtw_get_stainfo(pstapriv, sa);
@@ -354,16 +354,16 @@ void rtl8192cu_update_recvframe_attrib_from_recvstat(union recv_frame *precvfram
 				u8 *sa;
 				struct sta_info *psta=NULL;
 				struct sta_priv *pstapriv = &padapter->stapriv;
-			
+
 				sa = get_sa(precvframe->u.hdr.rx_data);
-	
+
 				psta = rtw_get_stainfo(pstapriv, sa);
 				if(psta)
 				{
 					precvframe->u.hdr.psta = psta;
-				}				
+				}
 			}
-					
+
 			rtl8192c_process_phy_info(padapter, precvframe);
 		}
 
@@ -377,4 +377,3 @@ void rtl8192cu_update_recvframe_attrib_from_recvstat(union recv_frame *precvfram
 
 
 }
-

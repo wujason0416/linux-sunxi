@@ -79,7 +79,7 @@ void  __iomem *baseaddr;
 #define AUDIO_RATE_DEFAULT	44100
 #define ST_RUNNING		(1<<0)
 #define ST_OPENED		(1<<1)
- 
+
 struct sun4i_pcm_dma_params {
 	struct sw_dma_client *client;	/* stream identifier */
 	unsigned int channel;				/* Channel ID */
@@ -104,7 +104,7 @@ struct sun4i_pcm_dma_params {
 	.put	= snd_codec_put_volsw,\
 	.private_value	= CODEC_SINGLE_VALUE(reg, shift, max, invert)}
 
-/*	mixer control*/	
+/*	mixer control*/
 struct	codec_mixer_control{
 	int	min;
 	int     max;

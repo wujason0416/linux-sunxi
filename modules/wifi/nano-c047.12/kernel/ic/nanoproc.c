@@ -41,9 +41,9 @@ static int nrx_proc_ssid_open(struct inode *ino, struct file *file)
 
 
 
-static ssize_t nrx_proc_ssid_write(struct file *file, 
-              const char *buf, 
-              size_t nbytes, 
+static ssize_t nrx_proc_ssid_write(struct file *file,
+              const char *buf,
+              size_t nbytes,
               loff_t *ppos)
 {
    struct net_device *dev = WiFiEngine_GetAdapter();
@@ -76,7 +76,7 @@ static ssize_t nrx_proc_scan_write(struct file *file, const char *buf, size_t nb
 {
    struct net_device *dev = WiFiEngine_GetAdapter();
    struct nrx_softc *sc = netdev_priv(dev);
-   
+
    char msg[32];
    int val;
 
@@ -103,13 +103,13 @@ static ssize_t nrx_proc_scan_write(struct file *file, const char *buf, size_t nb
       case 1:
          WiFiEngine_sac_stop();
          KDEBUG(TRACE, "wait for disconnect");
-         if(wait_event_interruptible(sc->mib_wait_queue, 
+         if(wait_event_interruptible(sc->mib_wait_queue,
                                      WiFiEngine_GetAssociatedNet() == NULL) != 0)
             return -ERESTARTSYS;
          KDEBUG(TRACE, "disconnect");
          WiFiEngine_StartNetworkScan();
          KDEBUG(TRACE, "wait for scan complete");
-         if(wait_event_interruptible(sc->mib_wait_queue, 
+         if(wait_event_interruptible(sc->mib_wait_queue,
                                      WiFiEngine_ScanInProgress() == 0) != 0)
             return -ERESTARTSYS;
          KDEBUG(TRACE, "scan complete");
@@ -122,9 +122,9 @@ static ssize_t nrx_proc_scan_write(struct file *file, const char *buf, size_t nb
 
 
 static void
-print_rates(struct seq_file *s, 
-            const char *header, 
-            uint8_t *rates, 
+print_rates(struct seq_file *s,
+            const char *header,
+            uint8_t *rates,
             size_t rates_len)
 {
    size_t i;
@@ -132,8 +132,8 @@ print_rates(struct seq_file *s,
    for (i = 0; i < rates_len; i++) {
       int basic = rates[i] & 0x80;
       int rate = rates[i] & 0x7f;
-      seq_printf(s, "%s%d%s ", 
-                 basic ? "*" : "", 
+      seq_printf(s, "%s%d%s ",
+                 basic ? "*" : "",
                  rate / 2,
                  (rate & 1) ? ".5": "");
    }
@@ -215,23 +215,23 @@ print_crypto(struct seq_file *s, m80211_bss_description_t *bss)
    seq_printf(s, "\tEncryption:%s\n", (bss->capability_info & M80211_CAPABILITY_PRIVACY) ? "on" : "off");
 
    if(bss->ie.wpa_parameter_set.hdr.hdr.id != M80211_IE_ID_NOT_USED) {
-      print_wpa(s, 
-                "WPA", 
+      print_wpa(s,
+                "WPA",
                 bss->ie.wpa_parameter_set.version,
                 &bss->ie.wpa_parameter_set.group_cipher_suite,
-                bss->ie.wpa_parameter_set.pairwise_cipher_suite_count, 
+                bss->ie.wpa_parameter_set.pairwise_cipher_suite_count,
                 M80211_IE_WPA_PARAMETER_SET_GET_PAIRWISE_CIPHER_SELECTORS(&bss->ie.wpa_parameter_set),
-                bss->ie.wpa_parameter_set.akm_suite_count, 
+                bss->ie.wpa_parameter_set.akm_suite_count,
                 M80211_IE_WPA_PARAMETER_SET_GET_AKM_SELECTORS(&bss->ie.wpa_parameter_set));
    }
    if(bss->ie.rsn_parameter_set.hdr.id != M80211_IE_ID_NOT_USED) {
-      print_wpa(s, 
-                "IEEE 802.11i/WPA2", 
+      print_wpa(s,
+                "IEEE 802.11i/WPA2",
                 bss->ie.rsn_parameter_set.version,
                 &bss->ie.rsn_parameter_set.group_cipher_suite,
-                bss->ie.rsn_parameter_set.pairwise_cipher_suite_count, 
+                bss->ie.rsn_parameter_set.pairwise_cipher_suite_count,
                 M80211_IE_RSN_PARAMETER_SET_GET_PAIRWISE_CIPHER_SELECTORS(&bss->ie.rsn_parameter_set),
-                bss->ie.rsn_parameter_set.akm_suite_count, 
+                bss->ie.rsn_parameter_set.akm_suite_count,
                 M80211_IE_RSN_PARAMETER_SET_GET_AKM_SELECTORS(&bss->ie.rsn_parameter_set));
    }
 }
@@ -247,19 +247,19 @@ print_country_info(struct seq_file *s, m80211_ie_country_t *c)
       return;
    }
 
-   channel_info_count = (c->hdr.len - M80211_IE_LEN_COUNTRY_STRING) / M80211_IE_CHANNEL_INFO_TRIPLET_SIZE;  
+   channel_info_count = (c->hdr.len - M80211_IE_LEN_COUNTRY_STRING) / M80211_IE_CHANNEL_INFO_TRIPLET_SIZE;
 
    seq_printf(s, "\tCountry string:%.3s\n", c->country_string.string);
-   for(i = 0; 
-       i < M80211_IE_MAX_NUM_COUNTRY_CHANNELS && i < channel_info_count; 
+   for(i = 0;
+       i < M80211_IE_MAX_NUM_COUNTRY_CHANNELS && i < channel_info_count;
        i++) {
       if(c->channel_info[i].num_channels == 1)
-         seq_printf(s, "\tTX Power ch %u:%ddBm\n", 
-                    c->channel_info[i].first_channel, 
+         seq_printf(s, "\tTX Power ch %u:%ddBm\n",
+                    c->channel_info[i].first_channel,
                     c->channel_info[i].max_tx_power);
       else
-         seq_printf(s, "\tTX Power ch %u-%u:%ddBm\n", 
-                    c->channel_info[i].first_channel, 
+         seq_printf(s, "\tTX Power ch %u-%u:%ddBm\n",
+                    c->channel_info[i].first_channel,
                     c->channel_info[i].first_channel + c->channel_info[i].num_channels - 1,
                     c->channel_info[i].max_tx_power);
    }
@@ -285,8 +285,8 @@ print_wmm_acp(struct seq_file *s, AC_parameters_t *acp)
 }
 
 static void
-print_wmm(struct seq_file *s, 
-          m80211_ie_WMM_parameter_element_t *ie, 
+print_wmm(struct seq_file *s,
+          m80211_ie_WMM_parameter_element_t *ie,
           size_t len)
 {
    seq_printf(s, "\tWMM:");
@@ -296,7 +296,7 @@ print_wmm(struct seq_file *s,
    }
    if(ie->WMM_QoS_Info & 0x80)
       seq_printf(s, "U-APSD ");
-   seq_printf(s, "PSC %u ", 
+   seq_printf(s, "PSC %u ",
               ie->WMM_QoS_Info & 0x0f);
    seq_printf(s, "\n");
 
@@ -309,7 +309,7 @@ print_wmm(struct seq_file *s,
 }
 
 
-static int 
+static int
 nrx_proc_scan_seq_show(struct seq_file *s, void *v)
 {
    WiFiEngine_net_t *netlist, *p;
@@ -342,21 +342,21 @@ nrx_proc_scan_seq_show(struct seq_file *s, void *v)
          }
          seq_printf(s, "\n");
 
-         if(M80211_IS_ESS(bss_p->capability_info)) 
+         if(M80211_IS_ESS(bss_p->capability_info))
             seq_printf(s, "\tMode:Master\n");
          else if(M80211_IS_IBSS(bss_p->capability_info))
             seq_printf(s, "\tMode:Ad-hoc\n");
          seq_printf(s, "\tESSID:\"%s\"\n", str);
          seq_printf(s, "\tChannel:%d\n", bss_p->ie.ds_parameter_set.channel);
-         
+
          print_crypto(s, bss_p);
 
          if(M80211_WMM_INFO_ELEM_IS_PRESENT(bss_p))
-            print_wmm(s, (void*)&bss_p->ie.wmm_information_element, 
+            print_wmm(s, (void*)&bss_p->ie.wmm_information_element,
                       sizeof(bss_p->ie.wmm_information_element));
 
          if(M80211_WMM_PARAM_ELEM_IS_PRESENT(bss_p))
-            print_wmm(s, &bss_p->ie.wmm_parameter_element, 
+            print_wmm(s, &bss_p->ie.wmm_parameter_element,
                       sizeof(bss_p->ie.wmm_parameter_element));
 
 #if 0
@@ -378,21 +378,21 @@ nrx_proc_scan_seq_show(struct seq_file *s, void *v)
 #endif
 
          if(bss_p->ie.supported_rate_set.hdr.id == M80211_IE_ID_SUPPORTED_RATES)
-            print_rates(s, "Basic Rates", 
+            print_rates(s, "Basic Rates",
                         bss_p->ie.supported_rate_set.rates,
                         bss_p->ie.supported_rate_set.hdr.len);
-         
+
          if(bss_p->ie.ext_supported_rate_set.hdr.id == M80211_IE_ID_EXTENDED_SUPPORTED_RATES)
-            print_rates(s, "Extended Rates", 
+            print_rates(s, "Extended Rates",
                         bss_p->ie.ext_supported_rate_set.rates,
                         bss_p->ie.ext_supported_rate_set.hdr.len);
-         
+
          seq_printf(s, "\tSignal level:%d dBm\n", p->bss_p->rssi_info);
          if(p->bss_p->snr_info == SNR_UNKNOWN)
             seq_printf(s, "\tSNR level:unknown\n");
          else
             seq_printf(s, "\tSNR level:%d dB\n", p->bss_p->snr_info);
-         
+
          print_country_info(s, &bss_p->ie.country_info_set);
 
          seq_printf(s, "\tBeacon Period:%u\n", bss_p->beacon_period);
@@ -530,7 +530,7 @@ counter_open(struct nrx_px_softc *psc, struct inode *inode, struct file *file)
 
    uint32_t u32;
    size_t len = sizeof(u32);
-   
+
    if(nrx_get_mib(dev, id, &u32, &len) == 0) {
       nrx_px_setsize(psc, 0);
       nrx_px_printf(psc, "%u\n", le32_to_cpu(u32));
@@ -546,13 +546,13 @@ static struct nrx_px_entry *
 create_counter_entry(struct net_device *dev, const char *name, const char *id)
 {
    struct nrx_softc *sc = netdev_priv(dev);
-   
+
    return nrx_px_create_dynamic(dev, name, id, strlen(id) + 1,
                                 0, NULL, counter_open, NULL,
                                 sc->counters_dir);
 }
 
-static struct nrx_px_entry_head counter_list = 
+static struct nrx_px_entry_head counter_list =
   WEI_TQ_HEAD_INITIALIZER(counter_list);
 
 static void
@@ -608,7 +608,7 @@ int nrx_proc_setup(struct net_device *dev)
    struct nrx_softc *sc = netdev_priv(dev);
    struct proc_dir_entry *entry;
    char driver_path[128];
-        
+
    DE_TRACE_STATIC(TR_NOISE, "Setting up /proc entries\n");
    /* Dir */
    snprintf(driver_path, sizeof(driver_path), "driver/%s", dev->name);
@@ -617,32 +617,32 @@ int nrx_proc_setup(struct net_device *dev)
    sc->proc_dir->gid = 0;
 
    /* SSID write handle */
-   entry = create_proc_entry("ssid", 
+   entry = create_proc_entry("ssid",
                              S_IFREG | S_IRUGO,
                              sc->proc_dir);
    entry->data = dev;
    entry->proc_fops = &nrx_proc_ssid_ops;
 
    /* Scan handle */
-   entry = create_proc_entry("scan", 
+   entry = create_proc_entry("scan",
                              S_IFREG | S_IRUGO,
                              sc->proc_dir);
    entry->data = dev;
-   entry->proc_fops = &nrx_proc_scan_ops; 
+   entry->proc_fops = &nrx_proc_scan_ops;
 
    /* Status read handle */
-   entry = create_proc_entry("status", 
+   entry = create_proc_entry("status",
                              S_IFREG | S_IRUGO,
                              sc->proc_dir);
    entry->data = dev;
-   entry->proc_fops = &nrx_proc_status_ops; 
+   entry->proc_fops = &nrx_proc_status_ops;
 
    /* Chip-type read handle */
-   entry = create_proc_entry("target", 
+   entry = create_proc_entry("target",
                              S_IFREG | S_IRUGO,
                              sc->proc_dir);
    entry->data = dev;
-   entry->proc_fops = &nrx_proc_target_ops; 
+   entry->proc_fops = &nrx_proc_target_ops;
 
    if(sc->transport->fw_download != NULL)
       nrx_px_create(&fw_px_entry, dev, sc->proc_dir);
@@ -651,10 +651,10 @@ int nrx_proc_setup(struct net_device *dev)
    nrx_px_create(&reg_px_entry, dev, sc->proc_dir);
 
 #ifdef MEM_TRACE
-   meminfo_entry = nrx_px_create_dynamic(dev, "meminfo", 
-                                         &meminfo_callout, 
+   meminfo_entry = nrx_px_create_dynamic(dev, "meminfo",
+                                         &meminfo_callout,
                                          sizeof(&meminfo_callout),
-                                         0, NULL, nrx_px_string_open, NULL, 
+                                         0, NULL, nrx_px_string_open, NULL,
                                          sc->proc_dir);
 #endif
 
@@ -705,7 +705,7 @@ int nrx_proc_cleanup(struct net_device *dev)
       nrx_px_remove(pe, sc->core_dir);
    remove_proc_entry("core", sc->proc_dir);
    sc->core_dir = NULL;
-   
+
    snprintf(driver_path, sizeof(driver_path), "driver/%s", dev->name);
    remove_proc_entry(driver_path, NULL);
    sc->proc_dir = NULL;

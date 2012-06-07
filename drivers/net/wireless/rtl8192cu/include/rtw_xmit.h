@@ -1,7 +1,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
- *                                        
+ *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
  * published by the Free Software Foundation.
@@ -206,7 +206,7 @@ struct tx_desc{
 
 union txdesc {
 	struct tx_desc txdesc;
-	unsigned int value[TXDESC_SIZE>>2];	
+	unsigned int value[TXDESC_SIZE>>2];
 };
 
 #ifdef CONFIG_PCI_HCI
@@ -224,36 +224,36 @@ struct rtw_tx_ring {
 
 struct	hw_xmit	{
 	//_lock xmit_lock;
-	//_list	pending;	
+	//_list	pending;
 	_queue *sta_queue;
 	//struct hw_txqueue *phwtxqueue;
-	//sint	txcmdcnt;		
+	//sint	txcmdcnt;
 	int	accnt;
 };
 
 #if 0
 struct pkt_attrib
-{	
+{
 	u8	type;
 	u8	subtype;
 	u8	bswenc;
 	u8	dhcp_pkt;
-	u16	ether_type;	
+	u16	ether_type;
 	int	pktlen;		//the original 802.3 pkt raw_data len (not include ether_hdr data)
 	int	pkt_hdrlen;	//the original 802.3 pkt header len
-	int	hdrlen;		//the WLAN Header Len	
+	int	hdrlen;		//the WLAN Header Len
 	int	nr_frags;
 	int	last_txcmdsz;
 	int	encrypt;	//when 0 indicate no encrypt. when non-zero, indicate the encrypt algorith
 	u8	iv[8];
 	int	iv_len;
-	u8	icv[8];	
+	u8	icv[8];
 	int	icv_len;
 	int	priority;
 	int	ack_policy;
 	int	mac_id;
-	int	vcs_mode;	//virtual carrier sense method	
-	
+	int	vcs_mode;	//virtual carrier sense method
+
 	u8 	dst[ETH_ALEN];
 	u8	src[ETH_ALEN];
 	u8	ta[ETH_ALEN];
@@ -262,7 +262,7 @@ struct pkt_attrib
 	u8	key_idx;
 
 	u8	qos_en;
-	u8	ht_en;	
+	u8	ht_en;
 	u8	raid;//rate adpative id
 	u8	bwmode;
 	u8	ch_offset;//PRIME_CHNL_OFFSET
@@ -273,19 +273,19 @@ struct pkt_attrib
 
 	u8	pctrl;//per packet txdesc control enable
 	u8	triggered;//for ap mode handling Power Saving sta
-	
+
 	u32	qsel;
 	u16	seqnum;
 
 	struct sta_info * psta;
 #ifdef CONFIG_TCP_CSUM_OFFLOAD_TX
 	u8	hw_tcp_csum;
-#endif	
+#endif
 };
 #else
 //reduce size
 struct pkt_attrib
-{	
+{
 	u8	type;
 	u8	subtype;
 	u8	bswenc;
@@ -312,7 +312,7 @@ struct pkt_attrib
 	u8 	ra[ETH_ALEN];
 	u8	key_idx;
 	u8	qos_en;
-	u8	ht_en;	
+	u8	ht_en;
 	u8	raid;//rate adpative id
 	u8	bwmode;
 	u8	ch_offset;//PRIME_CHNL_OFFSET
@@ -327,7 +327,7 @@ struct pkt_attrib
 	struct sta_info * psta;
 #ifdef CONFIG_TCP_CSUM_OFFLOAD_TX
 	u8	hw_tcp_csum;
-#endif	
+#endif
 };
 #endif
 
@@ -365,8 +365,8 @@ struct xmit_buf
 	u32 alloc_sz;
 
 #ifdef CONFIG_USB_HCI
-       
-       u32 sz[8];	   
+
+       u32 sz[8];
 
 #if defined(PLATFORM_OS_XP)||defined(PLATFORM_LINUX)
 	PURB	pxmit_urb[8];
@@ -388,13 +388,13 @@ struct xmit_buf
 #endif
 
 	u8 bpending[8];
-	
+
 	sint last[8];
- 
+
 #endif
 
 #ifdef CONFIG_SDIO_HCI
-	u32  len;	
+	u32  len;
 	u8 *phead;
 	u8 *pdata;
 	u8 *ptail;
@@ -402,9 +402,9 @@ struct xmit_buf
 	u32 ff_hwaddr;
 #ifdef PLATFORM_OS_XP
 	PMDL pxmitbuf_mdl;
-	PIRP  pxmitbuf_irp; 
+	PIRP  pxmitbuf_irp;
 	PSDBUS_REQUEST_PACKET pxmitbuf_sdrp;
-#endif	
+#endif
 #endif
 
 #ifdef CONFIG_PCI_HCI
@@ -451,8 +451,8 @@ struct xmit_frame
 
 struct tx_servq {
 	_list	tx_pending;
-	_queue	sta_pending;	
-	int qcnt;		
+	_queue	sta_pending;
+	int qcnt;
 };
 
 
@@ -465,7 +465,7 @@ struct sta_xmit_priv
 
 
 	//struct tx_servq blk_q[MAX_NUMBLKS];
-	struct tx_servq	be_q;			//priority == 0,3 
+	struct tx_servq	be_q;			//priority == 0,3
 	struct tx_servq	bk_q;			//priority == 1,2
 	struct tx_servq	vi_q;			//priority == 4,5
 	struct tx_servq	vo_q;			//priority == 6,7
@@ -484,7 +484,7 @@ struct sta_xmit_priv
 struct	hw_txqueue	{
 	volatile sint	head;
 	volatile sint	tail;
-	volatile sint 	free_sz;	//in units of 64 bytes	
+	volatile sint 	free_sz;	//in units of 64 bytes
 	volatile sint      free_cmdsz;
 	volatile sint	 txsz[8];
 	uint	ff_hwaddr;
@@ -494,30 +494,30 @@ struct	hw_txqueue	{
 
 
 struct	xmit_priv	{
-	
+
 	_lock	lock;
 
 	_sema	xmit_sema;
 	_sema	terminate_xmitthread_sema;
-	
+
 	//_queue	blk_strms[MAX_NUMBLKS];
 	_queue	be_pending;
 	_queue	bk_pending;
 	_queue	vi_pending;
 	_queue	vo_pending;
 	_queue	bm_pending;
-	
+
 	//_queue	legacy_dz_queue;
 	//_queue	apsd_queue;
-	
+
 	u8 *pallocated_frame_buf;
 	u8 *pxmit_frame_buf;
 	uint free_xmitframe_cnt;
 
 	//uint mapping_addr;
-	//uint pkt_sz;	
-	
-	_queue	free_xmit_queue;	
+	//uint pkt_sz;
+
+	_queue	free_xmit_queue;
 
 	//struct	hw_txqueue	be_txqueue;
 	//struct	hw_txqueue	bk_txqueue;
@@ -528,25 +528,25 @@ struct	xmit_priv	{
 	uint	frag_len;
 
 	_adapter	*adapter;
-	
+
 	u8   vcs_setting;
 	u8	vcs;
 	u8	vcs_type;
 	//u16  rts_thresh;
-	
+
 	u64	tx_bytes;
 	u64	tx_pkts;
 	u64	tx_drop;
 	u64	last_tx_bytes;
 	u64	last_tx_pkts;
-	
+
 	struct hw_xmit *hwxmits;
 	u8	hwxmit_entry;
 
 #ifdef CONFIG_USB_HCI
 	_sema	tx_retevt;//all tx return event;
 	u8		txirp_cnt;//
-	
+
 #ifdef PLATFORM_OS_CE
 	USB_TRANSFER	usb_transfer_write_port;
 //	USB_TRANSFER	usb_transfer_write_mem;
@@ -559,7 +559,7 @@ struct	xmit_priv	{
 	int bkq_cnt;
 	int viq_cnt;
 	int voq_cnt;
-	
+
 #endif
 
 #ifdef CONFIG_SDIO_HCI
@@ -571,7 +571,7 @@ struct	xmit_priv	{
 #ifdef PLATFORM_OS_XP
 	PMDL prd_freesz_mdl[2];
 	u8 brd_freesz_pending[2];
-	PIRP  prd_freesz_irp[2]; 
+	PIRP  prd_freesz_irp[2];
 	PSDBUS_REQUEST_PACKET prd_freesz_sdrp[2];
 	u8 rd_freesz_irp_idx;
 #endif
@@ -580,7 +580,7 @@ struct	xmit_priv	{
 
 #ifdef CONFIG_PCI_HCI
 	// Tx
-	struct rtw_tx_ring	tx_ring[PCI_MAX_TX_QUEUE_COUNT];	
+	struct rtw_tx_ring	tx_ring[PCI_MAX_TX_QUEUE_COUNT];
 	int	txringcount[PCI_MAX_TX_QUEUE_COUNT];
 #ifdef PLATFORM_LINUX
 	struct tasklet_struct xmit_tasklet;
@@ -592,7 +592,7 @@ struct	xmit_priv	{
 	u8 *pallocated_xmitbuf;
 	u8 *pxmitbuf;
 	uint free_xmitbuf_cnt;
-	
+
 	_queue free_xmit_extbuf_queue;
 	u8 *pallocated_xmit_extbuf;
 	u8 *pxmit_extbuf;
@@ -662,4 +662,3 @@ void xmit_delivery_enabled_frames(_adapter *padapter, struct sta_info *psta);
 #endif
 
 #endif	//_RTL871X_XMIT_H_
-

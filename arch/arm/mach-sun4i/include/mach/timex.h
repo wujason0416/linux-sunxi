@@ -20,6 +20,6 @@
 #define SYS_TIMER_CLKSRC    (24000000)      /* timer clock source               */
 #define TMR_INTER_VAL       (SYS_TIMER_CLKSRC/(SYS_TIMER_SCAL*HZ))
 
-#define CLOCK_TICK_RATE     TMR_INTER_VAL 
+#define CLOCK_TICK_RATE     TMR_INTER_VAL
 
 #endif

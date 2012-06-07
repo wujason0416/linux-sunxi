@@ -172,7 +172,7 @@ struct wapi_sm {
         u8 Nae[32];
 	u16 txseq;
 	u8 flag;
-	
+
 	u8 rekey_flag;
 
 	u8 *assoc_wapi_ie; /* Own WAPI IE from (Re)AssocReq */

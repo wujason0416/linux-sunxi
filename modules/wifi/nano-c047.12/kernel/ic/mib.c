@@ -20,9 +20,9 @@ static int nrx_mib_release(struct nrx_px_softc*, struct inode*, struct file*);
 static int nrx_mib_init(struct nrx_px_softc *psc);
 
 struct nrx_px_entry mib_px_entry = {
-   .name = "mib", 
-   .mode = S_IRUSR|S_IWUSR, 
-   .blocksize = 1024, 
+   .name = "mib",
+   .mode = S_IRUSR|S_IWUSR,
+   .blocksize = 1024,
    .init = nrx_mib_init,
    .open = NULL,
    .release = nrx_mib_release
@@ -32,13 +32,13 @@ static int
 nano_mib_download(struct nrx_px_softc *psc)
 {
    int status;
- 
+
    if(nrx_px_size(psc) == 0) {
       KDEBUG(TRACE, "No Mib data available");
       nrx_px_runlock(psc);
       return -EINVAL;
    }
-    
+
    KDEBUG(TRACE, "Sending Mibs");
 
    status =  WiFiEngine_SendMIBSetFromNvmem(nrx_px_data(psc),
@@ -47,8 +47,8 @@ nano_mib_download(struct nrx_px_softc *psc)
 }
 
 static int
-nrx_mib_release(struct nrx_px_softc *psc, 
-                struct inode *inode, 
+nrx_mib_release(struct nrx_px_softc *psc,
+                struct inode *inode,
                 struct file *file)
 {
     printk("[nano] Send mib\n");
@@ -83,4 +83,3 @@ nrx_mib_init(struct nrx_px_softc *psc)
     nrx_px_wunlock(psc);
     return 0;
 }
-

@@ -6,7 +6,7 @@
 
 
 #include <stdlib.h>
-#include <stdarg.h> 
+#include <stdarg.h>
 #include <unistd.h>
 
 static nrx_debug_callback_t log_cb = NULL;
@@ -27,17 +27,17 @@ static nrx_debug_callback_t log_cb = NULL;
  *     int context = (int) user_data;
  *     printf("Callback invoked, user data is %d.\n", context);
  * }
- * 
+ *
  * void *dispatch(void* data)
  * {
  *     nrx_context ctx = (nrx_context) data;
  *     for(;;) {
  *         if(nrx_wait_event(ctx, 1000) == 0)
  *             nrx_next_event(ctx);
- *     } 
+ *     }
  *     return NULL;
  * }
- * 
+ *
  * int main()
  * {
  *     nrx_context ctx;
@@ -45,7 +45,7 @@ static nrx_debug_callback_t log_cb = NULL;
  *     void *status;
  *     int32_t thr_id;
  *     nrx_callback_handle handle;
- * 
+ *
  *     nrx_init_context(&ctx, NULL);
  *     pthread_create(&thread, NULL, dispatch, ctx);
  *
@@ -68,7 +68,7 @@ static nrx_debug_callback_t log_cb = NULL;
  *     int context = (int) user_data;
  *     printf("Callback invoked, user data is %d.\n", context);
  * }
- * 
+ *
  * int main()
  * {
  *     nrx_context ctx;
@@ -85,7 +85,7 @@ static nrx_debug_callback_t log_cb = NULL;
  *         if(nrx_wait_event(ctx, 1000) == 0)
  *             nrx_next_event(ctx);
  *     }
- * 
+ *
  *     nrx_free_context(ctx);
  * }
  * \endcode
@@ -96,11 +96,11 @@ static nrx_debug_callback_t log_cb = NULL;
  * @ingroup MISC
  * @brief <b>Set function to receive debug info</b>
  *
- * A callback can be registered by this function. It will be called 
- * by nrx_log_printf() each time debug macros are used, e.g. LOG() 
+ * A callback can be registered by this function. It will be called
+ * by nrx_log_printf() each time debug macros are used, e.g. LOG()
  * and ERROR().
  *
- * @param cb Callback function where debug information is to be sent. 
+ * @param cb Callback function where debug information is to be sent.
  *           When set to NULL all debugging is skipped.
  *
  * <!-- NRX_API_EXCLUDE -->
@@ -117,7 +117,7 @@ void nrx_set_log_cb(nrx_debug_callback_t cb)
  * @brief <b>Handle debug info</b>
  *
  * This function should only be used by macros such as LOG() and ERROR().
- * Input should have printf() formating. This is converted to a string, which 
+ * Input should have printf() formating. This is converted to a string, which
  * is sent to a callback function.
  *
  * @param prio Priority of debug info. Low values are more important (e.g. fatal errors)
@@ -141,14 +141,14 @@ int nrx_log_printf(int prio, const char *file, int line, const char *fmt, ...)
    msg = (char*)malloc(size);
    if (msg == NULL)
       return -1;
-   
+
    va_start(ap, fmt);
    n = vsnprintf (msg, size, fmt, ap);
    if (n >= size) {             /* failed: allocate more mem and try again */
       free(msg);
       size = n + 1;
       msg = (char*)malloc(size);
-      if (msg == NULL) 
+      if (msg == NULL)
          goto exit;
       n = vsnprintf (msg, size, fmt, ap);
    }
@@ -166,15 +166,15 @@ int
 nrx_ioctl(nrx_context ctx, unsigned int cmd, void *data)
 {
    struct ifreq ifr;
-   
+
    ifr.ifr_data = (caddr_t)data;
    strlcpy(ifr.ifr_name, ctx->ifname, sizeof(ifr.ifr_name));
 
    if(ioctl(ctx->sock, cmd, &ifr) < 0)
       return errno;
-   
+
    return 0;
-}                 
+}
 
 /*!
  * @internal
@@ -206,7 +206,7 @@ nrx_nrxioctl(nrx_context ctx, unsigned int cmd, struct nrx_ioc *param)
  * The context should be freed after use.
  *
  * @param ctx A pointer to the context to initialise.
- * @param ifname The interface name for accesses. 
+ * @param ifname The interface name for accesses.
  *               If NULL an attempt to discover the correct interface
  *               will be made.
  *
@@ -246,9 +246,9 @@ nrx_init_context(nrx_context *ctx, const char *ifname)
       nrx_free_context(*ctx);
       return ENODEV;
    }
-   
+
    nrx_get_wxconfig(*ctx);
-   
+
    return 0;
 }
 

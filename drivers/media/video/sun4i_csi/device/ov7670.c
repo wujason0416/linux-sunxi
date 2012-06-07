@@ -33,11 +33,11 @@ MODULE_DESCRIPTION("A low-level driver for OmniVision ov7670 sensors");
 MODULE_LICENSE("GPL");
 
 //for internel driver debug
-#define DEV_DBG_EN   		0 
-#if(DEV_DBG_EN == 1)		
+#define DEV_DBG_EN   		0
+#if(DEV_DBG_EN == 1)
 #define csi_dev_dbg(x,arg...) printk(KERN_INFO"[CSI_DEBUG][OV7670]"x,##arg)
 #else
-#define csi_dev_dbg(x,arg...) 
+#define csi_dev_dbg(x,arg...)
 #endif
 #define csi_dev_err(x,arg...) printk(KERN_INFO"[CSI_ERR][OV7670]"x,##arg)
 #define csi_dev_print(x,arg...) printk(KERN_INFO"[CSI][OV7670]"x,##arg)
@@ -220,7 +220,7 @@ MODULE_LICENSE("GPL");
  * Information we maintain about a known sensor.
  */
 struct ov7670_format_struct;  /* coming later */
-__csi_subdev_info_t ccm_info_con = 
+__csi_subdev_info_t ccm_info_con =
 {
 	.mclk 	= MCLK,
 	.vref 	= VREF_POL,
@@ -371,7 +371,7 @@ static struct regval_list ov7670_default_regs[] = {
 	{ 0x79, 0x03 },		{ 0xc8, 0x40 },
 	{ 0x79, 0x05 },		{ 0xc8, 0x30 },
 	{ 0x79, 0x26 },
-	
+
 	{ 0xff, 0xff },	/* END MARKER */
 };
 
@@ -608,13 +608,13 @@ static int ov7670_write_array(struct v4l2_subdev *sd, struct regval_list *vals)
 /*
  * Stuff that knows about the sensor.
  */
- 
+
 static int ov7670_power(struct v4l2_subdev *sd, int on)
 {
 	struct csi_dev *dev=(struct csi_dev *)dev_get_drvdata(sd->v4l2_dev->dev);
 	struct ov7670_info *info = to_state(sd);
 	char csi_stby_str[32],csi_power_str[32],csi_reset_str[32];
-	
+
 	if(info->ccm_info->iocfg == 0) {
 		strcpy(csi_stby_str,"csi_stby");
 		strcpy(csi_power_str,"csi_power_en");
@@ -624,7 +624,7 @@ static int ov7670_power(struct v4l2_subdev *sd, int on)
 	  strcpy(csi_power_str,"csi_power_en_b");
 	  strcpy(csi_reset_str,"csi_reset_b");
 	}
-  
+
   switch(on)
 	{
 		case CSI_SUBDEV_STBY_ON:
@@ -644,7 +644,7 @@ static int ov7670_power(struct v4l2_subdev *sd, int on)
 			msleep(100);
 			//inactive mclk after stadby in
 			clk_disable(dev->csi_module_clk);
-			
+
 			gpio_write_one_pin_value(dev->csi_pin_hd,CSI_RST_ON,csi_reset_str);
 			msleep(10);
 			break;
@@ -699,7 +699,7 @@ static int ov7670_power(struct v4l2_subdev *sd, int on)
 			gpio_write_one_pin_value(dev->csi_pin_hd,CSI_STBY_OFF,csi_stby_str);
 			msleep(10);
 			break;
-			
+
 		case CSI_SUBDEV_PWR_OFF:
 			csi_dev_dbg("CSI_SUBDEV_PWR_OFF\n");
 			//power supply off
@@ -713,37 +713,37 @@ static int ov7670_power(struct v4l2_subdev *sd, int on)
 			}
 			if(dev->dvdd) {
 				regulator_disable(dev->dvdd);
-				msleep(10);	
+				msleep(10);
 			}
 			gpio_write_one_pin_value(dev->csi_pin_hd,CSI_PWR_OFF,csi_power_str);
 			msleep(10);
-			
+
 			//inactive mclk after power off
 			clk_disable(dev->csi_module_clk);
-			
+
 			//set the io to hi-z
 			gpio_set_one_pin_io_status(dev->csi_pin_hd,0,csi_reset_str);//set the gpio to input
 			gpio_set_one_pin_io_status(dev->csi_pin_hd,0,csi_stby_str);//set the gpio to input
 			break;
 		default:
 			return -EINVAL;
-	}		
+	}
 
 	return 0;
 }
- 
+
 static int ov7670_reset(struct v4l2_subdev *sd, u32 val)
 {
 	struct csi_dev *dev=(struct csi_dev *)dev_get_drvdata(sd->v4l2_dev->dev);
 	struct ov7670_info *info = to_state(sd);
 	char csi_reset_str[32];
-  
+
 	if(info->ccm_info->iocfg == 0) {
 		strcpy(csi_reset_str,"csi_reset");
 	} else if(info->ccm_info->iocfg == 1) {
 	  strcpy(csi_reset_str,"csi_reset_b");
 	}
-	
+
 	switch(val)
 	{
 		case CSI_SUBDEV_RST_OFF:
@@ -768,7 +768,7 @@ static int ov7670_reset(struct v4l2_subdev *sd, u32 val)
 		default:
 			return -EINVAL;
 	}
-	
+
 //	ov7670_write(sd, REG_COM7, COM7_RESET);
 //	msleep(1);
 	return 0;
@@ -812,7 +812,7 @@ static int ov7670_init(struct v4l2_subdev *sd, u32 val)
 {
 	int ret;
 	csi_dev_dbg("ov7670_init\n");
-	
+
 	/* Make sure it's an ov7670 */
 	ret = ov7670_detect(sd);
 	if (ret) {
@@ -825,21 +825,21 @@ static int ov7670_init(struct v4l2_subdev *sd, u32 val)
 static long sensor_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
 {
 	int ret=0;
-	
+
 	switch(cmd){
-		case CSI_SUBDEV_CMD_GET_INFO: 
+		case CSI_SUBDEV_CMD_GET_INFO:
 		{
 			struct ov7670_info *info = to_state(sd);
 			__csi_subdev_info_t *ccm_info = arg;
-			
+
 			csi_dev_dbg("CSI_SUBDEV_CMD_GET_INFO\n");
-			
+
 			ccm_info->mclk 	=	info->ccm_info->mclk ;
 			ccm_info->vref 	=	info->ccm_info->vref ;
 			ccm_info->href 	=	info->ccm_info->href ;
 			ccm_info->clock	=	info->ccm_info->clock;
 			ccm_info->iocfg	=	info->ccm_info->iocfg;
-			
+
 			csi_dev_dbg("ccm_info.mclk=%x\n ",info->ccm_info->mclk);
 			csi_dev_dbg("ccm_info.vref=%x\n ",info->ccm_info->vref);
 			csi_dev_dbg("ccm_info.href=%x\n ",info->ccm_info->href);
@@ -851,26 +851,26 @@ static long sensor_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
 		{
 			struct ov7670_info *info = to_state(sd);
 			__csi_subdev_info_t *ccm_info = arg;
-			
+
 			csi_dev_dbg("CSI_SUBDEV_CMD_SET_INFO\n");
-			
+
 			info->ccm_info->mclk 	=	ccm_info->mclk 	;
 			info->ccm_info->vref 	=	ccm_info->vref 	;
 			info->ccm_info->href 	=	ccm_info->href 	;
 			info->ccm_info->clock	=	ccm_info->clock	;
 			info->ccm_info->iocfg	=	ccm_info->iocfg	;
-			
+
 			csi_dev_dbg("ccm_info.mclk=%x\n ",info->ccm_info->mclk);
 			csi_dev_dbg("ccm_info.vref=%x\n ",info->ccm_info->vref);
 			csi_dev_dbg("ccm_info.href=%x\n ",info->ccm_info->href);
 			csi_dev_dbg("ccm_info.clock=%x\n ",info->ccm_info->clock);
 			csi_dev_dbg("ccm_info.iocfg=%x\n ",info->ccm_info->iocfg);
-			
+
 			break;
 		}
 		default:
 			return -EINVAL;
-	}		
+	}
 		return ret;
 }
 
@@ -1071,8 +1071,8 @@ static int ov7670_enum_fmt(struct v4l2_subdev *sd, unsigned index,
 
 	if (index >= N_OV7670_FMTS)//linux-3.0
 		return -EINVAL;
-		
-	*code = ov7670_formats[index].mbus_code;//linux-3.0		
+
+	*code = ov7670_formats[index].mbus_code;//linux-3.0
 
 //	ofmt = ov7670_formats + fmt->index;
 //	fmt->flags = 0;
@@ -1110,15 +1110,15 @@ static int ov7670_try_fmt_internal(struct v4l2_subdev *sd,
 	 * Round requested image size down to the nearest
 	 * we support, but not below the smallest.
 	 */
-	
-	
+
+
 	for (wsize = ov7670_win_sizes; wsize < ov7670_win_sizes + N_WIN_SIZES;
 	     wsize++)
 		if (fmt->width >= wsize->width && fmt->height >= wsize->height)//linux-3.0
 			break;
-	
-	
-	
+
+
+
 	if (wsize >= ov7670_win_sizes + N_WIN_SIZES)
 		wsize--;   /* Take the smallest one */
 	if (ret_wsize != NULL)
@@ -1130,11 +1130,11 @@ static int ov7670_try_fmt_internal(struct v4l2_subdev *sd,
 	fmt->height = wsize->height;//linux-3.0
 //pix->bytesperline = pix->width*ov7670_formats[index].bpp;//linux-3.0
 //pix->sizeimage = pix->height*pix->bytesperline;//linux-3.0
-	
+
 		return 0;
 }
 
-static int ov7670_try_fmt(struct v4l2_subdev *sd, 
+static int ov7670_try_fmt(struct v4l2_subdev *sd,
              struct v4l2_mbus_framefmt *fmt)//linux-3.0
 {
 	return ov7670_try_fmt_internal(sd, fmt, NULL, NULL);
@@ -1143,7 +1143,7 @@ static int ov7670_try_fmt(struct v4l2_subdev *sd,
 /*
  * Set a format.
  */
-static int ov7670_s_fmt(struct v4l2_subdev *sd, 
+static int ov7670_s_fmt(struct v4l2_subdev *sd,
              struct v4l2_mbus_framefmt *fmt)//linux-3.0
 {
 	int ret;
@@ -1155,7 +1155,7 @@ static int ov7670_s_fmt(struct v4l2_subdev *sd,
 	ret = ov7670_try_fmt_internal(sd, fmt, &ovfmt, &wsize);
 	if (ret)
 		return ret;
-	
+
 	/*
 	 * COM7 is a pain in the ass, it doesn't like to be read then
 	 * quickly written afterward.  But we have everything we need
@@ -1175,7 +1175,7 @@ static int ov7670_s_fmt(struct v4l2_subdev *sd,
 	if (wsize->regs)
 		ret = ov7670_write_array(sd, wsize->regs);
 	info->fmt = ovfmt;
-	
+
 	/*
 	 * If we're running RGB565, we must rewrite clkrc after setting
 	 * the other parameters or the image looks poor.  If we're *not*
@@ -1673,7 +1673,7 @@ static int ov7670_queryctrl(struct v4l2_subdev *sd,
 	case V4L2_CID_EXPOSURE_AUTO:
 		return v4l2_ctrl_query_fill(qc, 0, 1, 1, 0);
 	case V4L2_CID_CAMERA_FLASH_MODE:
-	  return v4l2_ctrl_query_fill(qc, 0, 4, 1, 0);		
+	  return v4l2_ctrl_query_fill(qc, 0, 4, 1, 0);
 	}
 	return -EINVAL;
 }
@@ -1683,7 +1683,7 @@ static int sensor_g_flash_mode(struct v4l2_subdev *sd,
 {
 	struct ov7670_info *info = to_state(sd);
 	enum v4l2_flash_mode *flash_mode = (enum v4l2_flash_mode*)value;
-	
+
 	*flash_mode = info->flash_mode;
 	return 0;
 }
@@ -1695,36 +1695,36 @@ static int sensor_s_flash_mode(struct v4l2_subdev *sd,
 	struct csi_dev *dev=(struct csi_dev *)dev_get_drvdata(sd->v4l2_dev->dev);
 	char csi_flash_str[32];
 	int flash_on,flash_off;
-	
+
 	if(info->ccm_info->iocfg == 0) {
 		strcpy(csi_flash_str,"csi_flash");
 	} else if(info->ccm_info->iocfg == 1) {
 	  strcpy(csi_flash_str,"csi_flash_b");
 	}
-	
+
 	flash_on = (dev->flash_pol!=0)?1:0;
 	flash_off = (flash_on==1)?0:1;
-	
+
 	switch (value) {
 	case V4L2_FLASH_MODE_OFF:
 	  gpio_write_one_pin_value(dev->csi_pin_hd,flash_off,csi_flash_str);
 		break;
 	case V4L2_FLASH_MODE_AUTO:
 		return -EINVAL;
-		break;  
+		break;
 	case V4L2_FLASH_MODE_ON:
 		gpio_write_one_pin_value(dev->csi_pin_hd,flash_on,csi_flash_str);
-		break;   
+		break;
 	case V4L2_FLASH_MODE_TORCH:
 		return -EINVAL;
 		break;
-	case V4L2_FLASH_MODE_RED_EYE:   
+	case V4L2_FLASH_MODE_RED_EYE:
 		return -EINVAL;
 		break;
 	default:
 		return -EINVAL;
 	}
-	
+
 	info->flash_mode = value;
 	return 0;
 }

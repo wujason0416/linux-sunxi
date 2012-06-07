@@ -392,6 +392,3 @@ __s32 standby_clk_apb2hosc(void)
     CmuReg->Apb1ClkDiv.ClkSrc = 0;
     return 0;
 }
-
-
-

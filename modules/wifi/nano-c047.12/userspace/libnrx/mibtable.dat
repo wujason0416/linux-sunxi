@@ -104,7 +104,7 @@
 #4.4.14,dot11NumberOfHoppingSets,   4, decimal
 #4.4.15,dot11HopModulus,4, decimal
 #4.4.16,dot11HopOffset, 4, decimal
-#4.5.1,dot11CurrentChannel, 2, decimal,    
+#4.5.1,dot11CurrentChannel, 2, decimal,
 #4.5.2,dot11CCAModeSupported,   2, decimal
 #4.5.3,dot11CurrentCCAMode, 2, decimal
 #4.5.4,dot11EDThreshold,4, decimal

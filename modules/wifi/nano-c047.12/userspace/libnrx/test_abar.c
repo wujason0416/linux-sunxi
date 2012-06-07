@@ -1,5 +1,5 @@
 
-/* 
+/*
  * Nota Bene: This code is for testing only and should not be used in
  * an application as trigger events might be missed. This happens as
  * registring triggers and receiving them are done in separate
@@ -16,14 +16,14 @@
 #define IWEVCUSTOM	0x8C02		/* Driver specific ascii string */
 
 int
-nrx_event_dispatch(nrx_context ctx, 
-                   int operation, 
-                   void *event_data, 
+nrx_event_dispatch(nrx_context ctx,
+                   int operation,
+                   void *event_data,
                    size_t event_data_size,
                    void *user_data)
 {
    struct nrx_we_callback_data *d;
-   
+
    if(operation == NRX_CB_CANCEL)
       return 0;
 
@@ -141,7 +141,7 @@ void *dispatch(void* data)
    nrx_context ctx = (nrx_context) data;
    while (nrx_wait_event(ctx, -1) == 0) {
          nrx_next_event(ctx);
-   } 
+   }
    return NULL;
 }
 
@@ -158,8 +158,8 @@ main(int argc, char **argv)
       printf("Usage: test [interface]\n");
       return 1;
    }
-   
-   if (argc == 2) 
+
+   if (argc == 2)
       ifname = argv[1];
 
    if(nrx_init_context(&ctx, ifname) != 0)
@@ -168,7 +168,7 @@ main(int argc, char **argv)
    pthread_create(&thread, NULL, dispatch, ctx);
 
    nrx_register_we_event_handler(ctx, IWEVCUSTOM, nrx_event_dispatch, NULL);
- 
+
    /* Registred in "incorrect" direction to get harder test case */
 
    /* Rising: value is 1 */
@@ -218,10 +218,9 @@ main(int argc, char **argv)
    REGISTER(2,0);
    REGISTER(1,0);
    REGISTER(0,0);
-   
+
    pthread_join(thread, (void**) &status);
    nrx_free_context(ctx);
 
    return 0;
 }
-

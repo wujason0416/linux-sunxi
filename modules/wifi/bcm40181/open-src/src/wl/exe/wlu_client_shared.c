@@ -3,7 +3,7 @@
  *
  * Copyright (C) 2011, Broadcom Corporation
  * All Rights Reserved.
- * 
+ *
  * This is UNPUBLISHED PROPRIETARY SOURCE CODE of Broadcom Corporation;
  * the contents of this file may not be disclosed to third parties, copied
  * or duplicated in any form, in whole or in part, without the prior
@@ -197,7 +197,7 @@ unsigned long *bytes_to_read)
 		return FAIL;
 	}
 
-	/* Response will come in DATA_FRAME_LEN + REMOTE_SIZE (960+16) bytes 
+	/* Response will come in DATA_FRAME_LEN + REMOTE_SIZE (960+16) bytes
 	 * packet with CDC header and then followed by response.
 	 */
 	total_numread = 0;
@@ -275,7 +275,7 @@ rwl_information_dongle(void *wl, int cmd, void* input_buf, unsigned long *input_
 		return FAIL;
 	}
 
-	/*  We can grab short frames all at once.  Longer frames (> 960 bytes) 
+	/*  We can grab short frames all at once.  Longer frames (> 960 bytes)
 	 *  come in fragments.
 	*/
 	if (rem_ptr->data_len < DATA_FRAME_LEN) {
@@ -288,7 +288,7 @@ rwl_information_dongle(void *wl, int cmd, void* input_buf, unsigned long *input_
 		else
 			error = 0;
 	} else {
-		/* rwl_serial_fragmented_response_fe returns either valid number or FAIL. 
+		/* rwl_serial_fragmented_response_fe returns either valid number or FAIL.
 		  * In any case return the same value to caller
 		*/
 		error = rwl_serial_fragmented_response_fe(wl, rem_ptr, input_buf, input_len);
@@ -344,7 +344,7 @@ rwl_shell_information_fe(void *wl, int cmd, uchar* input_buf, unsigned long *inp
 				rwl_close_pipe(remote_type, wl);
 				return BCME_ERROR;
 			}
-			/* For backward compatibility for ASD, async and kill commands do the 
+			/* For backward compatibility for ASD, async and kill commands do the
 			 * old way
 			 */
 			if (remote_cmd == REMOTE_SHELL_CMD && !strstr((char*)input_buf, "%") &&
@@ -374,7 +374,7 @@ rwl_shell_information_fe(void *wl, int cmd, uchar* input_buf, unsigned long *inp
 
 				/* print the shell result */
 				resp_buf[rem_ptr->msg.len] = '\0';
-				/* The return value of the shell command 
+				/* The return value of the shell command
 				 * will be stored in rem_ptr->msg.cmd
 				 * Return that value to the client process
 				 */
@@ -393,7 +393,7 @@ rwl_shell_information_fe(void *wl, int cmd, uchar* input_buf, unsigned long *inp
 				return FAIL;
 			}
 
-			/* For backward compatibility for ASD, async and kill commands do the 
+			/* For backward compatibility for ASD, async and kill commands do the
 			 * old way
 			 */
 			if (remote_cmd != REMOTE_ASD_CMD && !strstr((char*)input_buf, "%") &&
@@ -406,7 +406,7 @@ rwl_shell_information_fe(void *wl, int cmd, uchar* input_buf, unsigned long *inp
 					return SERIAL_PORT_ERR;
 				}
 			rwl_swap_header(rem_ptr, NETWORK_TO_HOST);
-			/* In case of shell or ASD commands the response 
+			/* In case of shell or ASD commands the response
 			 * size is not known in advance
 			 * Hence based on response from the server memory is allocated
 			 */
@@ -474,7 +474,7 @@ rwl_shell_information_fe(void *wl, int cmd, uchar* input_buf, unsigned long *inp
 						free(list);
 						return FAIL;
 				}
-				/* For backward compatibility for ASD, 
+				/* For backward compatibility for ASD,
 				 * async and kill commands do the
 				 * old way
 				 */
@@ -939,7 +939,7 @@ rwl_var_getbuf(void *wl, const char *iovar, void *param, int param_len, void **b
 		memcpy(&g_rwl_aligned_buf[len], param, param_len);
 
 	*bufptr = g_rwl_aligned_buf;
-	/*   When user wants to execute local CMD being in remote wifi mode, 
+	/*   When user wants to execute local CMD being in remote wifi mode,
 	*	rwl_wifi_swap_remote_type fucntion is used to change the remote types.
 	*/
 	rwl_wifi_swap_remote_type(remote_type);
@@ -965,7 +965,7 @@ rwl_var_setbuf(void *wl, const char *iovar, void *param, int param_len)
 		memcpy(&g_rwl_aligned_buf[len], param, param_len);
 
 	len += param_len;
-	/*   When user wants to execute local CMD being in remote wifi mode, 
+	/*   When user wants to execute local CMD being in remote wifi mode,
 	*	rwl_wifi_swap_remote_type fucntion is used to change the remote types.
 	*/
 	rwl_wifi_swap_remote_type(remote_type);
@@ -1007,7 +1007,7 @@ rwl_var_send_vs_actionframe(void* wl, const char* iovar, void* param, int param_
 
 	len  += param_len + ETHER_ADDR_LEN + 2 + 4;
 
-	/*   When user wants to execute local CMD being in remote wifi mode, 
+	/*   When user wants to execute local CMD being in remote wifi mode,
 	*	rwl_wifi_swap_remote_type fucntion is used to change the remote types.
 	*/
 	rwl_wifi_swap_remote_type(remote_type);
@@ -1018,7 +1018,7 @@ rwl_var_send_vs_actionframe(void* wl, const char* iovar, void* param, int param_
 	return error;
 }
 #endif /* RWL_WIFI */
-/* 
+/*
  * Function for printing the usage if user type invalid command line
  * options(e.g wl --serial or --dongle or --socket or --wifi)
  */
@@ -1104,7 +1104,7 @@ rwl_socket_shellresp(void *wl, rem_ioctl_t *rem_ptr, uchar *input_buf)
 		}
 		/* print the shell result */
 		resp_buf[rem_ptr->msg.len] = '\0';
-		/* The return value of the shell command 
+		/* The return value of the shell command
 		 * will be stored in rem_ptr->msg.cmd
 		 * Return that value to the client process
 		 */

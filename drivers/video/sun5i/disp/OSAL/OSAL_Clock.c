@@ -8,9 +8,9 @@
 * File    : OSAL_Clock.c
 * By      : Sam.Wu
 * Version : V1.00
-* Date    : 2011/3/25 20:25 
-* Description :  
-* Update   :  date      author      version     notes    
+* Date    : 2011/3/25 20:25
+* Description :
+* Update   :  date      author      version     notes
 ********************************************************************************
 */
 #include "OSAL.h"
@@ -206,7 +206,7 @@ __s32 OSAL_CCMU_SetSrcFreq( __u32 nSclkNo, __u32 nFreq )
 {
     struct clk* hSysClk = NULL;
     s32 retCode = -1;
-    
+
     hSysClk = clk_get(NULL, _sysClkName[nSclkNo]);
 
     __inf("OSAL_CCMU_SetSrcFreq<%s,%d>\n",hSysClk->clk->name, nFreq);
@@ -292,7 +292,7 @@ __s32 OSAL_CCMU_SetMclkSrc( __hdle hMclk, __u32 nSclkNo )
         clk_put(hSysClk);
         return -1;
     }
-    
+
     clk_put(hSysClk);
 
     return retCode;
@@ -308,7 +308,7 @@ __s32 OSAL_CCMU_GetMclkSrc( __hdle hMclk )
     for (; sysClkNo <  TOTAL_SYS_CLK; sysClkNo++)
     {
         struct clk* tmpSysClk = clk_get(NULL, _sysClkName[sysClkNo]);
-        
+
         if(tmpSysClk == NULL)
         	continue;
 
@@ -338,7 +338,7 @@ __s32 OSAL_CCMU_SetMclkDiv( __hdle hMclk, __s32 nDiv )
     if(nDiv == 0){
     	return -1;
     }
-    
+
     return clk_set_rate(hModClk, srcRate/nDiv);
 }
 
@@ -347,9 +347,9 @@ __u32 OSAL_CCMU_GetMclkDiv( __hdle hMclk )
     struct clk* hModClk = (struct clk*)hMclk;
     struct clk* hParentClk = clk_get_parent(hModClk);
     u32 mod_freq = clk_get_rate(hModClk);
-    
+
     if(mod_freq == 0){
-    	return 0;	
+    	return 0;
     }
 
     return clk_get_rate(hParentClk)/mod_freq;
@@ -438,4 +438,3 @@ __s32 OSAL_CCMU_MclkReset(__hdle hMclk, __s32 bReset)
     return 0;
 }
 #endif
-

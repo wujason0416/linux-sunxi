@@ -46,13 +46,13 @@
 typedef struct
 {
     __bool                  lcd_used;
-    
+
 	__bool                  lcd_bl_en_used;
 	user_gpio_set_t         lcd_bl_en;
-	
+
 	__bool                  lcd_power_used;
 	user_gpio_set_t         lcd_power;
-	
+
 	__bool                  lcd_pwm_used;
 	user_gpio_set_t         lcd_pwm;
 
@@ -64,13 +64,13 @@ typedef struct
 }__disp_lcd_cfg_t;
 
 typedef struct
-{    
+{
     __u32                   status; /*display engine,lcd,tv,vga,hdmi status*/
     __u32                   lcdc_status;//tcon0 used, tcon1 used
     __bool                  have_cfg_reg;
     __u32                   cache_flag;
     __u32                   cfg_cnt;
-    
+
     __u32                   screen_width;
     __u32                   screen_height;
     __disp_color_t          bk_color;

@@ -106,7 +106,7 @@ int DriverEnvironment_WaitOnEvent(de_event_t *ev, int ms_to_wait)
    {
       return DRIVERENVIRONMENT_FAILURE_NOT_ALLOWED;
    }
-   do 
+   do
    {
       if (DE_SIG_SIGNALLED == ev->state)
       {

@@ -361,7 +361,7 @@ SM_STATE(EAP, METHOD_SIMWAIT)
 		wpa_printf(MSG_WARNING, "EAP::METHOD_SIMWAIT - method not selected");
 		return;
 	}
-	/* by setting the changed flag, we ensure another eapol loop, 
+	/* by setting the changed flag, we ensure another eapol loop,
 	   else we let a timer find the way back here */
 	sm->changed = (Boolean) scard_gsm_auth_complete();
 }
@@ -663,7 +663,7 @@ SM_STEP(EAP)
 			sm->rxFailure = FALSE;
 			sm->rxSuccess = TRUE;
 			SM_ENTER(EAP, SUCCESS);
-			/* if we don't get deauthenticated then we must deauthenticate our selfs */ 
+			/* if we don't get deauthenticated then we must deauthenticate our selfs */
 			WiFiEngine_Deauthenticate();
 		}
 #endif

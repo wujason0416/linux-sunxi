@@ -1,29 +1,29 @@
 # Copyright (c) 1997 - 2004 Kungliga Tekniska Hogskolan
-# (Royal Institute of Technology, Stockholm, Sweden). 
-# All rights reserved. 
+# (Royal Institute of Technology, Stockholm, Sweden).
+# All rights reserved.
 #
-# Redistribution and use in source and binary forms, with or without 
-# modification, are permitted provided that the following conditions 
-# are met: 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
 #
-# 1. Redistributions of source code must retain the above copyright 
-#    notice, this list of conditions and the following disclaimer. 
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
 #
-# 2. Neither the name of the Institute nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
-#    without specific prior written permission. 
+# 2. Neither the name of the Institute nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
+#    without specific prior written permission.
 #
-# THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS ``AS IS'' AND 
-# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
-# ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE 
-# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL 
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS 
-# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) 
-# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
-# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY 
-# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF 
-# SUCH DAMAGE. 
+# THIS SOFTWARE IS PROVIDED BY THE INSTITUTE AND CONTRIBUTORS ``AS IS'' AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL THE INSTITUTE OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+# OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+# LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+# OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+# SUCH DAMAGE.
 
 # Make prototypes from .c files
 # $Heimdal: make-proto.pl,v 1.20 2004/09/03 08:50:57 lha Exp $
@@ -161,7 +161,7 @@ while(<>) {
 		# remove , within ()
 		while(s/\(([^()]*),(.*)\)/($1\$$2)/g){}
 		s/\<\s*void\s*\>/<>/;
-		# remove parameter names 
+		# remove parameter names
 		if($opt_P eq "remove") {
 		    s/(\s*)([a-zA-Z0-9_]+)([,>])/$3/g;
 		    s/\s+\*/*/g;
@@ -188,7 +188,7 @@ while(<>) {
 		/([a-zA-Z0-9_]+)\s*\</;
 		$f = $1;
 		# only add newline if more than one parameter
-##              if($flags{"multiline-proto"} && /,/){ 
+##              if($flags{"multiline-proto"} && /,/){
 ##		    s/\</ (\n\t/;
 ##		}else{
 		    s/\</ (/;
@@ -263,7 +263,7 @@ sub make_default_file {
 
 #endif /* $block */
 ";
-    
+
     return $file;
 }
 
@@ -360,10 +360,10 @@ if($opt_o) {
     print OUT $public_header;
     close OUT;
     try_rename($opt_o);
-} 
+}
 if($opt_p) {
     $private_header =~ s/\@\@\@\n?/\n$private_h/;
     print PRIV $private_header;
     close PRIV;
     try_rename($opt_p);
-} 
+}

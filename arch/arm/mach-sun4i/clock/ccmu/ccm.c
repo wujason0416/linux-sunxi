@@ -79,4 +79,3 @@ __s32 aw_ccu_exit(void)
 {
     return AW_CCU_ERR_NONE;
 }
-

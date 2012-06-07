@@ -729,7 +729,7 @@ static u8 * eap_peap_process(struct eap_sm *sm, void *priv,
 				eap_tls_derive_key(sm, &data->ssl, label,
 						   EAP_TLS_KEY_LEN);
 			if (data->key_data) {
-				wpa_hexdump_key(MSG_DEBUG, 
+				wpa_hexdump_key(MSG_DEBUG,
 						"EAP-PEAP: Derived key",
 						data->key_data,
 						EAP_TLS_KEY_LEN);

@@ -81,7 +81,7 @@ Stop_Socket_Service()
 	return 0;
 }
 
-void 
+void
 wfaGetSockOpt(int sockfd, int* tosval, socklen_t* size)
 {
 	getsockopt(sockfd, IPPROTO_IP, IP_TOS, tosval, size);
@@ -105,7 +105,7 @@ wfa_estimate_timer_latency()
 	gettimeofday(&t1, NULL);
 	usleep(sleep);
 
-	gettimeofday(&t2, NULL); 
+	gettimeofday(&t2, NULL);
 
 	tp2.tv_usec = t1.tv_usec + 20000;
 	if( tp2.tv_usec >= 1000000)
@@ -116,10 +116,10 @@ wfa_estimate_timer_latency()
 	else
 		tp2.tv_sec = t1.tv_sec;
 
-	return latency = (t2.tv_sec - tp2.tv_sec) * 1000000 + (t2.tv_usec - tp2.tv_usec); 
+	return latency = (t2.tv_sec - tp2.tv_sec) * 1000000 + (t2.tv_usec - tp2.tv_usec);
 }
 
-/* This function returns the wireless adapter in Linux systems. 
+/* This function returns the wireless adapter in Linux systems.
  * This is for getting wireless adapter name programmatically */
 void
 GetWirelessAdapter(char *adapter_name)
@@ -134,7 +134,7 @@ GetWirelessAdapter(char *adapter_name)
 	uname(&name);
 	/* Checking for x86 architecture */
 	if (!strcmp(name.machine, "i386") || !strcmp(name.machine, "i686") || !strcmp(name.machine, "i586")) {
-			
+
 		/* Get a socket handle. */
 		sck = socket(AF_INET, SOCK_DGRAM, 0);
 		if (sck < 0) {
@@ -169,7 +169,7 @@ GetWirelessAdapter(char *adapter_name)
 		strncpy (adapter_name, "eth0", 15);
 	}
 #else
-	else { /* If its ARM */ 
+	else { /* If its ARM */
 		strncpy (adapter_name,"eth1", 15);
 	}
 #endif
@@ -205,18 +205,18 @@ int exec_process_cnclient (char *buf, char *rwl_client_path, int rwl_wifi_flag)
 		pid = fork();
 		if (pid == 0) {
 			if ((status=execl (SH_PATH, "sh", "-c", buf, NULL)) == -1)
-				exit (1);		
+				exit (1);
 		}
 		/*The server can be in different channel after association
 		 *Hence we issue a findserver and then find out if it has
 		 *been associated to return the right status
-		 */	
+		 */
 		asd_sleep(3);
 		sprintf(gCmdStr, "%s findserver", rwl_client_path);
 		pid = fork();
 		if (pid == 0) {
 			if ((status=execl (SH_PATH, "sh", "-c", gCmdStr, NULL)) == -1)
-				exit (1);		
+				exit (1);
 		}
 		waitpid(pid,&status,0);
 	}
@@ -224,15 +224,15 @@ int exec_process_cnclient (char *buf, char *rwl_client_path, int rwl_wifi_flag)
 		pid = fork();
 		if (pid == 0) {
 			if ((status=execl (SH_PATH, "sh", "-c", buf, NULL)) == -1)
-				exit (1);		
+				exit (1);
 		}
 		waitpid(pid,&status,0);
 	}
-	/* while cnClient associates in the child, parent looks 
+	/* while cnClient associates in the child, parent looks
 	 * for association if it has happened
 	 * If it has not associated within a loop of 30, it comes out
 	 * as not associated
-	 */ 
+	 */
 	while(timeout_count > 0){
 		sprintf(gCmdStr, "%s assoc | wc -l", rwl_client_path);
 		if((tmpfd = asd_Config(gCmdStr,TEMP_FILE_PATH)) == NULL){

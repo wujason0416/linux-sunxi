@@ -12,7 +12,7 @@ void * host_flash_open(char * filename,uint32_t flags)
    else if (flags & HOST_FLASH_READ_FLAG)
       handle = fopen(filename,"r");
    else return NULL;
- 
+
    return handle;
 }
 
@@ -21,10 +21,10 @@ int host_flash_write(void * buf, size_t size, void * handle)
 {
    int status;
    FILE * file;
-   
+
    file = (FILE*) handle;
    //APP_DEBUG("host_flash_write\n");
-   
+
    if (file == NULL)
       {
          printf("NULL write\n");

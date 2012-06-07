@@ -50,7 +50,7 @@ static inline int nrx_px_append(struct nrx_px_softc *sc, const void *data, size_
 } WARN_UNUSED
 
 /* copy data to buffer */
-static inline int nrx_px_copy(struct nrx_px_softc *sc, const void *data, size_t len) 
+static inline int nrx_px_copy(struct nrx_px_softc *sc, const void *data, size_t len)
 {
    int ret;
    ret = nrx_px_pwrite(sc, data, len, 0);
@@ -81,8 +81,8 @@ int nrx_px_read_file(struct nrx_px_softc *sc, const char *filename);
 
 struct nrx_px_entry *
 nrx_px_create_dynamic(struct net_device*,
-                      const char*, 
-                      const void*, 
+                      const char*,
+                      const void*,
                       size_t,
                       int,
                       int (*)(struct nrx_px_softc*),
@@ -125,4 +125,3 @@ int nrx_px_rates_open(struct nrx_px_softc*, struct inode*, struct file*);
 int nrx_px_rates_release(struct nrx_px_softc*, struct inode*, struct file*);
 
 #endif /* __nrx_px_h__ */
-

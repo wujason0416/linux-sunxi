@@ -4,4 +4,3 @@
 #define VERSION_STR "0.5.10"
 
 #endif /* VERSION_H */
-
