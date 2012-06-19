@@ -2253,6 +2253,8 @@ serial8250_do_set_termios(struct uart_port *port, struct ktermios *termios,
 	unsigned char cval, fcr = 0;
 	unsigned long flags;
 	unsigned int baud, quot;
+	unsigned char mcr_tmp=0x00;
+	unsigned int count_tmp;
 
 	switch (termios->c_cflag & CSIZE) {
 	case CS5:
@@ -2398,14 +2400,38 @@ serial8250_do_set_termios(struct uart_port *port, struct ktermios *termios,
 	}
 #endif
 
+	mcr_tmp = serial_port_inp(port, UART_MCR);
+
 	/*
 	 * For NatSemi, switch to bank 2 not bank 1, to avoid resetting EXCR2,
 	 * otherwise just set DLAB
 	 */
-	if (up->capabilities & UART_NATSEMI)
-		serial_port_out(port, UART_LCR, 0xe0);
-	else
-		serial_port_out(port, UART_LCR, cval | UART_LCR_DLAB);
+	if (up->capabilities & UART_NATSEMI) {
+		count_tmp=0;
+		mcr_tmp = serial_port_inp(port, UART_MCR);
+		serial_port_out(port, UART_MCR, mcr_tmp |(1<<4));
+		do{
+			count_tmp++;
+			serial_port_out(port, UART_FCR,0x07);
+			serial_port_out(port, UART_LCR, 0xe0);
+			if(count_tmp==1000)
+				break;
+		}while(serial_port_inp(port, UART_USR)&0x01);
+	} else {
+		/*loopback mode to set lcr*/
+		mcr_tmp = serial_port_inp(port, UART_MCR);
+		serial_port_out(port, UART_MCR, mcr_tmp |(1<<4));
+
+		count_tmp=0;
+		do{
+			count_tmp++;
+
+			serial_port_out(port, UART_FCR,0x07);
+			serial_port_out(port, UART_LCR, cval | UART_LCR_DLAB);
+			if(count_tmp==1000)
+				break;
+		}while(serial_port_inp(port, UART_USR)&0x01);
+	}
 
 	serial_dl_write(up, quot);
 
@@ -2415,7 +2441,17 @@ serial8250_do_set_termios(struct uart_port *port, struct ktermios *termios,
 	 */
 	if (port->type == PORT_16750)
 		serial_port_out(port, UART_FCR, fcr);
+	count_tmp=0;
+	do{
+		count_tmp++;
 
+		serial_port_out(port, UART_FCR,0x07);
+		serial_port_out(port, UART_LCR, cval);		/* reset DLAB */
+		if(count_tmp==1000)
+			break;
+	}while(serial_port_inp(port, UART_USR)&0x01);
+	/*to normal from loopback*/
+	serial_port_out(port, UART_MCR, mcr_tmp);
 	serial_port_out(port, UART_LCR, cval);		/* reset DLAB */
 	up->lcr = cval;					/* Save LCR */
 	if (port->type != PORT_16750) {
