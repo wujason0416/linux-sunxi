@@ -1,7 +1,7 @@
 /*
 *********************************************************************************************************
 *                                                    LINUX-KERNEL
-*                                        AllWinner Linux Platform Develop Kits
+*                                        newbie Linux Platform Develop Kits
 *                                                   Kernel Module
 *
 *                                    (c) Copyright 2006-2011, kevin.z China
@@ -30,6 +30,9 @@ extern char *__standby_end;
 static __u32 sp_backup;
 static void standby(void);
 static __u32 dcdc2, dcdc3;
+static struct pll_factor_t orig_pll;
+static struct pll_factor_t local_pll;
+
 static struct sun4i_clk_div_t  clk_div;
 static struct sun4i_clk_div_t  tmp_clk_div;
 
@@ -39,6 +42,8 @@ struct aw_pm_info  pm_info;
 #define DRAM_BASE_ADDR      0xc0000000
 #define DRAM_TRANING_SIZE   (16)
 static __u32 dram_traning_area_back[DRAM_TRANING_SIZE];
+
+
 
 /*
 *********************************************************************************************************
@@ -74,7 +79,7 @@ int main(struct aw_pm_info *arg)
     /* copy standby parameter from dram */
     standby_memcpy(&pm_info, arg, sizeof(pm_info));
     /* copy standby code & data to load tlb */
-    standby_memcpy((char *)&__standby_end, (char *)&__standby_start, (char *)&__bss_end - (char *)&__bss_start);
+    //standby_memcpy((char *)&__standby_end, (char *)&__standby_start, (char *)&__bss_end - (char *)&__bss_start);
     /* backup dram traning area */
     standby_memcpy((char *)dram_traning_area_back, (char *)DRAM_BASE_ADDR, sizeof(__u32)*DRAM_TRANING_SIZE);
 
@@ -84,9 +89,10 @@ int main(struct aw_pm_info *arg)
 
     /* initialise standby modules */
     standby_clk_init();
+    standby_clk_apbinit();
     standby_int_init();
     standby_tmr_init();
-    standby_power_init();
+    standby_power_init(pm_info.standby_para.axp_event);
     /* init some system wake source */
     if(pm_info.standby_para.event & SUSPEND_WAKEUP_SRC_EXINT){
         standby_enable_int(INT_SOURCE_EXTNMI);
@@ -122,6 +128,17 @@ int main(struct aw_pm_info *arg)
     dram_power_save_process();
     /* process standby */
     standby();
+
+#if 0
+	change_runtime_env(1);
+	io_init();
+	io_init_high();
+	delay_ms(10);
+	io_init_low();
+	delay_ms(20);
+	io_init_high();
+#endif
+
     /* enable watch-dog to preserve dram training failed */
     standby_tmr_enable_watchdog();
     /* restore dram */
@@ -145,9 +162,10 @@ int main(struct aw_pm_info *arg)
     if(pm_info.standby_para.event & SUSPEND_WAKEUP_SRC_KEY){
         standby_key_exit();
     }
-    standby_power_exit();
+    standby_power_exit(pm_info.standby_para.event>>16);
     standby_tmr_exit();
     standby_int_exit();
+    standby_clk_apbexit();
     standby_clk_exit();
 
     /* restore dram traning area */
@@ -176,8 +194,22 @@ static void standby(void)
     /* gating off dram clock */
     standby_clk_dramgating(0);
 
+	/* backup cpu freq */
+	standby_clk_get_pll_factor(&orig_pll);
+
+	/*lower freq from 1008M to 384M*/
+	local_pll.FactorN = 16;
+	local_pll.FactorK = 0;
+	local_pll.FactorM = 0;
+	local_pll.FactorP = 0;
+	standby_clk_set_pll_factor(&local_pll);
+	change_runtime_env(1);
+	delay_ms(10);
+
     /* switch cpu clock to HOSC, and disable pll */
     standby_clk_core2hosc();
+	change_runtime_env(1);
+	delay_us(1);
     standby_clk_plldisable();
 
     /* backup voltages */
@@ -196,7 +228,9 @@ static void standby(void)
     standby_clk_setdiv(&tmp_clk_div);
     /* swtich apb1 to losc */
     standby_clk_apb2losc();
-    standby_mdelay(10);
+	change_runtime_env(1);
+	//delay_ms(1);
+
     /* switch cpu to 32k */
     standby_clk_core2losc();
     #if(ALLOW_DISABLE_HOSC)
@@ -212,14 +246,19 @@ static void standby(void)
     /* enable LDO, enable HOSC */
     standby_clk_ldoenable();
     /* delay 1ms for power be stable */
-    standby_delay(1);
+	//3ms
+    standby_delay_cycle(1);
     standby_clk_hoscenable();
-    standby_delay(1);
+	//3ms
+    standby_delay_cycle(1);
     #endif
+
+	/* switch clock to hosc */
+    standby_clk_core2hosc();
+
     /* swtich apb1 to hosc */
     standby_clk_apb2hosc();
-    /* switch clock to hosc */
-    standby_clk_core2hosc();
+
     /* restore clock division */
     standby_clk_setdiv(&clk_div);
 
@@ -235,14 +274,21 @@ static void standby(void)
     /* restore voltage for exit standby */
     standby_set_voltage(POWER_VOL_DCDC2, dcdc2);
     standby_set_voltage(POWER_VOL_DCDC3, dcdc3);
-    standby_mdelay(10);
 
     /* enable pll */
     standby_clk_pllenable();
-    standby_mdelay(10);
+	change_runtime_env(1);
+	delay_ms(10);
+
     /* switch cpu clock to core pll */
     standby_clk_core2pll();
-    standby_mdelay(10);
+	change_runtime_env(1);
+	delay_ms(10);
+
+	/*restore freq from 384 to 1008M*/
+	standby_clk_set_pll_factor(&orig_pll);
+	change_runtime_env(1);
+	delay_ms(5);
 
     /* gating on dram clock */
     standby_clk_dramgating(1);

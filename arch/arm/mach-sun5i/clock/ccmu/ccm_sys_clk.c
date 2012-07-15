@@ -1,7 +1,7 @@
 /*
 *********************************************************************************************************
 *                                                    LINUX-KERNEL
-*                                        AllWinner Linux Platform Develop Kits
+*                                        ReuuiMlla Linux Platform Develop Kits
 *                                                   Kernel Module
 *
 *                                    (c) Copyright 2006-2011, kevin.z China
@@ -11,7 +11,7 @@
 * By      : kevin.z
 * Version : v1.0
 * Date    : 2011-5-14 10:45
-* Descript: system clock management for allwinners chips
+* Descript: system clock management for Reuuimllas chips
 * Update  : date                auther      ver     notes
 *********************************************************************************************************
 */
@@ -319,8 +319,12 @@ static __s64 sys_clk_get_rate(__aw_ccu_sys_clk_e id)
 
         case AW_SYS_CLK_PLL4:
         {
+            #if(USE_PLL6M_REPLACE_PLL4)
+            return sys_clk_get_rate(AW_SYS_CLK_PLL6);
+            #else
             return ccu_clk_uldiv(((__s64)24000000*aw_ccu_reg->Pll4Ctl.FactorN * (aw_ccu_reg->Pll4Ctl.FactorK + 1)   \
                 >> aw_ccu_reg->Pll4Ctl.FactorP), (aw_ccu_reg->Pll4Ctl.FactorM + 1));
+            #endif
         }
         case AW_SYS_CLK_PLL5:
         {
@@ -717,7 +721,7 @@ static __s32 sys_clk_set_rate(__aw_ccu_sys_clk_e id, __s64 rate)
             tmp_pll.PLLDivP = factor.FactorP;
             aw_ccu_reg->Pll1Ctl = tmp_pll;
             /* delay 500us for pll be stably */
-            __delay((rate >> 20) * 500 / 2);
+            __delay((rate >> 20) * 500);
 
             return 0;
         }
@@ -800,6 +804,10 @@ static __s32 sys_clk_set_rate(__aw_ccu_sys_clk_e id, __s64 rate)
         }
         case AW_SYS_CLK_PLL4:
         {
+            #if(USE_PLL6M_REPLACE_PLL4)
+            CCU_ERR("PLL4 clock rate should not be set!\n");
+            return -1;
+            #else
             struct core_pll_factor_t    factor;
             __u32   tmpDly = ccu_clk_uldiv(sys_clk_get_rate(AW_SYS_CLK_CPU), 1000000) * 200;
 
@@ -814,6 +822,7 @@ static __s32 sys_clk_set_rate(__aw_ccu_sys_clk_e id, __s64 rate)
             __delay(tmpDly);
 
             return 0;
+            #endif
         }
         case AW_SYS_CLK_PLL5:
         {

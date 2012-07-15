@@ -1,8 +1,8 @@
 /*
  * arch/arch/mach-sun5i/devices.c
  * (C) Copyright 2010-2015
- * Allwinner Technology Co., Ltd. <www.allwinnertech.com>
- * Benn Huang <benn@allwinnertech.com>
+ * Reuuimlla Technology Co., Ltd. <www.reuuimllatech.com>
+ * Benn Huang <benn@Reuuimllatech.com>
  *
  * SUN5I platform devices
  *
@@ -21,24 +21,32 @@
 #include <linux/dma-mapping.h>
 #include <linux/pda_power.h>
 #include <linux/io.h>
-#include <linux/gpio.h>
 #include <linux/i2c.h>
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
 #include <asm/setup.h>
-#include <mach/io.h>
 #include <mach/hardware.h>
 #include <mach/i2c.h>
+#include <mach/sys_config.h>
 
 /* uart */
 static struct plat_serial8250_port debug_uart_platform_data[] = {
 	{
 		.membase	= (void __iomem *)SW_VA_UART0_IO_BASE,
+		.mapbase	= (resource_size_t)SW_PA_UART0_IO_BASE,
 		.irq		= SW_INT_IRQNO_UART0,
 		.flags		= UPF_BOOT_AUTOCONF,
-		.iotype		= UPIO_MEM32,
+		.iotype		= UPIO_DWAPB32,
+		.regshift	= 2,
+		.uartclk	= 24000000,
+	}, {
+		.membase	= (void __iomem *)SW_VA_UART1_IO_BASE,
+		.mapbase	= (resource_size_t)SW_PA_UART1_IO_BASE,
+		.irq		= SW_INT_IRQNO_UART1,
+		.flags		= UPF_BOOT_AUTOCONF,
+		.iotype		= UPIO_DWAPB32,
 		.regshift	= 2,
 		.uartclk	= 24000000,
 	}, {
@@ -46,12 +54,20 @@ static struct plat_serial8250_port debug_uart_platform_data[] = {
 	}
 };
 
-static struct platform_device debug_uart = {
-	.name = "serial8250",
-	.id = PLAT8250_DEV_PLATFORM,
-	.dev = {
-		.platform_data = debug_uart_platform_data,
-	},
+static struct platform_device debug_uart[] = {
+	{
+		.name = "serial8250",
+		.id = PLAT8250_DEV_PLATFORM,
+		.dev = {
+			.platform_data = &debug_uart_platform_data[0],
+		},
+	}, {
+		.name = "serial8250",
+		.id = PLAT8250_DEV_PLATFORM1,
+		.dev = {
+			.platform_data = &debug_uart_platform_data[1],
+		},
+	}
 };
 
 /* dma */
@@ -166,7 +182,6 @@ struct platform_device sun5i_twi2_device = {
 };
 
 static struct platform_device *sw_pdevs[] __initdata = {
-	&debug_uart,
 	&sw_pdev_dmac,
 	&sw_pdev_nand,
 	&sun5i_twi0_device,
@@ -176,5 +191,11 @@ static struct platform_device *sw_pdevs[] __initdata = {
 
 void __init sw_pdev_init(void)
 {
+	int dbg_uart = 0;
+	script_parser_fetch("uart_para", "uart_debug_port", &dbg_uart, sizeof(int));
+
+	if (dbg_uart > 3)
+		return;
+	platform_device_register(&debug_uart[dbg_uart]);
 	platform_add_devices(sw_pdevs, ARRAY_SIZE(sw_pdevs));
 }
