@@ -1,7 +1,7 @@
 /*
 *********************************************************************************************************
 *                                                    LINUX-KERNEL
-*                                        AllWinner Linux Platform Develop Kits
+*                                        newbie Linux Platform Develop Kits
 *                                                   Kernel Module
 *
 *                                    (c) Copyright 2006-2011, kevin.z China
@@ -45,6 +45,8 @@ __s32 standby_clk_ldoenable(void);
 __s32 standby_clk_setdiv(struct sun4i_clk_div_t  *clk_div);
 __s32 standby_clk_getdiv(struct sun4i_clk_div_t  *clk_div);
 void standby_clk_dramgating(int onoff);
+__s32 standby_clk_apbinit(void);
+__s32 standby_clk_apbexit(void);
 __s32 standby_clk_apb2losc(void);
 __s32 standby_clk_apb2hosc(void);
 

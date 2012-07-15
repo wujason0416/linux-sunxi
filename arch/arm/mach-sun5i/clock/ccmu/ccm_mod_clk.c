@@ -1,7 +1,7 @@
 /*
 *********************************************************************************************************
 *                                                    LINUX-KERNEL
-*                                        AllWinner Linux Platform Develop Kits
+*                                        ReuuiMlla Linux Platform Develop Kits
 *                                                   Kernel Module
 *
 *                                    (c) Copyright 2006-2011, kevin.z China
@@ -11,7 +11,7 @@
 * By      : kevin.z
 * Version : v1.0
 * Date    : 2011-5-14 11:05
-* Descript: module clock management for allwinners chips.
+* Descript: module clock management for Reuuimllas chips.
 * Update  : date                auther      ver     notes
 *********************************************************************************************************
 */
@@ -22,6 +22,7 @@
 #include <linux/err.h>
 #include <linux/clk.h>
 #include <mach/clock.h>
+#include <mach/dram.h>
 #include "ccm_i.h"
 
 #define make_mod_clk_inf(clk_id, clk_name)  {.id = clk_id, .name = clk_name, }
@@ -382,7 +383,17 @@ static __aw_ccu_sys_clk_e mod_clk_get_parent(__aw_ccu_mod_clk_e id)
         case AW_MOD_CLK_USBOHCI0:
             return AW_SYS_CLK_PLL62;
         case AW_MOD_CLK_GPS:
-            return AW_SYS_CLK_AHB;
+            switch(aw_ccu_reg->GpsClk.ClkSrc)
+            {
+                case 0:
+                    return AW_SYS_CLK_HOSC;
+                case 1:
+                    return AW_SYS_CLK_PLL62;
+                case 2:
+                    return AW_SYS_CLK_PLL7;
+                default:
+                    return AW_SYS_CLK_PLL4;
+            }
         case AW_MOD_CLK_DEBE0:
             return _parse_defemp_clk_src(&aw_ccu_reg->DeBe0Clk);
         case AW_MOD_CLK_DEFE0:
@@ -748,7 +759,7 @@ static __s64 mod_clk_get_rate(__aw_ccu_mod_clk_e id)
         case AW_MOD_CLK_USBPHY1:
         case AW_MOD_CLK_USBOHCI0:
         case AW_MOD_CLK_GPS:
-            return 1;
+            return aw_ccu_reg->GpsClk.DivM + 1;
         case AW_MOD_CLK_DEBE0:
             return aw_ccu_reg->DeBe0Clk.ClkDiv + 1;
         case AW_MOD_CLK_DEFE0:
@@ -848,6 +859,8 @@ static __aw_ccu_clk_reset_e mod_clk_get_reset(__aw_ccu_mod_clk_e id)
             return aw_ccu_reg->MaliClk.Reset? AW_CCU_CLK_NRESET : AW_CCU_CLK_RESET;
 
         case AW_MOD_CLK_IEP:
+            return aw_ccu_reg->IepClk.Reset? AW_CCU_CLK_NRESET : AW_CCU_CLK_RESET;
+
         default:
             return AW_CCU_CLK_NRESET;
     }
@@ -1050,10 +1063,23 @@ static __s32 mod_clk_set_parent(__aw_ccu_mod_clk_e id, __aw_ccu_sys_clk_e parent
             return -1;
         }
         case AW_MOD_CLK_GPS:
-        {
-            return (parent == AW_SYS_CLK_AHB)? 0 : -1;
-        }
-
+            switch(parent)
+            {
+                case AW_SYS_CLK_HOSC:
+                    aw_ccu_reg->GpsClk.ClkSrc = 0;
+                    return 0;
+                case AW_SYS_CLK_PLL62:
+                    aw_ccu_reg->GpsClk.ClkSrc = 1;
+                    return 0;
+                case AW_SYS_CLK_PLL7:
+                    aw_ccu_reg->GpsClk.ClkSrc = 2;
+                    return 0;
+                case AW_SYS_CLK_PLL4:
+                    aw_ccu_reg->GpsClk.ClkSrc = 3;
+                    return 0;
+                default:
+                    return -1;
+            }
         case AW_MOD_CLK_TWI0:
         case AW_MOD_CLK_TWI1:
         case AW_MOD_CLK_TWI2:
@@ -1091,6 +1117,8 @@ static __s32 mod_clk_set_parent(__aw_ccu_mod_clk_e id, __aw_ccu_sys_clk_e parent
 */
 static __s32 mod_clk_set_status(__aw_ccu_mod_clk_e id, __aw_ccu_clk_onff_e status)
 {
+    volatile __dram_host_cfg_reg_t *dram_host = (__dram_host_cfg_reg_t *)DRAM_HOST_CFG_BASE;
+
     switch(id)
     {
         case AW_MOD_CLK_NFC:
@@ -1315,21 +1343,26 @@ static __s32 mod_clk_set_status(__aw_ccu_mod_clk_e id, __aw_ccu_clk_onff_e statu
             aw_ccu_reg->Apb1Gate.Uart3Gate = (status == AW_CCU_CLK_OFF)? 0 : 1;
             return 0;
         case AW_MOD_CLK_SDRAM_VE:
+            dram_host[DRAM_HOST_VE].AcsEn = (status == AW_CCU_CLK_OFF)? 0 : 1;
             aw_ccu_reg->DramGate.VeGate = (status == AW_CCU_CLK_OFF)? 0 : 1;
             return 0;
         case AW_MOD_CLK_SDRAM_CSI0:
+            dram_host[DRAM_HOST_CSI].AcsEn = (status == AW_CCU_CLK_OFF)? 0 : 1;
             aw_ccu_reg->DramGate.Csi0Gate = (status == AW_CCU_CLK_OFF)? 0 : 1;
             return 0;
         case AW_MOD_CLK_SDRAM_TS:
+            dram_host[DRAM_HOST_TSDM].AcsEn = (status == AW_CCU_CLK_OFF)? 0 : 1;
             aw_ccu_reg->DramGate.TsGate = (status == AW_CCU_CLK_OFF)? 0 : 1;
             return 0;
         case AW_MOD_CLK_SDRAM_TVE0:
             aw_ccu_reg->DramGate.Tve0Gate = (status == AW_CCU_CLK_OFF)? 0 : 1;
             return 0;
         case AW_MOD_CLK_SDRAM_DEFE0:
+            dram_host[DRAM_HOST_FE].AcsEn = (status == AW_CCU_CLK_OFF)? 0 : 1;
             aw_ccu_reg->DramGate.DeFe0Gate = (status == AW_CCU_CLK_OFF)? 0 : 1;
             return 0;
         case AW_MOD_CLK_SDRAM_DEBE0:
+            dram_host[DRAM_HOST_BE].AcsEn = (status == AW_CCU_CLK_OFF)? 0 : 1;
             aw_ccu_reg->DramGate.DeBe0Gate = (status == AW_CCU_CLK_OFF)? 0 : 1;
             return 0;
 
@@ -1340,6 +1373,7 @@ static __s32 mod_clk_set_status(__aw_ccu_mod_clk_e id, __aw_ccu_clk_onff_e statu
             aw_ccu_reg->AhbGate1.IepGate = (status == AW_CCU_CLK_OFF)? 0 : 1;
             return 0;
         case AW_MOD_CLK_SDRAM_IEP:
+            dram_host[DRAM_HOST_IEP].AcsEn = (status == AW_CCU_CLK_OFF)? 0 : 1;
             aw_ccu_reg->DramGate.IepGate = (status == AW_CCU_CLK_OFF)? 0 : 1;
             return 0;
 
@@ -1545,6 +1579,11 @@ static __s32 mod_clk_set_rate(__aw_ccu_mod_clk_e id, __s64 rate)
             return 0;
         }
 
+        case AW_MOD_CLK_GPS:
+            if((rate < 1) || (rate > 8))
+                return -1;
+            return aw_ccu_reg->GpsClk.DivM = rate-1;
+
         case AW_MOD_CLK_LCD0CH0:
         case AW_MOD_CLK_LVDS:
         case AW_MOD_CLK_ADDA:
@@ -1552,7 +1591,6 @@ static __s32 mod_clk_set_rate(__aw_ccu_mod_clk_e id, __s64 rate)
         case AW_MOD_CLK_USBPHY0:
         case AW_MOD_CLK_USBPHY1:
         case AW_MOD_CLK_USBOHCI0:
-        case AW_MOD_CLK_GPS:
         case AW_MOD_CLK_AVS:
         case AW_MOD_CLK_IEP:
         default:
@@ -1599,17 +1637,10 @@ static __s32 mod_clk_set_reset(__aw_ccu_mod_clk_e id, __aw_ccu_clk_reset_e reset
         case AW_MOD_CLK_USBPHY:
         case AW_MOD_CLK_USBOHCI0:
             return (reset == AW_CCU_CLK_NRESET)? 0 : -1;
-
         case AW_MOD_CLK_USBPHY0:
-        {
-            aw_ccu_reg->UsbClk.UsbPhy0Rst = (reset == AW_CCU_CLK_RESET)? 0 : 1;
-            return 0;
-        }
         case AW_MOD_CLK_USBPHY1:
-        {
-            aw_ccu_reg->UsbClk.UsbPhy1Rst = (reset == AW_CCU_CLK_RESET)? 0 : 1;
             return 0;
-        }
+
         case AW_MOD_CLK_GPS:
         {
             aw_ccu_reg->GpsClk.Reset = (reset == AW_CCU_CLK_RESET)? 0 : 1;

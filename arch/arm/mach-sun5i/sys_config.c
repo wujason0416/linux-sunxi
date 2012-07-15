@@ -1,8 +1,8 @@
 /*
  * arch/arch/mach-sun5i/sys_config.c
  * (C) Copyright 2010-2015
- * Allwinner Technology Co., Ltd. <www.allwinnertech.com>
- * Benn Huang <benn@allwinnertech.com>
+ * Reuuimlla Technology Co., Ltd. <www.reuuimllatech.com>
+ * Benn Huang <benn@Reuuimllatech.com>
  *
  * sys_config utils (porting from 2.6.36)
  *
@@ -779,7 +779,7 @@ u32 gpio_request(user_gpio_set_t *gpio_list, __u32 group_count_max)
             }
         }
         //根据driver level的值决定是否更新driver level寄存器
-        if(tmp_user_gpio_data->pull >= 0)
+        if(tmp_user_gpio_data->drv_level >= 0)
         {
             tmp_sys_gpio_data->hardware_gpio_status.drv_level = (tmp_group_dlevel_data >> tmp_val) & 0x03;
             if(tmp_user_gpio_data->drv_level >= 0)

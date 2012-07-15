@@ -1,7 +1,7 @@
 /*
 *********************************************************************************************************
 *                                                    LINUX-KERNEL
-*                                        AllWinner Linux Platform Develop Kits
+*                                        newbie Linux Platform Develop Kits
 *                                                   Kernel Module
 *
 *                                    (c) Copyright 2006-2011, kevin.z China
@@ -85,7 +85,7 @@ __s32 standby_clk_exit(void)
     *(volatile __u32 *)&CmuReg->Pll2Ctl = ccu_reg_back[1];
     *(volatile __u32 *)&CmuReg->Pll3Ctl = ccu_reg_back[2];
     *(volatile __u32 *)&CmuReg->Pll4Ctl = ccu_reg_back[3];
-    *(volatile __u32 *)&CmuReg->Pll5Ctl = ccu_reg_back[4];
+   // *(volatile __u32 *)&CmuReg->Pll5Ctl = ccu_reg_back[4];
     *(volatile __u32 *)&CmuReg->Pll6Ctl = ccu_reg_back[5];
     *(volatile __u32 *)&CmuReg->Pll7Ctl = ccu_reg_back[6];
 
@@ -335,6 +335,63 @@ __s32 standby_clk_getdiv(struct sun4i_clk_div_t  *clk_div)
     return 0;
 }
 
+/*
+*********************************************************************************************************
+*                                     standby_clk_set_pll_factor
+*
+* Description: set pll factor, target cpu freq is 384M hz
+*
+* Arguments  : none
+*
+* Returns    : 0;
+*********************************************************************************************************
+*/
+
+__s32 standby_clk_set_pll_factor(struct pll_factor_t *pll_factor)
+{
+    if(!pll_factor)
+    {
+        return -1;
+    }
+
+	CmuReg->Pll1Ctl.FactorN = pll_factor->FactorN;
+	CmuReg->Pll1Ctl.FactorK = pll_factor->FactorK;
+	CmuReg->Pll1Ctl.FactorM = pll_factor->FactorM;
+	CmuReg->Pll1Ctl.PLLDivP = pll_factor->FactorP;
+
+	//busy_waiting();
+
+	return 0;
+}
+
+/*
+*********************************************************************************************************
+*                                     standby_clk_get_pll_factor
+*
+* Description:
+*
+* Arguments  : none
+*
+* Returns    : 0;
+*********************************************************************************************************
+*/
+
+__s32 standby_clk_get_pll_factor(struct pll_factor_t *pll_factor)
+{
+    if(!pll_factor)
+    {
+        return -1;
+    }
+
+	pll_factor->FactorN = CmuReg->Pll1Ctl.FactorN;
+	pll_factor->FactorK = CmuReg->Pll1Ctl.FactorK;
+	pll_factor->FactorM = CmuReg->Pll1Ctl.FactorM;
+	pll_factor->FactorP = CmuReg->Pll1Ctl.PLLDivP;
+
+	//busy_waiting();
+
+	return 0;
+}
 
 /*
 *********************************************************************************************************
@@ -390,5 +447,51 @@ __s32 standby_clk_apb2losc(void)
 __s32 standby_clk_apb2hosc(void)
 {
     CmuReg->Apb1ClkDiv.ClkSrc = 0;
+    return 0;
+}
+
+
+static __ccmu_apb1clk_ratio_reg0058_t  apbclkbak;
+
+/*
+*********************************************************************************************************
+*                                     standby_clk_apb2hosc
+*
+* Description: switch apb1 clock to 24M hosc.
+*
+* Arguments  : none
+*
+* Returns    : 0;
+*********************************************************************************************************
+*/
+__s32 standby_clk_apbinit(void)
+{
+    apbclkbak = CmuReg->Apb1ClkDiv;
+    /* change apb1 clock to hosc */
+    CmuReg->Apb1ClkDiv.ClkSrc = 0;
+    CmuReg->Apb1ClkDiv.ClkDiv = 0;
+    CmuReg->Apb1ClkDiv.PreDiv = 0;
+    return 0;
+}
+
+
+/*
+*********************************************************************************************************
+*                                     standby_clk_apb2hosc
+*
+* Description: switch apb1 clock to 24M hosc.
+*
+* Arguments  : none
+*
+* Returns    : 0;
+*********************************************************************************************************
+*/
+__s32 standby_clk_apbexit(void)
+{
+    /* restore clock division */
+    CmuReg->Apb1ClkDiv.ClkDiv = apbclkbak.ClkDiv;
+    CmuReg->Apb1ClkDiv.PreDiv = apbclkbak.PreDiv;
+    /* restore clock source */
+    CmuReg->Apb1ClkDiv.ClkSrc = apbclkbak.ClkSrc;
     return 0;
 }
