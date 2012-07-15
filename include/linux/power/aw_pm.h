@@ -21,8 +21,6 @@
 
 /**max device number of pmu*/
 #define PMU_MAX_DEVS        2
-/**start address for function run in sram*/
-#define SRAM_FUNC_START     SW_VA_SRAM_BASE
 
 /**
 *@name PMU command
@@ -59,7 +57,8 @@ struct aw_pmu_arg{
 *@brief struct of standby
 */
 struct aw_standby_para{
-    unsigned int event;     /**<event type for system wakeup    */
+	unsigned int event;     /**<event type for system wakeup    */
+	unsigned int axp_event;     /**<axp event type for system wakeup    */
     signed int   time_off;  /**<time to power off from now, based on second */
 };
 

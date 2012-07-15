@@ -56,7 +56,8 @@
 
 static struct map_desc sw_io_desc[] __initdata = {
 	{ SW_VA_SRAM_BASE, __phys_to_pfn(SW_PA_SRAM_BASE),  (SZ_128K + SZ_64K), MT_MEMORY_ITCM  },
-	{ SW_VA_IO_BASE,   __phys_to_pfn(SW_PA_IO_BASE),    (SZ_1M + SZ_2M),    MT_DEVICE    },
+	{ SW_VA_IO_BASE,   __phys_to_pfn(SW_PA_IO_BASE),    (SZ_1M + SZ_2M),    MT_DEVICE       },
+	{ SW_VA_BROM_BASE, __phys_to_pfn(SW_PA_BROM_BASE),  (SZ_64K),           MT_MEMORY_ITCM  },
 };
 
 void __init sw_core_map_io(void)
@@ -110,36 +111,33 @@ static void __init sw_core_fixup(struct machine_desc *desc,
 	size = DRAMC_get_dram_size();
 	early_printk("DRAM: %d", size);
 
-	if (size <= 512) {
-		mi->nr_banks = 1;
-		mi->bank[0].start = 0x40000000;
-		mi->bank[0].size = SZ_1M * (size - 64);
-	} else {
-		mi->nr_banks = 2;
-		mi->bank[0].start = 0x40000000;
-		mi->bank[0].size = SZ_1M * (512 - 64);
-		mi->bank[1].start = 0x60000000;
-		mi->bank[1].size = SZ_1M * (size - 512);
-	}
+	mi->nr_banks = 2;
+	mi->bank[0].start = 0x40000000;
+	mi->bank[0].size = SW_BANK1_SIZE;
+	mi->bank[1].start = 0x40000000 + SW_BANK2_OFFSET;
+	mi->bank[1].size = SZ_1M * size - SW_BANK2_OFFSET;
+
 #endif
 
 	pr_info("Total Detected Memory: %uMB with %d banks\n", size, mi->nr_banks);
 }
 
-unsigned long fb_start = (PLAT_PHYS_OFFSET + SZ_512M - SZ_64M - SZ_32M);
-unsigned long fb_size = SZ_32M;
+unsigned long fb_start = SW_FB_MEM_BASE;
+unsigned long fb_size = SW_FB_MEM_SIZE;
 EXPORT_SYMBOL(fb_start);
 EXPORT_SYMBOL(fb_size);
 
+unsigned long ve_start = SW_VE_MEM_BASE;
+unsigned long ve_size = SW_VE_MEM_SIZE;
+EXPORT_SYMBOL(ve_start);
+EXPORT_SYMBOL(ve_size);
+
+#ifndef CONFIG_SUN5I_A13
 unsigned long g2d_start = (PLAT_PHYS_OFFSET + SZ_512M - SZ_128M);
 unsigned long g2d_size = SZ_1M * 16;
 EXPORT_SYMBOL(g2d_start);
 EXPORT_SYMBOL(g2d_size);
-
-unsigned long ve_start = (PLAT_PHYS_OFFSET + SZ_64M);
-unsigned long ve_size = (SZ_64M + SZ_16M);
-EXPORT_SYMBOL(ve_start);
-EXPORT_SYMBOL(ve_size);
+#endif
 
 static void __init sw_core_reserve(void)
 {
@@ -148,33 +146,11 @@ static void __init sw_core_reserve(void)
 #else
 	memblock_reserve(fb_start, fb_size);
 	memblock_reserve(ve_start, SZ_64M);
-	memblock_reserve(ve_start + SZ_64M, SZ_16M);
+	//memblock_reserve(ve_start + SZ_64M, SZ_16M);
 
-#if 0
-        int g2d_used = 0;
-        char *script_base = (char *)(PAGE_OFFSET + 0x3000000);
-
-        g2d_used = sw_cfg_get_int(script_base, "g2d_para", "g2d_used");
-
-	memblock_reserve(fb_start, fb_size);
-	memblock_reserve(SYS_CONFIG_MEMBASE, SYS_CONFIG_MEMSIZE);
-	memblock_reserve(ve_start, ve_start);
-
-        if (g2d_used) {
-                g2d_size = sw_cfg_get_int(script_base, "g2d_para", "g2d_size");
-                if (g2d_size < 0 || g2d_size > SW_G2D_MEM_MAX) {
-                        g2d_size = SW_G2D_MEM_MAX;
-                }
-                g2d_start = SW_G2D_MEM_BASE;
-                g2d_size = g2d_size;
-                memblock_reserve(g2d_start, g2d_size);
-        }
-
-#endif
 	pr_info("Memory Reserved(in bytes):\n");
 	pr_info("\tLCD: 0x%08x, 0x%08x\n", (unsigned int)fb_start, (unsigned int)fb_size);
 	pr_info("\tSYS: 0x%08x, 0x%08x\n", (unsigned int)SYS_CONFIG_MEMBASE, (unsigned int)SYS_CONFIG_MEMSIZE);
-	pr_info("\tG2D: 0x%08x, 0x%08x\n", (unsigned int)g2d_start, (unsigned int)g2d_size);
 	pr_info("\tVE : 0x%08x, 0x%08x\n", (unsigned int)ve_start, (unsigned int)ve_size);
 #endif
 }
@@ -331,7 +307,7 @@ static int timer_set_next_event(unsigned long evt, struct clock_event_device *un
 static struct clock_event_device timer0_clockevent = {
 	.name = "timer0",
 	.shift = 32,
-	.rating = 300,
+	.rating = 100,
 	.features = CLOCK_EVT_FEAT_PERIODIC | CLOCK_EVT_FEAT_ONESHOT,
 	.set_mode = timer_set_mode,
 	.set_next_event = timer_set_next_event,
@@ -343,7 +319,6 @@ static irqreturn_t sw_timer_interrupt(int irq, void *dev_id)
 	struct clock_event_device *evt = (struct clock_event_device *)dev_id;
 
 	writel(0x1, SW_TIMER_INT_STA_REG);
-
 	/*
  	 * timer_set_next_event will be called only in ONESHOT mode
  	 */
@@ -359,7 +334,7 @@ static struct irqaction sw_timer_irq = {
 	.dev_id = &timer0_clockevent,
 	.irq = SW_INT_IRQNO_TIMER0,
 };
-
+extern int aw_clksrc_init(void);
 
 static void __init sw_timer_init(void)
 {
@@ -394,6 +369,8 @@ static void __init sw_timer_init(void)
 	timer0_clockevent.cpumask = cpumask_of(0);
 	timer0_clockevent.irq = sw_timer_irq.irq;
 	clockevents_register_device(&timer0_clockevent);
+    printk("%s,line:%d\n", __func__, __LINE__);
+    aw_clksrc_init();
 }
 
 struct sys_timer sw_sys_timer = {
@@ -405,19 +382,86 @@ void __init sw_core_init(void)
 {
 	sw_pdev_init();
 }
+
+
+static enum sw_ic_ver version = MAGIC_VER_NULL;
 enum sw_ic_ver sw_get_ic_ver(void)
 {
-	volatile u32 val = readl(SW_VA_TIMERC_IO_BASE + 0x13c);
+    u32 val;
 
-	val = (val >> 6) & 0x3;
+    if(version != MAGIC_VER_NULL) {
+        return version;
+    }
 
-	if (val == 0x3) {
-		return MAGIC_VER_B;
-	}
+    val = readl(SW_VA_SSE_IO_BASE);
+    switch((val>>16)&0x07)
+    {
+        case 0:
+        {
+            val = readl(SW_VA_SID_IO_BASE+0x00);
+            val = (val>>8)&0xffffff;
+            if((val == 0x162541) || (val == 0)) {
+                version = MAGIC_VER_A13A;
+            } else if(val == 0x162542) {
+                version = MAGIC_VER_A13B;
+            } else {
+                version = MAGIC_VER_UNKNOWN;
+            }
+            break;
+        }
+        case 1:
+        {
+            val = readl(SW_VA_SID_IO_BASE+0x08);
+            val = (val>>12) & 0x0f;
+            if((val == 0x3) || (val == 0)) {
+                val = readl(SW_VA_SID_IO_BASE+0x00);
+                val = (val>>8)&0xffffff;
+                if((val == 0x162541) || (val == 0)) {
+                    version = MAGIC_VER_A12A;
+                } else if(val == 0x162542) {
+                    version = MAGIC_VER_A12B;
+                } else {
+                    version = MAGIC_VER_UNKNOWN;
+                }
+            } else if(val == 0x07) {
+                val = readl(SW_VA_SID_IO_BASE+0x00);
+                val = (val>>8)&0xffffff;
+                if((val == 0x162541) || (val == 0)) {
+                    version = MAGIC_VER_A10SA;
+                } else if(val == 0x162542) {
+                    version = MAGIC_VER_A10SB;
+                } else {
+                    version = MAGIC_VER_UNKNOWN;
+                }
+            } else {
+                version = MAGIC_VER_UNKNOWN;
+            }
+            break;
+        }
 
-	return MAGIC_VER_A;
+        default:
+        {
+            version = MAGIC_VER_UNKNOWN;
+            break;
+        }
+    }
+
+    return version;
 }
 EXPORT_SYMBOL(sw_get_ic_ver);
+
+
+int sw_get_chip_id(struct sw_chip_id *chip_id)
+{
+    chip_id->sid_rkey0 = readl(SW_VA_SID_IO_BASE);
+    chip_id->sid_rkey1 = readl(SW_VA_SID_IO_BASE+0x04);
+    chip_id->sid_rkey2 = readl(SW_VA_SID_IO_BASE+0x08);
+    chip_id->sid_rkey3 = readl(SW_VA_SID_IO_BASE+0x0C);
+
+    return 0;
+}
+EXPORT_SYMBOL(sw_get_chip_id);
+
 /**
  * Arch Required Implementations
  *

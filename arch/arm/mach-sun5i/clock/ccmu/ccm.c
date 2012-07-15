@@ -20,7 +20,6 @@
 #include "ccm_i.h"
 
 
-
 __ccmu_reg_list_t   *aw_ccu_reg;
 
 
@@ -46,6 +45,12 @@ __s32 aw_ccu_init(void)
     aw_ccu_reg = (__ccmu_reg_list_t *)SW_VA_CCM_IO_BASE;
 
     /* config the CCU to default status */
+    #if(USE_PLL6M_REPLACE_PLL4)
+    /* switch pll4 output to pll6 */
+    aw_ccu_reg->Pll4Ctl.PllSwitch = 2;
+    #else
+    aw_ccu_reg->Pll4Ctl.PllSwitch = 0;
+    #endif
 
     return AW_CCU_ERR_NONE;
 }
