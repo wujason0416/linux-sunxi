@@ -39,7 +39,7 @@ static void LCD_cfg_panel_info(__panel_para_t * info)
     info->lcd_dclk_freq     = 33;       //MHz
 
     info->lcd_pwm_not_used  = 0;
-    info->lcd_pwm_ch        = 1;
+    info->lcd_pwm_ch        = 0;
     info->lcd_pwm_freq      = 10000;     //Hz
     info->lcd_pwm_pol       = 0;
 
@@ -56,7 +56,7 @@ static void LCD_cfg_panel_info(__panel_para_t * info)
 
     info->lcd_frm           = 0;        //0: disable; 1: enable rgb666 dither; 2:enable rgb656 dither
 
-    info->lcd_io_cfg0       = 0x10000000;
+    info->lcd_io_cfg0       = 0x00000000;
 
     info->lcd_gamma_en = 0;
     if(info->lcd_gamma_en)
@@ -129,8 +129,9 @@ static __s32 LCD_user_defined_func(__u32 sel, __u32 para1, __u32 para2, __u32 pa
     return 0;
 }
 
-void LCD_get_panel_funs_1(__lcd_panel_fun_t * fun)
+void LCD_get_panel_funs_0(__lcd_panel_fun_t * fun)
 {
+    __inf("LCD_get_panel_funs_0\n");
 #ifdef LCD_PARA_USE_CONFIG
     fun->cfg_panel_info = LCD_cfg_panel_info;//delete this line if you want to use the lcd para define in sys_config1.fex
 #endif
@@ -138,4 +139,4 @@ void LCD_get_panel_funs_1(__lcd_panel_fun_t * fun)
     fun->cfg_close_flow = LCD_close_flow;
     fun->lcd_user_defined_func = LCD_user_defined_func;
 }
-EXPORT_SYMBOL(LCD_get_panel_funs_1);
+EXPORT_SYMBOL(LCD_get_panel_funs_0);
