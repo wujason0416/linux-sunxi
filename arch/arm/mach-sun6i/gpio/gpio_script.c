@@ -116,17 +116,17 @@ End:
 
 /**
  * sw_gpio_request - config a group of gpio, for each, config the mul_sel/pull/drv_level/data...
- * @gpio_list: å­˜æ”¾æ‰€æœ‰ç”¨åˆ°çš„GPIOæ•°æ®çš„æ•°ç»„ï¼ŒGPIOå°†ç›´æ¥ä½¿ç”¨è¿™ä¸ªæ•°ç»„
- * @group_count_max: æ•°ç»„çš„æˆå‘˜ä¸ªæ•°ï¼ŒGPIOè®¾å®šçš„æ—¶å€™ï¼Œå°†æ“ä½œçš„GPIOæœ€å¤§ä¸è¶…è¿‡è¿™ä¸ªå€¼
+ * @gpio_list: ´æ·ÅËùÓĞÓÃµ½µÄGPIOÊı¾İµÄÊı×é£¬GPIO½«Ö±½ÓÊ¹ÓÃÕâ¸öÊı×é
+ * @group_count_max: Êı×éµÄ³ÉÔ±¸öÊı£¬GPIOÉè¶¨µÄÊ±ºò£¬½«²Ù×÷µÄGPIO×î´ó²»³¬¹ıÕâ¸öÖµ
  *
  * return gpio handle if success, 0 if failed
  */
 u32 sw_gpio_request(user_gpio_set_t *gpio_list, u32 group_count_max)
 {
-	char               *user_gpio_buf;                                        //æŒ‰ç…§charç±»å‹ç”³è¯·
-	system_gpio_set_t  *user_gpio_set, *tmp_sys_gpio_data;                      //user_gpio_setå°†æ˜¯ç”³è¯·å†…å­˜çš„å¥æŸ„
+	char               *user_gpio_buf;                                        //°´ÕÕcharÀàĞÍÉêÇë
+	system_gpio_set_t  *user_gpio_set, *tmp_sys_gpio_data;                      //user_gpio_set½«ÊÇÉêÇëÄÚ´æµÄ¾ä±ú
 	user_gpio_set_t  *tmp_user_gpio_data;
-	u32                real_gpio_count = 0, first_port;                      //ä¿å­˜çœŸæ­£æœ‰æ•ˆçš„GPIOçš„ä¸ªæ•°
+	u32                real_gpio_count = 0, first_port;                      //±£´æÕæÕıÓĞĞ§µÄGPIOµÄ¸öÊı
 	u32  port, port_num;
 	s32  i;
 
@@ -134,31 +134,31 @@ u32 sw_gpio_request(user_gpio_set_t *gpio_list, u32 group_count_max)
 	u32		usign = 0;
 	struct gpio_config config_stru = {0};
 
-	// æ£€æŸ¥gpio_listä¸­çœŸæ­£æœ‰æ•ˆçš„gpioä¸ªæ•°
+	// ¼ì²égpio_listÖĞÕæÕıÓĞĞ§µÄgpio¸öÊı
 	if((!gpio_list) || (!group_count_max))
 		return (u32)0;
 	for(i = 0; i < group_count_max; i++) {
-		tmp_user_gpio_data = gpio_list + i;                 //gpio_setä¾æ¬¡æŒ‡å‘æ¯ä¸ªGPIOæ•°ç»„æˆå‘˜
+		tmp_user_gpio_data = gpio_list + i;                 //gpio_setÒÀ´ÎÖ¸ÏòÃ¿¸öGPIOÊı×é³ÉÔ±
 		if(!tmp_user_gpio_data->port)
 			continue;
 		real_gpio_count ++;
 	}
 
-	// åˆ†é…user_gpio_buf, å°†ä½œä¸ºå¥æŸ„è¿”å›
+	// ·ÖÅäuser_gpio_buf, ½«×÷Îª¾ä±ú·µ»Ø
 	// fix bug: may be memory overflow in "tmp_sys_gpio_data  = user_gpio_set + i" line below.
-	user_gpio_buf = (char *)CSP_OSAL_MALLOC(16 + sizeof(system_gpio_set_t) * group_count_max);   //ç”³è¯·å†…å­˜ï¼Œå¤šç”³è¯·16ä¸ªå­—èŠ‚ï¼Œç”¨äºå­˜æ”¾GPIOä¸ªæ•°ç­‰ä¿¡æ¯
+	user_gpio_buf = (char *)CSP_OSAL_MALLOC(16 + sizeof(system_gpio_set_t) * group_count_max);   //ÉêÇëÄÚ´æ£¬¶àÉêÇë16¸ö×Ö½Ú£¬ÓÃÓÚ´æ·ÅGPIO¸öÊıµÈĞÅÏ¢
 	//user_gpio_buf = (char *)CSP_OSAL_MALLOC(16 + sizeof(system_gpio_set_t) * real_gpio_count);
 	if(!user_gpio_buf)
 		return (u32)0;
-	memset(user_gpio_buf, 0, 16 + sizeof(system_gpio_set_t) * real_gpio_count);        //é¦–å…ˆå…¨éƒ¨æ¸…é›¶
-	    *(int *)user_gpio_buf = real_gpio_count;                                           //ä¿å­˜æœ‰æ•ˆçš„GPIOä¸ªæ•°
-	user_gpio_set = (system_gpio_set_t *)(user_gpio_buf + 16);                         //æŒ‡å‘ç¬¬ä¸€ä¸ªç»“æ„ä½“
+	memset(user_gpio_buf, 0, 16 + sizeof(system_gpio_set_t) * real_gpio_count);        //Ê×ÏÈÈ«²¿ÇåÁã
+	    *(int *)user_gpio_buf = real_gpio_count;                                           //±£´æÓĞĞ§µÄGPIO¸öÊı
+	user_gpio_set = (system_gpio_set_t *)(user_gpio_buf + 16);                         //Ö¸ÏòµÚÒ»¸ö½á¹¹Ìå
 
-	//æ‰¾åˆ°gpio_listç¬¬ä¸€ä¸ªæœ‰æ•ˆport, å¹¶è·å–å…¶åŸå§‹ç¡¬ä»¶é…ç½®ä¿¡æ¯
+	//ÕÒµ½gpio_listµÚÒ»¸öÓĞĞ§port, ²¢»ñÈ¡ÆäÔ­Ê¼Ó²¼şÅäÖÃĞÅÏ¢
 	for(first_port = 0; first_port < group_count_max; first_port++)	{
 		tmp_user_gpio_data = gpio_list + first_port;
-		port     = tmp_user_gpio_data->port;                         //è¯»å‡ºç«¯å£æ•°å€¼
-		port_num = tmp_user_gpio_data->port_num;                     //è¯»å‡ºç«¯å£ä¸­çš„æŸä¸€ä¸ªGPIO
+		port     = tmp_user_gpio_data->port;                         //¶Á³ö¶Ë¿ÚÊıÖµ
+		port_num = tmp_user_gpio_data->port_num;                     //¶Á³ö¶Ë¿ÚÖĞµÄÄ³Ò»¸öGPIO
 		if(!port) {
 			PIO_DBG_FUN_LINE;
 			continue;
@@ -169,10 +169,10 @@ u32 sw_gpio_request(user_gpio_set_t *gpio_list, u32 group_count_max)
 		port_num_func = (port_num >> 3);
 		port_num_pull = (port_num >> 4);
 
-		tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //æ›´æ–°åŠŸèƒ½å¯„å­˜å™¨åœ°å€
-		tmp_group_pull_addr    = PIO_REG_PULL(port, port_num_pull);  //æ›´æ–°pullå¯„å­˜å™¨
-		tmp_group_dlevel_addr  = PIO_REG_DLEVEL(port, port_num_pull);//æ›´æ–°levelå¯„å­˜å™¨
-		tmp_group_data_addr    = PIO_REG_DATA(port);                 //æ›´æ–°dataå¯„å­˜å™¨
+		tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //¸üĞÂ¹¦ÄÜ¼Ä´æÆ÷µØÖ·
+		tmp_group_pull_addr    = PIO_REG_PULL(port, port_num_pull);  //¸üĞÂpull¼Ä´æÆ÷
+		tmp_group_dlevel_addr  = PIO_REG_DLEVEL(port, port_num_pull);//¸üĞÂlevel¼Ä´æÆ÷
+		tmp_group_data_addr    = PIO_REG_DATA(port);                 //¸üĞÂdata¼Ä´æÆ÷
 
 		tmp_group_func_data    = *tmp_group_func_addr;
 		tmp_group_pull_data    = *tmp_group_pull_addr;
@@ -181,24 +181,24 @@ u32 sw_gpio_request(user_gpio_set_t *gpio_list, u32 group_count_max)
 #endif
 		break;
 	}
-	if(first_port >= group_count_max) { //æ‰¾ä¸åˆ°æœ‰æ•ˆport, åˆ™è¿”å›
+	if(first_port >= group_count_max) { //ÕÒ²»µ½ÓĞĞ§port, Ôò·µ»Ø
 		PIO_DBG_FUN_LINE;
 		return 0;
 	}
 
-	// å¯¹gpio_listæ¯ä¸€ä¸ªæœ‰æ•ˆé¡¹, ä¿å­˜ç”¨æˆ·é…ç½®ä¿¡æ¯åˆ°user_gpio_buf; å¯¹ç¡¬ä»¶è¿›è¡Œé…ç½®;
-	//	  å¹¶ä¿å­˜hardware_gpio_statusç»“æ„(ä»ç¡¬ä»¶è¯»å–)
-	// å¯¹ç¡¬ä»¶é…ç½®æ—¶, è€ƒè™‘äº†è¿ç»­å‡ é¡¹é…ç½®åŒä¸€ç«¯å£çš„æƒ…å½¢
+	// ¶Ôgpio_listÃ¿Ò»¸öÓĞĞ§Ïî, ±£´æÓÃ»§ÅäÖÃĞÅÏ¢µ½user_gpio_buf; ¶ÔÓ²¼ş½øĞĞÅäÖÃ;
+	//	  ²¢±£´æhardware_gpio_status½á¹¹(´ÓÓ²¼ş¶ÁÈ¡)
+	// ¶ÔÓ²¼şÅäÖÃÊ±, ¿¼ÂÇÁËÁ¬Ğø¼¸ÏîÅäÖÃÍ¬Ò»¶Ë¿ÚµÄÇéĞÎ
 	for(i = first_port; i < group_count_max; i++) {
-		// è‹¥é…ç½®é¡¹æ— æ•ˆåˆ™è¿”å›.
-		tmp_sys_gpio_data  = user_gpio_set + i;             //tmp_sys_gpio_dataæŒ‡å‘ç”³è¯·çš„GPIOç©ºé—´
-		tmp_user_gpio_data = gpio_list + i;                 //gpio_setä¾æ¬¡æŒ‡å‘ç”¨æˆ·çš„æ¯ä¸ªGPIOæ•°ç»„æˆå‘˜
-		port     = tmp_user_gpio_data->port;                //è¯»å‡ºç«¯å£æ•°å€¼
-		port_num = tmp_user_gpio_data->port_num;            //è¯»å‡ºç«¯å£ä¸­çš„æŸä¸€ä¸ªGPIO
+		// ÈôÅäÖÃÏîÎŞĞ§Ôò·µ»Ø.
+		tmp_sys_gpio_data  = user_gpio_set + i;             //tmp_sys_gpio_dataÖ¸ÏòÉêÇëµÄGPIO¿Õ¼ä
+		tmp_user_gpio_data = gpio_list + i;                 //gpio_setÒÀ´ÎÖ¸ÏòÓÃ»§µÄÃ¿¸öGPIOÊı×é³ÉÔ±
+		port     = tmp_user_gpio_data->port;                //¶Á³ö¶Ë¿ÚÊıÖµ
+		port_num = tmp_user_gpio_data->port_num;            //¶Á³ö¶Ë¿ÚÖĞµÄÄ³Ò»¸öGPIO
 		if(!port)
 			continue;
 
-		// ä¿å­˜ç”¨æˆ·é…ç½®ä¿¡æ¯
+		// ±£´æÓÃ»§ÅäÖÃĞÅÏ¢
 		strcpy(tmp_sys_gpio_data->gpio_name, tmp_user_gpio_data->gpio_name);
 		tmp_sys_gpio_data->port                       = port;
 		tmp_sys_gpio_data->port_num                   = port_num;
@@ -229,29 +229,29 @@ u32 sw_gpio_request(user_gpio_set_t *gpio_list, u32 group_count_max)
 		port_num_func = (port_num >> 3);
 		port_num_pull = (port_num >> 4);
 
-		// å¯¹ç¡¬ä»¶è¿›è¡Œé…ç½®
-		if((port_num_pull != pre_port_num_pull) || (port != pre_port)) { //å¦‚æœå‘ç°å½“å‰å¼•è„šçš„ç«¯å£ä¸ä¸€è‡´ï¼Œæˆ–è€…æ‰€åœ¨çš„pullå¯„å­˜å™¨ä¸ä¸€è‡´
+		// ¶ÔÓ²¼ş½øĞĞÅäÖÃ
+		if((port_num_pull != pre_port_num_pull) || (port != pre_port)) { //Èç¹û·¢ÏÖµ±Ç°Òı½ÅµÄ¶Ë¿Ú²»Ò»ÖÂ£¬»òÕßËùÔÚµÄpull¼Ä´æÆ÷²»Ò»ÖÂ
 			if(func_change)	{
-				*tmp_group_func_addr   = tmp_group_func_data;    //å›å†™åŠŸèƒ½å¯„å­˜å™¨
+				*tmp_group_func_addr   = tmp_group_func_data;    //»ØĞ´¹¦ÄÜ¼Ä´æÆ÷
 				func_change = 0;
 			}
 			if(pull_change)	{
 				pull_change = 0;
-				*tmp_group_pull_addr   = tmp_group_pull_data;    //å›å†™pullå¯„å­˜å™¨
+				*tmp_group_pull_addr   = tmp_group_pull_data;    //»ØĞ´pull¼Ä´æÆ÷
 			}
 			if(dlevel_change) {
 				dlevel_change = 0;
-				*tmp_group_dlevel_addr = tmp_group_dlevel_data;  //å›å†™driver levelå¯„å­˜å™¨
+				*tmp_group_dlevel_addr = tmp_group_dlevel_data;  //»ØĞ´driver level¼Ä´æÆ÷
 			}
 			if(data_change)	{
 				data_change = 0;
-				*tmp_group_data_addr   = tmp_group_data_data;    //å›å†™
+				*tmp_group_data_addr   = tmp_group_data_data;    //»ØĞ´
 			}
 
-			tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //æ›´æ–°åŠŸèƒ½å¯„å­˜å™¨åœ°å€
-			tmp_group_pull_addr    = PIO_REG_PULL(port, port_num_pull);   //æ›´æ–°pullå¯„å­˜å™¨
-			tmp_group_dlevel_addr  = PIO_REG_DLEVEL(port, port_num_pull); //æ›´æ–°levelå¯„å­˜å™¨
-			tmp_group_data_addr    = PIO_REG_DATA(port);                  //æ›´æ–°dataå¯„å­˜å™¨
+			tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //¸üĞÂ¹¦ÄÜ¼Ä´æÆ÷µØÖ·
+			tmp_group_pull_addr    = PIO_REG_PULL(port, port_num_pull);   //¸üĞÂpull¼Ä´æÆ÷
+			tmp_group_dlevel_addr  = PIO_REG_DLEVEL(port, port_num_pull); //¸üĞÂlevel¼Ä´æÆ÷
+			tmp_group_data_addr    = PIO_REG_DATA(port);                  //¸üĞÂdata¼Ä´æÆ÷
 
 			tmp_group_func_data    = *tmp_group_func_addr;
 			tmp_group_pull_data    = *tmp_group_pull_addr;
@@ -259,18 +259,18 @@ u32 sw_gpio_request(user_gpio_set_t *gpio_list, u32 group_count_max)
 			tmp_group_data_data    = *tmp_group_data_addr;
 
 		}
-		else if(pre_port_num_func != port_num_func) { //å¦‚æœå‘ç°å½“å‰å¼•è„šçš„åŠŸèƒ½å¯„å­˜å™¨ä¸ä¸€è‡´
-			*tmp_group_func_addr   = tmp_group_func_data;    //åˆ™åªå›å†™åŠŸèƒ½å¯„å­˜å™¨
-			tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //æ›´æ–°åŠŸèƒ½å¯„å­˜å™¨åœ°å€
+		else if(pre_port_num_func != port_num_func) { //Èç¹û·¢ÏÖµ±Ç°Òı½ÅµÄ¹¦ÄÜ¼Ä´æÆ÷²»Ò»ÖÂ
+			*tmp_group_func_addr   = tmp_group_func_data;    //ÔòÖ»»ØĞ´¹¦ÄÜ¼Ä´æÆ÷
+			tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //¸üĞÂ¹¦ÄÜ¼Ä´æÆ÷µØÖ·
 
 			tmp_group_func_data    = *tmp_group_func_addr;
 		}
 
-		pre_port_num_pull = port_num_pull;                      //ä¿å­˜å½“å‰ç¡¬ä»¶å¯„å­˜å™¨æ•°æ®, è®¾ç½®å½“å‰GPIOæˆä¸ºå‰ä¸€ä¸ªGPIO
+		pre_port_num_pull = port_num_pull;                      //±£´æµ±Ç°Ó²¼ş¼Ä´æÆ÷Êı¾İ, ÉèÖÃµ±Ç°GPIO³ÉÎªÇ°Ò»¸öGPIO
 		pre_port_num_func = port_num_func;
 		pre_port          = port;
 
-		// æ›´æ–°å°†è¦å†™å…¥func regçš„å€¼
+		// ¸üĞÂ½«ÒªĞ´Èëfunc regµÄÖµ
 		if(tmp_user_gpio_data->mul_sel >= 0) {
 			tmp_val = (port_num - (port_num_func<<3)) << 2; /* get the bits offset of cfg reg */
 			tmp_sys_gpio_data->hardware_gpio_status.mul_sel = (tmp_group_func_data >> tmp_val) & 0x07;
@@ -278,7 +278,7 @@ u32 sw_gpio_request(user_gpio_set_t *gpio_list, u32 group_count_max)
 			tmp_group_func_data |=  (tmp_user_gpio_data->mul_sel & 0x07) << tmp_val;
 			func_change = 1;
 		}
-		// æ›´æ–°å°†è¦å†™å…¥pull regçš„å€¼
+		// ¸üĞÂ½«ÒªĞ´Èëpull regµÄÖµ
 		tmp_val = (port_num - (port_num_pull<<4)) << 1; /* get the bits offset of pull reg */
 		if(tmp_user_gpio_data->pull >= 0) {
 			tmp_sys_gpio_data->hardware_gpio_status.pull = (tmp_group_pull_data >> tmp_val) & 0x03;
@@ -288,7 +288,7 @@ u32 sw_gpio_request(user_gpio_set_t *gpio_list, u32 group_count_max)
 				pull_change = 1;
 			}
 		}
-		// æ›´æ–°å°†è¦å†™å…¥drv level regçš„å€¼
+		// ¸üĞÂ½«ÒªĞ´Èëdrv level regµÄÖµ
 		if(tmp_user_gpio_data->drv_level >= 0) { /* tmp_val is as above */
 			tmp_sys_gpio_data->hardware_gpio_status.drv_level = (tmp_group_dlevel_data >> tmp_val) & 0x03;
 			if(tmp_user_gpio_data->drv_level >= 0) {
@@ -299,7 +299,7 @@ u32 sw_gpio_request(user_gpio_set_t *gpio_list, u32 group_count_max)
 		}
 #endif
 
-	// æ ¹æ®ç”¨æˆ·è¾“å…¥ï¼Œä»¥åŠåŠŸèƒ½åˆ†é…å†³å®šæ˜¯å¦æ›´æ–°dataå¯„å­˜å™¨
+	// ¸ù¾İÓÃ»§ÊäÈë£¬ÒÔ¼°¹¦ÄÜ·ÖÅä¾ö¶¨ÊÇ·ñ¸üĞÂdata¼Ä´æÆ÷
 #if 1
 		if(tmp_user_gpio_data->mul_sel == 1) {
 			if(tmp_user_gpio_data->data >= 0)
@@ -319,18 +319,18 @@ u32 sw_gpio_request(user_gpio_set_t *gpio_list, u32 group_count_max)
 	}
 
 #if 0
-	// forå¾ªç¯ç»“æŸï¼Œå¦‚æœå­˜åœ¨è¿˜æ²¡æœ‰å›å†™çš„å¯„å­˜å™¨ï¼Œè¿™é‡Œå†™å›åˆ°ç¡¬ä»¶å½“ä¸­
-	if(tmp_group_func_addr) {			//åªè¦æ›´æ–°è¿‡å¯„å­˜å™¨åœ°å€ï¼Œå°±å¯ä»¥å¯¹ç¡¬ä»¶èµ‹å€¼
-							//é‚£ä¹ˆæŠŠæ‰€æœ‰çš„å€¼å…¨éƒ¨å›å†™åˆ°ç¡¬ä»¶å¯„å­˜å™¨
-	        *tmp_group_func_addr   = tmp_group_func_data;       //å›å†™åŠŸèƒ½å¯„å­˜å™¨
+	// forÑ­»·½áÊø£¬Èç¹û´æÔÚ»¹Ã»ÓĞ»ØĞ´µÄ¼Ä´æÆ÷£¬ÕâÀïĞ´»Øµ½Ó²¼şµ±ÖĞ
+	if(tmp_group_func_addr) {			//Ö»Òª¸üĞÂ¹ı¼Ä´æÆ÷µØÖ·£¬¾Í¿ÉÒÔ¶ÔÓ²¼ş¸³Öµ
+							//ÄÇÃ´°ÑËùÓĞµÄÖµÈ«²¿»ØĞ´µ½Ó²¼ş¼Ä´æÆ÷
+	        *tmp_group_func_addr   = tmp_group_func_data;       //»ØĞ´¹¦ÄÜ¼Ä´æÆ÷
 		if(pull_change) {
-			*tmp_group_pull_addr   = tmp_group_pull_data;    //å›å†™pullå¯„å­˜å™¨
+			*tmp_group_pull_addr   = tmp_group_pull_data;    //»ØĞ´pull¼Ä´æÆ÷
 		}
 		if(dlevel_change) {
-			*tmp_group_dlevel_addr = tmp_group_dlevel_data;  //å›å†™driver levelå¯„å­˜å™¨
+			*tmp_group_dlevel_addr = tmp_group_dlevel_data;  //»ØĞ´driver level¼Ä´æÆ÷
 		}
 		if(data_change) {
-			*tmp_group_data_addr   = tmp_group_data_data;    //å›å†™dataå¯„å­˜å™¨
+			*tmp_group_data_addr   = tmp_group_data_data;    //»ØĞ´data¼Ä´æÆ÷
 		}
 	}
 #endif
@@ -353,12 +353,12 @@ EXPORT_SYMBOL_GPL(sw_gpio_request);
 
 /**
  * sw_gpio_request_ex - gpio request
- * @main_name: ä¼ è¿›çš„ä¸»é”®åç§°ï¼ŒåŒ¹é…æ¨¡å—(é©±åŠ¨åç§°)
- * @sub_name: ä¼ è¿›çš„å­é”®åç§°ï¼Œå¦‚æœæ˜¯ç©ºï¼Œè¡¨ç¤ºå…¨éƒ¨ï¼Œå¦åˆ™å¯»æ‰¾åˆ°åŒ¹é…çš„å•ç‹¬GPIO
+ * @main_name: ´«½øµÄÖ÷¼üÃû³Æ£¬Æ¥ÅäÄ£¿é(Çı¶¯Ãû³Æ)
+ * @sub_name: ´«½øµÄ×Ó¼üÃû³Æ£¬Èç¹ûÊÇ¿Õ£¬±íÊ¾È«²¿£¬·ñÔòÑ°ÕÒµ½Æ¥ÅäµÄµ¥¶ÀGPIO
  *
  * return gpio handle if success, 0 if failed
  */
-u32 sw_gpio_request_ex(char *main_name, const char *sub_name)  //è®¾å¤‡ç”³è¯·GPIOå‡½æ•°æ‰©å±•æ¥å£
+u32 sw_gpio_request_ex(char *main_name, const char *sub_name)  //Éè±¸ÉêÇëGPIOº¯ÊıÀ©Õ¹½Ó¿Ú
 {
 	user_gpio_set_t    *gpio_list=NULL;
 	user_gpio_set_t     one_gpio;
@@ -371,7 +371,7 @@ u32 sw_gpio_request_ex(char *main_name, const char *sub_name)  //è®¾å¤‡ç”³è¯·GPI
 			printk("err: gpio count < =0 ,gpio_count is: %d \n", gpio_count);
 			return 0;
 		}
-		gpio_list = (user_gpio_set_t *)CSP_OSAL_MALLOC(sizeof(system_gpio_set_t) * gpio_count); //ç”³è¯·ä¸€ç‰‡ä¸´æ—¶å†…å­˜ï¼Œç”¨äºä¿å­˜ç”¨æˆ·æ•°æ®
+		gpio_list = (user_gpio_set_t *)CSP_OSAL_MALLOC(sizeof(system_gpio_set_t) * gpio_count); //ÉêÇëÒ»Æ¬ÁÙÊ±ÄÚ´æ£¬ÓÃÓÚ±£´æÓÃ»§Êı¾İ
 		if(!gpio_list) {
 			printk("malloc gpio_list error \n");
 			return 0;
@@ -398,14 +398,14 @@ EXPORT_SYMBOL(sw_gpio_request_ex);
 /**
  * sw_gpio_release - gpio release
  * @p_handler: gpio handler
- * @if_release_to_default_status: æ˜¯å¦é‡Šæ”¾åˆ°åŸå§‹çŠ¶æ€(å¯„å­˜å™¨åŸæœ‰çŠ¶æ€)
+ * @if_release_to_default_status: ÊÇ·ñÊÍ·Åµ½Ô­Ê¼×´Ì¬(¼Ä´æÆ÷Ô­ÓĞ×´Ì¬)
  *
  * return EGPIO_SUCCESS if success, EGPIO_FAIL if failed
  */
 s32 sw_gpio_release(u32 p_handler, s32 if_release_to_default_status)
 {
-	char               *tmp_buf;                                        //è½¬æ¢æˆcharç±»å‹
-	u32               group_count_max, first_port;                    //æœ€å¤§GPIOä¸ªæ•°
+	char               *tmp_buf;                                        //×ª»»³ÉcharÀàĞÍ
+	u32               group_count_max, first_port;                    //×î´óGPIO¸öÊı
 	system_gpio_set_t  *user_gpio_set, *tmp_sys_gpio_data;
 	u32               port, port_num;
 	u32               i;
@@ -414,7 +414,7 @@ s32 sw_gpio_release(u32 p_handler, s32 if_release_to_default_status)
 	u32 	pio_index = 0;
 	struct gpio_config config_stru = {0};
 
-	// æ£€æŸ¥ä¼ è¿›çš„å¥æŸ„çš„æœ‰æ•ˆæ€§
+	// ¼ì²é´«½øµÄ¾ä±úµÄÓĞĞ§ĞÔ
 	if(!p_handler)
 		return EGPIO_FAIL;
 	tmp_buf = (char *)p_handler;
@@ -428,11 +428,11 @@ s32 sw_gpio_release(u32 p_handler, s32 if_release_to_default_status)
 	}
 	user_gpio_set = (system_gpio_set_t *)(tmp_buf + 16);
 
-	// è¯»å–ç”¨æˆ·æ•°æ®, æ‰¾åˆ°ç¬¬ä¸€ä¸ªæœ‰æ•ˆé¡¹
+	// ¶ÁÈ¡ÓÃ»§Êı¾İ, ÕÒµ½µÚÒ»¸öÓĞĞ§Ïî
 	for(first_port = 0; first_port < group_count_max; first_port++) {
 		tmp_sys_gpio_data  = user_gpio_set + first_port;
-		port     = tmp_sys_gpio_data->port;                 //è¯»å‡ºç«¯å£æ•°å€¼
-		port_num = tmp_sys_gpio_data->port_num;             //è¯»å‡ºç«¯å£ä¸­çš„æŸä¸€ä¸ªGPIO
+		port     = tmp_sys_gpio_data->port;                 //¶Á³ö¶Ë¿ÚÊıÖµ
+		port_num = tmp_sys_gpio_data->port_num;             //¶Á³ö¶Ë¿ÚÖĞµÄÄ³Ò»¸öGPIO
 		if(!port)
 			continue;
 
@@ -440,9 +440,9 @@ s32 sw_gpio_release(u32 p_handler, s32 if_release_to_default_status)
 		port_num_func = (port_num >> 3);
 		port_num_pull = (port_num >> 4);
 
-		tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //æ›´æ–°åŠŸèƒ½å¯„å­˜å™¨åœ°å€
-		tmp_group_pull_addr    = PIO_REG_PULL(port, port_num_pull);  //æ›´æ–°pullå¯„å­˜å™¨
-		tmp_group_dlevel_addr  = PIO_REG_DLEVEL(port, port_num_pull);//æ›´æ–°levelå¯„å­˜å™¨
+		tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //¸üĞÂ¹¦ÄÜ¼Ä´æÆ÷µØÖ·
+		tmp_group_pull_addr    = PIO_REG_PULL(port, port_num_pull);  //¸üĞÂpull¼Ä´æÆ÷
+		tmp_group_dlevel_addr  = PIO_REG_DLEVEL(port, port_num_pull);//¸üĞÂlevel¼Ä´æÆ÷
 
 		tmp_group_func_data    = *tmp_group_func_addr;
 		tmp_group_pull_data    = *tmp_group_pull_addr;
@@ -454,9 +454,9 @@ s32 sw_gpio_release(u32 p_handler, s32 if_release_to_default_status)
 		return 0;
 
 	for(i = first_port; i < group_count_max; i++) {
-		tmp_sys_gpio_data  = user_gpio_set + i;             //tmp_sys_gpio_dataæŒ‡å‘ç”³è¯·çš„GPIOç©ºé—´
-		port     = tmp_sys_gpio_data->port;                 //è¯»å‡ºç«¯å£æ•°å€¼
-		port_num = tmp_sys_gpio_data->port_num;             //è¯»å‡ºç«¯å£ä¸­çš„æŸä¸€ä¸ªGPIO
+		tmp_sys_gpio_data  = user_gpio_set + i;             //tmp_sys_gpio_dataÖ¸ÏòÉêÇëµÄGPIO¿Õ¼ä
+		port     = tmp_sys_gpio_data->port;                 //¶Á³ö¶Ë¿ÚÊıÖµ
+		port_num = tmp_sys_gpio_data->port_num;             //¶Á³ö¶Ë¿ÚÖĞµÄÄ³Ò»¸öGPIO
 
 #if 1
 		/* get the gpio index */
@@ -474,34 +474,34 @@ s32 sw_gpio_release(u32 p_handler, s32 if_release_to_default_status)
 		port_num_func = (port_num >> 3);
 		port_num_pull = (port_num >> 4);
 
-		if((port_num_pull != pre_port_num_pull) || (port != pre_port)) {   //å¦‚æœå‘ç°å½“å‰å¼•è„šçš„ç«¯å£ä¸ä¸€è‡´ï¼Œæˆ–è€…æ‰€åœ¨çš„pullå¯„å­˜å™¨ä¸ä¸€è‡´
-			*tmp_group_func_addr   = tmp_group_func_data;    //å›å†™åŠŸèƒ½å¯„å­˜å™¨
-			*tmp_group_pull_addr   = tmp_group_pull_data;    //å›å†™pullå¯„å­˜å™¨
-			*tmp_group_dlevel_addr = tmp_group_dlevel_data;  //å›å†™driver levelå¯„å­˜å™¨
+		if((port_num_pull != pre_port_num_pull) || (port != pre_port)) {   //Èç¹û·¢ÏÖµ±Ç°Òı½ÅµÄ¶Ë¿Ú²»Ò»ÖÂ£¬»òÕßËùÔÚµÄpull¼Ä´æÆ÷²»Ò»ÖÂ
+			*tmp_group_func_addr   = tmp_group_func_data;    //»ØĞ´¹¦ÄÜ¼Ä´æÆ÷
+			*tmp_group_pull_addr   = tmp_group_pull_data;    //»ØĞ´pull¼Ä´æÆ÷
+			*tmp_group_dlevel_addr = tmp_group_dlevel_data;  //»ØĞ´driver level¼Ä´æÆ÷
 
-			tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //æ›´æ–°åŠŸèƒ½å¯„å­˜å™¨åœ°å€
-			tmp_group_pull_addr    = PIO_REG_PULL(port, port_num_pull);   //æ›´æ–°pullå¯„å­˜å™¨
-			tmp_group_dlevel_addr  = PIO_REG_DLEVEL(port, port_num_pull); //æ›´æ–°levelå¯„å­˜å™¨
+			tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //¸üĞÂ¹¦ÄÜ¼Ä´æÆ÷µØÖ·
+			tmp_group_pull_addr    = PIO_REG_PULL(port, port_num_pull);   //¸üĞÂpull¼Ä´æÆ÷
+			tmp_group_dlevel_addr  = PIO_REG_DLEVEL(port, port_num_pull); //¸üĞÂlevel¼Ä´æÆ÷
 
 			tmp_group_func_data    = *tmp_group_func_addr;
 			tmp_group_pull_data    = *tmp_group_pull_addr;
 			tmp_group_dlevel_data  = *tmp_group_dlevel_addr;
-		} else if(pre_port_num_func != port_num_func) {                      //å¦‚æœå‘ç°å½“å‰å¼•è„šçš„åŠŸèƒ½å¯„å­˜å™¨ä¸ä¸€è‡´
-			*tmp_group_func_addr   = tmp_group_func_data;                 //åˆ™åªå›å†™åŠŸèƒ½å¯„å­˜å™¨
-			tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //æ›´æ–°åŠŸèƒ½å¯„å­˜å™¨åœ°å€
+		} else if(pre_port_num_func != port_num_func) {                      //Èç¹û·¢ÏÖµ±Ç°Òı½ÅµÄ¹¦ÄÜ¼Ä´æÆ÷²»Ò»ÖÂ
+			*tmp_group_func_addr   = tmp_group_func_data;                 //ÔòÖ»»ØĞ´¹¦ÄÜ¼Ä´æÆ÷
+			tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //¸üĞÂ¹¦ÄÜ¼Ä´æÆ÷µØÖ·
 			tmp_group_func_data    = *tmp_group_func_addr;
 		}
 
 		pre_port_num_pull = port_num_pull;
 		pre_port_num_func = port_num_func;
 		pre_port          = port;
-		//æ›´æ–°åŠŸèƒ½å¯„å­˜å™¨, è®¾ç½®ä¸ºè¾“å…¥
+		//¸üĞÂ¹¦ÄÜ¼Ä´æÆ÷, ÉèÖÃÎªÊäÈë
 		tmp_group_func_data &= ~(0x07 << ((port_num - (port_num_func<<3)) << 2));
-		//æ›´æ–°pullçŠ¶æ€å¯„å­˜å™¨
+		//¸üĞÂpull×´Ì¬¼Ä´æÆ÷
 		tmp_val              =  (port_num - (port_num_pull<<4)) << 1;
 		tmp_group_pull_data &= ~(0x03  << tmp_val);
 		tmp_group_pull_data |= (tmp_sys_gpio_data->hardware_gpio_status.pull & 0x03) << tmp_val;
-		//æ›´æ–°driverçŠ¶æ€å¯„å­˜å™¨
+		//¸üĞÂdriver×´Ì¬¼Ä´æÆ÷
 		tmp_val              =  (port_num - (port_num_pull<<4)) << 1;
 		tmp_group_dlevel_data &= ~(0x03  << tmp_val);
 		tmp_group_dlevel_data |= (tmp_sys_gpio_data->hardware_gpio_status.drv_level & 0x03) << tmp_val;
@@ -509,9 +509,9 @@ s32 sw_gpio_release(u32 p_handler, s32 if_release_to_default_status)
 	}
 
 #if 0
-	if(tmp_group_func_addr) {               //åªè¦æ›´æ–°è¿‡å¯„å­˜å™¨åœ°å€ï¼Œå°±å¯ä»¥å¯¹ç¡¬ä»¶èµ‹å€¼
-						//é‚£ä¹ˆæŠŠæ‰€æœ‰çš„å€¼å…¨éƒ¨å›å†™åˆ°ç¡¬ä»¶å¯„å­˜å™¨
-	        *tmp_group_func_addr   = tmp_group_func_data;    //å›å†™åŠŸèƒ½å¯„å­˜å™¨
+	if(tmp_group_func_addr) {               //Ö»Òª¸üĞÂ¹ı¼Ä´æÆ÷µØÖ·£¬¾Í¿ÉÒÔ¶ÔÓ²¼ş¸³Öµ
+						//ÄÇÃ´°ÑËùÓĞµÄÖµÈ«²¿»ØĞ´µ½Ó²¼ş¼Ä´æÆ÷
+	        *tmp_group_func_addr   = tmp_group_func_data;    //»ØĞ´¹¦ÄÜ¼Ä´æÆ÷
 	}
 	if(tmp_group_pull_addr) {
 	        *tmp_group_pull_addr   = tmp_group_pull_data;
@@ -534,18 +534,18 @@ End:
 EXPORT_SYMBOL(sw_gpio_release);
 
 /**
- * sw_gpio_get_all_pin_status - è·å–ç”¨æˆ·ç”³è¯·è¿‡çš„æ‰€æœ‰GPIOçš„çŠ¶æ€
+ * sw_gpio_get_all_pin_status - »ñÈ¡ÓÃ»§ÉêÇë¹ıµÄËùÓĞGPIOµÄ×´Ì¬
  * @p_handler: gpio handler
- * @gpio_status: ä¿å­˜ç”¨æˆ·æ•°æ®çš„æ•°ç»„
- * @gpio_count_max: æ•°ç»„æœ€å¤§ä¸ªæ•°ï¼Œé¿å…æ•°ç»„è¶Šç•Œ
- * @if_get_user_set_flag: è¯»å–æ ‡å¿—ï¼Œè¡¨ç¤ºè¯»å–ç”¨æˆ·è®¾å®šæ•°æ®æˆ–è€…æ˜¯å®é™…æ•°æ®
+ * @gpio_status: ±£´æÓÃ»§Êı¾İµÄÊı×é
+ * @gpio_count_max: Êı×é×î´ó¸öÊı£¬±ÜÃâÊı×éÔ½½ç
+ * @if_get_user_set_flag: ¶ÁÈ¡±êÖ¾£¬±íÊ¾¶ÁÈ¡ÓÃ»§Éè¶¨Êı¾İ»òÕßÊÇÊµ¼ÊÊı¾İ
  *
  * return EGPIO_SUCCESS if success, EGPIO_FAIL if failed
  */
 s32  sw_gpio_get_all_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, u32 gpio_count_max, u32 if_get_from_hardware)
 {
-	char               *tmp_buf;                                        //è½¬æ¢æˆcharç±»å‹
-	u32               group_count_max, first_port;                    //æœ€å¤§GPIOä¸ªæ•°
+	char               *tmp_buf;                                        //×ª»»³ÉcharÀàĞÍ
+	u32               group_count_max, first_port;                    //×î´óGPIO¸öÊı
 	system_gpio_set_t  *user_gpio_set, *tmp_sys_gpio_data;
 	user_gpio_set_t  *script_gpio;
 	u32               port, port_num;
@@ -567,26 +567,26 @@ s32  sw_gpio_get_all_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, u32
 	if(group_count_max > gpio_count_max)
 		group_count_max = gpio_count_max;
 
-	//è¯»å–ç”¨æˆ·æ•°æ®
-	//è¡¨ç¤ºè¯»å–ç”¨æˆ·ç»™å®šçš„æ•°æ®
+	//¶ÁÈ¡ÓÃ»§Êı¾İ
+	//±íÊ¾¶ÁÈ¡ÓÃ»§¸ø¶¨µÄÊı¾İ
 	if(!if_get_from_hardware) {
 		for(i = 0; i < group_count_max; i++) {
-			tmp_sys_gpio_data = user_gpio_set + i;             //tmp_sys_gpio_dataæŒ‡å‘ç”³è¯·çš„GPIOç©ºé—´
-			script_gpio       = gpio_status + i;               //script_gpioæŒ‡å‘ç”¨æˆ·ä¼ è¿›çš„ç©ºé—´
+			tmp_sys_gpio_data = user_gpio_set + i;             //tmp_sys_gpio_dataÖ¸ÏòÉêÇëµÄGPIO¿Õ¼ä
+			script_gpio       = gpio_status + i;               //script_gpioÖ¸ÏòÓÃ»§´«½øµÄ¿Õ¼ä
 
-			script_gpio->port      = tmp_sys_gpio_data->port;                       //è¯»å‡ºportæ•°æ®
-			script_gpio->port_num  = tmp_sys_gpio_data->port_num;                   //è¯»å‡ºport_numæ•°æ®
-			script_gpio->pull      = tmp_sys_gpio_data->user_gpio_status.pull;      //è¯»å‡ºpullæ•°æ®
-			script_gpio->mul_sel   = tmp_sys_gpio_data->user_gpio_status.mul_sel;   //è¯»å‡ºåŠŸèƒ½æ•°æ®
-			script_gpio->drv_level = tmp_sys_gpio_data->user_gpio_status.drv_level; //è¯»å‡ºé©±åŠ¨èƒ½åŠ›æ•°æ®
-			script_gpio->data      = tmp_sys_gpio_data->user_gpio_status.data;      //è¯»å‡ºdataæ•°æ®
+			script_gpio->port      = tmp_sys_gpio_data->port;                       //¶Á³öportÊı¾İ
+			script_gpio->port_num  = tmp_sys_gpio_data->port_num;                   //¶Á³öport_numÊı¾İ
+			script_gpio->pull      = tmp_sys_gpio_data->user_gpio_status.pull;      //¶Á³öpullÊı¾İ
+			script_gpio->mul_sel   = tmp_sys_gpio_data->user_gpio_status.mul_sel;   //¶Á³ö¹¦ÄÜÊı¾İ
+			script_gpio->drv_level = tmp_sys_gpio_data->user_gpio_status.drv_level; //¶Á³öÇı¶¯ÄÜÁ¦Êı¾İ
+			script_gpio->data      = tmp_sys_gpio_data->user_gpio_status.data;      //¶Á³ödataÊı¾İ
 			strcpy(script_gpio->gpio_name, tmp_sys_gpio_data->gpio_name);
 		}
 	} else {
 		for(first_port = 0; first_port < group_count_max; first_port++) {
 			tmp_sys_gpio_data  = user_gpio_set + first_port;
-			port     = tmp_sys_gpio_data->port;               //è¯»å‡ºç«¯å£æ•°å€¼
-			port_num = tmp_sys_gpio_data->port_num;           //è¯»å‡ºç«¯å£ä¸­çš„æŸä¸€ä¸ªGPIO
+			port     = tmp_sys_gpio_data->port;               //¶Á³ö¶Ë¿ÚÊıÖµ
+			port_num = tmp_sys_gpio_data->port_num;           //¶Á³ö¶Ë¿ÚÖĞµÄÄ³Ò»¸öGPIO
 
 			if(!port)
 				continue;
@@ -594,10 +594,10 @@ s32  sw_gpio_get_all_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, u32
 #if 0
 			port_num_func = (port_num >> 3);
 			port_num_pull = (port_num >> 4);
-			tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //æ›´æ–°åŠŸèƒ½å¯„å­˜å™¨åœ°å€
-			tmp_group_pull_addr    = PIO_REG_PULL(port, port_num_pull);   //æ›´æ–°pullå¯„å­˜å™¨
-			tmp_group_dlevel_addr  = PIO_REG_DLEVEL(port, port_num_pull); //æ›´æ–°levelå¯„å­˜å™¨
-			tmp_group_data_addr    = PIO_REG_DATA(port);                  //æ›´æ–°dataå¯„å­˜å™¨
+			tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //¸üĞÂ¹¦ÄÜ¼Ä´æÆ÷µØÖ·
+			tmp_group_pull_addr    = PIO_REG_PULL(port, port_num_pull);   //¸üĞÂpull¼Ä´æÆ÷
+			tmp_group_dlevel_addr  = PIO_REG_DLEVEL(port, port_num_pull); //¸üĞÂlevel¼Ä´æÆ÷
+			tmp_group_data_addr    = PIO_REG_DATA(port);                  //¸üĞÂdata¼Ä´æÆ÷
 #endif
 			break;
 		}
@@ -605,14 +605,14 @@ s32  sw_gpio_get_all_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, u32
 			return 0;
 
 		for(i = first_port; i < group_count_max; i++) {
-			tmp_sys_gpio_data = user_gpio_set + i;             //tmp_sys_gpio_dataæŒ‡å‘ç”³è¯·çš„GPIOç©ºé—´
-			script_gpio       = gpio_status + i;               //script_gpioæŒ‡å‘ç”¨æˆ·ä¼ è¿›çš„ç©ºé—´
+			tmp_sys_gpio_data = user_gpio_set + i;             //tmp_sys_gpio_dataÖ¸ÏòÉêÇëµÄGPIO¿Õ¼ä
+			script_gpio       = gpio_status + i;               //script_gpioÖ¸ÏòÓÃ»§´«½øµÄ¿Õ¼ä
 
-			port     = tmp_sys_gpio_data->port;                //è¯»å‡ºç«¯å£æ•°å€¼
-			port_num = tmp_sys_gpio_data->port_num;            //è¯»å‡ºç«¯å£ä¸­çš„æŸä¸€ä¸ªGPIO
+			port     = tmp_sys_gpio_data->port;                //¶Á³ö¶Ë¿ÚÊıÖµ
+			port_num = tmp_sys_gpio_data->port_num;            //¶Á³ö¶Ë¿ÚÖĞµÄÄ³Ò»¸öGPIO
 
-			script_gpio->port = port;                          //è¯»å‡ºportæ•°æ®
-			script_gpio->port_num  = port_num;                 //è¯»å‡ºport_numæ•°æ®
+			script_gpio->port = port;                          //¶Á³öportÊı¾İ
+			script_gpio->port_num  = port_num;                 //¶Á³öport_numÊı¾İ
 			strcpy(script_gpio->gpio_name, tmp_sys_gpio_data->gpio_name);
 
 #if 1
@@ -636,25 +636,25 @@ s32  sw_gpio_get_all_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, u32
 			port_num_func = (port_num >> 3);
 			port_num_pull = (port_num >> 4);
 
-			if((port_num_pull != pre_port_num_pull) || (port != pre_port)) {    //å¦‚æœå‘ç°å½“å‰å¼•è„šçš„ç«¯å£ä¸ä¸€è‡´ï¼Œæˆ–è€…æ‰€åœ¨çš„pullå¯„å­˜å™¨ä¸ä¸€è‡´
-				tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //æ›´æ–°åŠŸèƒ½å¯„å­˜å™¨åœ°å€
-				tmp_group_pull_addr    = PIO_REG_PULL(port, port_num_pull);   //æ›´æ–°pullå¯„å­˜å™¨
-				tmp_group_dlevel_addr  = PIO_REG_DLEVEL(port, port_num_pull); //æ›´æ–°levelå¯„å­˜å™¨
-				tmp_group_data_addr    = PIO_REG_DATA(port);                  //æ›´æ–°dataå¯„å­˜å™¨
+			if((port_num_pull != pre_port_num_pull) || (port != pre_port)) {    //Èç¹û·¢ÏÖµ±Ç°Òı½ÅµÄ¶Ë¿Ú²»Ò»ÖÂ£¬»òÕßËùÔÚµÄpull¼Ä´æÆ÷²»Ò»ÖÂ
+				tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //¸üĞÂ¹¦ÄÜ¼Ä´æÆ÷µØÖ·
+				tmp_group_pull_addr    = PIO_REG_PULL(port, port_num_pull);   //¸üĞÂpull¼Ä´æÆ÷
+				tmp_group_dlevel_addr  = PIO_REG_DLEVEL(port, port_num_pull); //¸üĞÂlevel¼Ä´æÆ÷
+				tmp_group_data_addr    = PIO_REG_DATA(port);                  //¸üĞÂdata¼Ä´æÆ÷
 			}
-			else if(pre_port_num_func != port_num_func) {                      //å¦‚æœå‘ç°å½“å‰å¼•è„šçš„åŠŸèƒ½å¯„å­˜å™¨ä¸ä¸€è‡´
-				tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //æ›´æ–°åŠŸèƒ½å¯„å­˜å™¨åœ°å€
+			else if(pre_port_num_func != port_num_func) {                      //Èç¹û·¢ÏÖµ±Ç°Òı½ÅµÄ¹¦ÄÜ¼Ä´æÆ÷²»Ò»ÖÂ
+				tmp_group_func_addr    = PIO_REG_CFG(port, port_num_func);   //¸üĞÂ¹¦ÄÜ¼Ä´æÆ÷µØÖ·
 			}
 
 			pre_port_num_pull = port_num_pull;
 			pre_port_num_func = port_num_func;
 			pre_port          = port;
-			//ç»™ç”¨æˆ·æ§ä»¶èµ‹å€¼
-			script_gpio->pull      = (*tmp_group_pull_addr   >> ((port_num - (port_num_pull<<4))<<1)) & 0x03;    //è¯»å‡ºpullæ•°æ®
-			script_gpio->drv_level = (*tmp_group_dlevel_addr >> ((port_num - (port_num_pull<<4))<<1)) & 0x03;    //è¯»å‡ºåŠŸèƒ½æ•°æ®
-			script_gpio->mul_sel   = (*tmp_group_func_addr   >> ((port_num - (port_num_func<<3))<<2)) & 0x07;    //è¯»å‡ºåŠŸèƒ½æ•°æ®
+			//¸øÓÃ»§¿Ø¼ş¸³Öµ
+			script_gpio->pull      = (*tmp_group_pull_addr   >> ((port_num - (port_num_pull<<4))<<1)) & 0x03;    //¶Á³öpullÊı¾İ
+			script_gpio->drv_level = (*tmp_group_dlevel_addr >> ((port_num - (port_num_pull<<4))<<1)) & 0x03;    //¶Á³ö¹¦ÄÜÊı¾İ
+			script_gpio->mul_sel   = (*tmp_group_func_addr   >> ((port_num - (port_num_func<<3))<<2)) & 0x07;    //¶Á³ö¹¦ÄÜÊı¾İ
 			if(script_gpio->mul_sel <= 1) {
-				script_gpio->data  = (*tmp_group_data_addr   >>   port_num) & 0x01;                              //è¯»å‡ºdataæ•°æ®
+				script_gpio->data  = (*tmp_group_data_addr   >>   port_num) & 0x01;                              //¶Á³ödataÊı¾İ
 			} else {
 				script_gpio->data = -1;
 			}
@@ -673,18 +673,18 @@ End:
 EXPORT_SYMBOL(sw_gpio_get_all_pin_status);
 
 /**
- * sw_gpio_get_one_pin_status - è·å–ç”¨æˆ·ç”³è¯·è¿‡çš„GPIOçš„çŠ¶æ€
+ * sw_gpio_get_one_pin_status - »ñÈ¡ÓÃ»§ÉêÇë¹ıµÄGPIOµÄ×´Ì¬
  * @p_handler: gpio handler
- * @gpio_status: ä¿å­˜ç”¨æˆ·æ•°æ®çš„æ•°ç»„
- * @gpio_name: è¦æ“ä½œçš„GPIOçš„åç§°
- * @if_get_user_set_flag: è¯»å–æ ‡å¿—ï¼Œè¡¨ç¤ºè¯»å–ç”¨æˆ·è®¾å®šæ•°æ®æˆ–è€…æ˜¯å®é™…æ•°æ®
+ * @gpio_status: ±£´æÓÃ»§Êı¾İµÄÊı×é
+ * @gpio_name: Òª²Ù×÷µÄGPIOµÄÃû³Æ
+ * @if_get_user_set_flag: ¶ÁÈ¡±êÖ¾£¬±íÊ¾¶ÁÈ¡ÓÃ»§Éè¶¨Êı¾İ»òÕßÊÇÊµ¼ÊÊı¾İ
  *
  * return EGPIO_SUCCESS if success, EGPIO_FAIL if failed
  */
 s32  sw_gpio_get_one_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, const char *gpio_name, u32 if_get_from_hardware)
 {
-	char              *tmp_buf;                                        //è½¬æ¢æˆcharç±»å‹
-	u32               group_count_max;                                //æœ€å¤§GPIOä¸ªæ•°
+	char              *tmp_buf;                                        //×ª»»³ÉcharÀàĞÍ
+	u32               group_count_max;                                //×î´óGPIO¸öÊı
 	system_gpio_set_t  *user_gpio_set, *tmp_sys_gpio_data;
 	u32               port, port_num;
 	u32               i;
@@ -693,7 +693,7 @@ s32  sw_gpio_get_one_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, con
 	u32 	pio_index = 0;
 	struct gpio_config config_stru = {0};
 
-	//æ£€æŸ¥ä¼ è¿›çš„å¥æŸ„çš„æœ‰æ•ˆæ€§
+	//¼ì²é´«½øµÄ¾ä±úµÄÓĞĞ§ĞÔ
 	if((!p_handler) || (!gpio_status))
 		return EGPIO_FAIL;
 	tmp_buf = (char *)p_handler;
@@ -704,24 +704,24 @@ s32  sw_gpio_get_one_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, con
 		return EGPIO_FAIL;
 	user_gpio_set = (system_gpio_set_t *)(tmp_buf + 16);
 
-	//è¯»å–ç”¨æˆ·æ•°æ®
-	//è¡¨ç¤ºè¯»å–ç”¨æˆ·ç»™å®šçš„æ•°æ®
+	//¶ÁÈ¡ÓÃ»§Êı¾İ
+	//±íÊ¾¶ÁÈ¡ÓÃ»§¸ø¶¨µÄÊı¾İ
 	for(i = 0; i < group_count_max; i++) {
-		tmp_sys_gpio_data = user_gpio_set + i;             //tmp_sys_gpio_dataæŒ‡å‘ç”³è¯·çš„GPIOç©ºé—´
+		tmp_sys_gpio_data = user_gpio_set + i;             //tmp_sys_gpio_dataÖ¸ÏòÉêÇëµÄGPIO¿Õ¼ä
 		if(strcmp(gpio_name, tmp_sys_gpio_data->gpio_name))
 			continue;
 		strcpy(gpio_status->gpio_name, tmp_sys_gpio_data->gpio_name);
 		port                   = tmp_sys_gpio_data->port;
 		port_num               = tmp_sys_gpio_data->port_num;
-		gpio_status->port      = port;                                              //è¯»å‡ºportæ•°æ®
-		gpio_status->port_num  = port_num;                                          //è¯»å‡ºport_numæ•°æ®
+		gpio_status->port      = port;                                              //¶Á³öportÊı¾İ
+		gpio_status->port_num  = port_num;                                          //¶Á³öport_numÊı¾İ
 
-		if(!if_get_from_hardware) {                                                   //å½“å‰è¦æ±‚è¯»å‡ºç”¨æˆ·è®¾è®¡çš„æ•°æ®
-			gpio_status->mul_sel   = tmp_sys_gpio_data->user_gpio_status.mul_sel;   //ä»ç”¨æˆ·ä¼ è¿›æ•°æ®ä¸­è¯»å‡ºåŠŸèƒ½æ•°æ®
-			gpio_status->pull      = tmp_sys_gpio_data->user_gpio_status.pull;      //ä»ç”¨æˆ·ä¼ è¿›æ•°æ®ä¸­è¯»å‡ºpullæ•°æ®
-			gpio_status->drv_level = tmp_sys_gpio_data->user_gpio_status.drv_level; //ä»ç”¨æˆ·ä¼ è¿›æ•°æ®ä¸­è¯»å‡ºé©±åŠ¨èƒ½åŠ›æ•°æ®
-			gpio_status->data      = tmp_sys_gpio_data->user_gpio_status.data;      //ä»ç”¨æˆ·ä¼ è¿›æ•°æ®ä¸­è¯»å‡ºdataæ•°æ®
-		} else {                                                                      //å½“å‰è¯»å‡ºå¯„å­˜å™¨å®é™…çš„å‚æ•°
+		if(!if_get_from_hardware) {                                                   //µ±Ç°ÒªÇó¶Á³öÓÃ»§Éè¼ÆµÄÊı¾İ
+			gpio_status->mul_sel   = tmp_sys_gpio_data->user_gpio_status.mul_sel;   //´ÓÓÃ»§´«½øÊı¾İÖĞ¶Á³ö¹¦ÄÜÊı¾İ
+			gpio_status->pull      = tmp_sys_gpio_data->user_gpio_status.pull;      //´ÓÓÃ»§´«½øÊı¾İÖĞ¶Á³öpullÊı¾İ
+			gpio_status->drv_level = tmp_sys_gpio_data->user_gpio_status.drv_level; //´ÓÓÃ»§´«½øÊı¾İÖĞ¶Á³öÇı¶¯ÄÜÁ¦Êı¾İ
+			gpio_status->data      = tmp_sys_gpio_data->user_gpio_status.data;      //´ÓÓÃ»§´«½øÊı¾İÖĞ¶Á³ödataÊı¾İ
+		} else {                                                                      //µ±Ç°¶Á³ö¼Ä´æÆ÷Êµ¼ÊµÄ²ÎÊı
 #if 1
 			/* get the gpio index */
 			pio_index = port_to_gpio_index(port, port_num);
@@ -745,12 +745,12 @@ s32  sw_gpio_get_one_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, con
 
 			tmp_val1 = ((port_num - (port_num_func << 3)) << 2);
 			tmp_val2 = ((port_num - (port_num_pull << 4)) << 1);
-			gpio_status->mul_sel   = (PIO_REG_CFG_VALUE(port, port_num_func)>>tmp_val1) & 0x07;       //ä»ç¡¬ä»¶ä¸­è¯»å‡ºåŠŸèƒ½å¯„å­˜å™¨
-			gpio_status->pull      = (PIO_REG_PULL_VALUE(port, port_num_pull)>>tmp_val2) & 0x03;      //ä»ç¡¬ä»¶ä¸­è¯»å‡ºpullå¯„å­˜å™¨
-			gpio_status->drv_level = (PIO_REG_DLEVEL_VALUE(port, port_num_pull)>>tmp_val2) & 0x03;    //ä»ç¡¬ä»¶ä¸­è¯»å‡ºlevelå¯„å­˜å™¨
+			gpio_status->mul_sel   = (PIO_REG_CFG_VALUE(port, port_num_func)>>tmp_val1) & 0x07;       //´ÓÓ²¼şÖĞ¶Á³ö¹¦ÄÜ¼Ä´æÆ÷
+			gpio_status->pull      = (PIO_REG_PULL_VALUE(port, port_num_pull)>>tmp_val2) & 0x03;      //´ÓÓ²¼şÖĞ¶Á³öpull¼Ä´æÆ÷
+			gpio_status->drv_level = (PIO_REG_DLEVEL_VALUE(port, port_num_pull)>>tmp_val2) & 0x03;    //´ÓÓ²¼şÖĞ¶Á³ölevel¼Ä´æÆ÷
 			if(gpio_status->mul_sel <= 1)
 			{
-				gpio_status->data = (PIO_REG_DATA_VALUE(port) >> port_num) & 0x01;                     //ä»ç¡¬ä»¶ä¸­è¯»å‡ºdataå¯„å­˜å™¨
+				gpio_status->data = (PIO_REG_DATA_VALUE(port) >> port_num) & 0x01;                     //´ÓÓ²¼şÖĞ¶Á³ödata¼Ä´æÆ÷
 			}
 			else
 			{
@@ -772,18 +772,18 @@ End:
 EXPORT_SYMBOL(sw_gpio_get_one_pin_status);
 
 /**
- * sw_gpio_set_one_pin_status - è®¾ç½®ç”¨æˆ·ç”³è¯·è¿‡çš„GPIOçš„æŸä¸€ä¸ªçš„çŠ¶æ€
+ * sw_gpio_set_one_pin_status - ÉèÖÃÓÃ»§ÉêÇë¹ıµÄGPIOµÄÄ³Ò»¸öµÄ×´Ì¬
  * @p_handler: gpio handler
- * @gpio_status: ä¿å­˜ç”¨æˆ·æ•°æ®çš„æ•°ç»„
- * @gpio_name: è¦æ“ä½œçš„GPIOçš„åç§°
- * @if_set_to_current_input_status: è¯»å–æ ‡å¿—ï¼Œè¡¨ç¤ºè¯»å–ç”¨æˆ·è®¾å®šæ•°æ®æˆ–è€…æ˜¯å®é™…æ•°æ®
+ * @gpio_status: ±£´æÓÃ»§Êı¾İµÄÊı×é
+ * @gpio_name: Òª²Ù×÷µÄGPIOµÄÃû³Æ
+ * @if_set_to_current_input_status: ¶ÁÈ¡±êÖ¾£¬±íÊ¾¶ÁÈ¡ÓÃ»§Éè¶¨Êı¾İ»òÕßÊÇÊµ¼ÊÊı¾İ
  *
  * return EGPIO_SUCCESS if success, EGPIO_FAIL if failed
  */
 s32  sw_gpio_set_one_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, const char *gpio_name, u32 if_set_to_current_input_status)
 {
-	char               *tmp_buf;                                        //è½¬æ¢æˆcharç±»å‹
-	u32               group_count_max;                                //æœ€å¤§GPIOä¸ªæ•°
+	char               *tmp_buf;                                        //×ª»»³ÉcharÀàĞÍ
+	u32               group_count_max;                                //×î´óGPIO¸öÊı
 	system_gpio_set_t  *user_gpio_set, *tmp_sys_gpio_data;
 	user_gpio_set_t     script_gpio;
 	u32               port, port_num;
@@ -792,7 +792,7 @@ s32  sw_gpio_set_one_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, con
 	u32 	usign = 0;
 	u32 	pio_index = 0;
 
-	//æ£€æŸ¥ä¼ è¿›çš„å¥æŸ„çš„æœ‰æ•ˆæ€§
+	//¼ì²é´«½øµÄ¾ä±úµÄÓĞĞ§ĞÔ
 	if((!p_handler) || (!gpio_name))
 		return EGPIO_FAIL;
 	if((if_set_to_current_input_status) && (!gpio_status))
@@ -803,18 +803,18 @@ s32  sw_gpio_set_one_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, con
 		return EGPIO_FAIL;
 	user_gpio_set = (system_gpio_set_t *)(tmp_buf + 16);
 
-	//è¯»å–ç”¨æˆ·æ•°æ®
-	//è¡¨ç¤ºè¯»å–ç”¨æˆ·ç»™å®šçš„æ•°æ®
+	//¶ÁÈ¡ÓÃ»§Êı¾İ
+	//±íÊ¾¶ÁÈ¡ÓÃ»§¸ø¶¨µÄÊı¾İ
 	for(i = 0; i < group_count_max; i++) {
-		tmp_sys_gpio_data = user_gpio_set + i;             //tmp_sys_gpio_dataæŒ‡å‘ç”³è¯·çš„GPIOç©ºé—´
+		tmp_sys_gpio_data = user_gpio_set + i;             //tmp_sys_gpio_dataÖ¸ÏòÉêÇëµÄGPIO¿Õ¼ä
 		if(strcmp(gpio_name, tmp_sys_gpio_data->gpio_name))
 			continue;
 
-		port          = tmp_sys_gpio_data->port;                           //è¯»å‡ºportæ•°æ®
-		port_num      = tmp_sys_gpio_data->port_num;                       //è¯»å‡ºport_numæ•°æ®
+		port          = tmp_sys_gpio_data->port;                           //¶Á³öportÊı¾İ
+		port_num      = tmp_sys_gpio_data->port_num;                       //¶Á³öport_numÊı¾İ
 
-		if(if_set_to_current_input_status) {                                //æ ¹æ®å½“å‰ç”¨æˆ·è®¾å®šä¿®æ­£
-			//ä¿®æ”¹FUCNå¯„å­˜å™¨
+		if(if_set_to_current_input_status) {                                //¸ù¾İµ±Ç°ÓÃ»§Éè¶¨ĞŞÕı
+			//ĞŞ¸ÄFUCN¼Ä´æÆ÷
 			script_gpio.mul_sel   = gpio_status->mul_sel;
 			script_gpio.pull      = gpio_status->pull;
 			script_gpio.drv_level = gpio_status->drv_level;
@@ -840,7 +840,7 @@ s32  sw_gpio_set_one_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, con
 			}
 #else
 			tmp_addr = PIO_REG_CFG(port, port_num_func);
-			reg_val = *tmp_addr;                                                       //ä¿®æ”¹FUNCå¯„å­˜å™¨
+			reg_val = *tmp_addr;                                                       //ĞŞ¸ÄFUNC¼Ä´æÆ÷
 			tmp_val = (port_num - (port_num_func<<3))<<2;
 			reg_val &= ~(0x07 << tmp_val);
 			reg_val |=  (script_gpio.mul_sel) << tmp_val;
@@ -848,7 +848,7 @@ s32  sw_gpio_set_one_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, con
 #endif
 		}
 
-		//ä¿®æ”¹PULLå¯„å­˜å™¨
+		//ĞŞ¸ÄPULL¼Ä´æÆ÷
 		if(script_gpio.pull >= 0) {
 #if 1
 			if(0 != sw_gpio_setpull(pio_index, script_gpio.pull)) {
@@ -857,7 +857,7 @@ s32  sw_gpio_set_one_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, con
 			}
 #else
 		tmp_addr = PIO_REG_PULL(port, port_num_pull);
-		reg_val = *tmp_addr;                                                     //ä¿®æ”¹FUNCå¯„å­˜å™¨
+		reg_val = *tmp_addr;                                                     //ĞŞ¸ÄFUNC¼Ä´æÆ÷
 		tmp_val = (port_num - (port_num_pull<<4))<<1;
 		reg_val &= ~(0x03 << tmp_val);
 		reg_val |=  (script_gpio.pull) << tmp_val;
@@ -865,7 +865,7 @@ s32  sw_gpio_set_one_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, con
 #endif
 		}
 
-		//ä¿®æ”¹DLEVELå¯„å­˜å™¨
+		//ĞŞ¸ÄDLEVEL¼Ä´æÆ÷
 		if(script_gpio.drv_level >= 0) {
 #if 1
 			if(0 != sw_gpio_setdrvlevel(pio_index, script_gpio.drv_level)) {
@@ -874,7 +874,7 @@ s32  sw_gpio_set_one_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, con
 			}
 #else
 			tmp_addr = PIO_REG_DLEVEL(port, port_num_pull);
-			reg_val = *tmp_addr;                                                         //ä¿®æ”¹FUNCå¯„å­˜å™¨
+			reg_val = *tmp_addr;                                                         //ĞŞ¸ÄFUNC¼Ä´æÆ÷
 			tmp_val = (port_num - (port_num_pull<<4))<<1;
 			reg_val &= ~(0x03 << tmp_val);
 			reg_val |=  (script_gpio.drv_level) << tmp_val;
@@ -882,14 +882,14 @@ s32  sw_gpio_set_one_pin_status(u32 p_handler, user_gpio_set_t *gpio_status, con
 #endif
 		}
 
-		//ä¿®æ”¹dataå¯„å­˜å™¨
+		//ĞŞ¸Ädata¼Ä´æÆ÷
 		if(script_gpio.mul_sel == 1) {
 			if(script_gpio.data >= 0) {
 #if 1
 				__gpio_set_value(pio_index, script_gpio.data);
 #else
 				tmp_addr = PIO_REG_DATA(port);
-				reg_val = *tmp_addr;                                                      //ä¿®æ”¹DATAå¯„å­˜å™¨
+				reg_val = *tmp_addr;                                                      //ĞŞ¸ÄDATA¼Ä´æÆ÷
 				reg_val &= ~(0x01 << port_num);
 				reg_val |=  (script_gpio.data & 0x01) << port_num;
 				                *tmp_addr = reg_val;
@@ -910,17 +910,17 @@ End:
 EXPORT_SYMBOL(sw_gpio_set_one_pin_status);
 
 /**
- * sw_gpio_set_one_pin_io_status - ä¿®æ”¹ç”¨æˆ·ç”³è¯·è¿‡çš„GPIOä¸­çš„æŸä¸€ä¸ªIOå£çš„ï¼Œè¾“å…¥è¾“å‡ºçŠ¶æ€
+ * sw_gpio_set_one_pin_io_status - ĞŞ¸ÄÓÃ»§ÉêÇë¹ıµÄGPIOÖĞµÄÄ³Ò»¸öIO¿ÚµÄ£¬ÊäÈëÊä³ö×´Ì¬
  * @p_handler: gpio handler
- * @if_set_to_output_status: è®¾ç½®æˆè¾“å‡ºçŠ¶æ€è¿˜æ˜¯è¾“å…¥çŠ¶æ€
- * @gpio_name: è¦æ“ä½œçš„GPIOçš„åç§°
+ * @if_set_to_output_status: ÉèÖÃ³ÉÊä³ö×´Ì¬»¹ÊÇÊäÈë×´Ì¬
+ * @gpio_name: Òª²Ù×÷µÄGPIOµÄÃû³Æ
  *
  * return EGPIO_SUCCESS if success, EGPIO_FAIL if failed
  */
 s32  sw_gpio_set_one_pin_io_status(u32 p_handler, u32 if_set_to_output_status, const char *gpio_name)
 {
-	char               *tmp_buf;                                        //è½¬æ¢æˆcharç±»å‹
-	u32               group_count_max;                                //æœ€å¤§GPIOä¸ªæ•°
+	char               *tmp_buf;                                        //×ª»»³ÉcharÀàĞÍ
+	u32               group_count_max;                                //×î´óGPIO¸öÊı
 	system_gpio_set_t  *user_gpio_set = NULL, *tmp_sys_gpio_data;
 	u32               port, port_num;
 	u32                i;
@@ -928,7 +928,7 @@ s32  sw_gpio_set_one_pin_io_status(u32 p_handler, u32 if_set_to_output_status, c
 	u32 	ucfg = 0;
 	u32 	pio_index = 0;
 
-	//æ£€æŸ¥ä¼ è¿›çš„å¥æŸ„çš„æœ‰æ•ˆæ€§
+	//¼ì²é´«½øµÄ¾ä±úµÄÓĞĞ§ĞÔ
 	if(!p_handler)
 		return EGPIO_FAIL;
 	if(if_set_to_output_status > 1)
@@ -981,24 +981,24 @@ return EGPIO_SUCCESS;
 EXPORT_SYMBOL(sw_gpio_set_one_pin_io_status);
 
 /**
- * sw_gpio_set_one_pin_pull - ä¿®æ”¹ç”¨æˆ·ç”³è¯·è¿‡çš„GPIOä¸­çš„æŸä¸€ä¸ªIOå£çš„ï¼ŒPULLçŠ¶æ€
+ * sw_gpio_set_one_pin_pull - ĞŞ¸ÄÓÃ»§ÉêÇë¹ıµÄGPIOÖĞµÄÄ³Ò»¸öIO¿ÚµÄ£¬PULL×´Ì¬
  * @p_handler: gpio handler
- * @if_set_to_output_status: æ‰€è®¾ç½®çš„pullçŠ¶æ€
- * @gpio_name: è¦æ“ä½œçš„GPIOçš„åç§°
+ * @if_set_to_output_status: ËùÉèÖÃµÄpull×´Ì¬
+ * @gpio_name: Òª²Ù×÷µÄGPIOµÄÃû³Æ
  *
  * return EGPIO_SUCCESS if success, EGPIO_FAIL if failed
  */
 s32  sw_gpio_set_one_pin_pull(u32 p_handler, u32 set_pull_status, const char *gpio_name)
 {
-	char               *tmp_buf;                                        //è½¬æ¢æˆcharç±»å‹
-	u32               group_count_max;                                //æœ€å¤§GPIOä¸ªæ•°
+	char               *tmp_buf;                                        //×ª»»³ÉcharÀàĞÍ
+	u32               group_count_max;                                //×î´óGPIO¸öÊı
 	system_gpio_set_t  *user_gpio_set = NULL, *tmp_sys_gpio_data;
 	u32               port, port_num;
 	u32                i;
 
 	u32 	pio_index = 0;
 
-	//æ£€æŸ¥ä¼ è¿›çš„å¥æŸ„çš„æœ‰æ•ˆæ€§
+	//¼ì²é´«½øµÄ¾ä±úµÄÓĞĞ§ĞÔ
 	if(!p_handler)
 		return EGPIO_FAIL;
 	if(set_pull_status >= 4)
@@ -1049,24 +1049,24 @@ return EGPIO_SUCCESS;
 EXPORT_SYMBOL(sw_gpio_set_one_pin_pull);
 
 /**
- * sw_gpio_set_one_pin_driver_level - ä¿®æ”¹ç”¨æˆ·ç”³è¯·è¿‡çš„GPIOä¸­çš„æŸä¸€ä¸ªIOå£çš„ï¼Œé©±åŠ¨èƒ½åŠ›
+ * sw_gpio_set_one_pin_driver_level - ĞŞ¸ÄÓÃ»§ÉêÇë¹ıµÄGPIOÖĞµÄÄ³Ò»¸öIO¿ÚµÄ£¬Çı¶¯ÄÜÁ¦
  * @p_handler: gpio handler
- * @set_driver_level: æ‰€è®¾ç½®çš„é©±åŠ¨èƒ½åŠ›ç­‰çº§
- * @gpio_name: è¦æ“ä½œçš„GPIOçš„åç§°
+ * @set_driver_level: ËùÉèÖÃµÄÇı¶¯ÄÜÁ¦µÈ¼¶
+ * @gpio_name: Òª²Ù×÷µÄGPIOµÄÃû³Æ
  *
  * return EGPIO_SUCCESS if success, EGPIO_FAIL if failed
  */
 s32  sw_gpio_set_one_pin_driver_level(u32 p_handler, u32 set_driver_level, const char *gpio_name)
 {
-	char               *tmp_buf;                                        //è½¬æ¢æˆcharç±»å‹
-	u32               group_count_max;                                //æœ€å¤§GPIOä¸ªæ•°
+	char               *tmp_buf;                                        //×ª»»³ÉcharÀàĞÍ
+	u32               group_count_max;                                //×î´óGPIO¸öÊı
 	system_gpio_set_t  *user_gpio_set = NULL, *tmp_sys_gpio_data;
 	u32               port, port_num;
 	u32                i;
 
 	u32 	pio_index = 0;
 
-	//æ£€æŸ¥ä¼ è¿›çš„å¥æŸ„çš„æœ‰æ•ˆæ€§
+	//¼ì²é´«½øµÄ¾ä±úµÄÓĞĞ§ĞÔ
 	if(!p_handler)
 		return EGPIO_FAIL;
 	if(set_driver_level >= 4)
@@ -1118,16 +1118,16 @@ return EGPIO_SUCCESS;
 EXPORT_SYMBOL(sw_gpio_set_one_pin_driver_level);
 
 /**
- * sw_gpio_read_one_pin_value - è¯»å–ç”¨æˆ·ç”³è¯·è¿‡çš„GPIOä¸­çš„æŸä¸€ä¸ªIOå£çš„ç«¯å£çš„ç”µå¹³
+ * sw_gpio_read_one_pin_value - ¶ÁÈ¡ÓÃ»§ÉêÇë¹ıµÄGPIOÖĞµÄÄ³Ò»¸öIO¿ÚµÄ¶Ë¿ÚµÄµçÆ½
  * @p_handler: gpio handler
- * @gpio_name: è¦æ“ä½œçš„GPIOçš„åç§°
+ * @gpio_name: Òª²Ù×÷µÄGPIOµÄÃû³Æ
  *
  * return the pin value if success, EGPIO_FAIL if failed
  */
 s32  sw_gpio_read_one_pin_value(u32 p_handler, const char *gpio_name)
 {
-	char               *tmp_buf;                                        //è½¬æ¢æˆcharç±»å‹
-	u32               group_count_max;                                //æœ€å¤§GPIOä¸ªæ•°
+	char               *tmp_buf;                                        //×ª»»³ÉcharÀàĞÍ
+	u32               group_count_max;                                //×î´óGPIO¸öÊı
 	system_gpio_set_t  *user_gpio_set = NULL, *tmp_sys_gpio_data;
 	u32               port, port_num;
 	u32                i;
@@ -1135,7 +1135,7 @@ s32  sw_gpio_read_one_pin_value(u32 p_handler, const char *gpio_name)
 	u32 	ucfg = 0;
 	u32 	pio_index = 0;
 
-	//æ£€æŸ¥ä¼ è¿›çš„å¥æŸ„çš„æœ‰æ•ˆæ€§
+	//¼ì²é´«½øµÄ¾ä±úµÄÓĞĞ§ĞÔ
 	if(!p_handler)
 		return EGPIO_FAIL;
 	tmp_buf = (char *)p_handler;
@@ -1188,17 +1188,17 @@ s32  sw_gpio_read_one_pin_value(u32 p_handler, const char *gpio_name)
 EXPORT_SYMBOL(sw_gpio_read_one_pin_value);
 
 /**
- * sw_gpio_write_one_pin_value - ä¿®æ”¹ç”¨æˆ·ç”³è¯·è¿‡çš„GPIOä¸­çš„æŸä¸€ä¸ªIOå£çš„ç«¯å£çš„ç”µå¹³
+ * sw_gpio_write_one_pin_value - ĞŞ¸ÄÓÃ»§ÉêÇë¹ıµÄGPIOÖĞµÄÄ³Ò»¸öIO¿ÚµÄ¶Ë¿ÚµÄµçÆ½
  * @p_handler: gpio handler
- * @value_to_gpio:  è¦è®¾ç½®çš„ç”µå¹³çš„ç”µå‹
- * @gpio_name: è¦æ“ä½œçš„GPIOçš„åç§°
+ * @value_to_gpio:  ÒªÉèÖÃµÄµçÆ½µÄµçÑ¹
+ * @gpio_name: Òª²Ù×÷µÄGPIOµÄÃû³Æ
  *
  * return EGPIO_SUCCESS if success, EGPIO_FAIL if failed
  */
 s32  sw_gpio_write_one_pin_value(u32 p_handler, u32 value_to_gpio, const char *gpio_name)
 {
-	char              *tmp_buf;                                        //è½¬æ¢æˆcharç±»å‹
-	u32               group_count_max;                                //æœ€å¤§GPIOä¸ªæ•°
+	char              *tmp_buf;                                        //×ª»»³ÉcharÀàĞÍ
+	u32               group_count_max;                                //×î´óGPIO¸öÊı
 	system_gpio_set_t *user_gpio_set = NULL, *tmp_sys_gpio_data;
 	u32               port, port_num;
 	u32               i;
@@ -1207,7 +1207,7 @@ s32  sw_gpio_write_one_pin_value(u32 p_handler, u32 value_to_gpio, const char *g
 	u32 	uval = 0;
 	u32 	pio_index = 0;
 
-	//æ£€æŸ¥ä¼ è¿›çš„å¥æŸ„çš„æœ‰æ•ˆæ€§
+	//¼ì²é´«½øµÄ¾ä±úµÄÓĞĞ§ĞÔ
 	if(!p_handler)
 		return EGPIO_FAIL;
 	if(value_to_gpio >= 2)
@@ -1268,14 +1268,60 @@ s32  sw_gpio_write_one_pin_value(u32 p_handler, u32 value_to_gpio, const char *g
 EXPORT_SYMBOL(sw_gpio_write_one_pin_value);
 
 /**
- * sw_gpio_port_to_index - gpio port to global index, port is from script
- * @port: gpio port group index, eg: 1 for PA, 2 for PB...
- * @port_num: port index in gpio group, eg: 0 for PA0, 1 for PA1...
+ * sw_gpio_get_index - get the global gpio index
+ * @p_handler: gpio handler
+ * @gpio_name: gpio name whose index will be got. when NULL,
+ å* 		the first port of p_handler willbe treated.
  *
  * return the gpio index for the port, GPIO_INDEX_INVALID indicate err
  */
-u32 sw_gpio_port_to_index(u32 port, u32 port_num)
+u32 sw_gpio_get_index(u32 p_handler, const char *gpio_name)
 {
-	return port_to_gpio_index(port, port_num);
+	char		*tmp_buf;                                        //×ª»»³ÉcharÀàĞÍ
+	u32		group_count_max;                                //×î´óGPIO¸öÊı
+	system_gpio_set_t *user_gpio_set = NULL;
+	u32		port, port_num;
+	u32		i;
+	u32		usign = 0;
+	u32 		pio_index = 0;
+
+	if(!p_handler) {
+		usign = __LINE__;
+		goto End;
+	}
+	tmp_buf = (char *)p_handler;
+	group_count_max = *(int *)tmp_buf;
+	if(0 == group_count_max) {
+		usign = __LINE__;
+		goto End;
+	}
+
+	user_gpio_set = (system_gpio_set_t *)(tmp_buf + 16);
+	if(NULL == gpio_name) { /* when name is NULL, treat the first one */
+		port     = user_gpio_set->port;
+		port_num = user_gpio_set->port_num;
+	} else {
+		for(i = 0; i < group_count_max; i++, user_gpio_set++) {
+			if(!strcmp(gpio_name, user_gpio_set->gpio_name)) {
+				port     = user_gpio_set->port;
+				port_num = user_gpio_set->port_num;
+				break;
+			}
+		}
+		if(i == group_count_max) { /* cannot find the gpio_name item */
+			usign = __LINE__;
+			goto End;
+		}
+	}
+
+	/* get the gpio index */
+	pio_index = port_to_gpio_index(port, port_num);
+End:
+	if(0 != usign) {
+		PIO_ERR("%s err, line %d", __FUNCTION__, usign);
+		return GPIO_INDEX_INVALID;
+	} else {
+		return pio_index;
+	}
 }
-EXPORT_SYMBOL(sw_gpio_port_to_index);
+EXPORT_SYMBOL(sw_gpio_get_index);
