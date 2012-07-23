@@ -38,11 +38,10 @@
 
 #include <mach/hardware.h>
 #include <mach/platform.h>
-#ifndef MMC_FPGA
 #include <mach/dma.h>
 #include <mach/sys_config.h>
+#include <mach/gpio.h>
 #include <mach/clock.h>
-#endif
 
 #include "sunxi-mci.h"
 
@@ -104,7 +103,7 @@ static s32 sw_mci_init_host(struct sunxi_mmc_host* smc_host)
 		return -1;
 	}
 	smc_host->power_on = 1;
-	smc_host->debuglevel = 3;
+	smc_host->debuglevel = 0;
 	return 0;
 }
 
@@ -145,6 +144,62 @@ s32 sw_mci_update_clk(struct sunxi_mmc_host* smc_host)
 	mci_writew(smc_host, REG_IMASK, imask);
 
 	return ret;
+}
+
+/* Spec. Timing
+ * SD3.0
+ * Fcclk    Tcclk   Fsclk   Tsclk   Tis     Tih     odly  RTis     RTih
+ * 400K     2.5us   24M     41ns    5ns     5ns     1     2209ns   41ns
+ * 25M      40ns    600M    1.67ns  5ns     5ns     3     14.99ns  5.01ns
+ * 50M      20ns    600M    1.67ns  6ns     2ns     3     14.99ns  5.01ns
+ * 50MDDR   20ns    600M    1.67ns  6ns     0.8ns   2     6.67ns   3.33ns
+ * 104M     9.6ns   600M    1.67ns  3ns     0.8ns   1     7.93ns   1.67ns
+ * 208M     4.8ns   600M    1.67ns  1.4ns   0.8ns   1     3.33ns   1.67ns
+
+ * 25M      40ns    300M    3.33ns  5ns     5ns     2     13.34ns   6.66ns
+ * 50M      20ns    300M    3.33ns  6ns     2ns     2     13.34ns   6.66ns
+ * 50MDDR   20ns    300M    3.33ns  6ns     0.8ns   1     6.67ns    3.33ns
+ * 104M     9.6ns   300M    3.33ns  3ns     0.8ns   0     7.93ns    1.67ns
+ * 208M     4.8ns   300M    3.33ns  1.4ns   0.8ns   0     3.13ns    1.67ns
+
+ * eMMC4.5
+ * 400K     2.5us   24M     41ns    3ns     3ns     1     2209ns    41ns
+ * 25M      40ns    600M    1.67ns  3ns     3ns     3     14.99ns   5.01ns
+ * 50M      20ns    600M    1.67ns  3ns     3ns     3     14.99ns   5.01ns
+ * 50MDDR   20ns    600M    1.67ns  2.5ns   2.5ns   2     6.67ns    3.33ns
+ * 200M     5ns     600M    1.67ns  1.4ns   0.8ns   1     3.33ns    1.67ns
+ */
+struct sw_mmc_clk_dly {
+	u32 mode;
+#define MMC_CLK_400K		0
+#define MMC_CLK_25M		1
+#define MMC_CLK_50M		2
+#define MMC_CLK_50MDDR		3
+#define MMC_CLK_50MDDR_8BIT	4
+#define MMC_CLK_100M		5
+#define MMC_CLK_200M		6
+#define MMC_CLK_MOD_NUM		7
+	u32 oclk_dly;
+	u32 sclk_dly;
+} mmc_clk_dly [MMC_CLK_MOD_NUM] = {
+	{MMC_CLK_400K, 3, 1},
+	{MMC_CLK_25M, 3, 4},
+	{MMC_CLK_50M, 3, 4},
+	{MMC_CLK_50MDDR, 2, 4},
+	{MMC_CLK_50MDDR_8BIT, 2, 4},
+	{MMC_CLK_100M, 1, 4},
+	{MMC_CLK_200M, 1, 4}
+};
+
+s32 sw_mci_set_clk_dly(struct sunxi_mmc_host* smc_host, u32 oclk_dly, u32 sclk_dly)
+{
+	u32 smc_no = smc_host->pdev->id;
+	void __iomem *mclk_base = __io_address(0x01c02088 + 0x4 * smc_no);
+	u32 rval = readl(mclk_base);
+	rval &= ~((0x7U << 8) | (0x7U << 20));
+	rval |= (oclk_dly << 8) | (sclk_dly << 20);
+	writel(rval, mclk_base);
+	return 0;
 }
 
 static void sw_mci_send_cmd(struct sunxi_mmc_host* smc_host, struct mmc_command* cmd)
@@ -441,22 +496,20 @@ static int sw_mci_set_clk(struct sunxi_mmc_host* smc_host, u32 clk)
 	u32 mod_clk = 0;
 	u32 idiv = 0;
 	u32 temp;
-	u32 oclk_dly = 0;
-	u32 iclk_dly = 0;
+	u32 oclk_dly = 3;
+	u32 sclk_dly = 4;
+	struct sw_mmc_clk_dly* dly = NULL;
 
 	if (clk <= 400000) {
 		mod_clk = 24000000;
-		sclk = clk_get(&smc_host->pdev->dev, "hosc");
-		idiv = 24000000 / clk / 2;
+		sclk = clk_get(&smc_host->pdev->dev, "sys_hosc");
 	} else {
-		mod_clk = clk;
-		sclk = clk_get(&smc_host->pdev->dev, "sata_pll_2");
+		mod_clk = smc_host->mod_clk;
+		sclk = clk_get(&smc_host->pdev->dev, "sys_pll6");
 	}
 	if (IS_ERR(sclk)) {
 		SMC_ERR(smc_host, "Error to get source clock for clk %dHz\n", clk);
-		#ifndef MMC_FPGA
 		return -1;
-		#endif
 	}
 	clk_set_parent(smc_host->mclk, sclk);
 	clk_set_rate(smc_host->mclk, mod_clk);
@@ -465,10 +518,37 @@ static int sw_mci_set_clk(struct sunxi_mmc_host* smc_host, u32 clk)
 	clk_put(sclk);
 
 	/* set internal divider */
+	idiv = mod_clk / clk / 2;
 	temp = mci_readl(smc_host, REG_CLKCR);
 	temp &= ~0xff;
 	temp |= idiv | SDXC_CardClkOn;
 	mci_writel(smc_host, REG_CLKCR, temp);
+
+	if (clk <= 400000) {
+		dly = &mmc_clk_dly[MMC_CLK_400K];
+	} else if (clk <= 25000000) {
+		dly = &mmc_clk_dly[MMC_CLK_25M];
+	} else if (clk <= 50000000) {
+		if (smc_host->ddr) {
+			if (smc_host->bus_width == 8)
+				dly = &mmc_clk_dly[MMC_CLK_50MDDR_8BIT];
+			else
+				dly = &mmc_clk_dly[MMC_CLK_50MDDR];
+		} else {
+			dly = &mmc_clk_dly[MMC_CLK_50M];
+		}
+	} else if (clk <= 104000000) {
+		dly = &mmc_clk_dly[MMC_CLK_100M];
+	} else if (clk <= 208000000) {
+		dly = &mmc_clk_dly[MMC_CLK_200M];
+	}
+	oclk_dly = dly->oclk_dly;
+	sclk_dly = dly->sclk_dly;
+	if (mod_clk <= 400000000) {
+		oclk_dly--;
+		sclk_dly--;
+	}
+	sw_mci_set_clk_dly(smc_host, oclk_dly, sclk_dly);
 	sw_mci_update_clk(smc_host);
 	return 0;
 }
@@ -479,27 +559,27 @@ static int sw_mci_resource_request(struct sunxi_mmc_host *smc_host)
 	u32 smc_no = pdev->id;
 	char hclk_name[16] = {0};
 	char mclk_name[8] = {0};
-	char pio_para[16] = {0};
+	char mmc_para[16] = {0};
 	struct resource* res = NULL;
 	s32 ret = 0;
 
 	/* get sys_config1.fex configuration */
-	sprintf(pio_para, "mmc%d_para", smc_no);
-	#ifndef MMC_FPGA
+	sprintf(mmc_para, "mmc%d_para", smc_no);
 	ret = script_parser_fetch(mmc_para, "sdc_detmode", &smc_host->cd_mode, sizeof(int));
 	if (ret)
 		SMC_ERR(smc_host, "sdc fetch card detect mode failed\n");
-	#else
+
+	#ifdef MMC_FPGA
 	smc_host->cd_mode = CARD_ALWAYS_PRESENT;
 	#endif
 
-	#ifndef MMC_FPGA
-	smc_host->pio_hdle = gpio_request_ex(pio_para, NULL);
+	smc_host->pio_hdle = sw_gpio_request_ex(mmc_para, NULL);
 	if (!smc_host->pio_hdle) {
 		SMC_ERR(smc_host, "sdc %d request pio parameter failed\n", smc_no);
+		#ifndef MMC_FPGA
 		goto out;
+		#endif
 	}
-	#endif
 
 	res = request_mem_region(SMC_BASE(smc_no), SMC_BASE_OS, pdev->name);
 	if (!res) {
@@ -514,26 +594,23 @@ static int sw_mci_resource_request(struct sunxi_mmc_host *smc_host)
 		goto free_mem_region;
 	}
 
-	sprintf(hclk_name, "ahb_sdc%d", smc_no);
+	sprintf(hclk_name, "ahb_sdmmc%d", smc_no);
 	smc_host->hclk = clk_get(&pdev->dev, hclk_name);
 	if (IS_ERR(smc_host->hclk)) {
 		ret = PTR_ERR(smc_host->hclk);
 		SMC_ERR(smc_host, "Error to get ahb clk for %s\n", hclk_name);
-		#ifndef MMC_FPGA
 		goto iounmap;
-		#endif
 	}
 
-	sprintf(mclk_name, "sdc%d", smc_no);
+	sprintf(mclk_name, "mod_sdc%d", smc_no);
 	smc_host->mclk = clk_get(&pdev->dev, mclk_name);
 	if (IS_ERR(smc_host->mclk)) {
 		ret = PTR_ERR(smc_host->mclk);
-		SMC_ERR(smc_host, "Error to get clk for mux_mmc\n");
-		#ifndef MMC_FPGA
+		SMC_ERR(smc_host, "Error to get clk for %s\n", mclk_name);
 		goto free_hclk;
-		#endif
 	}
 
+	ret = 0;
 	goto out;
 
 free_hclk:
@@ -543,9 +620,7 @@ iounmap:
 free_mem_region:
 	release_mem_region(SMC_BASE(smc_no), SMC_BASE_OS);
 release_pin:
-	#ifndef MMC_FPGA
-	gpio_release(smc_host->pio_hdle, 1);
-	#endif
+	sw_gpio_release(smc_host->pio_hdle, 1);
 out:
 	return ret;
 }
@@ -561,15 +636,13 @@ static int sw_mci_resource_release(struct sunxi_mmc_host *smc_host)
 	iounmap(smc_host->reg_base);
 	release_mem_region(SMC_BASE(smc_host->pdev->id), SMC_BASE_OS);
 
-	#ifndef MMC_FPGA
-	gpio_release(smc_host->pio_hdle, 1);
-	#endif
+	sw_gpio_release(smc_host->pio_hdle, 1);
+
 	return 0;
 }
 
 static void sw_mci_suspend_pins(struct sunxi_mmc_host* smc_host)
 {
-	#ifndef MMC_FPGA
 	int ret;
 	user_gpio_set_t suspend_gpio_set_io = {"suspend_pins_sdio", 0, 0, 0, 2, 1, 0};     //for sdio
 	user_gpio_set_t suspend_gpio_set_card = {"suspend_pins_mmc", 0, 0, 0, 0, 1, 0};    //for mmc card
@@ -579,14 +652,16 @@ static void sw_mci_suspend_pins(struct sunxi_mmc_host* smc_host)
 
 	SMC_DBG(smc_host, "mmc %d suspend pins\n", smc_host->pdev->id);
 	/* backup gpios' current config */
-	ret = gpio_get_all_pin_status(smc_host->pio_hdle, smc_host->bak_gpios, 6, 1);
+	ret = sw_gpio_get_all_pin_status(smc_host->pio_hdle, smc_host->bak_gpios, 6, 1);
 	if (ret) {
 		SMC_ERR(smc_host, "fail to fetch current gpio cofiguration\n");
+		#ifndef MMC_FPGA
 		return;
+		#endif
 	}
 
 	for (i=0; i<6; i++) {
-		ret = gpio_set_one_pin_status(smc_host->pio_hdle,
+		ret = sw_gpio_set_one_pin_status(smc_host->pio_hdle,
 			gpio_set, smc_host->bak_gpios[i].gpio_name, 1);
 		if (ret) {
 			SMC_ERR(smc_host, "fail to set IO(%s) into suspend status\n",
@@ -594,7 +669,6 @@ static void sw_mci_suspend_pins(struct sunxi_mmc_host* smc_host)
 		}
 	}
 
-	#endif
 	smc_host->gpio_suspend_ok = 1;
 
 	return;
@@ -602,7 +676,6 @@ static void sw_mci_suspend_pins(struct sunxi_mmc_host* smc_host)
 
 static void sw_mci_resume_pins(struct sunxi_mmc_host* smc_host)
 {
-	#ifndef MMC_FPGA
 	int ret;
 	u32 i;
 
@@ -611,7 +684,7 @@ static void sw_mci_resume_pins(struct sunxi_mmc_host* smc_host)
 	if (smc_host->gpio_suspend_ok) {
 		smc_host->gpio_suspend_ok = 0;
 		for (i=0; i<6; i++) {
-			ret = gpio_set_one_pin_status(smc_host->pio_hdle,
+			ret = sw_gpio_set_one_pin_status(smc_host->pio_hdle,
 				&smc_host->bak_gpios[i], smc_host->bak_gpios[i].gpio_name, 1);
 			if (ret) {
 			    SMC_ERR(smc_host, "fail to restore IO(%s) to resume status\n",
@@ -619,7 +692,6 @@ static void sw_mci_resume_pins(struct sunxi_mmc_host* smc_host)
 			}
 		}
 	}
-	#endif
 }
 
 static void sw_mci_finalize_request(struct sunxi_mmc_host *smc_host)
@@ -656,7 +728,6 @@ static void sw_mci_finalize_request(struct sunxi_mmc_host *smc_host)
 
 static s32 sw_mci_get_ro(struct mmc_host *mmc)
 {
-	#ifndef MMC_FPGA
 	struct sunxi_mmc_host *smc_host = mmc_priv(mmc);
 	char mmc_para[16] = {0};
 	int card_wp = 0;
@@ -668,7 +739,7 @@ static s32 sw_mci_get_ro(struct mmc_host *mmc)
 	if (ret)
 		SMC_ERR(smc_host, "sdc fetch card write protect mode failed\n");
 	if (card_wp) {
-		gpio_val = gpio_read_one_pin_value(smc_host->pio_hdle, "sdc_wp");
+		gpio_val = sw_gpio_read_one_pin_value(smc_host->pio_hdle, "sdc_wp");
 		SMC_DBG(smc_host, "sdc fetch card wp pin status: %d \n", gpio_val);
 		if (!gpio_val) {
 			smc_host->read_only = 0;
@@ -682,20 +753,18 @@ static s32 sw_mci_get_ro(struct mmc_host *mmc)
 		smc_host->read_only = 0;
 		return 0;
 	}
-	#endif
-	return 0;//fpga
+	return 0;
 }
 
 static void sw_mci_cd_timer(unsigned long data)
 {
-	#ifndef MMC_FPGA
 	struct sunxi_mmc_host *smc_host = (struct sunxi_mmc_host *)data;
 	u32 gpio_val = 0;
 	u32 present;
 	u32 i = 0;
 
 	for (i=0; i<5; i++) {
-		gpio_val += gpio_read_one_pin_value(smc_host->pio_hdle, "sdc_det");
+		gpio_val += sw_gpio_read_one_pin_value(smc_host->pio_hdle, "sdc_det");
 		mdelay(1);
 	}
 	if (gpio_val==5)
@@ -718,10 +787,9 @@ static void sw_mci_cd_timer(unsigned long data)
 	}
 
 modtimer:
-	mod_timer(&smc_host->cd_timer, jiffies + 30);
-	#else
-	SMC_ERR(smc_host, "ignore for fpga !!\n");
-	#endif
+	if (smc_host->cd_mode == CARD_DETECT_BY_GPIO)
+		mod_timer(&smc_host->cd_timer, jiffies + 30);
+
 	return;
 }
 
@@ -1198,9 +1266,7 @@ static int __devinit sw_mci_probe(struct platform_device *pdev)
 
 	if (sw_mci_resource_request(smc_host)) {
 		SMC_ERR(smc_host, "%s: Failed to get resouce.\n", dev_name(&pdev->dev));
-		#ifndef MMC_FPGA
 		goto probe_free_host;
-		#endif
 	}
 
 	sw_mci_init_host(smc_host);
@@ -1213,9 +1279,18 @@ static int __devinit sw_mci_probe(struct platform_device *pdev)
 		goto probe_free_resource;
 	}
 
-	if (smc_host->cd_mode == CARD_ALWAYS_PRESENT)
+	if (smc_host->cd_mode == CARD_ALWAYS_PRESENT) {
 		smc_host->present = 1;
-	else if (smc_host->cd_mode == CARD_DETECT_BY_GPIO) {
+	} else if (smc_host->cd_mode == CARD_DETECT_BY_GPIO_IRQ) {
+		u32 cd_gpio;
+		u32 cd_hdle;
+		cd_gpio = sw_gpio_get_index(smc_host->pio_hdle, "sdc_det");
+		cd_hdle = sw_gpio_irq_request(cd_gpio, 4, (peint_handle)&sw_mci_cd_timer, smc_host);
+		if (!cd_hdle) {
+			SMC_ERR(smc_host, "Failed to get gpio irq for card detection\n");
+		}
+		smc_host->cd_hdle = cd_hdle;
+	} else if (smc_host->cd_mode == CARD_DETECT_BY_GPIO) {
 		init_timer(&smc_host->cd_timer);
 		smc_host->cd_timer.expires = jiffies + 1*HZ;
 		smc_host->cd_timer.function = &sw_mci_cd_timer;
@@ -1265,6 +1340,8 @@ static int __devexit sw_mci_remove(struct platform_device *pdev)
 	free_irq(smc_host->irq, smc_host);
 	if (smc_host->cd_mode == CARD_DETECT_BY_GPIO)
 		del_timer(&smc_host->cd_timer);
+	else if (smc_host->cd_mode == CARD_DETECT_BY_GPIO_IRQ)
+		sw_gpio_irq_free(smc_host->cd_hdle);
 
 	sw_mci_resource_release(smc_host);
 
@@ -1401,11 +1478,11 @@ static int __init sw_mci_init(void)
 		memset(mmc_para, 0, sizeof(mmc_para));
 		sprintf(mmc_para, "mmc%d_para", i);
 		used = 0;
-		#ifndef MMC_FPGA
 		ret = script_parser_fetch(mmc_para,"sdc_used", &used, sizeof(int));
 		if (ret)
 			printk("sw_mci_init fetch mmc%d using configuration failed\n", i);
-		#else
+
+		#ifdef MMC_FPGA
 		ret = ret;
 		used = i==2;
 		#endif
