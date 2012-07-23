@@ -259,7 +259,7 @@ struct sta_info {
 	u8		bValid;				// record the sta status link or not?
 	//u8		WirelessMode;		//
 	u8		IOTPeer;			// Enum value.	HT_IOT_PEER_E
-
+	u8		rssi_level;			//for Refresh RA mask
 	// ODM Write
 	//1 PHY_STATUS_INFO
 	u8		RSSI_Path[4];		//

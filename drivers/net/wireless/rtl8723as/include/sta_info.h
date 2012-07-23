@@ -52,10 +52,18 @@ typedef struct _RSSI_STA{
 
 struct	stainfo_stats	{
 
-	u64	rx_pkts;
+	//u64	rx_pkts;
+	u64 rx_mgnt_pkts;
+	u64 rx_ctrl_pkts;
+	u64 rx_data_pkts;
+
+	//u64	last_rx_pkts;
+	u64	last_rx_mgnt_pkts;
+	u64	last_rx_ctrl_pkts;
+	u64	last_rx_data_pkts;
+
 	u64	rx_bytes;
 	u64	rx_drops;
-	u64	last_rx_pkts;
 
 	u64	tx_pkts;
 	u64	tx_bytes;
@@ -267,7 +275,34 @@ struct sta_info {
 	//
 };
 
+#define sta_rx_pkts(sta) \
+	(sta->sta_stats.rx_mgnt_pkts \
+	+ sta->sta_stats.rx_ctrl_pkts \
+	+ sta->sta_stats.rx_data_pkts)
 
+#define sta_last_rx_pkts(sta) \
+	(sta->sta_stats.last_rx_mgnt_pkts \
+	+ sta->sta_stats.last_rx_ctrl_pkts \
+	+ sta->sta_stats.last_rx_data_pkts)
+
+#define sta_update_last_rx_pkts(sta) \
+	do { \
+		sta->sta_stats.last_rx_mgnt_pkts = sta->sta_stats.rx_mgnt_pkts; \
+		sta->sta_stats.last_rx_ctrl_pkts = sta->sta_stats.rx_ctrl_pkts; \
+		sta->sta_stats.last_rx_data_pkts = sta->sta_stats.rx_data_pkts; \
+	} while(0)
+
+#define STA_RX_PKTS_ARG(sta) \
+	sta->sta_stats.rx_mgnt_pkts \
+	, sta->sta_stats.rx_ctrl_pkts \
+	, sta->sta_stats.rx_data_pkts
+
+#define STA_LAST_RX_PKTS_ARG(sta) \
+	sta->sta_stats.last_rx_mgnt_pkts \
+	, sta->sta_stats.last_rx_ctrl_pkts \
+	, sta->sta_stats.last_rx_data_pkts
+
+#define STA_PKTS_FMT "(m:%llu, c:%llu, d:%llu)"
 
 struct	sta_priv {
 

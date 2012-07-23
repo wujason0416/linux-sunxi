@@ -917,7 +917,7 @@ void _rtw_mdelay_os(int ms, const char *func, const int line)
 
 #if defined(PLATFORM_LINUX)
 
-   	mdelay((unsigned long)ms);
+	mdelay((unsigned long)ms);
 
 #elif defined(PLATFORM_WINDOWS)
 
@@ -959,7 +959,7 @@ void rtw_mdelay_os(int ms)
 
 #ifdef PLATFORM_LINUX
 
-   	mdelay((unsigned long)ms);
+	mdelay((unsigned long)ms);
 
 #endif
 

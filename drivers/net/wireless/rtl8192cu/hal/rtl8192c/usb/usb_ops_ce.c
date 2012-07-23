@@ -514,13 +514,13 @@ USB_PIPE ffaddr2pipehdl(struct dvobj_priv *pNdisCEDvice, u32 addr)
 		switch(addr)
 		{
 	     		case RTL8712_DMA_BEQ:
-		 		PipeHandle= padapter->halpriv.pipehdls_r8712[3] ;
+				PipeHandle= padapter->halpriv.pipehdls_r8712[3] ;
 				break;
 	     		case RTL8712_DMA_BKQ:
-			 	PipeHandle=  padapter->halpriv.pipehdls_r8712[4];
+				PipeHandle=  padapter->halpriv.pipehdls_r8712[4];
 				break;
 	     		case RTL8712_DMA_VIQ:
-		 		PipeHandle=  padapter->halpriv.pipehdls_r8712[2];
+				PipeHandle=  padapter->halpriv.pipehdls_r8712[2];
 				break;
 	    		case RTL8712_DMA_VOQ:
 				PipeHandle=  padapter->halpriv.pipehdls_r8712[1];
@@ -532,7 +532,7 @@ USB_PIPE ffaddr2pipehdl(struct dvobj_priv *pNdisCEDvice, u32 addr)
 				PipeHandle=  padapter->halpriv.pipehdls_r8712[7];
 				break;
 			case RTL8712_DMA_MGTQ:
-		 		PipeHandle=  padapter->halpriv.pipehdls_r8712[8];
+				PipeHandle=  padapter->halpriv.pipehdls_r8712[8];
 				break;
                      case RTL8712_DMA_RX0FF:
 				PipeHandle=  padapter->halpriv.pipehdls_r8712[0];
@@ -552,16 +552,16 @@ USB_PIPE ffaddr2pipehdl(struct dvobj_priv *pNdisCEDvice, u32 addr)
 		switch(addr)
 		{
 			case RTL8712_DMA_BEQ:
-		 		PipeHandle=  padapter->halpriv.pipehdls_r8712[3];
+				PipeHandle=  padapter->halpriv.pipehdls_r8712[3];
 				break;
 	     	case RTL8712_DMA_BKQ:
-			 	PipeHandle=  padapter->halpriv.pipehdls_r8712[4];
+				PipeHandle=  padapter->halpriv.pipehdls_r8712[4];
 				break;
 	     	case RTL8712_DMA_VIQ:
-		 		PipeHandle=  padapter->halpriv.pipehdls_r8712[2];
+				PipeHandle=  padapter->halpriv.pipehdls_r8712[2];
 				break;
-	    	case RTL8712_DMA_VOQ:
-		 		PipeHandle=  padapter->halpriv.pipehdls_r8712[1];
+		case RTL8712_DMA_VOQ:
+				PipeHandle=  padapter->halpriv.pipehdls_r8712[1];
 				break;
 			case RTL8712_DMA_RX0FF:
 			case RTL8712_DMA_C2HCMD:
@@ -583,11 +583,11 @@ USB_PIPE ffaddr2pipehdl(struct dvobj_priv *pNdisCEDvice, u32 addr)
 		{
 	     	case RTL8712_DMA_BEQ:
 		 	case RTL8712_DMA_BKQ:
-			 	PipeHandle=  padapter->halpriv.pipehdls_r8712[2];
+				PipeHandle=  padapter->halpriv.pipehdls_r8712[2];
 				break;
      		case RTL8712_DMA_VIQ:
-		 	case RTL8712_DMA_VOQ:
-		 		PipeHandle=  padapter->halpriv.pipehdls_r8712[1];
+			case RTL8712_DMA_VOQ:
+				PipeHandle=  padapter->halpriv.pipehdls_r8712[1];
 				break;
 			case RTL8712_DMA_RX0FF:
 			case RTL8712_DMA_C2HCMD:

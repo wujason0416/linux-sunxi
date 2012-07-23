@@ -690,27 +690,49 @@ void flush_all_cam_entry(_adapter *padapter)
 	struct mlme_ext_info	*pmlmeinfo = &(pmlmeext->mlmext_info);
 
 #ifdef CONFIG_CONCURRENT_MODE
-	PADAPTER pbuddy_adapter = padapter->pbuddy_adapter;
-	struct mlme_ext_priv *pmlmeext2 = &pbuddy_adapter->mlmeextpriv;
-	struct mlme_ext_info *pmlmeinfo2 = &(pmlmeext2->mlmext_info);
 
-	if((pmlmeinfo2->state&0x03) == _HW_STATE_NOLINK_)
-#endif
+	struct mlme_priv *pmlmepriv = &(padapter->mlmepriv);
+
+	//if(check_buddy_mlmeinfo_state(padapter, _HW_STATE_NOLINK_))
+	if(check_buddy_fwstate(padapter, _FW_LINKED) == _FALSE)
 	{
-
-#if 0
-	unsigned char null_sta[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-	unsigned char null_key[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00,0x00, 0x00, 0x00, 0x00};
-
-	for (i = 0; i < NUM_STA; i++)
-	{
-		write_cam(padapter, i, 0, null_sta, null_key);
+		padapter->HalFunc.SetHwRegHandler(padapter, HW_VAR_CAM_INVALID_ALL, 0);
 	}
-#else
+	else
+	{
+		if(check_fwstate(pmlmepriv, WIFI_STATION_STATE) == _TRUE)
+		{
+			struct sta_priv	*pstapriv = &padapter->stapriv;
+			struct sta_info	*psta;
+			u8 cam_id;//cam_entry
+
+			psta = rtw_get_stainfo(pstapriv, pmlmeinfo->network.MacAddress);
+
+			if(psta && psta->mac_id==2)
+			{
+				cam_id = 5;
+			}
+			else
+			{
+				cam_id = 4;
+			}
+
+			//clear_cam_entry(padapter, cam_id);
+			rtw_clearstakey_cmd(padapter, (u8*)psta, cam_id, _FALSE);
+
+		}
+		else if(check_fwstate(pmlmepriv, WIFI_AP_STATE) == _TRUE)
+		{
+			//clear cam when ap free per sta_info
+		}
+	}
+#else //CONFIG_CONCURRENT_MODE
+
 	padapter->HalFunc.SetHwRegHandler(padapter, HW_VAR_CAM_INVALID_ALL, 0);
-#endif
+
+#endif //CONFIG_CONCURRENT_MODE
+
 	_rtw_memset((u8 *)(pmlmeinfo->FW_sta_info), 0, sizeof(pmlmeinfo->FW_sta_info));
-	}
 
 }
 

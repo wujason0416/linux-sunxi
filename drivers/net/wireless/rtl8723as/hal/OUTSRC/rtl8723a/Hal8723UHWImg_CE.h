@@ -8,7 +8,7 @@
 extern u8 Rtl8723UFwImgArray[Rtl8723UImgArrayLength];
 #define Rtl8723UBTImgArrayLength 1
 extern u8 Rtl8723UFwBTImgArray[Rtl8723UBTImgArrayLength];
-#define Rtl8723UUMCBCutImgArrayLength 22232
+#define Rtl8723UUMCBCutImgArrayLength 22288
 extern u8 Rtl8723UFwUMCBCutImgArray[Rtl8723UUMCBCutImgArrayLength];
 
 #ifndef CONFIG_PHY_SETTING_WITH_ODM

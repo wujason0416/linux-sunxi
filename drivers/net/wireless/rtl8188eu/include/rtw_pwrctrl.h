@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- * Copyright(c) 2007 - 2011 Realtek Corporation. All rights reserved.
+ * Copyright(c) 2007 - 2012 Realtek Corporation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -177,9 +177,9 @@ enum _PS_BBRegBackup_ {
 };
 
 enum { // for ips_mode
-	IPS_NORMAL = 0,
+	IPS_NONE=0,
+	IPS_NORMAL,
 	IPS_LEVEL_2,
-	IPS_NONE,
 };
 
 struct pwrctrl_priv
@@ -191,7 +191,10 @@ struct pwrctrl_priv
 	volatile u8 cpwm_tog; // toggling
 	u8	pwr_mode;
 	u8	smart_ps;
-	u32 alives;
+	u8	bcn_ant_mode;
+
+	u32	alives;
+	_workitem cpwm_event;
 	u8	bpower_saving;
 
 	u8	b_hw_radio_off;
@@ -304,9 +307,10 @@ extern void rtw_unregister_cmd_alive(PADAPTER padapter);
 extern s32 rtw_register_evt_alive(PADAPTER padapter);
 extern void rtw_unregister_evt_alive(PADAPTER padapter);
 extern void cpwm_int_hdl(PADAPTER padapter, struct reportpwrstate_parm *preportpwrstate);
+extern void LPS_Leave_check(PADAPTER padapter);
 #endif
 
-extern void rtw_set_ps_mode(_adapter * padapter, u8 ps_mode, u8 smart_ps);
+extern void rtw_set_ps_mode(PADAPTER padapter, u8 ps_mode, u8 smart_ps, u8 bcn_ant_mode);
 extern void rtw_set_rpwm(_adapter * padapter, u8 val8);
 extern void LeaveAllPowerSaveMode(PADAPTER Adapter);
 #ifdef CONFIG_IPS
