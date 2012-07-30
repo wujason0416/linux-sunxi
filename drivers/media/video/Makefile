@@ -216,6 +216,7 @@ endif
 
 obj-$(CONFIG_CSI0_SUNXI) += sunxi_csi/csi0/
 obj-$(CONFIG_CSI1_SUNXI) += sunxi_csi/csi1/
+obj-$(CONFIG_AW_TSC) += tsc/
 
 ccflags-y += -I$(srctree)/drivers/media/dvb/dvb-core
 ccflags-y += -I$(srctree)/drivers/media/dvb/frontends

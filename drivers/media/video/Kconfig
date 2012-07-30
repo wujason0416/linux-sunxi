@@ -1240,3 +1240,4 @@ menuconfig VIDEO_CSI_SUNXI
 if VIDEO_CSI_SUNXI
 source "drivers/media/video/sunxi_csi/Kconfig"
 endif
+source "drivers/media/video/tsc/Kconfig"
