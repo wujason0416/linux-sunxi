@@ -1,8 +1,8 @@
 /*
  * sound\soc\sun6i\hdmiaudio\sndhdmi.c
  * (C) Copyright 2010-2016
- * Allwinner Technology Co., Ltd. <www.allwinnertech.com>
- * chenpailin <chenpailin@allwinnertech.com>
+ * Reuuimlla Technology Co., Ltd. <www.reuuimllatech.com>
+ * chenpailin <chenpailin@Reuuimllatech.com>
  *
  * some simple description for this code
  *
@@ -90,7 +90,6 @@ static int sndhdmi_set_dai_clkdiv(struct snd_soc_dai *codec_dai, int div_id, int
 {
 	return 0;
 }
-
 
 static int sndhdmi_set_dai_fmt(struct snd_soc_dai *codec_dai,
 			       unsigned int fmt)
@@ -180,7 +179,6 @@ static struct platform_driver sndhdmi_codec_driver = {
 static int __init sndhdmi_codec_init(void)
 {
 	int err = 0;
-
 	if((err = platform_device_register(&sndhdmi_codec_device)) < 0)
 		return err;
 

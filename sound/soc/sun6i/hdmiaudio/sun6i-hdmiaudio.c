@@ -1,8 +1,8 @@
 /*
  * sound\soc\sun6i\hdmiaudio\sun6i-hdmiaudio.c
  * (C) Copyright 2010-2016
- * Allwinner Technology Co., Ltd. <www.allwinnertech.com>
- * chenpailin <chenpailin@allwinnertech.com>
+ * Reuuimlla Technology Co., Ltd. <www.reuuimllatech.com>
+ * chenpailin <chenpailin@Reuuimllatech.com>
  *
  * some simple description for this code
  *
@@ -211,7 +211,6 @@ static struct platform_driver sun6i_hdmiaudio_driver = {
 static int __init sun6i_hdmiaudio_init(void)
 {
 	int err = 0;
-
 	if((err = platform_device_register(&sun6i_hdmiaudio_device))<0)
 		return err;
 
@@ -228,9 +227,8 @@ static void __exit sun6i_hdmiaudio_exit(void)
 }
 module_exit(sun6i_hdmiaudio_exit);
 
-module_platform_driver(sun6i_hdmiaudio_driver);
 /* Module information */
-MODULE_AUTHOR("ALLWINNER");
+MODULE_AUTHOR("REUUIMLLA");
 MODULE_DESCRIPTION("sun6i hdmiaudio SoC Interface");
 MODULE_LICENSE("GPL");
 MODULE_ALIAS("platform: sun6i-hdmiaudio");
