@@ -657,7 +657,7 @@ static u32 sun6i_audio_capture_buffdone(dm_hdl_t dma_hdl, void *parg,
 	struct snd_pcm_substream *substream = parg;
 
 	if (result == DMA_CB_ABORT)
-		return -EINVAL;
+		return 0;
 
 	capture_buffdone_flag = true;
 	capture_prtd = substream->runtime->private_data;
@@ -672,7 +672,7 @@ static u32 sun6i_audio_capture_buffdone(dm_hdl_t dma_hdl, void *parg,
 		if(true == capture_buffdone_flag) {
 			sun6i_pcm_enqueue(substream);
 		} else {
-			printk("%s err, line %d\n", __func__, __LINE__);
+			printk("error:%s, line %d\n", __func__, __LINE__);
 		}
 	}
 	spin_unlock(&capture_prtd->lock);
@@ -688,7 +688,7 @@ static u32 sun6i_audio_play_buffdone(dm_hdl_t dma_hdl, void *parg,
 	struct snd_pcm_substream *substream = parg;
 
 	if (result == DMA_CB_ABORT)
-		return -EINVAL;
+		return 0;
 
 	play_buffdone_flag = true;
 	play_prtd = substream->runtime->private_data;
@@ -702,7 +702,7 @@ static u32 sun6i_audio_play_buffdone(dm_hdl_t dma_hdl, void *parg,
 		if(true == play_buffdone_flag) {
 			sun6i_pcm_enqueue(substream);
 		} else {
-			printk("%s err, line %d\n", __func__, __LINE__);
+			printk("error:%s, line %d\n", __func__, __LINE__);
 		}
 	}
 	spin_unlock(&play_prtd->lock);
@@ -717,29 +717,29 @@ static snd_pcm_uframes_t snd_sun6i_codec_pointer(struct snd_pcm_substream *subst
 	struct sun6i_playback_runtime_data *play_prtd = NULL;
 	struct sun6i_capture_runtime_data *capture_prtd = NULL;
 	struct snd_pcm_runtime *play_runtime = NULL;
+	struct snd_pcm_runtime *capture_runtime = NULL;
     snd_pcm_uframes_t play_offset = 0;
 
     if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-	play_prtd = substream->runtime->private_data;
+		play_runtime = substream->runtime;
+		play_prtd = play_runtime->private_data;
 		spin_lock(&play_prtd->lock);
-
 		if (0 != sw_dma_ctl(play_prtd->dma_hdl, DMA_OP_GET_CUR_SRC_ADDR, &play_dmasrc)) {
-			printk("%s,err\n", __func__);
+			printk("err:%s, line:%d\n", __func__, __LINE__);
 		}
-
 		play_offset = bytes_to_frames(play_runtime, play_dmasrc - play_runtime->dma_addr);
-
 		spin_unlock(&play_prtd->lock);
 		if (play_offset >= play_runtime->buffer_size) {
 			play_offset = 0;
 		}
 		return play_offset;
     } else {
-	capture_prtd = substream->runtime->private_data;
-	spin_lock(&capture_prtd->lock);
+	capture_runtime = substream->runtime;
+	capture_prtd = capture_runtime->private_data;
+		spin_lock(&capture_prtd->lock);
 
 	if (0 != sw_dma_ctl(capture_prtd->dma_hdl, DMA_OP_GET_CUR_DST_ADDR, &capture_dmadst)) {
-			printk("%s,err\n", __func__);
+			printk("err:%s, line:%d\n", __func__, __LINE__);
 		}
 
 	capture_res = capture_dmadst - capture_prtd->dma_start;
@@ -835,11 +835,9 @@ static int sun6i_codec_pcm_hw_params(struct snd_pcm_substream *substream, struct
 			capture_prtd->dma_limit = capture_runtime->hw.periods_min;
 			capture_prtd->dma_period = params_period_bytes(params);
 			capture_prtd->dma_start = capture_runtime->dma_addr;
-
 			capture_dmadst = capture_prtd->dma_start;
 			capture_prtd->dma_pos = capture_prtd->dma_start;
 			capture_prtd->dma_end = capture_prtd->dma_start + capture_totbytes;
-
 			spin_unlock_irq(&capture_prtd->lock);
 		}
 	} else {
@@ -1128,7 +1126,6 @@ static int snd_sun6i_codec_prepare(struct snd_pcm_substream	*substream)
 		}
 		//open the dac channel register
 		codec_play_open(substream);
-
 		memset(&play_dma_config, 0, sizeof(play_dma_config));
 		play_dma_config.xfer_type = DMAXFER_D_BHALF_S_BHALF;
 		play_dma_config.address_type = DMAADDRT_D_IO_S_LN;
@@ -1159,7 +1156,6 @@ static int snd_sun6i_codec_prepare(struct snd_pcm_substream	*substream)
 		}
 		//open the adc channel register
 		codec_capture_open();
-
 		memset(&capture_dma_config, 0, sizeof(capture_dma_config));
 		capture_dma_config.xfer_type = DMAXFER_D_BHALF_S_BHALF;
 		capture_dma_config.address_type = DMAADDRT_D_LN_S_IO;
