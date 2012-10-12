@@ -1194,6 +1194,9 @@ config PLAT_VERSATILE
 
 config PLAT_SUNXI
 	bool
+	select PINCTRL
+	select PINCTRL_SUNXI
+	select EXPERIMENTAL
 
 config ARM_TIMER_SP804
 	bool

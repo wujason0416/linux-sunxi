@@ -54,6 +54,11 @@ config PINCTRL_SIRF
 	depends on ARCH_PRIMA2
 	select PINMUX
 
+config PINCTRL_SUNXI
+	bool "sunxi pin controller driver"
+	depends on PLAT_SUNXI
+	select PINCONF
+
 config PINCTRL_TEGRA
 	bool
 
