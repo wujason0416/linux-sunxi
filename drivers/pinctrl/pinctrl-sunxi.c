@@ -44,6 +44,7 @@ static struct pin_counts {
 	{ SUNXI_CHIP_ID_A10, { 18, 24, 25, 28, 12,  6, 12, 28, 22 }},
 #endif
 #ifdef CONFIG_ARCH_SUN5I
+	{ SUNXI_CHIP_ID_A10s,{ 18, 21, 20, 28, 12,  6, 14 }},
 	{ SUNXI_CHIP_ID_A13, {  0, 10, 17, 22, 12,  6,  9 }},
 #endif
 	{ 0, { 32, 32, 32, 32, 32, 32, 32, 32, 32 }},

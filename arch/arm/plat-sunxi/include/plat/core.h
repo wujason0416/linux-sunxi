@@ -26,6 +26,9 @@
 enum {
 	SUNXI_CHIP_ID_A10 = 1623,
 	SUNXI_CHIP_ID_A13 = 1626,
+
+	/* to be determined */
+	SUNXI_CHIP_ID_A10s = 5000,
 };
 
 /* BROM access only possible after iomap()s */

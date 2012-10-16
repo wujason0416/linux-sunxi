@@ -75,9 +75,16 @@ u32 sunxi_chip_id(void)
 int sunxi_pr_chip_id()
 {
 	u32 chip_id = sunxi_chip_id();
-	pr_info("BROM chip-id: %u (%s)\n", chip_id,
-		(chip_id == SUNXI_CHIP_ID_A10) ? "A10" :
-		((chip_id == SUNXI_CHIP_ID_A13) ? "A13" : "Unknown"));
+	const char *name;
+
+	switch (chip_id) {
+	case SUNXI_CHIP_ID_A10:  name = "A10"; break;
+	case SUNXI_CHIP_ID_A10s: name = "A10s"; break;
+	case SUNXI_CHIP_ID_A13:  name = "A13"; break;
+	default: name = "Unknown";
+	}
+
+	pr_info("BROM chip-id: %u (%s)\n", chip_id, name);
 	return (chip_id != 0);
 }
 
