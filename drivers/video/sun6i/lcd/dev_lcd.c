@@ -94,6 +94,8 @@ int __init lcd_module_init(void)
 
 	lcd_init();
 
+    __inf("lcd_module_init finish\n");
+
 	return ret;
 }
 
