@@ -927,96 +927,144 @@ static int snd_sun6i_codec_prepare(struct snd_pcm_substream	*substream)
 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
 		switch (substream->runtime->rate) {
 			case 44100:
-				clk_set_rate(codec_pll2clk, 22579200);
-				clk_set_rate(codec_moduleclk, 22579200);
+				if (clk_set_rate(codec_pll2clk, 22579200)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 22579200)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_DAC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(0<<29);
 				writel(reg_val, baseaddr + SUN6I_DAC_FIFOC);
 				break;
 			case 22050:
-				clk_set_rate(codec_pll2clk, 22579200);
-				clk_set_rate(codec_moduleclk, 22579200);
+				if (clk_set_rate(codec_pll2clk, 22579200)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 22579200)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_DAC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(2<<29);
 				writel(reg_val, baseaddr + SUN6I_DAC_FIFOC);
 				break;
 			case 11025:
-				clk_set_rate(codec_pll2clk, 22579200);
-				clk_set_rate(codec_moduleclk, 22579200);
+				if (clk_set_rate(codec_pll2clk, 22579200)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 22579200)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_DAC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(4<<29);
 				writel(reg_val, baseaddr + SUN6I_DAC_FIFOC);
 				break;
 			case 48000:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_DAC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(0<<29);
 				writel(reg_val, baseaddr + SUN6I_DAC_FIFOC);
 				break;
 			case 96000:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_DAC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(7<<29);
 				writel(reg_val, baseaddr + SUN6I_DAC_FIFOC);
 				break;
 			case 192000:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_DAC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(6<<29);
 				writel(reg_val, baseaddr + SUN6I_DAC_FIFOC);
 				break;
 			case 32000:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_DAC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(1<<29);
 				writel(reg_val, baseaddr + SUN6I_DAC_FIFOC);
 				break;
 			case 24000:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_DAC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(2<<29);
 				writel(reg_val, baseaddr + SUN6I_DAC_FIFOC);
 				break;
 			case 16000:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_DAC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(3<<29);
 				writel(reg_val, baseaddr + SUN6I_DAC_FIFOC);
 				break;
 			case 12000:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_DAC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(4<<29);
 				writel(reg_val, baseaddr + SUN6I_DAC_FIFOC);
 				break;
 			case 8000:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_DAC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(5<<29);
 				writel(reg_val, baseaddr + SUN6I_DAC_FIFOC);
 				break;
 			default:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_DAC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(0<<29);
@@ -1043,80 +1091,119 @@ static int snd_sun6i_codec_prepare(struct snd_pcm_substream	*substream)
 	} else {
 		switch (substream->runtime->rate) {
 			case 44100:
-				clk_set_rate(codec_pll2clk, 22579200);
-				clk_set_rate(codec_moduleclk, 22579200);
+				if (clk_set_rate(codec_pll2clk, 22579200)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 22579200)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_ADC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(0<<29);
 				writel(reg_val, baseaddr + SUN6I_ADC_FIFOC);
 				break;
 			case 22050:
-				clk_set_rate(codec_pll2clk, 22579200);
-				clk_set_rate(codec_moduleclk, 22579200);
-				reg_val = readl(baseaddr + SUN6I_ADC_FIFOC);
+				if (clk_set_rate(codec_pll2clk, 22579200)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 22579200)) {
+					printk("set codec_moduleclk rate fail\n");
+				}				reg_val = readl(baseaddr + SUN6I_ADC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(2<<29);
 				writel(reg_val, baseaddr + SUN6I_ADC_FIFOC);
 				break;
 			case 11025:
-				clk_set_rate(codec_pll2clk, 22579200);
-				clk_set_rate(codec_moduleclk, 22579200);
+				if (clk_set_rate(codec_pll2clk, 22579200)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 22579200)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_ADC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(4<<29);
 				writel(reg_val, baseaddr + SUN6I_ADC_FIFOC);
 				break;
 			case 48000:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_ADC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(0<<29);
 				writel(reg_val, baseaddr + SUN6I_ADC_FIFOC);
 				break;
 			case 32000:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_ADC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(1<<29);
 				writel(reg_val, baseaddr + SUN6I_ADC_FIFOC);
 				break;
 			case 24000:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_ADC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(2<<29);
 				writel(reg_val, baseaddr + SUN6I_ADC_FIFOC);
 				break;
 			case 16000:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_ADC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(3<<29);
 				writel(reg_val, baseaddr + SUN6I_ADC_FIFOC);
 				break;
 			case 12000:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_ADC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(4<<29);
 				writel(reg_val, baseaddr + SUN6I_ADC_FIFOC);
 				break;
 			case 8000:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_ADC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(5<<29);
 				writel(reg_val, baseaddr + SUN6I_ADC_FIFOC);
 				break;
 			default:
-				clk_set_rate(codec_pll2clk, 24576000);
-				clk_set_rate(codec_moduleclk, 24576000);
+				if (clk_set_rate(codec_pll2clk, 24576000)) {
+					printk("set codec_pll2clk rate fail\n");
+				}
+				if (clk_set_rate(codec_moduleclk, 24576000)) {
+					printk("set codec_moduleclk rate fail\n");
+				}
 				reg_val = readl(baseaddr + SUN6I_ADC_FIFOC);
 				reg_val &=~(7<<29);
 				reg_val |=(0<<29);
@@ -1478,21 +1565,29 @@ static int __init sun6i_codec_probe(struct platform_device *pdev)
 		return -ENOMEM;
 	/* codec_apbclk */
 	codec_apbclk = clk_get(NULL,"apb_adda");
-	if (-1 == clk_enable(codec_apbclk)) {
-		printk("err:codec_apbclk failed; \n");
+	if ((!codec_apbclk)||(IS_ERR(codec_apbclk))) {
+		printk("try to get codec_apbclk failed!\n");
+	}
+	if (clk_enable(codec_apbclk)) {
+		printk("enable codec_apbclk failed; \n");
 	}
 	/* codec_pll2clk */
 	codec_pll2clk = clk_get(NULL,"sys_pll2");
+	if ((!codec_pll2clk)||(IS_ERR(codec_pll2clk))) {
+		printk("try to get codec_pll2clk failed!\n");
+	}
 	/* codec_moduleclk */
 	codec_moduleclk = clk_get(NULL,"mod_adda");
-
+	if ((!codec_moduleclk)||(IS_ERR(codec_moduleclk))) {
+		printk("try to get codec_moduleclk failed!\n");
+	}
 	if (clk_set_parent(codec_moduleclk, codec_pll2clk)) {
 		printk("err:try to set parent of codec_moduleclk to codec_pll2clk failed!\n");
 	}
 	if (clk_set_rate(codec_moduleclk, 24576000)) {
 		printk("err:set codec_moduleclk clock freq 24576000 failed!\n");
 	}
-	if (-1 == clk_enable(codec_moduleclk)){
+	if (clk_enable(codec_moduleclk)) {
 		printk("err:open codec_moduleclk failed; \n");
 	}
 
@@ -1553,7 +1648,12 @@ static int snd_sun6i_codec_suspend(struct platform_device *pdev,pm_message_t sta
 	/*disable adc digital part*/
 	codec_wr_control(SUN6I_ADC_FIFOC, 0x1, ADC_EN, 0x0);
 
-	clk_disable(codec_moduleclk);
+	if ((NULL == codec_moduleclk)||(IS_ERR(codec_moduleclk))) {
+		printk("codec_moduleclk handle is invaled, just return\n");
+		return -EINVAL;
+	} else {
+		clk_disable(codec_moduleclk);
+	}
 	printk("[audio codec]:suspend end\n");
 	return 0;
 }
@@ -1561,7 +1661,7 @@ static int snd_sun6i_codec_suspend(struct platform_device *pdev,pm_message_t sta
 static int snd_sun6i_codec_resume(struct platform_device *pdev)
 {
 	printk("[audio codec]:resume start\n");
-	if (-1 == clk_enable(codec_moduleclk)){
+	if (clk_enable(codec_moduleclk)) {
 		printk("open codec_moduleclk failed; \n");
 	}
 	codec_wr_control(SUN6I_PA_CTRL, 0x1, HPPAEN, 0x1);
@@ -1572,10 +1672,24 @@ static int snd_sun6i_codec_resume(struct platform_device *pdev)
 
 static int __devexit sun6i_codec_remove(struct platform_device *devptr)
 {
-	clk_disable(codec_moduleclk);
-	clk_put(codec_pll2clk);
-	clk_put(codec_apbclk);
-
+	if ((NULL == codec_moduleclk)||(IS_ERR(codec_moduleclk))) {
+		printk("codec_moduleclk handle is invaled, just return\n");
+		return -EINVAL;
+	} else {
+		clk_disable(codec_moduleclk);
+	}
+	if ((NULL == codec_pll2clk)||(IS_ERR(codec_pll2clk))) {
+		printk("codec_pll2clk handle is invaled, just return\n");
+		return -EINVAL;
+	} else {
+		clk_put(codec_pll2clk);
+	}
+	if ((NULL == codec_apbclk)||(IS_ERR(codec_apbclk))) {
+		printk("codec_apbclk handle is invaled, just return\n");
+		return -EINVAL;
+	} else {
+		clk_put(codec_apbclk);
+	}
 	snd_card_free(platform_get_drvdata(devptr));
 	platform_set_drvdata(devptr, NULL);
 	return 0;
