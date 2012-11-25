@@ -50,10 +50,6 @@
 #define AWXX_I2C_SFAIL  -3	/* start fail */
 #define AWXX_I2C_TFAIL  -4	/* stop  fail */
 
-#if 0
-#define SYS_FPGA_SIM
-#endif
-
 /* aw_i2c_adapter: transfer status */
 enum {
 	I2C_XFER_IDLE = 0x1,
@@ -281,14 +277,6 @@ static void aw_twi_set_clock(unsigned int clk_in, unsigned int sclk_req,
 	unsigned int src_clk = clk_in / 10;
 	unsigned int divider = src_clk / sclk_req;	/* 400khz or 100khz */
 	unsigned int sclk_real = 0;	/* the real clock frequency */
-
-#ifdef CONFIG_FPGA_SIM
-	{
-		clk_m = 2;
-		clk_n = 3;
-		goto set_clk;
-	}
-#endif
 
 	if (divider == 0) {
 		clk_m = 1;
