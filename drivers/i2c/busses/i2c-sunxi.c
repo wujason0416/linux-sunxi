@@ -533,28 +533,30 @@ static int i2c_sunxi_core_process(struct sunxi_i2c *i2c)
 	}
 
 	switch (state) {
-	case 0xf8: /* On reset or stop the bus is idle, use only at poll method */
-		err_code = 0xf8;
+	case TWI_STAT_IDLE:
+		/* On reset or stop the bus is idle, use only at poll method */
+		err_code = TWI_STAT_IDLE;
 		goto err_out;
-	case 0x08: /* A START condition has been transmitted */
-	case 0x10: /* A repeated start condition has been transmitted */
+	case TWI_STAT_TX_STA:
+	case TWI_STAT_TX_RESTA:
 		i2c_sunxi_addr_byte(i2c);	/* send slave address */
 		break;
-	case 0xd8: /* second addr has transmitted, ACK not received!    */
-	case 0x20: /* SLA+W has been transmitted; NOT ACK has been received */
-		err_code = 0x20;
+	case TWI_STAT_TX_SAW_NAK:
+	case TWI_STAT_TX_AW_NAK:
+		err_code = TWI_STAT_TX_AW_NAK;
 		goto err_out;
-	case 0x18: /* SLA+W has been transmitted; ACK has been received */
+	case TWI_STAT_TX_AW_ACK:
 		/* if any, send second part of 10 bits addr */
 		if (i2c->msg[i2c->msg_idx].flags & I2C_M_TEN) {
 			/* the remaining 8 bits of address */
 			tmp = i2c->msg[i2c->msg_idx].addr & 0x7f;
-			aw_twi_put_byte(base_addr, &tmp);	/* case 0xd0: */
+			aw_twi_put_byte(base_addr, &tmp);
 			break;
 		}
-		/* for 7 bit addr, then directly send data byte--case 0xd0:  */
-	case 0xd0: /* second addr has transmitted,ACK received! */
-	case 0x28: /* Data byte in DATA REG has been transmitted; ACK has been received */
+		/* for 7 bit addr, then directly send data byte
+		   continue with as case TWI_STAT_TX_SAW_ACK */
+	case TWI_STAT_TX_SAW_ACK:
+	case TWI_STAT_TXD_ACK:
 		/* after send register address then START send write data  */
 		if (i2c->msg_ptr < i2c->msg[i2c->msg_idx].len) {
 			aw_twi_put_byte(base_addr,
@@ -566,7 +568,7 @@ static int i2c_sunxi_core_process(struct sunxi_i2c *i2c)
 		i2c->msg_idx++;	/* the other msg */
 		i2c->msg_ptr = 0;
 		if (i2c->msg_idx == i2c->msg_num) {
-			err_code = AWXX_I2C_OK;	/* Success,wakeup */
+			err_code = AWXX_I2C_OK;
 			goto ok_out;
 		} else if (i2c->msg_idx < i2c->msg_num) {
 			/* for restart pattern */
@@ -580,25 +582,25 @@ static int i2c_sunxi_core_process(struct sunxi_i2c *i2c)
 			goto err_out;
 		}
 		break;
-	case 0x30: /* Data byte in I2CDAT has been transmitted; NOT ACK has been received */
-		err_code = 0x30; /* err,wakeup the thread */
+	case TWI_STAT_TXD_NAK:
+		err_code = TWI_STAT_TXD_NAK;
 		goto err_out;
-	case 0x38: /* Arbitration lost during SLA+W, SLA+R or data bytes */
-		err_code = 0x38; /* err,wakeup the thread */
+	case TWI_STAT_ARBLOST:
+		err_code = TWI_STAT_ARBLOST;
 		goto err_out;
-	case 0x40: /* SLA+R has been transmitted; ACK has been received */
+	case TWI_STAT_TX_AR_ACK:
 		/* with Restart,needn't to send second part of 10 bits addr,refer-"I2C-SPEC v2.1" */
 		/* enable A_ACK need it(receive data len) more than 1. */
 		if (i2c->msg[i2c->msg_idx].len > 1) {
 			/* send register addr complete,then enable the A_ACK and get ready for receiving data */
 			aw_twi_enable_ack(base_addr);
-			aw_twi_clear_irq_flag(base_addr); /* jump to case 0x50 */
+			aw_twi_clear_irq_flag(base_addr); /* jump to case TWI_STAT_RXD_ACK */
 		} else if (i2c->msg[i2c->msg_idx].len == 1) {
-			aw_twi_clear_irq_flag(base_addr); /* jump to case 0x58 */
+			aw_twi_clear_irq_flag(base_addr); /* jump to case TWI_STAT_RXD_NAK */
 		}
 		break;
-	case 0x48: /* SLA+R has been transmitted; NOT ACK has been received */
-		err_code = 0x48;	/* err,wakeup the thread */
+	case TWI_STAT_TX_AR_NAK:
+		err_code = TWI_STAT_TX_AR_NAK;
 		goto err_out;
 	case 0x50: /* Data bytes has been received; ACK has been transmitted */
 		/* receive first data byte */
@@ -613,10 +615,10 @@ static int i2c_sunxi_core_process(struct sunxi_i2c *i2c)
 
 			break;
 		}
-		/* err process, the last byte should be @case 0x58 */
-		err_code = AWXX_I2C_FAIL;	/* err, wakeup */
+		/* err process, the last byte should be @case TWI_STAT_RXD_NAK */
+		err_code = AWXX_I2C_FAIL;
 		goto err_out;
-	case 0x58: /* Data byte has been received; NOT ACK has been transmitted */
+	case TWI_STAT_RXD_NAK:
 		/* received the last byte  */
 		if (i2c->msg_ptr == i2c->msg[i2c->msg_idx].len - 1) {
 			aw_twi_get_last_byte(base_addr,
@@ -624,7 +626,7 @@ static int i2c_sunxi_core_process(struct sunxi_i2c *i2c)
 			i2c->msg_idx++;
 			i2c->msg_ptr = 0;
 			if (i2c->msg_idx == i2c->msg_num) {
-				err_code = AWXX_I2C_OK;	/* succeed,wakeup the thread */
+				err_code = AWXX_I2C_OK;
 				goto ok_out;
 			} else if (i2c->msg_idx < i2c->msg_num) {
 				/* repeat start */
@@ -636,10 +638,11 @@ static int i2c_sunxi_core_process(struct sunxi_i2c *i2c)
 				break;
 			}
 		} else {
-			err_code = 0x58;
+			err_code = TWI_STAT_RXD_NAK;
 			goto err_out;
 		}
-	case 0x00: /* Bus error during master or slave mode due to illegal level condition */
+	case TWI_STAT_BUS_ERR:
+		/* Bus error during master or slave mode due to illegal level condition */
 		err_code = 0xff;
 		goto err_out;
 	default:
