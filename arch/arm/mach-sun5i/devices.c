@@ -106,7 +106,7 @@ static struct resource sun5i_twi0_resources[] = {
 };
 
 struct platform_device sun5i_twi0_device = {
-	.name		= "sun5i-i2c",
+	.name		= "sunxi-i2c",
 	.id		    = 0,
 	.resource	= sun5i_twi0_resources,
 	.num_resources	= ARRAY_SIZE(sun5i_twi0_resources),
@@ -136,7 +136,7 @@ static struct resource sun5i_twi1_resources[] = {
 };
 
 struct platform_device sun5i_twi1_device = {
-	.name		= "sun5i-i2c",
+	.name		= "sunxi-i2c",
 	.id		    = 1,
 	.resource	= sun5i_twi1_resources,
 	.num_resources	= ARRAY_SIZE(sun5i_twi1_resources),
@@ -166,7 +166,7 @@ static struct resource sun5i_twi2_resources[] = {
 };
 
 struct platform_device sun5i_twi2_device = {
-	.name		= "sun5i-i2c",
+	.name		= "sunxi-i2c",
 	.id		    = 2,
 	.resource	= sun5i_twi2_resources,
 	.num_resources	= ARRAY_SIZE(sun5i_twi2_resources),
