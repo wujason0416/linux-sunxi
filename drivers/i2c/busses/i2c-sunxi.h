@@ -1,5 +1,5 @@
 /*
- * arch/arm/mach-sun4i/include/mach/i2c.h
+ * drivers/i2c/busses/i2c-sunxi.h
  *
  * (C) Copyright 2007-2012
  * Allwinner Technology Co., Ltd. <www.allwinnertech.com>
@@ -22,8 +22,8 @@
  * MA 02111-1307 USA
  */
 
-#ifndef _SUN4I_I2C_PRIVATE_H_
-#define _SUN4I_I2C_PRIVATE_H_
+#ifndef _SUNXI_I2C_PRIVATE_H_
+#define _SUNXI_I2C_PRIVATE_H_
 
 #define TWI_MODULE_NUM    (3)
 
@@ -180,7 +180,7 @@ Foscl is clock SCL;standard mode:100KHz or fast mode:400KHz
 #define I2C1_TRANSFER_SPEED     (200000)
 #define I2C2_TRANSFER_SPEED     (200000)
 
-struct sun4i_i2c_platform_data {
+struct sunxi_i2c_platform_data {
 	int bus_num;
 	unsigned int frequency;
 };
