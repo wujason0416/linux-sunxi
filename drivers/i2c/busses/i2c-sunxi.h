@@ -39,7 +39,7 @@
 #define TWI_LCR_REG	(0x20)	/*  31:6bits reserved  5:0bit for sda&scl control */
 
 /* TWI address register */
-#define TWI_GCE_EN	(0x1 <<0)	/* general call address enable for slave mode */
+#define TWI_GCE_EN	(0x01<<0)	/* general call address enable for slave mode */
 #define TWI_ADDR_MASK	(0x7f<<1)	/* 7:1bits */
 /* 31:8bits reserved */
 
@@ -52,23 +52,23 @@
 
 /* TWI Control Register Bit Fields & Masks, default value: 0x0000_0000*/
 /* 1:0 bits reserved */
-#define TWI_CTL_ACK		(0x1<<2)	/* set 1 to send A_ACK,then low level on SDA */
+#define TWI_CTL_ACK	(0x1<<2)	/* set 1 to send A_ACK,then low level on SDA */
 #define TWI_CTL_INTFLG	(0x1<<3)	/* INT_FLAG,interrupt status flag: set '1' when interrupt coming */
-#define TWI_CTL_STP		(0x1<<4)	/* M_STP,Automatic clear 0 */
-#define TWI_CTL_STA		(0x1<<5)	/* M_STA,atutomatic clear 0 */
+#define TWI_CTL_STP	(0x1<<4)	/* M_STP,Automatic clear 0 */
+#define TWI_CTL_STA	(0x1<<5)	/* M_STA,atutomatic clear 0 */
 #define TWI_CTL_BUSEN	(0x1<<6)	/* BUS_EN, master mode should be set 1. */
 #define TWI_CTL_INTEN	(0x1<<7)	/* INT_EN */
 /* 31:8 bit reserved */
 
 /* TWI Clock Register Bit Fields & Masks,default value:0x0000_0000 */
 /*
-Fin is APB CLOCK INPUT;
-Fsample = F0 = Fin/2^CLK_N; 
-          F1 = F0/(CLK_M+1);
-          
-Foscl = F1/10 = Fin/(2^CLK_N * (CLK_M+1)*10); 
-Foscl is clock SCL;standard mode:100KHz or fast mode:400KHz        
-*/
+ * Fin is APB CLOCK INPUT;
+ * Fsample = F0 = Fin/2^CLK_N;
+ *           F1 = F0/(CLK_M+1);
+ *
+ * Foscl = F1/10 = Fin/(2^CLK_N * (CLK_M+1)*10);
+ * Foscl is clock SCL;standard mode:100KHz or fast mode:400KHz
+ */
 #define TWI_CLK_DIV_M		(0xF<<3)	/* 6:3bit  */
 #define TWI_CLK_DIV_N		(0x7<<0)	/* 2:0bit */
 
@@ -93,41 +93,41 @@ Foscl is clock SCL;standard mode:100KHz or fast mode:400KHz
 /* 31:6bits reserved */
 #define TWI_LCR_IDLE_STATUS     (0x3a)
 
-/* TWI Status Register Bit Fields & Masks  */
-#define TWI_STAT_MASK                   (0xff)
+/* TWI Status Register Bit Fields & Masks */
+#define TWI_STAT_MASK			(0xff)
 /* 7:0 bits use only,default is 0xF8 */
-#define TWI_STAT_BUS_ERR				(0x00)	/* BUS ERROR */
+#define TWI_STAT_BUS_ERR		(0x00)
 /* Master mode use only */
-#define TWI_STAT_TX_STA					(0x08)	/* START condition transmitted */
-#define TWI_STAT_TX_RESTA				(0x10)	/* Repeated START condition transmitted */
-#define TWI_STAT_TX_AW_ACK				(0x18)	/* Address+Write bit transmitted, ACK received */
-#define TWI_STAT_TX_AW_NAK				(0x20)	/* Address+Write bit transmitted, ACK not received */
-#define TWI_STAT_TXD_ACK				(0x28)	/* data byte transmitted in master mode,ack received */
-#define TWI_STAT_TXD_NAK				(0x30)	/* data byte transmitted in master mode ,ack not received */
-#define TWI_STAT_ARBLOST				(0x38)	/* arbitration lost in address or data byte */
-#define TWI_STAT_TX_AR_ACK				(0x40)	/* Address+Read bit transmitted, ACK received */
-#define TWI_STAT_TX_AR_NAK				(0x48)	/* Address+Read bit transmitted, ACK not received */
-#define TWI_STAT_RXD_ACK				(0x50)	/* data byte received in master mode ,ack transmitted */
-#define TWI_STAT_RXD_NAK				(0x58)	/* date byte received in master mode,not ack transmitted */
+#define TWI_STAT_TX_STA			(0x08)
+#define TWI_STAT_TX_RESTA		(0x10)
+#define TWI_STAT_TX_AW_ACK		(0x18)
+#define TWI_STAT_TX_AW_NAK		(0x20)
+#define TWI_STAT_TXD_ACK		(0x28)
+#define TWI_STAT_TXD_NAK		(0x30)
+#define TWI_STAT_ARBLOST		(0x38)
+#define TWI_STAT_TX_AR_ACK		(0x40)
+#define TWI_STAT_TX_AR_NAK		(0x48)
+#define TWI_STAT_RXD_ACK		(0x50)
+#define TWI_STAT_RXD_NAK		(0x58)
 /* Slave mode use only */
-#define TWI_STAT_RXWS_ACK				(0x60)	/* Slave address+Write bit received, ACK transmitted */
-#define TWI_STAT_ARBLOST_RXWS_ACK		(0x68)
-#define TWI_STAT_RXGCAS_ACK				(0x70)	/* General Call address received, ACK transmitted */
-#define TWI_STAT_ARBLOST_RXGCAS_ACK		(0x78)
-#define TWI_STAT_RXDS_ACK				(0x80)
-#define TWI_STAT_RXDS_NAK				(0x88)
-#define TWI_STAT_RXDGCAS_ACK			(0x90)
-#define TWI_STAT_RXDGCAS_NAK			(0x98)
-#define TWI_STAT_RXSTPS_RXRESTAS		(0xA0)
-#define TWI_STAT_RXRS_ACK				(0xA8)
+#define TWI_STAT_RXWS_ACK		(0x60)
+#define TWI_STAT_ARBLOST_RXWS_ACK	(0x68)
+#define TWI_STAT_RXGCAS_ACK		(0x70)
+#define TWI_STAT_ARBLOST_RXGCAS_ACK	(0x78)
+#define TWI_STAT_RXDS_ACK		(0x80)
+#define TWI_STAT_RXDS_NAK		(0x88)
+#define TWI_STAT_RXDGCAS_ACK		(0x90)
+#define TWI_STAT_RXDGCAS_NAK		(0x98)
+#define TWI_STAT_RXSTPS_RXRESTAS	(0xA0)
+#define TWI_STAT_RXRS_ACK		(0xA8)
 
-#define TWI_STAT_ARBLOST_SLAR_ACK       (0xB0)
+#define TWI_STAT_ARBLOST_SLAR_ACK	(0xB0)
 
 /* 10bit Address, second part of address */
-#define TWI_STAT_TX_SAW_ACK             (0xD0)	/* Second Address byte+Write bit transmitted,ACK received */
-#define TWI_STAT_TX_SAW_NAK             (0xD8)	/* Second Address byte+Write bit transmitted,ACK not received */
+#define TWI_STAT_TX_SAW_ACK		(0xD0)
+#define TWI_STAT_TX_SAW_NAK		(0xD8)
 
-#define TWI_STAT_IDLE					(0xF8)	/* No relevant status infomation,INT_FLAG = 0 */
+#define TWI_STAT_IDLE			(0xF8)
 
 /* status or interrupt source */
 /*------------------------------------------------------------------------------
