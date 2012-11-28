@@ -101,7 +101,6 @@ int main(struct aw_pm_info *arg)
 	/* initialise standby modules */
 	standby_ar100_init();
 	standby_clk_init();
-	mem_int_init();
 	mem_tmr_init();
 
 	/* init some system wake source */
@@ -126,6 +125,7 @@ int main(struct aw_pm_info *arg)
 	pm_info.standby_para.event |= mem_query_int(INT_SOURCE_MSG_BOX)? 0:CPU0_WAKEUP_MSGBOX;
 	pm_info.standby_para.event |= mem_query_int(INT_SOURCE_LRADC)? 0:CPU0_WAKEUP_KEY;
 
+	//restore intc config.
 	if(pm_info.standby_para.event & CPU0_WAKEUP_KEY){
 		standby_key_exit();
 	}
@@ -144,11 +144,10 @@ int main(struct aw_pm_info *arg)
 		}
 	}
 
-	/* disable watch-dog    */
+	/* disable watch-dog */
 	mem_tmr_disable_watchdog();
 
 	/* exit standby module */
-	mem_int_exit();
 	mem_tmr_exit();
 	standby_clk_exit();
 	standby_ar100_exit();
