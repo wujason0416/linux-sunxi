@@ -84,6 +84,21 @@ static inline unsigned sunxi_pio_get_val(struct sunxi_pio_reg *reg,
 	return (pio->dat>>num)&0x01;
 }
 
+/*
+ */
+int __devinit sunxi_pinctrl_probe(struct platform_device *pdev,
+				  struct sunxi_pinctrl_soc_data *soc_data)
+{
+	return 0;
+}
+EXPORT_SYMBOL_GPL(sunxi_pinctrl_probe);
+
+int __devexit sunxi_pinctrl_remove(struct platform_device *pdev)
+{
+	return 0;
+};
+EXPORT_SYMBOL_GPL(sunxi_pinctrl_remove);
+
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Alejandro Mery <amery@geeks.cl>");
 MODULE_DESCRIPTION("sunxi pin control driver");

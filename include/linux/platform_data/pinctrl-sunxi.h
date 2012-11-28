@@ -17,6 +17,16 @@
 #ifndef _SUNXI_PINCTRL_H
 #define _SUNXI_PINCTRL_H
 
+struct sunxi_pinctrl_soc_data {
+	const char *name;
+	struct pinctrl_pin_desc *pins;
+	unsigned npins;
+};
+
+int sunxi_pinctrl_probe(struct platform_device *,
+			struct sunxi_pinctrl_soc_data *);
+int sunxi_pinctrl_remove(struct platform_device *);
+
 /* pin id = bank<<5 + port */
 #define SUNXI_PIN_ID(B, N)	(((B)<<5) + (N)&0x1f)
 
