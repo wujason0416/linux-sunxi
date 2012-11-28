@@ -19,6 +19,6 @@ ifeq ($(CONFIG_LOCAL_TIMERS),y)
 obj-y += localtimer.o
 endif
 
-obj-y += rf/
+obj-$(CONFIG_NET) += rf/
 
 endif
