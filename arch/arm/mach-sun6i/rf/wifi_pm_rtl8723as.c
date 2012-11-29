@@ -21,7 +21,7 @@ static int rtk_rtl8723as_bt_dis = 0;
 
 static int rtl8723as_gpio_ctrl(char* name, int level)
 {
-	int i = 0, ret1 = 0, ret2 = 0, gpio = 0;
+	int i = 0, ret = 0, gpio = 0;
 	unsigned long flags = 0;
 	char* gpio_name[3] = {"rtk_rtl8723as_wb_pwr", "rtk_rtl8723as_wl_dis", "rtk_rtl8723as_bt_dis"};
 
@@ -85,19 +85,13 @@ static int rtl8723as_gpio_ctrl(char* name, int level)
 
 gpio_state_change:
 
-	ret1 = gpio_request(gpio, NULL);
-	if (0!=ret1)
-		rtl8723as_msg("warming failed to request gpio %d\n", gpio);
-
-	ret2 = gpio_request_one(gpio, flags, NULL);
-	if (ret2) {
-		if (0==ret1)
-			gpio_free(gpio);
+	ret = gpio_request_one(gpio, flags, NULL);
+	if (ret) {
+		gpio_free(gpio);
 		rtl8723as_msg("failed to set gpio %d to %d !\n", gpio, level);
 		return -1;
 	} else {
-		if (0==ret1)
-			gpio_free(gpio);
+		gpio_free(gpio);
 		rtl8723as_msg("succeed to set gpio %d to %d !\n", gpio, level);
 	}
 
@@ -105,19 +99,13 @@ gpio_state_change:
 
 power_change:
 
-	ret1 = gpio_request(rtk_rtl8723as_wb_pwr, NULL);
-	if (0!=ret1)
-		rtl8723as_msg("warming failed to request rtk_rtl8723as_wb_pwr gpio\n");
-
-	ret2 = gpio_request_one(rtk_rtl8723as_wb_pwr, flags, NULL);
-	if (ret2) {
-		if (0==ret1)
-			gpio_free(gpio);
+	ret = gpio_request_one(rtk_rtl8723as_wb_pwr, flags, NULL);
+	if (ret) {
+		gpio_free(gpio);
 		rtl8723as_msg("failed to set gpio rtk_rtl8723as_wb_pwr to %d !\n", level);
 		return -1;
 	} else {
-		if (0==ret1)
-			gpio_free(gpio);
+		gpio_free(gpio);
 		rtl8723as_msg("succeed to set gpio rtk_rtl8723as_wb_pwr to %d !\n", level);
 	}
 	udelay(500);
