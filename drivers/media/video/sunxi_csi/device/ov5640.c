@@ -2189,6 +2189,11 @@ static int sensor_write_continuous(struct v4l2_subdev *sd, int addr, char vals[]
 static void csi_gpio_write(struct v4l2_subdev *sd, struct gpio_config *gpio, int level)
 {
 //	struct csi_dev *dev=(struct csi_dev *)dev_get_drvdata(sd->v4l2_dev->dev);
+  if(gpio->gpio==GPIO_INDEX_INVALID)
+  {
+    csi_dev_dbg("invalid gpio\n");
+    return;
+  }
 
 	if(gpio->mul_sel==1)
 	{
@@ -2203,14 +2208,19 @@ static void csi_gpio_set_status(struct v4l2_subdev *sd, struct gpio_config *gpio
 {
 //	struct csi_dev *dev=(struct csi_dev *)dev_get_drvdata(sd->v4l2_dev->dev);
 
-	if(1 == status) {  /* output */
+	if(1 == status && gpio->gpio!=0) {  /* output */
 		if(0 != gpio_direction_output(gpio->gpio, gpio->data))
 			csi_dev_dbg("gpio_direction_output failed\n");
-	} else if(0 == status) {  /* input */
+		else {
+		  csi_dev_dbg("gpio_direction_output gpio[%d]=%d\n",gpio->gpio, gpio->data);
+			gpio->mul_sel=status;
+		}
+	} else if(0 == status && gpio->gpio!=0) {  /* input */
 	  if(0 != gpio_direction_input(gpio->gpio) )
 	    csi_dev_dbg("gpio_direction_input failed\n");
+	  else
+	    gpio->mul_sel=status;
 	}
-	gpio->mul_sel=status;
 }
 
 
