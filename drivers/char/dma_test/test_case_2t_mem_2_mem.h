@@ -18,5 +18,4 @@
 
 u32 __dtc_2t_mem_2_mem(void);
 
-
 #endif /* __TEST_CASE_2T_MEM_2_MEM_H */
