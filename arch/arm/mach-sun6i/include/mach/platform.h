@@ -285,6 +285,14 @@
  */
 #define AW_CPUCFG_P_REG0            0x01a4
 #define AW_CPUCFG_P_REG1            0x01a8
+#define CPUX_RESET_CTL(x) (0x40 + (x)*0x40)
+
+/*
+ * PRCM
+ */
+#define AW_CPU_PWROFF_REG			0x100
+/* cpu0 has no clmap register! */
+#define AW_CPUX_PWR_CLAMP(x)		(0x140 + (x)*0x04)
 
 /*
  * UART
