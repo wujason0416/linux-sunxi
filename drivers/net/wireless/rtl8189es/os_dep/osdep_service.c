@@ -1280,7 +1280,8 @@ inline void rtw_suspend_lock_uninit()
 
 	#if  defined(CONFIG_WAKELOCK) || defined(CONFIG_ANDROID_POWER)
 	DBG_871X("##########%s###########\n", __FUNCTION__);
-	#if LINUX_VERSION_CODE < KERNEL_VERSION(3,3,0)
+	//#if LINUX_VERSION_CODE < KERNEL_VERSION(3,3,0)
+    #if 1
 	if(rtw_suspend_lock.link.next == LIST_POISON1 || rtw_suspend_lock.link.prev == LIST_POISON2)
 	#else
 	if(rtw_suspend_lock.ws.entry.next == LIST_POISON1 || rtw_suspend_lock.ws.entry.prev == LIST_POISON2)
@@ -1304,7 +1305,8 @@ inline void rtw_lock_suspend()
 
 	#if  defined(CONFIG_WAKELOCK) || defined(CONFIG_ANDROID_POWER)
 	//DBG_871X("##########%s###########\n", __FUNCTION__);
-	#if LINUX_VERSION_CODE < KERNEL_VERSION(3,3,0)
+	//#if LINUX_VERSION_CODE < KERNEL_VERSION(3,3,0)
+    #if 1
 	if(rtw_suspend_lock.link.next == LIST_POISON1 || rtw_suspend_lock.link.prev == LIST_POISON2)
 	#else
 	if(rtw_suspend_lock.ws.entry.next == LIST_POISON1 || rtw_suspend_lock.ws.entry.prev == LIST_POISON2)
@@ -1326,7 +1328,8 @@ inline void rtw_unlock_suspend()
 {
 	#if  defined(CONFIG_WAKELOCK) || defined(CONFIG_ANDROID_POWER)
 	//DBG_871X("##########%s###########\n", __FUNCTION__);
-	#if LINUX_VERSION_CODE < KERNEL_VERSION(3,3,0)
+	//#if LINUX_VERSION_CODE < KERNEL_VERSION(3,3,0)
+    #if 1
 	if(rtw_suspend_lock.link.next == LIST_POISON1 || rtw_suspend_lock.link.prev == LIST_POISON2)
 	#else
 	if(rtw_suspend_lock.ws.entry.next == LIST_POISON1 || rtw_suspend_lock.ws.entry.prev == LIST_POISON2)
