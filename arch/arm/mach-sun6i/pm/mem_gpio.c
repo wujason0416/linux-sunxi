@@ -42,5 +42,11 @@ __s32 mem_gpio_restore(struct gpio_state *pgpio_state)
 	for(i=0; i<(GPIO_REG_LENGTH); i++){
 		 *(volatile __u32 *)(IO_ADDRESS(AW_PIO_BASE) + i*0x04) = pgpio_state->gpio_reg_back[i];
 	}
+
+	/* restore watch-dog registers, to avoid IC's bug */
+	*(volatile __u32 *)IO_ADDRESS(0x1C20CD8) = 0;
+	*(volatile __u32 *)IO_ADDRESS(0x1C20CF8) = 0;
+	*(volatile __u32 *)IO_ADDRESS(0x1C20D18) = 0;
+
 	return 0;
 }
