@@ -30,7 +30,7 @@
 #include <linux/io.h>
 #include <linux/irq.h>
 
-#define  DMSG_PRINT(stuff...)		printk(stuff)
+#define  DMSG_PRINT(stuff...)		 pr_debug(stuff)
 #define  DMSG_ERR(...)        		(DMSG_PRINT("WRN:L%d(%s):", __LINE__, __FILE__), DMSG_PRINT(__VA_ARGS__))
 
 
