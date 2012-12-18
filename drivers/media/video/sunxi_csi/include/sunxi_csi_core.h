@@ -388,7 +388,7 @@ struct csi_dev {
 	int						id;
 
 	spinlock_t              slock;
-
+	struct mutex						standby_lock;
 	/* various device info */
 	struct video_device     *vfd;
 
@@ -412,6 +412,9 @@ struct csi_dev {
 	/*working state*/
 	unsigned long 		   	generating;
 	int								opened;
+
+	/* work queue */
+	struct work_struct resume_work;
 
 	/*pin,clock,irq resource*/
 	//int								csi_pin_hd;
