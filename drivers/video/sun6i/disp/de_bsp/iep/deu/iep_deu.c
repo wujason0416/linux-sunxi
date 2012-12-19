@@ -235,7 +235,7 @@ __s32 DEU_ALG(__u32 sel)
 	{
 		filtertype = 3;
 	}
-	else if(scalefact>=15)
+	else if(scalefact>=11)
 	{
 		filtertype = 4;
 	}
@@ -275,6 +275,7 @@ __s32 IEP_Deu_Enable(__u32 sel, __u32 enable)
 
 
 		DEU_EBIOS_LP_Set_STR_Addr(sel, strtab_addr);
+        DEU_EBIOS_LP_STR_Enable(sel, TRUE);
 		DEU_EBIOS_LP_STR_Cfg_Rdy(sel);
 		DEU_EBIOS_Set_Csc_Coeff(sel, gdeu[sel].frameinfo.csc_mode);
 		DEU_EBIOS_Csc_Enable(sel, 1);
