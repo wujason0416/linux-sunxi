@@ -44,6 +44,9 @@
 
 #define  KEY_USB_HOST_INIT_STATE    "usb_host_init_state"
 #define  KEY_USB_USB_RESTRICT_FLAG  "usb_restric_flag"
+#define  KEY_USB_USB_RESTRICT_VOLTAGE   "usb_restric_voltage"
+#define  KEY_USB_USB_RESTRICT_CAPACITY  "usb_restric_capacity"
+
 
 //---------------------------------------------------
 //
@@ -92,6 +95,10 @@ typedef struct usb_port_info{
 	usb_gpio_t id;						/* usb id pin信息 		*/
 	usb_gpio_t det_vbus;				/* usb vbus pin信息 	*/
 	usb_gpio_t drv_vbus;				/* usb drv_vbus pin信息	*/
+	usb_gpio_t restrict_gpio_set;				/* usb drv_vbus pin信息	*/
+	__u32 usb_restrict_flag;						/* usb端口号			*/
+	__u32 voltage;						/* usb端口号			*/
+	__u32 capacity;						/* usb端口号			*/
 	__u32 host_init_state;				/* usb 控制器的初始化状态。0 : 不工作. 1 : 工作 */
 }usb_port_info_t;
 
