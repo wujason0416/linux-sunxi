@@ -765,11 +765,19 @@ static int __devinit sun6i_pcm_dev_probe(struct platform_device *pdev)
 	if ((!pcm_pllx8)||(IS_ERR(pcm_pllx8))) {
 		printk("try to get pcm_pllx8 failed\n");
 	}
+	if (clk_enable(pcm_pllx8)) {
+		printk("enable pcm_pll2clk failed; \n");
+	}
+
 	/*pcm pll2clk*/
 	pcm_pll2clk = clk_get(NULL, CLK_SYS_PLL2);
 	if ((!pcm_pll2clk)||(IS_ERR(pcm_pll2clk))) {
 		printk("try to get pcm_pll2clk failed\n");
 	}
+	if (clk_enable(pcm_pll2clk)) {
+		printk("enable pcm_pll2clk failed; \n");
+	}
+
 	/*pcm module clk*/
 	pcm_moduleclk = clk_get(NULL, CLK_MOD_I2S1);
 	if ((!pcm_moduleclk)||(IS_ERR(pcm_moduleclk))) {
@@ -786,6 +794,9 @@ static int __devinit sun6i_pcm_dev_probe(struct platform_device *pdev)
 
 	if (clk_enable(pcm_moduleclk)) {
 		printk("open pcm_moduleclk failed! line = %d\n", __LINE__);
+	}
+	if (clk_reset(pcm_moduleclk, AW_CCU_CLK_NRESET)) {
+		printk("try to NRESET pcm module clk failed!\n");
 	}
 
 	reg_val = readl(sun6i_pcm.regs + SUN6I_PCMCTL);

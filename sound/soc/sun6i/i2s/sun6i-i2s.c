@@ -777,11 +777,17 @@ static int __devinit sun6i_i2s_dev_probe(struct platform_device *pdev)
 	if ((!i2s_pllx8)||(IS_ERR(i2s_pllx8))) {
 		printk("try to get i2s_pllx8 failed\n");
 	}
+	if (clk_enable(i2s_pllx8)) {
+		printk("enable i2s_pll2clk failed; \n");
+	}
 
 	/*i2s pll2clk*/
 	i2s_pll2clk = clk_get(NULL, CLK_SYS_PLL2);
 	if ((!i2s_pll2clk)||(IS_ERR(i2s_pll2clk))) {
 		printk("try to get i2s_pll2clk failed\n");
+	}
+	if (clk_enable(i2s_pll2clk)) {
+		printk("enable i2s_pll2clk failed; \n");
 	}
 
 	/*i2s module clk*/
@@ -800,6 +806,10 @@ static int __devinit sun6i_i2s_dev_probe(struct platform_device *pdev)
 
 	if (clk_enable(i2s_moduleclk)) {
 		printk("open i2s_moduleclk failed! line = %d\n", __LINE__);
+	}
+
+	if (clk_reset(i2s_moduleclk, AW_CCU_CLK_NRESET)) {
+		printk("try to NRESET i2s module clk failed!\n");
 	}
 
 	reg_val = readl(sun6i_iis.regs + SUN6I_IISCTL);
