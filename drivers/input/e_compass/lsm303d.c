@@ -405,9 +405,7 @@ static int e_compass_fetch_sysconfig_para(void)
 	script_item_u	val;
 	script_item_value_type_e  type;
 
-
 	dprintk(DEBUG_I2C_DETECT, "========%s===================\n", __func__);
-
 
 	type = script_get_item("compass_para", "compass_used", &val);
 
@@ -430,7 +428,7 @@ static int e_compass_fetch_sysconfig_para(void)
 		ret = 0;
 
 	} else {
-		pr_err("%s: gsensor_unused. \n",  __func__);
+		pr_err("%s: compass_unused. \n",  __func__);
 		ret = -1;
 	}
 
