@@ -1536,10 +1536,6 @@ static int __init nand_test_init(void)
 		return -1;
 	}
 
-	ret = SCN_AnalyzeNandSystem();
-	if (ret < 0)
-		return ret;
-
 #ifdef __LINUX_NAND_SUPPORT_INT__
     printk("[NAND] nand driver version: 0x%x 0x%x, support int! \n", NAND_VERSION_0,NAND_VERSION_1);
 #ifdef __LINUX_SUPPORT_RB_INT__
@@ -1573,6 +1569,11 @@ static int __init nand_test_init(void)
 	    printk("nand interrupte ch1, irqno: %d register ok\n", AW_IRQ_NAND1);
 	}
 #endif
+
+	ret = SCN_AnalyzeNandSystem();
+	if (ret < 0)
+		return ret;
+
 
 	ret = PHY_ChangeMode(1);
 	if (ret < 0)
