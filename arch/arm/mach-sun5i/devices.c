@@ -33,6 +33,7 @@
 #include <linux/io.h>
 #include <linux/gpio.h>
 #include <linux/i2c.h>
+#include <linux/i2c-sunxi.h>
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
@@ -40,7 +41,6 @@
 #include <asm/setup.h>
 #include <mach/io.h>
 #include <mach/hardware.h>
-#include <mach/i2c.h>
 
 /* uart */
 static struct plat_serial8250_port debug_uart_platform_data[] = {
@@ -86,7 +86,7 @@ struct platform_device sw_pdev_nand =
 };
 
 /* twi0 */
-static struct sun5i_i2c_platform_data sun5i_twi0_pdata[] = {
+static struct sunxi_i2c_platform_data sun5i_twi0_pdata[] = {
 	{
 		.bus_num   = 0,
 		.frequency = I2C0_TRANSFER_SPEED,
@@ -116,7 +116,7 @@ struct platform_device sun5i_twi0_device = {
 };
 
 /* twi1 */
-static struct sun5i_i2c_platform_data sun5i_twi1_pdata[] = {
+static struct sunxi_i2c_platform_data sun5i_twi1_pdata[] = {
 	{
 		.bus_num   = 1,
     	.frequency = I2C1_TRANSFER_SPEED,
@@ -146,7 +146,7 @@ struct platform_device sun5i_twi1_device = {
 };
 
 /* twi2 */
-static struct sun5i_i2c_platform_data sun5i_twi2_pdata[] = {
+static struct sunxi_i2c_platform_data sun5i_twi2_pdata[] = {
 	{
 		.bus_num   = 2,
     	.frequency = I2C2_TRANSFER_SPEED,

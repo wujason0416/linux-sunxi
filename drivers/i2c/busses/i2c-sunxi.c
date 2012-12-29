@@ -29,12 +29,12 @@
 #include <linux/clk.h>
 #include <linux/slab.h>
 #include <linux/io.h>
+#include <linux/i2c-sunxi.h>
 
 #include <asm/irq.h>
 
 #include <plat/sys_config.h>
 #include <mach/irqs.h>
-#include <mach/i2c.h>
 
 
 
@@ -900,11 +900,7 @@ static int i2c_sunxi_probe(struct platform_device *dev)
 {
 	struct sunxi_i2c *i2c = NULL;
 	struct resource *res = NULL;
-#if defined CONFIG_ARCH_SUN4I
-	struct sun4i_i2c_platform_data *pdata = NULL;
-#elif defined CONFIG_ARCH_SUN5I
-    struct sun5i_i2c_platform_data *pdata = NULL;
-#endif
+	struct sunxi_i2c_platform_data *pdata = NULL;
 	char *i2c_clk[] ={"twi0","twi1","twi2"};
 	char *i2c_pclk[] ={"apb_twi0","apb_twi1","apb_twi2"};
 	int ret;
@@ -1141,11 +1137,11 @@ static struct platform_driver i2c_sunxi_driver = {
 	.resume         = i2c_sunxi_resume,
 	.driver		= {
 #if defined CONFIG_ARCH_SUN4I
-		.name	= "sun4i-i2c",
+	.name		= "sun4i-i2c",
 #elif defined CONFIG_ARCH_SUN5I
-        .name	= "sun5i-i2c",
+	.name		= "sun5i-i2c",
 #endif
-		.owner	= THIS_MODULE,
+	.owner		= THIS_MODULE,
 	},
 };
 

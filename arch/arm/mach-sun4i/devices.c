@@ -30,13 +30,13 @@
 #include <linux/pda_power.h>
 #include <linux/io.h>
 #include <linux/i2c.h>
+#include <linux/i2c-sunxi.h>
 
 #include <asm/mach-types.h>
 #include <asm/mach/arch.h>
 #include <asm/mach/time.h>
 #include <asm/setup.h>
 #include <mach/hardware.h>
-#include <mach/i2c.h>
 
 #if 0
 /* uart */
@@ -85,7 +85,7 @@ struct platform_device sw_pdev_nand =
 };
 
 /* twi0 */
-static struct sun4i_i2c_platform_data sun4i_twi0_pdata[] = {
+static struct sunxi_i2c_platform_data sun4i_twi0_pdata[] = {
 	{
 		.bus_num   = 0,
 		.frequency = I2C0_TRANSFER_SPEED,
@@ -115,7 +115,7 @@ struct platform_device sun4i_twi0_device = {
 };
 
 /* twi1 */
-static struct sun4i_i2c_platform_data sun4i_twi1_pdata[] = {
+static struct sunxi_i2c_platform_data sun4i_twi1_pdata[] = {
 	{
 		.bus_num   = 1,
     	.frequency = I2C1_TRANSFER_SPEED,
@@ -145,7 +145,7 @@ struct platform_device sun4i_twi1_device = {
 };
 
 /* twi2 */
-static struct sun4i_i2c_platform_data sun4i_twi2_pdata[] = {
+static struct sunxi_i2c_platform_data sun4i_twi2_pdata[] = {
 	{
 		.bus_num   = 2,
     	.frequency = I2C2_TRANSFER_SPEED,
