@@ -1240,6 +1240,12 @@ int dispc_gralloc_queue(setup_dispc_data_t *psDispcData, int ui32DispcDataLength
 	}
 	}
 
+    if(g_fbi.b_no_output)
+    {
+        cb_fn(cb_arg, 1);
+    }
+    else
+    {
 	g_fbi.cb_fn = cb_fn;
 
 	if(g_fbi.cb_w_conut >= 9)
@@ -1255,6 +1261,7 @@ int dispc_gralloc_queue(setup_dispc_data_t *psDispcData, int ui32DispcDataLength
 	g_fbi.release_count[g_fbi.cb_w_conut] = 0;
 
 	//printk(KERN_WARNING "##w_conut:%d\n", g_fbi.cb_w_conut);
+	}
 
     return 0;
 }
