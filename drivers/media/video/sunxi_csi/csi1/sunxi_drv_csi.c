@@ -1594,6 +1594,10 @@ static int csi_open(struct file *file)
 
 open_end:
 
+	if (ret != 0){
+		up(&dev->standby_seq_sema);
+	}
+
 	return ret;
 }
 
