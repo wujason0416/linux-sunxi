@@ -45,6 +45,7 @@
 #include <asm/io.h>
 #include <asm/irq.h>
 #include <mach/platform.h>
+#include <mach/uart.h>
 
 #include "8250.h"
 
