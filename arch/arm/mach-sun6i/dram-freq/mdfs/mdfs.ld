@@ -7,7 +7,7 @@ SECTIONS
 	__mdfs_start = . ;
 	.text 0xf0000000 :
 	{
-		mdfs.o(.text.startup)
+		mdfs_entry.o(.text.startup)
 		*(.text)
 		*(.rodata)
 	}
