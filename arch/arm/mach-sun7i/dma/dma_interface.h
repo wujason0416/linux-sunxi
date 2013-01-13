@@ -16,14 +16,7 @@
 #ifndef __DMA_INTERFACE_H
 #define __DMA_INTERFACE_H
 
-/*
-extern struct dma_pool	 *g_des_pool;
-
-extern unsigned long addrtype_arr[];
-extern unsigned long xfer_arr[];
-
-extern u32 dma_check_handle(dm_hdl_t dma_hdl);
-*/
+bool dma_handle_is_valid(dma_hdl_t dma_hdl);
 
 #endif  /* __DMA_INTERFACE_H */
 
