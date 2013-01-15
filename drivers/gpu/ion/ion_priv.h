@@ -211,8 +211,6 @@ int ion_heap_buffer_zero(struct ion_buffer *buffer);
  * heaps as appropriate.
  */
 
-struct ion_heap *ion_heap_create(struct ion_platform_heap *);
-void ion_heap_destroy(struct ion_heap *);
 struct ion_heap *ion_system_heap_create(struct ion_platform_heap *);
 void ion_system_heap_destroy(struct ion_heap *);
 

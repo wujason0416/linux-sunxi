@@ -18,6 +18,7 @@
 #include <linux/dma-mapping.h>
 #include <linux/err.h>
 #include <linux/highmem.h>
+#include <linux/module.h>
 #include <linux/ion.h>
 #include <linux/mm.h>
 #include <linux/scatterlist.h>
@@ -310,6 +311,7 @@ err_alloc_pools:
 	kfree(heap);
 	return ERR_PTR(-ENOMEM);
 }
+EXPORT_SYMBOL(ion_system_heap_create);
 
 void ion_system_heap_destroy(struct ion_heap *heap)
 {
@@ -323,6 +325,7 @@ void ion_system_heap_destroy(struct ion_heap *heap)
 	kfree(sys_heap->pools);
 	kfree(sys_heap);
 }
+EXPORT_SYMBOL(ion_system_heap_destroy);
 
 static int ion_system_contig_heap_allocate(struct ion_heap *heap,
 					   struct ion_buffer *buffer,
@@ -409,9 +412,10 @@ struct ion_heap *ion_system_contig_heap_create(struct ion_platform_heap *unused)
 	heap->type = ION_HEAP_TYPE_SYSTEM_CONTIG;
 	return heap;
 }
+EXPORT_SYMBOL(ion_system_contig_heap_create);
 
 void ion_system_contig_heap_destroy(struct ion_heap *heap)
 {
 	kfree(heap);
 }
-
+EXPORT_SYMBOL(ion_system_contig_heap_destroy);
