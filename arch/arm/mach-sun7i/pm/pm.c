@@ -795,18 +795,19 @@ static struct platform_suspend_ops aw_pm_ops = {
 */
 static int __init aw_pm_init(void)
 {
+    script_item_u setting_mod;
+    script_item_value_type_e type;
+
     PM_DBG("aw_pm_init!\n");
-	
-	if(SCRIPT_PARSER_OK != script_parser_fetch("pm_para", "standby_mode", &standby_mode, 1)){
+    type = script_get_item("pm_para", "standby_mode", &setting_mod);
+    if (SCIRPT_ITEM_VALUE_TYPE_INT != type) {
 		pr_err("%s: script_parser_fetch err. \n", __func__);
 		standby_mode = 0;
-	}else{
+    }else{
+        standby_mode = setting_mod.val;
 		pr_info("standby_mode = %d. \n", standby_mode);
-		if(1 != standby_mode){
-			pr_err("%s: not support super standby. \n",  __func__);
-		}
-	}
-
+    }
+	
     suspend_set_ops(&aw_pm_ops);
 	
     return 0;
