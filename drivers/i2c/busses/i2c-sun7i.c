@@ -1363,7 +1363,7 @@ static int __exit sun7i_i2c_remove(struct platform_device *pdev)
 #ifdef CONFIG_PM
 static int sun7i_i2c_suspend(struct device *dev)
 {
-#ifdef CONFIG_AW_FPAG_PLATFORM
+#ifndef CONFIG_AW_FPAG_PLATFORM
 	struct platform_device *pdev = to_platform_device(dev);
 	struct sun7i_i2c *i2c = platform_get_drvdata(pdev);
 	int count = 10;
