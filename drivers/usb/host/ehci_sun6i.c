@@ -609,6 +609,9 @@ static int sw_ehci_hcd_suspend(struct device *dev)
 		return 0;
 	}
 
+    if(sw_ehci->not_suspend){
+	    DMSG_INFO("[%s]: not suspend\n", sw_ehci->hci_name);
+    }else{
 	DMSG_INFO("[%s]: sw_ehci_hcd_suspend\n", sw_ehci->hci_name);
 
 	spin_lock_irqsave(&ehci->lock, flags);
@@ -621,6 +624,7 @@ static int sw_ehci_hcd_suspend(struct device *dev)
 	spin_unlock_irqrestore(&ehci->lock, flags);
 
 	sw_stop_ehci(sw_ehci);
+    }
 
 	return 0;
 }
@@ -677,6 +681,9 @@ static int sw_ehci_hcd_resume(struct device *dev)
 		return 0;
 	}
 
+    if(sw_ehci->not_suspend){
+	    DMSG_INFO("[%s]: controller not suspend, need not resume\n", sw_ehci->hci_name);
+    }else{
 	DMSG_INFO("[%s]: sw_ehci_hcd_resume\n", sw_ehci->hci_name);
 
 	sw_start_ehci(sw_ehci);
@@ -723,8 +730,8 @@ static int sw_ehci_hcd_resume(struct device *dev)
 	/* here we "know" root ports should always stay powered */
 	ehci_port_power(ehci, 1);
 
-
 	hcd->state = HC_STATE_SUSPENDED;
+    }
 
 	return 0;
 
