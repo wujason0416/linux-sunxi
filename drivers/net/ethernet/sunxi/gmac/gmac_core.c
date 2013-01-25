@@ -51,7 +51,6 @@
 #include "gmac_ethtool.h"
 
 #undef GMAC_DEBUG
-/*#define GMAC_DEBUG*/
 #ifdef GMAC_DEBUG
 #define DBG(nlevel, klevel, fmt, args...) \
 		((void)(netif_msg_##nlevel(priv) && \
@@ -175,6 +174,9 @@ static inline u32 gmac_tx_avail(struct gmac_priv *priv)
  */
 static void gmac_clk_ctl(struct gmac_priv *priv, unsigned int flag)
 {
+	int phy_interface = priv->plat->phy_interface;
+	u32  priv_clk_reg;
+
 #ifndef CONFIG_GMAC_CLK_SYS
 	int reg_value;
 	reg_value = readl(priv->clkbase + AHB1_GATING);
@@ -182,7 +184,7 @@ static void gmac_clk_ctl(struct gmac_priv *priv, unsigned int flag)
 	writel(reg_value, priv->clkbase + AHB1_GATING);
 
 	reg_value = readl(priv->clkbase + AHB1_MOD_RESET);
-	flag ? (reg_value &= ~GMAC_RESET_BIT) : (reg_value |= GMAC_RESET_BIT);
+	flag ? (reg_value |= GMAC_RESET_BIT) : (reg_value &= ~GMAC_RESET_BIT);
 	writel(reg_value, priv->clkbase + AHB1_MOD_RESET);
 #else
 	if (flag) {
@@ -193,6 +195,21 @@ static void gmac_clk_ctl(struct gmac_priv *priv, unsigned int flag)
 		clk_reset(priv->gmac_mod_clk, AW_CCU_CLK_RESET);
 	}
 #endif
+
+	/* We should set the interface type. */
+	priv_clk_reg = readl(priv->gmac_clk_reg + GMAC_CLK_REG);
+	if (phy_interface == PHY_INTERFACE_MODE_RGMII)
+		priv_clk_reg |= 0x00000004;
+	else
+		priv_clk_reg &= (~0x00000004);
+
+	/* Set gmac transmit clock source. */
+	priv_clk_reg &= (~0x00000003);
+	if (phy_interface == PHY_INTERFACE_MODE_RGMII
+			|| phy_interface == PHY_INTERFACE_MODE_GMII)
+		priv_clk_reg |= 0x00000002;
+
+	writel(priv_clk_reg, priv->gmac_clk_reg + GMAC_CLK_REG);
 }
 
 /**
@@ -293,6 +310,8 @@ static int gmac_init_phy(struct net_device *ndev)
 	char phy_id[MII_BUS_ID_SIZE + 3];
 	char bus_id[MII_BUS_ID_SIZE];
 	int phy_interface = priv->plat->phy_interface;
+
+	/* Initialize the information of phy state. */
 	priv->oldlink = 0;
 	priv->speed = 0;
 	priv->oldduplex = -1;
@@ -788,13 +807,13 @@ static int gmac_open(struct net_device *ndev)
 	if (ret < 0) {
 		pr_debug("%s: MDIO bus (id: %d) registration failed",
 			 __func__, priv->plat->bus_id);
-		return ret;
+		goto out_err;
 	}
 
 	ret = gmac_init_phy(ndev);
 	if (unlikely(ret)) {
 		pr_err("%s: Cannot attach to PHY (error: %d)\n", __func__, ret);
-		goto open_error;
+		goto out_err;
 	}
 
 	/* Create and initialize the TX/RX descriptors chains. */
@@ -864,6 +883,9 @@ static int gmac_open(struct net_device *ndev)
 open_error:
 	if (ndev->phydev)
 		phy_disconnect(ndev->phydev);
+	free_dma_desc_resources(priv);
+out_err:
+	gmac_clk_ctl(priv, 0);
 
 	return ret;
 }
@@ -1495,7 +1517,7 @@ static int gmac_hw_init(struct gmac_priv *priv)
  * call the alloc_etherdev, allocate the priv structure.
  */
 struct gmac_priv *gmac_dvr_probe(struct device *device,
-							void __iomem *addr, int irqnum)
+		void __iomem *addr, int irqnum)
 {
 	int ret = 0;
 	struct net_device *ndev = NULL;
@@ -1675,6 +1697,7 @@ __setup("mac_addr=", set_mac_addr);
 
 static int __init gmac_init(void)
 {
+#ifdef CONFIG_GMAC_SCRIPT_SYS
 	script_item_u gmac_used;
 
 	if (SCIRPT_ITEM_VALUE_TYPE_INT != script_get_item("gmac_para", "gmac_used", &gmac_used))
@@ -1684,6 +1707,7 @@ static int __init gmac_init(void)
 		printk(KERN_WARNING "[sunxi_gmac]: The script config GMAC is not used!\n");
 		return 0;
 	}
+#endif
 
 	platform_device_register(&gmac_device);
 	return platform_driver_register(&gmac_driver);
@@ -1691,6 +1715,7 @@ static int __init gmac_init(void)
 
 static void __exit gmac_remove(void)
 {
+#ifdef CONFIG_GMAC_SCRIPT_SYS
 	script_item_u gmac_used;
 
 	if (SCIRPT_ITEM_VALUE_TYPE_INT != script_get_item("gmac_para", "gmac_used", &gmac_used))
@@ -1700,6 +1725,7 @@ static void __exit gmac_remove(void)
 		printk(KERN_WARNING "[sunxi_gmac]: The script config GMAC is not used!\n");
 		return;
 	}
+#endif
 
 	platform_driver_unregister(&gmac_driver);
 	platform_device_unregister(&gmac_device);
