@@ -1289,6 +1289,11 @@ __s32 Disp_lcdc_init(__u32 sel)
         dsi_clk_init();
     }
 
+    lcdc_clk_on(sel, 0, 0);
+    lcdc_clk_on(sel, 0, 1);
+    tcon_init(sel);
+    lcdc_clk_off(sel);
+
     if(sel == 0)
     {
         OSAL_RegISR(INTC_IRQNO_LCDC0,0,Disp_lcdc_event_proc,(void*)sel,0,0);
