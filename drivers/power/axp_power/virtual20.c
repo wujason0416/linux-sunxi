@@ -53,7 +53,7 @@ static void update_voltage_constraints(struct virtual_consumer_data *data)
 			printk(KERN_ERR "regulator_enable() failed: %d\n",
 				ret);
 	}
-
+   
 	if (!(data->min_uV && data->max_uV) && data->enabled) {
 		ret = regulator_disable(data->regulator);
 		if (ret == 0)
@@ -286,9 +286,11 @@ static int regulator_virtual_consumer_probe(struct platform_device *pdev)
 	//drvdata->regulator = regulator_get(NULL, "axp20_analog/fm");
 	if (IS_ERR(drvdata->regulator)) {
 		ret = PTR_ERR(drvdata->regulator);
+        printk(KERN_ERR "%s:can't get regulator: %s\n",__FUNCTION__,reg_id);
 		goto err;
 	}
-	
+    
+	 printk(KERN_DEBUG "%s:get regulator:%s ok\n",__FUNCTION__,reg_id);
 	for (i = 0; i < ARRAY_SIZE(attributes_virtual); i++) {
 		ret = device_create_file(&pdev->dev, attributes_virtual[i]);
 		if (ret != 0)
