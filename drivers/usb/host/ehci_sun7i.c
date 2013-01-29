@@ -239,7 +239,7 @@ static int sw_release_io_resource(struct platform_device *pdev, struct sw_hci_hc
 */
 static void sw_start_ehci(struct sw_hci_hcd *sw_ehci)
 {
-  	open_ehci_clock(sw_ehci);  	
+  	open_ehci_clock(sw_ehci); 
 	sw_ehci->usb_passby(sw_ehci, 1);	
 	sw_ehci_port_configure(sw_ehci, 1);
 	sw_hcd_board_set_vbus(sw_ehci, 1);
