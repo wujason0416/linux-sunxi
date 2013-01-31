@@ -332,9 +332,12 @@ __s32 DRV_DISP_Init(void)
         para.base_sdram     = (__u32)g_fbi.base_sdram;
         para.base_pioc      = (__u32)g_fbi.base_pioc;
         para.base_pwm       = (__u32)g_fbi.base_pwm;
-	para.disp_int_process       = DRV_disp_int_process;
+    	para.disp_int_process       = DRV_disp_int_process;
 
-	memset(&g_disp_drv, 0, sizeof(__disp_drv_t));
+        //add by heyihang.Jan 28, 2013
+        para.vsync_event    = DRV_disp_vsync_event;
+
+    	memset(&g_disp_drv, 0, sizeof(__disp_drv_t));
         init_timer(&g_disp_drv.disp_timer[0]);
         init_timer(&g_disp_drv.disp_timer[1]);
     
@@ -637,8 +640,8 @@ int disp_suspend(struct platform_device *pdev, pm_message_t state)
                         BSP_disp_hdmi_close(i);
                 }
         }
-
-    
+        
+        
         BSP_disp_hdmi_suspend();
         BSP_disp_clk_off(1);
         BSP_disp_clk_off(2);
@@ -930,6 +933,11 @@ long disp_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 
                 case DISP_CMD_DE_FLICKER_OFF:
                         ret = BSP_disp_de_flicker_enable(ubuffer[0], 0);
+                        break;
+
+                //add by heyihang.Jan 28, 2013
+                case DISP_CMD_VSYNC_EVENT_EN:
+                        ret = BSP_disp_vsync_event_enable(ubuffer[0], ubuffer[1]);
                         break;
 
                 //----layer----

@@ -284,7 +284,7 @@ __s32 Scaler_event_proc(void *parg)
 
 __s32 Scaler_Init(__u32 sel)
 {
-    scaler_clk_init(sel);
+    scaler_clk_init(sel);    
     DE_SCAL_EnableINT(sel,DE_WB_END_IE);
     
     if(sel == 0)
