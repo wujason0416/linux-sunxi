@@ -1198,9 +1198,8 @@ DMSG_DBG_UDC("sw_udc_handle_ep0--2--\n");
 
 
 DMSG_DBG_UDC("sw_udc_handle_ep0--3--%d\n", dev->ep0state);
-
-
-	ep0csr = USBC_Readw(USBC_REG_RXCSR(g_sw_udc_io.usb_bsp_hdle));
+    
+	ep0csr = USBC_Readw(USBC_REG_RXCSR(g_sw_udc_io.usb_vbase));
 
 	switch (dev->ep0state) {
     	case EP0_IDLE:
@@ -2657,18 +2656,25 @@ static int sw_udc_set_pullup(struct sw_udc *udc, int is_on)
 */
 static int sw_udc_vbus_session(struct usb_gadget *gadget, int is_active)
 {
+    __u32 reg_value = 0;
 	struct sw_udc *udc = to_sw_udc(gadget);
 
-	DMSG_DBG_UDC("sw_udc_vbus_session\n");
+	DMSG_INFO_UDC("sw_udc_vbus_session\n");
 
 	if(!is_peripheral_active()){
 		DMSG_PANIC("ERR: usb device is not active\n");
 		return 0;
 	}
 
-	udc->vbus = (is_active != 0);
-	sw_udc_set_pullup(udc, is_active);
-
+	udc->vbus = (is_active != 0);		    
+    
+    reg_value = USBC_Readl(USBC_REG_PCTL(g_sw_udc_io.usb_vbase));
+    if(is_active)
+        reg_value |= 0x101;
+    else
+        reg_value &= (~0x101);
+    USBC_Writel(reg_value, USBC_REG_PCTL(g_sw_udc_io.usb_vbase));
+    
 	return 0;
 }
 
@@ -2867,7 +2873,7 @@ static void sw_udc_disable(struct sw_udc *dev)
 s32  usbd_start_work(void)
 {
 	DMSG_INFO_UDC("usbd_start_work\n");
-
+    
 	if(!is_peripheral_active()){
 		DMSG_PANIC("ERR: usb device is not active\n");
 		return 0;
@@ -2916,8 +2922,8 @@ int sw_udc_start(struct usb_gadget_driver *driver,
 		                    int (*bind)(struct usb_gadget *))
 {
 	struct sw_udc *udc = the_controller;
-	int retval = 0;
-
+	int retval = 0;    
+    
 	/* Sanity checks */
 	if(!udc){
 	    DMSG_PANIC("ERR: udc is null\n");
@@ -2960,10 +2966,7 @@ int sw_udc_start(struct usb_gadget_driver *driver,
 		device_del(&udc->gadget.dev);
 		goto register_error;
 	}
-
-	/* Enable udc */
-	sw_udc_enable(udc);
-
+    
 	return 0;
 
 register_error:
