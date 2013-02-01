@@ -9,6 +9,7 @@ __s32 Image_init(__u32 sel)
 {   
         image_clk_init(sel);
 	image_clk_on(sel);	//when access image registers, must open MODULE CLOCK of image
+        
 	DE_BE_Reg_Init(sel);
 	
         BSP_disp_sprite_init(sel);
@@ -20,7 +21,7 @@ __s32 Image_init(__u32 sel)
 	
         return DIS_SUCCESS;
 }
-      
+
 __s32 Image_exit(__u32 sel)
 {    
         DE_BE_DisableINT(sel, DE_IMG_REG_LOAD_FINISH);
