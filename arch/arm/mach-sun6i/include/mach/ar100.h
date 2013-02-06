@@ -41,7 +41,7 @@ int ar100_dvfs_set_cpufreq(unsigned int freq, unsigned long mode, ar100_cb_t cb,
  *
  * return: result, 0 - super standby successed, !0 - super standby failed;
  */
-int ar100_standby_super(struct super_standby_para *para);
+int ar100_standby_super(struct super_standby_para *para, ar100_cb_t cb, void *cb_arg);
 
 /**
  * query super-standby wakeup source.
@@ -122,7 +122,7 @@ int ar100_enable_axp_irq(void);
 int ar100_message_loopback(void);
 
 /* talk-standby interfaces */
-int ar100_standby_talk(struct super_standby_para *para);
+int ar100_standby_talk(struct super_standby_para *para, ar100_cb_t cb, void *cb_arg);
 int ar100_cpux_talkstandby_ready_notify(void);
 
 #endif	/* __ASM_ARCH_A100_H */
