@@ -207,8 +207,9 @@ void octeon_prepare_cpus(unsigned int max_cpus)
 	 * the other bits alone.
 	 */
 	cvmx_write_csr(CVMX_CIU_MBOX_CLRX(cvmx_get_core_num()), 0xffff);
-	if (request_irq(OCTEON_IRQ_MBOX0, mailbox_interrupt, IRQF_DISABLED,
-			"SMP-IPI", mailbox_interrupt)) {
+	if (request_irq(OCTEON_IRQ_MBOX0, mailbox_interrupt,
+			IRQF_PERCPU | IRQF_NO_THREAD, "SMP-IPI",
+			mailbox_interrupt)) {
 		panic("Cannot request_irq(OCTEON_IRQ_MBOX0)\n");
 	}
 }
@@ -256,16 +257,12 @@ DEFINE_PER_CPU(int, cpu_state);
 
 extern void fixup_irqs(void);
 
-static DEFINE_SPINLOCK(smp_reserve_lock);
-
 static int octeon_cpu_disable(void)
 {
 	unsigned int cpu = smp_processor_id();
 
 	if (cpu == 0)
 		return -EBUSY;
-
-	spin_lock(&smp_reserve_lock);
 
 	cpu_clear(cpu, cpu_online_map);
 	cpu_clear(cpu, cpu_callin_map);
@@ -275,8 +272,6 @@ static int octeon_cpu_disable(void)
 
 	flush_cache_all();
 	local_flush_tlb_all();
-
-	spin_unlock(&smp_reserve_lock);
 
 	return 0;
 }

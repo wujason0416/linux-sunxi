@@ -310,31 +310,28 @@ asmlinkage void __cpuinit secondary_start_kernel(void)
 
 	notify_cpu_starting(cpu);
 
-	calibrate_delay();
-
-	smp_store_cpu_info(cpu);
-
 	/*
 	 * OK, now it's safe to let the boot CPU continue.  Wait for
 	 * the CPU migration code to notice that the CPU is online
-	 * before we continue.
+	 * before we continue. We need to do that before we enable
+	 * interrupts otherwise a wakeup of a kernel thread affine to
+	 * this CPU might break the affinity and let hell break lose.
 	 */
 	set_cpu_online(cpu, true);
+	while (!cpu_active(cpu))
+		cpu_relax();
+
+	local_irq_enable();
+	local_fiq_enable();
 
 	/*
 	 * Setup the percpu timer for this CPU.
 	 */
 	percpu_timer_setup();
 
-	while (!cpu_active(cpu))
-		cpu_relax();
+	calibrate_delay();
 
-	/*
-	 * cpu_active bit is set, so it's safe to enable interrupts
-	 * now.
-	 */
-	local_irq_enable();
-	local_fiq_enable();
+	smp_store_cpu_info(cpu);
 
 	/*
 	 * OK, it's off to the idle thread for us
@@ -542,7 +539,7 @@ static void percpu_timer_stop(void)
 }
 #endif
 
-static DEFINE_SPINLOCK(stop_lock);
+static DEFINE_RAW_SPINLOCK(stop_lock);
 
 /*
  * ipi_cpu_stop - handle IPI from smp_send_stop()
@@ -551,10 +548,10 @@ static void ipi_cpu_stop(unsigned int cpu)
 {
 	if (system_state == SYSTEM_BOOTING ||
 	    system_state == SYSTEM_RUNNING) {
-		spin_lock(&stop_lock);
+		raw_spin_lock(&stop_lock);
 		printk(KERN_CRIT "CPU%u: stopping\n", cpu);
 		dump_stack();
-		spin_unlock(&stop_lock);
+		raw_spin_unlock(&stop_lock);
 	}
 
 	set_cpu_online(cpu, false);

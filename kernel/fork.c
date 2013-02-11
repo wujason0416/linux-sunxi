@@ -89,7 +89,7 @@ int max_threads;		/* tunable limit on nr_threads */
 
 DEFINE_PER_CPU(unsigned long, process_counts) = 0;
 
-__cacheline_aligned DEFINE_RWLOCK(tasklist_lock);  /* outer */
+DEFINE_RWLOCK(tasklist_lock);  /* outer */
 
 #ifdef CONFIG_PROVE_RCU
 int lockdep_tasklist_lock_is_held(void)
@@ -216,7 +216,18 @@ void __put_task_struct(struct task_struct *tsk)
 	if (!profile_handoff_task(tsk))
 		free_task(tsk);
 }
+#ifndef CONFIG_PREEMPT_RT_BASE
 EXPORT_SYMBOL_GPL(__put_task_struct);
+#else
+void __put_task_struct_cb(struct rcu_head *rhp)
+{
+	struct task_struct *tsk = container_of(rhp, struct task_struct, put_rcu);
+
+	__put_task_struct(tsk);
+
+}
+EXPORT_SYMBOL_GPL(__put_task_struct_cb);
+#endif
 
 /*
  * macro override instead of weak attribute alias, to workaround
@@ -564,6 +575,19 @@ void __mmdrop(struct mm_struct *mm)
 }
 EXPORT_SYMBOL_GPL(__mmdrop);
 
+#ifdef CONFIG_PREEMPT_RT_BASE
+/*
+ * RCU callback for delayed mm drop. Not strictly rcu, but we don't
+ * want another facility to make this work.
+ */
+void __mmdrop_delayed(struct rcu_head *rhp)
+{
+	struct mm_struct *mm = container_of(rhp, struct mm_struct, delayed_drop);
+
+	__mmdrop(mm);
+}
+#endif
+
 /*
  * Decrement the use count and release all resources for an mm.
  */
@@ -849,13 +873,13 @@ static int copy_fs(unsigned long clone_flags, struct task_struct *tsk)
 	struct fs_struct *fs = current->fs;
 	if (clone_flags & CLONE_FS) {
 		/* tsk->fs is already what we want */
-		spin_lock(&fs->lock);
+		seq_spin_lock(&fs->lock);
 		if (fs->in_exec) {
-			spin_unlock(&fs->lock);
+			seq_spin_unlock(&fs->lock);
 			return -EAGAIN;
 		}
 		fs->users++;
-		spin_unlock(&fs->lock);
+		seq_spin_unlock(&fs->lock);
 		return 0;
 	}
 	tsk->fs = copy_fs_struct(fs);
@@ -1053,6 +1077,9 @@ void mm_init_owner(struct mm_struct *mm, struct task_struct *p)
  */
 static void posix_cpu_timers_init(struct task_struct *tsk)
 {
+#ifdef CONFIG_PREEMPT_RT_BASE
+	tsk->posix_timer_list = NULL;
+#endif
 	tsk->cputime_expires.prof_exp = cputime_zero;
 	tsk->cputime_expires.virt_exp = cputime_zero;
 	tsk->cputime_expires.sched_exp = 0;
@@ -1160,6 +1187,7 @@ static struct task_struct *copy_process(unsigned long clone_flags,
 	spin_lock_init(&p->alloc_lock);
 
 	init_sigpending(&p->pending);
+	p->sigqueue_cache = NULL;
 
 	p->utime = cputime_zero;
 	p->stime = cputime_zero;
@@ -1216,6 +1244,9 @@ static struct task_struct *copy_process(unsigned long clone_flags,
 	p->softirq_disable_event = 0;
 	p->hardirq_context = 0;
 	p->softirq_context = 0;
+#endif
+#ifdef CONFIG_PREEMPT_RT_FULL
+	p->pagefault_disabled = 0;
 #endif
 #ifdef CONFIG_LOCKDEP
 	p->lockdep_depth = 0; /* no locks held yet */
@@ -1720,13 +1751,13 @@ SYSCALL_DEFINE1(unshare, unsigned long, unshare_flags)
 
 		if (new_fs) {
 			fs = current->fs;
-			spin_lock(&fs->lock);
+			seq_spin_lock(&fs->lock);
 			current->fs = new_fs;
 			if (--fs->users)
 				new_fs = NULL;
 			else
 				new_fs = fs;
-			spin_unlock(&fs->lock);
+			seq_spin_unlock(&fs->lock);
 		}
 
 		if (new_fd) {

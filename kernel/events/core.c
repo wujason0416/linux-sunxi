@@ -3924,9 +3924,15 @@ static bool perf_output_space(struct perf_buffer *buffer, unsigned long tail,
 
 static void perf_output_wakeup(struct perf_output_handle *handle)
 {
+	int queue = handle->nmi;
+
+#ifdef CONFIG_PREEMPT_RT_FULL
+	queue |= irqs_disabled() || preempt_count();
+#endif
+
 	atomic_set(&handle->buffer->poll, POLL_IN);
 
-	if (handle->nmi) {
+	if (queue) {
 		handle->event->pending_wakeup = 1;
 		irq_work_queue(&handle->event->pending);
 	} else
@@ -5704,6 +5710,7 @@ static void perf_swevent_init_hrtimer(struct perf_event *event)
 
 	hrtimer_init(&hwc->hrtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
 	hwc->hrtimer.function = perf_swevent_hrtimer;
+	hwc->hrtimer.irqsafe = 1;
 
 	/*
 	 * Since hrtimers have a fixed rate, we can do a static freq->period

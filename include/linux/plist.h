@@ -78,8 +78,15 @@
 #include <linux/kernel.h>
 #include <linux/list.h>
 
+struct raw_spinlock;
+struct spinlock;
+
 struct plist_head {
 	struct list_head node_list;
+#ifdef CONFIG_DEBUG_PI_LIST
+	struct raw_spinlock *rawlock;
+	struct spinlock *spinlock;
+#endif
 };
 
 struct plist_node {
@@ -114,9 +121,28 @@ struct plist_node {
  * @head:	&struct plist_head pointer
  */
 static inline void
-plist_head_init(struct plist_head *head)
+plist_head_init(struct plist_head *head, struct spinlock *lock)
 {
 	INIT_LIST_HEAD(&head->node_list);
+#ifdef CONFIG_DEBUG_PI_LIST
+	head->spinlock = lock;
+	head->rawlock = NULL;
+#endif
+}
+
+/**
+ * plist_head_init_raw - dynamic struct plist_head initializer
+ * @head:	&struct plist_head pointer
+ * @lock:	raw_spinlock protecting the list (debugging)
+ */
+static inline void
+plist_head_init_raw(struct plist_head *head, struct raw_spinlock *lock)
+{
+	INIT_LIST_HEAD(&head->node_list);
+#ifdef CONFIG_DEBUG_PI_LIST
+	head->rawlock = lock;
+	head->spinlock = NULL;
+#endif
 }
 
 /**
