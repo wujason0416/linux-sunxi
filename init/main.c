@@ -68,6 +68,7 @@
 #include <linux/shmem_fs.h>
 #include <linux/slab.h>
 #include <linux/perf_event.h>
+#include <linux/posix-timers.h>
 
 #include <asm/io.h>
 #include <asm/bugs.h>
@@ -367,9 +368,7 @@ static noinline void __init_refok rest_init(void)
 	 * at least once to get things moving:
 	 */
 	init_idle_bootup_task(current);
-	preempt_enable_no_resched();
-	schedule();
-	preempt_disable();
+	schedule_preempt_disabled();
 
 	/* Call into cpu_idle with preempt disabled */
 	cpu_idle();
@@ -491,6 +490,7 @@ asmlinkage void __init start_kernel(void)
 	setup_command_line(command_line);
 	setup_nr_cpu_ids();
 	setup_per_cpu_areas();
+	softirq_early_init();
 	smp_prepare_boot_cpu();	/* arch-specific boot-cpu hooks */
 
 	build_all_zonelists(NULL);

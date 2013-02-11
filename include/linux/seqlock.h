@@ -30,92 +30,12 @@
 #include <linux/preempt.h>
 #include <asm/processor.h>
 
-typedef struct {
-	unsigned sequence;
-	spinlock_t lock;
-} seqlock_t;
-
-/*
- * These macros triggered gcc-3.x compile-time problems.  We think these are
- * OK now.  Be cautious.
- */
-#define __SEQLOCK_UNLOCKED(lockname) \
-		 { 0, __SPIN_LOCK_UNLOCKED(lockname) }
-
-#define seqlock_init(x)					\
-	do {						\
-		(x)->sequence = 0;			\
-		spin_lock_init(&(x)->lock);		\
-	} while (0)
-
-#define DEFINE_SEQLOCK(x) \
-		seqlock_t x = __SEQLOCK_UNLOCKED(x)
-
-/* Lock out other writers and update the count.
- * Acts like a normal spin_lock/unlock.
- * Don't need preempt_disable() because that is in the spin_lock already.
- */
-static inline void write_seqlock(seqlock_t *sl)
-{
-	spin_lock(&sl->lock);
-	++sl->sequence;
-	smp_wmb();
-}
-
-static inline void write_sequnlock(seqlock_t *sl)
-{
-	smp_wmb();
-	sl->sequence++;
-	spin_unlock(&sl->lock);
-}
-
-static inline int write_tryseqlock(seqlock_t *sl)
-{
-	int ret = spin_trylock(&sl->lock);
-
-	if (ret) {
-		++sl->sequence;
-		smp_wmb();
-	}
-	return ret;
-}
-
-/* Start of read calculation -- fetch last complete writer token */
-static __always_inline unsigned read_seqbegin(const seqlock_t *sl)
-{
-	unsigned ret;
-
-repeat:
-	ret = ACCESS_ONCE(sl->sequence);
-	if (unlikely(ret & 1)) {
-		cpu_relax();
-		goto repeat;
-	}
-	smp_rmb();
-
-	return ret;
-}
-
-/*
- * Test if reader processed invalid data.
- *
- * If sequence value changed then writer changed data while in section.
- */
-static __always_inline int read_seqretry(const seqlock_t *sl, unsigned start)
-{
-	smp_rmb();
-
-	return unlikely(sl->sequence != start);
-}
-
-
 /*
  * Version using sequence counter only.
  * This can be used when code has its own mutex protecting the
  * updating starting before the write_seqcountbeqin() and ending
  * after the write_seqcount_end().
  */
-
 typedef struct seqcount {
 	unsigned sequence;
 } seqcount_t;
@@ -197,7 +117,6 @@ static inline int __read_seqcount_retry(const seqcount_t *s, unsigned start)
 static inline int read_seqcount_retry(const seqcount_t *s, unsigned start)
 {
 	smp_rmb();
-
 	return __read_seqcount_retry(s, start);
 }
 
@@ -231,31 +150,188 @@ static inline void write_seqcount_barrier(seqcount_t *s)
 	s->sequence+=2;
 }
 
+typedef struct {
+	struct seqcount seqcount;
+	spinlock_t lock;
+} seqlock_t;
+
 /*
- * Possible sw/hw IRQ protected versions of the interfaces.
+ * These macros triggered gcc-3.x compile-time problems.  We think these are
+ * OK now.  Be cautious.
  */
+#define __SEQLOCK_UNLOCKED(lockname)			\
+	{						\
+		.seqcount = SEQCNT_ZERO,		\
+		.lock =	__SPIN_LOCK_UNLOCKED(lockname)	\
+	}
+
+#define seqlock_init(x)					\
+	do {						\
+		seqcount_init(&(x)->seqcount);		\
+		spin_lock_init(&(x)->lock);		\
+	} while (0)
+
+#define DEFINE_SEQLOCK(x) \
+		seqlock_t x = __SEQLOCK_UNLOCKED(x)
+
+/*
+ * Read side functions for starting and finalizing a read side section.
+ */
+#ifndef CONFIG_PREEMPT_RT_FULL
+static inline unsigned read_seqbegin(const seqlock_t *sl)
+{
+	return read_seqcount_begin(&sl->seqcount);
+}
+#else
+/*
+ * Starvation safe read side for RT
+ */
+static inline unsigned read_seqbegin(seqlock_t *sl)
+{
+	unsigned ret;
+
+repeat:
+	ret = sl->seqcount.sequence;
+	if (unlikely(ret & 1)) {
+		/*
+		 * Take the lock and let the writer proceed (i.e. evtl
+		 * boost it), otherwise we could loop here forever.
+		 */
+		spin_lock(&sl->lock);
+		spin_unlock(&sl->lock);
+		goto repeat;
+	}
+	return ret;
+}
+#endif
+
+static inline unsigned read_seqretry(const seqlock_t *sl, unsigned start)
+{
+	return read_seqcount_retry(&sl->seqcount, start);
+}
+
+/*
+ * Ditto w/o barriers
+ */
+static inline unsigned __read_seqbegin(const seqlock_t *sl)
+{
+	return __read_seqcount_begin(&sl->seqcount);
+}
+
+static inline unsigned __read_seqretry(const seqlock_t *sl, unsigned start)
+{
+	return __read_seqcount_retry(&sl->seqcount, start);
+}
+
+/*
+ * Lock out other writers and update the count.
+ * Acts like a normal spin_lock/unlock.
+ * Don't need preempt_disable() because that is in the spin_lock already.
+ */
+static inline void write_seqlock(seqlock_t *sl)
+{
+	spin_lock(&sl->lock);
+	write_seqcount_begin(&sl->seqcount);
+}
+
+static inline void write_sequnlock(seqlock_t *sl)
+{
+	write_seqcount_end(&sl->seqcount);
+	spin_unlock(&sl->lock);
+}
+
+static inline void write_seqlock_bh(seqlock_t *sl)
+{
+	spin_lock_bh(&sl->lock);
+	write_seqcount_begin(&sl->seqcount);
+}
+
+static inline void write_sequnlock_bh(seqlock_t *sl)
+{
+	write_seqcount_end(&sl->seqcount);
+	spin_unlock_bh(&sl->lock);
+}
+
+static inline void write_seqlock_irq(seqlock_t *sl)
+{
+	spin_lock_irq(&sl->lock);
+	write_seqcount_begin(&sl->seqcount);
+}
+
+static inline void write_sequnlock_irq(seqlock_t *sl)
+{
+	write_seqcount_end(&sl->seqcount);
+	spin_unlock_irq(&sl->lock);
+}
+
+static inline unsigned long __write_seqlock_irqsave(seqlock_t *sl)
+{
+	unsigned long flags;
+
+	spin_lock_irqsave(&sl->lock, flags);
+	write_seqcount_begin(&sl->seqcount);
+	return flags;
+}
+
 #define write_seqlock_irqsave(lock, flags)				\
-	do { local_irq_save(flags); write_seqlock(lock); } while (0)
-#define write_seqlock_irq(lock)						\
-	do { local_irq_disable();   write_seqlock(lock); } while (0)
-#define write_seqlock_bh(lock)						\
-        do { local_bh_disable();    write_seqlock(lock); } while (0)
+	do { flags = __write_seqlock_irqsave(lock); } while (0)
 
-#define write_sequnlock_irqrestore(lock, flags)				\
-	do { write_sequnlock(lock); local_irq_restore(flags); } while(0)
-#define write_sequnlock_irq(lock)					\
-	do { write_sequnlock(lock); local_irq_enable(); } while(0)
-#define write_sequnlock_bh(lock)					\
-	do { write_sequnlock(lock); local_bh_enable(); } while(0)
+static inline void
+write_sequnlock_irqrestore(seqlock_t *sl, unsigned long flags)
+{
+	write_seqcount_end(&sl->seqcount);
+	spin_unlock_irqrestore(&sl->lock, flags);
+}
 
-#define read_seqbegin_irqsave(lock, flags)				\
-	({ local_irq_save(flags);   read_seqbegin(lock); })
+/*
+ * Instead of open coding a spinlock and a seqcount, the following
+ * functions allow to serialize on the seqlock w/o touching seqcount.
+ */
+static inline void seq_spin_lock(seqlock_t *sl)
+{
+	spin_lock(&sl->lock);
+}
 
-#define read_seqretry_irqrestore(lock, iv, flags)			\
-	({								\
-		int ret = read_seqretry(lock, iv);			\
-		local_irq_restore(flags);				\
-		ret;							\
-	})
+static inline int seq_spin_trylock(seqlock_t *sl)
+{
+	return spin_trylock(&sl->lock);
+}
+
+static inline void seq_spin_unlock(seqlock_t *sl)
+{
+	spin_unlock(&sl->lock);
+}
+
+static inline void assert_seq_spin_locked(seqlock_t *sl)
+{
+	assert_spin_locked(&sl->lock);
+}
+
+static inline void seq_spin_lock_nested(seqlock_t *sl, int subclass)
+{
+	spin_lock_nested(&sl->lock, subclass);
+}
+
+/*
+ * For writers which need to take/release the lock w/o updating seqcount for
+ * whatever reasons the following functions allow to update the count
+ * after the lock has been acquired or before it is released.
+ */
+static inline void write_seqlock_begin(seqlock_t *sl)
+{
+	assert_spin_locked(&sl->lock);
+	write_seqcount_begin(&sl->seqcount);
+}
+
+static inline void write_seqlock_end(seqlock_t *sl)
+{
+	assert_spin_locked(&sl->lock);
+	write_seqcount_end(&sl->seqcount);
+}
+
+static inline void write_seqlock_barrier(seqlock_t *sl)
+{
+	write_seqcount_barrier(&sl->seqcount);
+}
 
 #endif /* __LINUX_SEQLOCK_H */

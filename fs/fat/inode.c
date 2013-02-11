@@ -224,9 +224,9 @@ static sector_t _fat_bmap(struct address_space *mapping, sector_t block)
 	sector_t blocknr;
 
 	/* fat_get_cluster() assumes the requested blocknr isn't truncated. */
-	down_read(&mapping->host->i_alloc_sem);
+	anon_down_read(&mapping->host->i_alloc_sem);
 	blocknr = generic_block_bmap(mapping, block, fat_get_block);
-	up_read(&mapping->host->i_alloc_sem);
+	anon_up_read(&mapping->host->i_alloc_sem);
 
 	return blocknr;
 }
@@ -770,9 +770,9 @@ fat_encode_fh(struct dentry *de, __u32 *fh, int *lenp, int connectable)
 	fh[1] = inode->i_generation;
 	fh[2] = ipos_h;
 	fh[3] = ipos_m | MSDOS_I(inode)->i_logstart;
-	spin_lock(&de->d_lock);
+	seq_spin_lock(&de->d_lock);
 	fh[4] = ipos_l | MSDOS_I(de->d_parent->d_inode)->i_logstart;
-	spin_unlock(&de->d_lock);
+	seq_spin_unlock(&de->d_lock);
 	return 3;
 }
 

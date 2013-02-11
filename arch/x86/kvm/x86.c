@@ -2283,6 +2283,13 @@ static void do_cpuid_1_ent(struct kvm_cpuid_entry2 *entry, u32 function,
 	entry->flags = 0;
 }
 
+static bool supported_xcr0_bit(unsigned bit)
+{
+	u64 mask = ((u64)1 << bit);
+
+	return mask & (XSTATE_FP | XSTATE_SSE | XSTATE_YMM) & host_xcr0;
+}
+
 #define F(x) bit(X86_FEATURE_##x)
 
 static void do_cpuid_ent(struct kvm_cpuid_entry2 *entry, u32 function,
@@ -2393,6 +2400,8 @@ static void do_cpuid_ent(struct kvm_cpuid_entry2 *entry, u32 function,
 		}
 		break;
 	}
+	case 9:
+		break;
 	case 0xb: {
 		int i, level_type;
 
@@ -2410,16 +2419,17 @@ static void do_cpuid_ent(struct kvm_cpuid_entry2 *entry, u32 function,
 		break;
 	}
 	case 0xd: {
-		int i;
+		int idx, i;
 
 		entry->flags |= KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
-		for (i = 1; *nent < maxnent && i < 64; ++i) {
-			if (entry[i].eax == 0)
+		for (idx = 1, i = 1; *nent < maxnent && idx < 64; ++idx) {
+			do_cpuid_1_ent(&entry[i], function, idx);
+			if (entry[i].eax == 0 || !supported_xcr0_bit(idx))
 				continue;
-			do_cpuid_1_ent(&entry[i], function, i);
 			entry[i].flags |=
 			       KVM_CPUID_FLAG_SIGNIFCANT_INDEX;
 			++*nent;
+			++i;
 		}
 		break;
 	}
@@ -2451,6 +2461,24 @@ static void do_cpuid_ent(struct kvm_cpuid_entry2 *entry, u32 function,
 		entry->ecx &= kvm_supported_word6_x86_features;
 		cpuid_mask(&entry->ecx, 6);
 		break;
+	case 0x80000008: {
+		unsigned g_phys_as = (entry->eax >> 16) & 0xff;
+		unsigned virt_as = max((entry->eax >> 8) & 0xff, 48U);
+		unsigned phys_as = entry->eax & 0xff;
+
+		if (!g_phys_as)
+			g_phys_as = phys_as;
+		entry->eax = g_phys_as | (virt_as << 8);
+		entry->ebx = entry->edx = 0;
+		break;
+	}
+	case 0x80000019:
+		entry->ecx = entry->edx = 0;
+		break;
+	case 0x8000001a:
+		break;
+	case 0x8000001d:
+		break;
 	/*Add support for Centaur's CPUID instruction*/
 	case 0xC0000000:
 		/*Just support up to 0xC0000004 now*/
@@ -2460,10 +2488,16 @@ static void do_cpuid_ent(struct kvm_cpuid_entry2 *entry, u32 function,
 		entry->edx &= kvm_supported_word5_x86_features;
 		cpuid_mask(&entry->edx, 5);
 		break;
+	case 3: /* Processor serial number */
+	case 5: /* MONITOR/MWAIT */
+	case 6: /* Thermal management */
+	case 0xA: /* Architectural Performance Monitoring */
+	case 0x80000007: /* Advanced power management */
 	case 0xC0000002:
 	case 0xC0000003:
 	case 0xC0000004:
-		/*Now nothing to do, reserved for the future*/
+	default:
+		entry->eax = entry->ebx = entry->ecx = entry->edx = 0;
 		break;
 	}
 
@@ -4922,6 +4956,13 @@ int kvm_arch_init(void *opaque)
 		r = -EOPNOTSUPP;
 		goto out;
 	}
+
+#ifdef CONFIG_PREEMPT_RT_FULL
+	if (!boot_cpu_has(X86_FEATURE_CONSTANT_TSC)) {
+		printk(KERN_ERR "RT requires X86_FEATURE_CONSTANT_TSC\n");
+		return -EOPNOTSUPP;
+	}
+#endif
 
 	r = kvm_mmu_module_init();
 	if (r)
