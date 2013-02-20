@@ -2,7 +2,7 @@
  * sound\soc\sun6i\pcm\sun6i-pcmdma.c
  * (C) Copyright 2010-2016
  * Reuuimlla Technology Co., Ltd. <www.reuuimllatech.com>
- * chenpailin <chenpailin@Reuuimllatech.com>
+ * huangxin <huangxin@Reuuimllatech.com>
  *
  * some simple description for this code
  *
@@ -48,7 +48,7 @@ static const struct snd_pcm_hardware sun6i_pcm_play_hardware = {
 	.buffer_bytes_max	= 128*1024,    /* value must be (2^n)Kbyte size */
 	.period_bytes_min	= 1024*4,
 	.period_bytes_max	= 1024*16,
-	.periods_min		= 2,
+	.periods_min		= 4,
 	.periods_max		= 8,
 	.fifo_size		= 128,
 };
@@ -66,7 +66,7 @@ static const struct snd_pcm_hardware sun6i_pcm_capture_hardware = {
 	.buffer_bytes_max	= 128*1024,    /* value must be (2^n)Kbyte size */
 	.period_bytes_min	= 1024*4,
 	.period_bytes_max	= 1024*16,
-	.periods_min		= 2,
+	.periods_min		= 4,
 	.periods_max		= 8,
 	.fifo_size		= 128,
 };
@@ -392,7 +392,7 @@ static int sun6i_pcm_prepare(struct snd_pcm_substream *substream)
 		}
 
 		memset(&play_dma_config, 0, sizeof(play_dma_config));
-		play_dma_config.xfer_type = DMAXFER_D_BHALF_S_BHALF;
+		play_dma_config.xfer_type = DMAXFER_D_BHALF_S_BHALF;//DMAXFER_D_BWORD_S_BWORD; //old ,DMAXFER_D_BHALF_S_BHALF  ,,,,DMAXFER_D_BHALF_S_BWORD
 		play_dma_config.address_type = DMAADDRT_D_IO_S_LN;
 		play_dma_config.para = 0;
 		play_dma_config.irq_spt = CHAN_IRQ_QD;
@@ -463,9 +463,10 @@ static int sun6i_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 			* start dma transfer
 			*/
 			if (0 != sw_dma_ctl(play_prtd->dma_hdl, DMA_OP_START, NULL)) {
-			printk("%s err, dma start err\n", __FUNCTION__);
+			printk("play %s err, dma start err\n", __FUNCTION__);
 			return -EINVAL;
 			}
+			//sw_dma_dump_chan(play_prtd->dma_hdl);
 			break;
 		case SNDRV_PCM_TRIGGER_SUSPEND:
 		case SNDRV_PCM_TRIGGER_STOP:

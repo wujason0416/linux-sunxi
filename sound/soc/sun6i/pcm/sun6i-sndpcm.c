@@ -2,7 +2,7 @@
  * sound\soc\sun6i\pcm\sun6i_sndpcm.c
  * (C) Copyright 2010-2016
  * Reuuimlla Technology Co., Ltd. <www.reuuimllatech.com>
- * chenpailin <chenpailin@Reuuimllatech.com>
+ * huangxin <huangxin@Reuuimllatech.com>
  *
  * some simple description for this code
  *
@@ -26,29 +26,22 @@
 
 #include "sun6i-pcmdma.h"
 
-static int pcm_used = 0;
-
-static int sun6i_sndpcm_startup(struct snd_pcm_substream *substream)
-{
-	return 0;
-}
-
-static void sun6i_sndpcm_shutdown(struct snd_pcm_substream *substream)
-{
-}
+static int pcm_used 		= 0;
+static int pcm_master 		= 0;
+static int audio_format 	= 0;
+static int signal_inversion = 0;
 
 static int sun6i_sndpcm_hw_params(struct snd_pcm_substream *substream,
 					struct snd_pcm_hw_params *params)
 {
+	int ret  = 0;
+	u32 freq = 22579200;
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-	int ret = 0;
-	u32 mclk = 22579200;
 	unsigned long sample_rate = params_rate(params);
 
-	switch(sample_rate)
-	{
+	switch (sample_rate) {
 		case 8000:
 		case 16000:
 		case 32000:
@@ -59,33 +52,49 @@ static int sun6i_sndpcm_hw_params(struct snd_pcm_substream *substream,
 		case 48000:
 		case 96000:
 		case 192000:
-			mclk = 24576000;
+			freq = 24576000;
 			break;
 	}
 
 	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_A |
-			SND_SOC_DAIFMT_IB_NF | SND_SOC_DAIFMT_CBS_CFS);
+		SND_SOC_DAIFMT_IB_NF | SND_SOC_DAIFMT_CBS_CFS);
 	if (ret < 0)
 		return ret;
+	/*
+	* codec clk & FRM master. AP as slave
+	*/
+	ret = snd_soc_dai_set_fmt(cpu_dai, (audio_format | (signal_inversion<<8) | (pcm_master<<12)));
+	if (ret < 0) {
+		return ret;
+	}
 
-	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_DSP_A |
-			SND_SOC_DAIFMT_IB_NF | SND_SOC_DAIFMT_CBS_CFS);
-	if (ret < 0)
+	/*set system clock source freq*/
+	ret = snd_soc_dai_set_sysclk(cpu_dai, 0 , freq, 0);
+	if (ret < 0) {
 		return ret;
-
-	ret = snd_soc_dai_set_sysclk(cpu_dai, 0 , mclk, 0);
-	if (ret < 0)
-		return ret;
+	}
 
 	ret = snd_soc_dai_set_clkdiv(cpu_dai, 0, sample_rate);
-	if (ret < 0)
+	if (ret < 0) {
 		return ret;
+	}
+
+	/*
+	*	audio_format == SND_SOC_DAIFMT_DSP_A
+	*	signal_inversion<<8 == SND_SOC_DAIFMT_IB_NF
+	*	pcm_master<<12	== SND_SOC_DAIFMT_CBS_CFS
+	*/
+	PCM_DBG("%s,line:%d,audio_format:%d,SND_SOC_DAIFMT_DSP_A:%d\n",\
+				__func__, __LINE__, audio_format, SND_SOC_DAIFMT_DSP_A);
+	PCM_DBG("%s,line:%d,signal_inversion:%d,signal_inversion<<8:%d,SND_SOC_DAIFMT_IB_NF:%d\n",\
+				__func__, __LINE__, signal_inversion, signal_inversion<<8, SND_SOC_DAIFMT_IB_NF);
+	PCM_DBG("%s,line:%d,pcm_master:%d,pcm_master<<12:%d,SND_SOC_DAIFMT_CBS_CFS:%d\n",\
+				__func__, __LINE__, pcm_master, pcm_master<<12, SND_SOC_DAIFMT_CBS_CFS);
+
 	return 0;
 }
 
 static struct snd_soc_ops sun6i_sndpcm_ops = {
-	.startup 		= sun6i_sndpcm_startup,
-	.shutdown 		= sun6i_sndpcm_shutdown,
 	.hw_params 		= sun6i_sndpcm_hw_params,
 };
 
@@ -118,8 +127,24 @@ static int __init sun6i_sndpcm_init(void)
 	if (SCIRPT_ITEM_VALUE_TYPE_INT != type) {
         printk("[PCM] type err!\n");
     }
-
 	pcm_used = val.val;
+
+	type = script_get_item("pcm_para", "pcm_master", &val);
+	if (SCIRPT_ITEM_VALUE_TYPE_INT != type) {
+        printk("[PCM] pcm_master type err!\n");
+    }
+	pcm_master = val.val;
+	type = script_get_item("pcm_para", "audio_format", &val);
+	if (SCIRPT_ITEM_VALUE_TYPE_INT != type) {
+        printk("[PCM] audio_format type err!\n");
+    }
+	audio_format = val.val;
+
+	type = script_get_item("pcm_para", "signal_inversion", &val);
+	if (SCIRPT_ITEM_VALUE_TYPE_INT != type) {
+        printk("[PCM] signal_inversion type err!\n");
+    }
+	signal_inversion = val.val;
     if (pcm_used) {
 		sun6i_sndpcm_device = platform_device_alloc("soc-audio", 3);
 		if(!sun6i_sndpcm_device)
@@ -148,6 +173,6 @@ static void __exit sun6i_sndpcm_exit(void)
 module_init(sun6i_sndpcm_init);
 module_exit(sun6i_sndpcm_exit);
 
-MODULE_AUTHOR("chenpailin");
+MODULE_AUTHOR("huangxin");
 MODULE_DESCRIPTION("SUN6I_sndpcm ALSA SoC audio driver");
 MODULE_LICENSE("GPL");

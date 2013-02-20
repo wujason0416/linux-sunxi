@@ -2,7 +2,7 @@
  * sound\soc\sun6i\i2s\sun6i-i2sdma.c
  * (C) Copyright 2010-2016
  * Reuuimlla Technology Co., Ltd. <www.reuuimllatech.com>
- * chenpailin <chenpailin@Reuuimllatech.com>
+ * huangxin <huangxin@Reuuimllatech.com>
  *
  * some simple description for this code
  *
@@ -48,7 +48,7 @@ static const struct snd_pcm_hardware sun6i_pcm_play_hardware = {
 	.buffer_bytes_max	= 128*1024,    /* value must be (2^n)Kbyte size */
 	.period_bytes_min	= 1024*4,
 	.period_bytes_max	= 1024*16,
-	.periods_min		= 2,
+	.periods_min		= 4,
 	.periods_max		= 8,
 	.fifo_size		= 128,
 };
@@ -66,7 +66,7 @@ static const struct snd_pcm_hardware sun6i_pcm_capture_hardware = {
 	.buffer_bytes_max	= 128*1024,    /* value must be (2^n)Kbyte size */
 	.period_bytes_min	= 1024*4,
 	.period_bytes_max	= 1024*16,
-	.periods_min		= 2,
+	.periods_min		= 4,
 	.periods_max		= 8,
 	.fifo_size		= 128,
 };
@@ -507,7 +507,6 @@ static int sun6i_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 			printk("%s err, dma stop err\n", __FUNCTION__);
 			return -EINVAL;
 			}
-
 			break;
 		default:
 			ret = -EINVAL;
@@ -790,6 +789,6 @@ static void __exit sun6i_soc_platform_i2s_exit(void)
 }
 module_exit(sun6i_soc_platform_i2s_exit);
 
-MODULE_AUTHOR("chenpailin");
+MODULE_AUTHOR("huangxin");
 MODULE_DESCRIPTION("SUN6I I2S DMA module");
 MODULE_LICENSE("GPL");
