@@ -2,7 +2,7 @@
  * sound\soc\sun6i\i2s\sun6i_sndi2s.c
  * (C) Copyright 2010-2016
  * Reuuimlla Technology Co., Ltd. <www.reuuimllatech.com>
- * chenpailin <chenpailin@Reuuimllatech.com>
+ * huangxin <huangxin@Reuuimllatech.com>
  *
  * some simple description for this code
  *
@@ -27,62 +27,23 @@
 #include "sun6i-i2s.h"
 #include "sun6i-i2sdma.h"
 
-static int i2s_used = 0;
-static struct clk *xtal;
-static int clk_users;
-static DEFINE_MUTEX(clk_lock);
-
-#ifdef ENFORCE_RATES
-static struct snd_pcm_hw_constraint_list hw_constraints_rates = {
-	.count	= ARRAY_SIZE(rates),
-	.list	= rates,
-	.mask	= 0,
-};
-#endif
-
-static int sun6i_sndi2s_startup(struct snd_pcm_substream *substream)
-{
-	int ret = 0;
-	#ifdef ENFORCE_RATES
-		struct snd_pcm_runtime *runtime = substream->runtime;;
-	#endif
-
-	if (!ret) {
-	#ifdef ENFORCE_RATES
-		ret = snd_pcm_hw_constraint_list(runtime, 0,
-						 SNDRV_PCM_HW_PARAM_RATE,
-						 &hw_constraints_rates);
-		if (ret < 0)
-			return ret;
-	#endif
-	}
-	return ret;
-}
-
-static void sun6i_sndi2s_shutdown(struct snd_pcm_substream *substream)
-{
-	mutex_lock(&clk_lock);
-	clk_users -= 1;
-	if (clk_users == 0) {
-		clk_put(xtal);
-		xtal = NULL;
-
-	}
-	mutex_unlock(&clk_lock);
-}
+static int i2s_used 		= 0;
+static int i2s_master 		= 0;
+static int audio_format 	= 0;
+static int signal_inversion = 0;
 
 static int sun6i_sndi2s_hw_params(struct snd_pcm_substream *substream,
 					struct snd_pcm_hw_params *params)
 {
+	int ret  = 0;
+	u32 freq = 22579200;
+
 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-	int ret = 0;
-	u32 mclk = 22579200;
 	unsigned long sample_rate = params_rate(params);
-	
-	switch(sample_rate)
-	{
+
+	switch (sample_rate) {
 		case 8000:
 		case 16000:
 		case 32000:
@@ -93,33 +54,48 @@ static int sun6i_sndi2s_hw_params(struct snd_pcm_substream *substream,
 		case 48000:
 		case 96000:
 		case 192000:
-			mclk = 24576000;
+			freq = 24576000;
 			break;
 	}
-	
-	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_I2S |
-			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
+	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_DSP_A |
+			SND_SOC_DAIFMT_IB_NF | SND_SOC_DAIFMT_CBM_CFM);
 	if (ret < 0)
 		return ret;
+	/*
+	* codec clk & FRM master. AP as slave
+	*/
+	ret = snd_soc_dai_set_fmt(cpu_dai, (audio_format | (signal_inversion<<8) | (i2s_master<<12)));
+	if (ret < 0) {
+		return ret;
+	}
 
-	ret = snd_soc_dai_set_fmt(cpu_dai, SND_SOC_DAIFMT_I2S |
-			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-	if (ret < 0)
+	/*set system clock source freq*/
+	ret = snd_soc_dai_set_sysclk(cpu_dai, 0 , freq, 0);
+	if (ret < 0) {
 		return ret;
+	}
 
-	ret = snd_soc_dai_set_sysclk(cpu_dai, 0 , mclk, 0);
-	if (ret < 0)
-		return ret;
-		
 	ret = snd_soc_dai_set_clkdiv(cpu_dai, 0, sample_rate);
-	if (ret < 0)
+	if (ret < 0) {
 		return ret;
+	}
+
+	/*
+	*	audio_format == SND_SOC_DAIFMT_DSP_A
+	*	signal_inversion<<8 == SND_SOC_DAIFMT_IB_NF
+	*	i2s_master<<12 == SND_SOC_DAIFMT_CBM_CFM
+	*/
+	I2S_DBG("%s,line:%d,audio_format:%d,SND_SOC_DAIFMT_DSP_A:%d\n",\
+			__func__, __LINE__, audio_format, SND_SOC_DAIFMT_DSP_A);
+	I2S_DBG("%s,line:%d,signal_inversion:%d,signal_inversion<<8:%d,SND_SOC_DAIFMT_IB_NF:%d\n",\
+			__func__, __LINE__, signal_inversion, signal_inversion<<8, SND_SOC_DAIFMT_IB_NF);
+	I2S_DBG("%s,line:%d,i2s_master:%d,i2s_master<<12:%d,SND_SOC_DAIFMT_CBM_CFM:%d\n",\
+			__func__, __LINE__, i2s_master, i2s_master<<12, SND_SOC_DAIFMT_CBM_CFM);
+
 	return 0;
 }
 
 static struct snd_soc_ops sun6i_sndi2s_ops = {
-	.startup 		= sun6i_sndi2s_startup,
-	.shutdown 		= sun6i_sndi2s_shutdown,
 	.hw_params 		= sun6i_sndi2s_hw_params,
 };
 
@@ -152,8 +128,26 @@ static int __init sun6i_sndi2s_init(void)
 	if (SCIRPT_ITEM_VALUE_TYPE_INT != type) {
         printk("[I2S] type err!\n");
     }
-
 	i2s_used = val.val;
+
+	type = script_get_item("i2s_para", "i2s_master", &val);
+	if (SCIRPT_ITEM_VALUE_TYPE_INT != type) {
+        printk("[I2S] i2s_master type err!\n");
+    }
+	i2s_master = val.val;
+	
+	type = script_get_item("i2s_para", "audio_format", &val);
+	if (SCIRPT_ITEM_VALUE_TYPE_INT != type) {
+        printk("[I2S] audio_format type err!\n");
+    }
+	audio_format = val.val;
+
+	type = script_get_item("i2s_para", "signal_inversion", &val);
+	if (SCIRPT_ITEM_VALUE_TYPE_INT != type) {
+        printk("[I2S] signal_inversion type err!\n");
+    }
+	signal_inversion = val.val;
+
     if (i2s_used) {
 		sun6i_sndi2s_device = platform_device_alloc("soc-audio", 2);
 		if(!sun6i_sndi2s_device)

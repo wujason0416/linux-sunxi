@@ -2,7 +2,7 @@
  * sound\soc\sun6i\i2s\sun6i-i2sdma.c
  * (C) Copyright 2010-2016
  * Reuuimlla Technology Co., Ltd. <www.reuuimllatech.com>
- * chenpailin <chenpailin@Reuuimllatech.com>
+ * huangxin <huangxin@Reuuimllatech.com>
  *
  * some simple description for this code
  *
@@ -48,7 +48,7 @@ static const struct snd_pcm_hardware sun6i_pcm_play_hardware = {
 	.buffer_bytes_max	= 128*1024,    /* value must be (2^n)Kbyte size */
 	.period_bytes_min	= 1024*4,
 	.period_bytes_max	= 1024*16,
-	.periods_min		= 2,
+	.periods_min		= 4,
 	.periods_max		= 8,
 	.fifo_size		= 128,
 };
@@ -66,7 +66,7 @@ static const struct snd_pcm_hardware sun6i_pcm_capture_hardware = {
 	.buffer_bytes_max	= 128*1024,    /* value must be (2^n)Kbyte size */
 	.period_bytes_min	= 1024*4,
 	.period_bytes_max	= 1024*16,
-	.periods_min		= 2,
+	.periods_min		= 4,
 	.periods_max		= 8,
 	.fifo_size		= 128,
 };
@@ -166,7 +166,7 @@ static u32 sun6i_audio_capture_buffdone(dm_hdl_t dma_hdl, void *parg,
 	struct sun6i_capture_runtime_data *capture_prtd = NULL;
 	struct snd_pcm_substream *substream = NULL;
 
-	if ((result == DMA_CB_ABORT) || (parg == NULL)) {	
+	if ((result == DMA_CB_ABORT) || (parg == NULL)) {
 		return 0;
 	}
 
@@ -181,7 +181,7 @@ static u32 sun6i_audio_capture_buffdone(dm_hdl_t dma_hdl, void *parg,
 		capture_prtd->dma_loaded--;
 		sun6i_pcm_enqueue(substream);
 	}
-	spin_unlock(&capture_prtd->lock);	
+	spin_unlock(&capture_prtd->lock);
 	return 0;
 }
 
@@ -495,7 +495,7 @@ static int sun6i_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 			if (0 != sw_dma_ctl(capture_prtd->dma_hdl, DMA_OP_START, NULL)) {
 			printk("%s err, dma start err\n", __FUNCTION__);
 			return -EINVAL;
-			}	
+			}
 			break;
 		case SNDRV_PCM_TRIGGER_SUSPEND:
 		case SNDRV_PCM_TRIGGER_STOP:
@@ -507,7 +507,6 @@ static int sun6i_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
 			printk("%s err, dma stop err\n", __FUNCTION__);
 			return -EINVAL;
 			}
-			
 			break;
 		default:
 			ret = -EINVAL;
@@ -790,7 +789,7 @@ static void __exit sun6i_soc_platform_i2s_exit(void)
 }
 module_exit(sun6i_soc_platform_i2s_exit);
 
-MODULE_AUTHOR("chenpailin");
+MODULE_AUTHOR("huangxin");
 MODULE_DESCRIPTION("SUN6I I2S DMA module");
 MODULE_LICENSE("GPL");
 
