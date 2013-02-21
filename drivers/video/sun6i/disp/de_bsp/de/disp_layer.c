@@ -661,6 +661,14 @@ __s32 BSP_disp_layer_set_src_window(__u32 sel, __u32 hid,__disp_rect_t *regn)//i
             
             ret = Scaler_Set_SclRegn(layer_man->scaler_index, regn);
             gdisp.scaler[layer_man->scaler_index].b_reg_change = TRUE;
+
+            OSAL_IrqLock(&cpu_sr);
+            layer_man->para.src_win.x = regn->x;
+            layer_man->para.src_win.y = regn->y;
+            layer_man->para.src_win.width = regn->width;
+            layer_man->para.src_win.height = regn->height;
+            OSAL_IrqUnLock(cpu_sr);
+
             BSP_disp_cfg_finish(sel);
             return ret;
         }

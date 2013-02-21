@@ -119,6 +119,7 @@ __s32 	tcon0_open(__u32 sel, __panel_para_t * panel);
 __s32 	tcon0_close(__u32 sel);
 __s32   tcon0_set_dclk_div(__u32 sel, __u8 div);
 __u32   tcon0_get_dclk_div(__u32 sel);
+__s32	tcon0_tri_busy(__u32 sel);
 __s32   tcon0_tri_start(__u32 sel);
 __s32	tcon0_cpu_wr_24b(__u32 sel, __u32 index, __u32 data);
 __s32	tcon0_cpu_wr_24b_index(__u32 sel, __u32 index);
