@@ -145,4 +145,6 @@ source "drivers/gsensor/Kconfig"
 
 source "drivers/gpu/Kconfig"
 
+source "drivers/gator/Kconfig"
+
 endmenu

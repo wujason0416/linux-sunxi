@@ -2293,6 +2293,7 @@ CONFIG_SENSORS_LIS3DE_ACC=m
 #
 # gpu
 #
+# CONFIG_GATOR_PERF is not set
 
 #
 # File systems
