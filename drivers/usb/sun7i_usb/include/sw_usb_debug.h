@@ -82,7 +82,7 @@
 #endif
 
 /* ÆÕÍ¨¾¯¸æ */
-#if	1
+#if	0
     #define DMSG_WRN        			DMSG_ERR
 #else
     #define DMSG_WRN(...)
