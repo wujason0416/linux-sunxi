@@ -1981,6 +1981,7 @@ CONFIG_HAVE_MACH_CLKDEV=y
 #
 # gpu
 #
+# CONFIG_GATOR_PERF is not set
 
 #
 # File systems

@@ -141,3 +141,5 @@ obj-$(CONFIG_GSENSOR)	+= gsensor/
 # obj-y				+= test/
 
 obj-y				+= gpu/
+
+obj-$(CONFIG_GATOR_PERF) += gator/
