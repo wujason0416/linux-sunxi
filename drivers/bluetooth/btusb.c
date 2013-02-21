@@ -91,6 +91,9 @@ static struct usb_device_id btusb_table[] = {
 	/* Canyon CN-BTU1 with HID interfaces */
 	{ USB_DEVICE(0x0c10, 0x0000) },
 
+	/* 8723au */
+	{ USB_DEVICE(0x0bda, 0x0724) },
+
 	{ }	/* Terminating entry */
 };
 

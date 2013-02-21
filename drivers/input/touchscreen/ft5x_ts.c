@@ -389,17 +389,18 @@ static int ctp_fetch_sysconfig_para(void)
 		pr_err("%s: script_parser_fetch err. \n", __func__);
 		goto script_parser_fetch_err;
 	}
-	if(strcmp(CTP_NAME, name)){
-		pr_err("%s: name %s does not match CTP_NAME. \n", __func__, name);
-		pr_err(CTP_NAME);
+//	if(strcmp(CTP_NAME, name)){
+//		pr_err("%s: name %s does not match CTP_NAME. \n", __func__, name);
+//		pr_err(CTP_NAME);
 		//ret = 1;
-		return ret;
-	}
+//		return ret;
+//	}
 
 	if(SCRIPT_PARSER_OK != script_parser_fetch("ctp_para", "ctp_twi_addr", &twi_addr, sizeof(twi_addr)/sizeof(__u32))){
 		pr_err("%s: script_parser_fetch err. \n", name);
 		goto script_parser_fetch_err;
 	}
+	twi_addr=0x38;
 	//big-endian or small-endian?
 	//pr_info("%s: before: ctp_twi_addr is 0x%x, dirty_addr_buf: 0x%hx. dirty_addr_buf[1]: 0x%hx \n", __func__, twi_addr, u_i2c_addr.dirty_addr_buf[0], u_i2c_addr.dirty_addr_buf[1]);
 	u_i2c_addr.dirty_addr_buf[0] = twi_addr;
@@ -1641,6 +1642,7 @@ ft5x_ts_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	struct device *dev;
 	struct i2c_dev *i2c_dev;
 	int err = 0;
+	int retry,ret=0,test=0;
 
 #ifdef TOUCH_KEY_SUPPORT
 	int i = 0;
@@ -1667,11 +1669,34 @@ ft5x_ts_probe(struct i2c_client *client, const struct i2c_device_id *id)
 	//pr_info("ft5x_ts_probe : client->addr = %d. \n", client->addr);
 	i2c_set_clientdata(client, ft5x_ts);
 
+	for(retry=0;retry<5;retry++){
+		ret=fts_register_read(0x00,&test,1);
+		if(ret>0) break;
+		dev_info(&client->dev, "FT5X I2C TEST FAILED!Please check the HARDWARE connect\n");
+	}
+	if (ret<=0) {
+		dev_err(&client->dev, "Warnning: I2C communication might be ERROR!\n");
+		goto exit_create_singlethread;
+	}
+	printk("Success:FT5X06  I2C communication  be OK!\n");
+	if(SCRIPT_PARSER_OK != script_parser_fetch("ctp_para", "ft5x_ctp_revert_x_flag", &revert_x_flag, 1)){
+		pr_err("%s: script_parser_fetch err.cann't get ft5x_ctp_revert_x_flag,use  ctp_revert_x_flag as default\n", __func__);
+	}
+	pr_info("%s: revert_x_flag = %d. \n", __func__, revert_x_flag);
+
+	if(SCRIPT_PARSER_OK != script_parser_fetch("ctp_para", "ft5x_ctp_revert_y_flag", &revert_y_flag, 1)){
+		pr_err("%s: script_parser_fetch err.can't get ft5x_ctp_revert_x_flag,use ctp_revert_x_flag as default \n", __func__);
+	}
+	pr_info("%s: revert_y_flag = %d. \n", __func__, revert_y_flag);
+
+
+
 #ifdef TOUCH_KEY_LIGHT_SUPPORT
 	gpio_light_hdle = gpio_request_ex("ctp_para", "ctp_light");
 #endif
 
 #ifdef CONFIG_SUPPORT_FTS_CTP_UPG
+	msleep(250);
 	fts_ctpm_fw_upgrade_with_i_file();
 #endif
 
@@ -1750,6 +1775,7 @@ ft5x_ts_probe(struct i2c_client *client, const struct i2c_device_id *id)
 
 #ifdef CONFIG_FT5X0X_MULTITOUCH
 	pr_info("CONFIG_FT5X0X_MULTITOUCH is defined. \n");
+	msleep(250);
 #endif
 
 	err = ctp_ops.set_irq_mode("ctp_para", "ctp_int_port", CTP_IRQ_MODE);
