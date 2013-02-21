@@ -456,7 +456,8 @@ __s32 DRV_DISP_Init(void)
     para.base_deu0       = (__u32)g_fbi.base_deu0;
     para.base_deu1       = (__u32)g_fbi.base_deu1;
     para.base_dsi0       = (__u32)g_fbi.base_dsi0;
-    para.base_timer       = (__u32)g_fbi.base_timer;
+    para.base_timer      = (__u32)g_fbi.base_timer;
+    para.base_hdmi       = (__u32)g_fbi.base_hdmi;
 
 	para.disp_int_process       = DRV_disp_int_process;
     para.vsync_event            = DRV_disp_vsync_event;
@@ -622,7 +623,7 @@ static int __init disp_probe(struct platform_device *pdev)//called when platform
 	info->base_pioc     = AW_VIR_PIO_BASE;
 	info->base_pwm      = AW_VIR_PWM_BASE;
     info->base_timer    = AW_VIR_TIMER_BASE;
-
+    info->base_hdmi     = AW_VIR_HDMI_BASE;
 
 	__inf("SCALER0 base 0x%08x\n", info->base_scaler0);
     __inf("SCALER1 base 0x%08x\n", info->base_scaler1);

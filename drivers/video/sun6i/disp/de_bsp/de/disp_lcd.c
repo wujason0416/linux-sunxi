@@ -424,12 +424,17 @@ __s32 LCD_parse_panel_para(__u32 sel, __panel_para_t * info)
         info->lcd_edp_tx_lane= value;
     }
 
-    ret = OSAL_Script_FetchParser_Data(primary_key, "lcd_io_phase", &value, 1);
+    ret = OSAL_Script_FetchParser_Data(primary_key, "lcd_hv_clk_phase", &value, 1);
     if(ret == 0)
     {
-        info->lcd_io_phase = value;
+        info->lcd_hv_clk_phase = value;
     }
 
+	ret = OSAL_Script_FetchParser_Data(primary_key, "lcd_hv_sync_polarity", &value, 1);
+    if(ret == 0)
+    {
+        info->lcd_hv_sync_polarity = value;
+    }
     ret = OSAL_Script_FetchParser_Data(primary_key, "lcd_gamma_en", &value, 1);
     if(ret == 0)
     {
@@ -1120,7 +1125,15 @@ __s32 LCD_GPIO_exit(__u32 sel)
     {
         if(gdisp.screen[sel].gpio_hdl[i])
         {
-            OSAL_GPIO_Release(gdisp.screen[sel].gpio_hdl[i], 2);
+            disp_gpio_set_t  gpio_info[1];
+
+			OSAL_GPIO_Release(gdisp.screen[sel].gpio_hdl[i], 2);
+
+            memcpy(gpio_info, &(gdisp.screen[sel].lcd_cfg.lcd_gpio[i]), sizeof(disp_gpio_set_t));
+			gpio_info->mul_sel = 7;
+            gdisp.screen[sel].gpio_hdl[i] = OSAL_GPIO_Request(gpio_info, 1);
+			OSAL_GPIO_Release(gdisp.screen[sel].gpio_hdl[i], 2);
+			gdisp.screen[sel].gpio_hdl[i] = 0;
         }
     }
 
@@ -1139,7 +1152,15 @@ __s32 Disp_lcdc_pin_cfg(__u32 sel, __disp_output_type_t out_type, __u32 bon)
         __hdle lcd_pin_hdl;
         int  i;
 
-        for(i=0; i<28; i++)
+        if(bon)
+		{
+			LCD_GPIO_init(sel);
+	}
+		else
+		{
+			LCD_GPIO_exit(sel);
+		}
+		for(i=0; i<28; i++)
         {
             if(gdisp.screen[sel].lcd_cfg.lcd_io_used[i])
             {
@@ -1226,7 +1247,7 @@ __s32 Disp_lcdc_event_proc(void *parg)
     {
 	   LCD_vbi_event_proc(sel, 0);
 
-		if(dsi_inst_busy(sel))
+		if(dsi_inst_busy(sel) || tcon0_tri_busy(sel))
 		{
 			if(cntr>=1)
 			{
@@ -1244,6 +1265,11 @@ __s32 Disp_lcdc_event_proc(void *parg)
 
 		if(cntr==0)
 		{
+		    if(gdisp.screen[sel].LCD_CPUIF_ISR)
+		    {
+			(*gdisp.screen[sel].LCD_CPUIF_ISR)();
+				LCD_delay_us(2);
+			}
 			if(gpanel_info[sel].lcd_if == LCD_IF_DSI)
 				dsi_tri_start(sel);
 			tcon0_tri_start(sel);
@@ -1341,7 +1367,6 @@ __s32 Disp_lcdc_init(__u32 sel)
             }
             pwm_set_para(gdisp.screen[sel].lcd_cfg.lcd_pwm_ch, &pwm_info);
         }
-        LCD_GPIO_init(sel);
     }
     return DIS_SUCCESS;
 }
@@ -1365,8 +1390,6 @@ __s32 Disp_lcdc_exit(__u32 sel)
     tcon_exit(sel);
 
     lcdc_clk_exit(sel);
-
-    LCD_GPIO_exit(sel);
 
     return DIS_SUCCESS;
 }

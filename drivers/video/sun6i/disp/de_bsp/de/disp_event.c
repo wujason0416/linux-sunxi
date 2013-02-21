@@ -96,11 +96,6 @@ void LCD_vbi_event_proc(__u32 sel, __u32 tcon_index)
         }
 	}
 
-    if(gdisp.screen[sel].LCD_CPUIF_ISR)
-    {
-	(*gdisp.screen[sel].LCD_CPUIF_ISR)();
-    }
-
     if(gdisp.screen[sel].cache_flag == FALSE && gdisp.screen[sel].cfg_cnt == 0)
     {
         for(i=0; i<2; i++)

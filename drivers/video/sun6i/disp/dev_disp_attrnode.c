@@ -94,22 +94,73 @@ static ssize_t disp_reg_dump_store(struct device *dev,
 				struct device_attribute *attr,
 				const char *buf, size_t count)
 {
-	int err;
-    unsigned long val;
+	if (count < 1)
+        return -EINVAL;
 
-	err = strict_strtoul(buf, 10, &val);
-	if (err) {
-		printk("Invalid size\n");
-		return err;
-	}
-
-    if((val>17))
+    if(strnicmp(buf, "be0", 3) == 0)
     {
-        printk("Invalid value, <18 is expected!\n");
+        BSP_disp_print_reg(1, DISP_REG_IMAGE0);
+    }else if(strnicmp(buf, "be1", 3) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_IMAGE1);
+    }else if(strnicmp(buf, "fe0", 3) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_SCALER0);
+    }else if(strnicmp(buf, "fe1", 3) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_SCALER1);
+    }else if(strnicmp(buf, "lcd0", 4) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_LCDC0);
+    }else if(strnicmp(buf, "lcd1", 4) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_LCDC1);
+    }else if(strnicmp(buf, "tve0", 4) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_TVEC0);
+    }else if(strnicmp(buf, "tve1", 4) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_TVEC1);
+    }else if(strnicmp(buf, "deu0", 4) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_DEU0);
+    }else if(strnicmp(buf, "deu1", 4) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_DEU1);
+    }else if(strnicmp(buf, "cmu0", 4) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_CMU0);
+    }else if(strnicmp(buf, "cmu1", 4) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_CMU1);
+    }else if(strnicmp(buf, "drc0", 4) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_DRC0);
+    }else if(strnicmp(buf, "drc1", 4) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_DRC1);
+    }else if(strnicmp(buf, "dsi", 3) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_DSI);
+    }else if(strnicmp(buf, "dphy", 8) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_DSI_DPHY);
+    }else if(strnicmp(buf, "hdmi", 4) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_HDMI);
+    }else if(strnicmp(buf, "ccmu", 4) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_CCMU);
+    }else if(strnicmp(buf, "pioc", 4) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_PIOC);
+    }else if(strnicmp(buf, "pwm", 3) == 0)
+    {
+        BSP_disp_print_reg(1, DISP_REG_PWM);
     }else
     {
-        BSP_disp_print_reg(1, (unsigned int)val);
-	}
+        printk("Invalid para!\n");
+    }
 
 	return count;
 }
@@ -232,9 +283,9 @@ static ssize_t disp_layer_para_show(struct device *dev,
     }
     else
     {
-        return sprintf(buf, "=== screen%d layer%d para ====\nmode: %d\nfb.size=<%dx%d>\nfb.fmt=<%d, %d, %d>\ntrd_src=<%d, %d> trd_out=<%d, %d>\npipe:%d\tprio: %d\nalpha: <%d, %d>\tcolor_key_en: %d\nsrc_window:<%d,%d,%d,%d>\nscreen_window:<%d,%d,%d,%d>\npre_multiply=%d\n======= screen%d layer%d para ====\n",
-        sel, HANDTOID(hid),layer_para.mode, layer_para.fb.size.width,
-        layer_para.fb.size.height, layer_para.fb.mode, layer_para.fb.format,
+        return sprintf(buf, "=== screen%d layer%d para ====\nmode: %d\naddr=<%x,%x,%x>\nfb.size=<%dx%d>\nfb.fmt=<%d, %d, %d>\ntrd_src=<%d, %d> trd_out=<%d, %d>\npipe:%d\tprio: %d\nalpha: <%d, %d>\tcolor_key_en: %d\nsrc_window:<%d,%d,%d,%d>\nscreen_window:<%d,%d,%d,%d>\npre_multiply=%d\n======= screen%d layer%d para ====\n",
+        sel, HANDTOID(hid),layer_para.mode, layer_para.fb.addr[0], layer_para.fb.addr[1], layer_para.fb.addr[2],
+        layer_para.fb.size.width, layer_para.fb.size.height, layer_para.fb.mode, layer_para.fb.format,
         layer_para.fb.seq, layer_para.fb.b_trd_src,  layer_para.fb.trd_mode,
         layer_para.b_trd_out, layer_para.out_trd_mode, layer_para.pipe,
         layer_para.prio, layer_para.alpha_en, layer_para.alpha_val,

@@ -319,6 +319,8 @@ typedef enum//only for debug!!!
     DISP_REG_DRC0 = 15,
     DISP_REG_DRC1 = 16,
     DISP_REG_DSI = 17,
+    DISP_REG_DSI_DPHY = 18,
+    DISP_REG_HDMI = 19,
 }__disp_reg_index_t;
 
 
@@ -612,7 +614,8 @@ typedef struct
 	__u32   lcd_vspw;
 	__u32   lcd_hspw;
 
-	__u32   lcd_io_phase;
+	__u32   lcd_hv_clk_phase;
+    __u32   lcd_hv_sync_polarity;
 
 	__u32   lcd_frm;
 	__u32   lcd_gamma_en;

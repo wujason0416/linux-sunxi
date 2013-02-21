@@ -110,6 +110,7 @@ typedef struct
     __u32 base_dsi0;
     __u32 base_dsi1;
     __u32 base_timer;
+    __u32 base_hdmi;
 
 	void (*tve_interrup) (__u32 sel);
 	__s32 (*hdmi_set_mode)(__disp_tv_mode_t mode);
