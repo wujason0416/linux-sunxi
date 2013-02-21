@@ -125,6 +125,15 @@ config CSI_GC2015
 	  This is a Video4Linux2 sensor-level driver for the GalaxyCore
 	  GC2015 2M camera.
 
+config CSI_GC2035
+	tristate "GalaxyCore GC2035 2M sensor support"
+	default m
+	depends on I2C && VIDEO_V4L2
+	select	CSI_DEV_SEL_SUN5I
+	---help---
+	  This is a Video4Linux2 sensor-level driver for the GalaxyCore
+	  GC2035 2M camera.
+
 config CSI_OV2643
 	tristate "OmniVision OV2643 2M sensor support"
 	default m

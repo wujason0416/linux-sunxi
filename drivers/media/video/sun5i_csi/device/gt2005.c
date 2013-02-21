@@ -69,19 +69,19 @@ MODULE_LICENSE("GPL");
  * useful.
  */
 #define UXGA_WIDTH		1600
-#define UXGA_HEIGHT		1200
+#define UXGA_HEIGHT	1200
 #define HD720_WIDTH 	1280
 #define HD720_HEIGHT	720
 #define SVGA_WIDTH		800
 #define SVGA_HEIGHT 	600
-#define VGA_WIDTH			640
+#define VGA_WIDTH		640
 #define VGA_HEIGHT		480
 #define QVGA_WIDTH		320
-#define QVGA_HEIGHT		240
-#define CIF_WIDTH			352
+#define QVGA_HEIGHT	240
+#define CIF_WIDTH		352
 #define CIF_HEIGHT		288
 #define QCIF_WIDTH		176
-#define	QCIF_HEIGHT		144
+#define	QCIF_HEIGHT	144
 
 /*
  * Our nominal (default) frame rate.
@@ -153,6 +153,8 @@ struct regval_list {
 
 
 static struct regval_list sensor_default_regs[] = {
+
+
 	{{0x01,	0x01} , {0x00}},
 	{{0x01,	0x03} , {0x00}},
 
@@ -185,10 +187,10 @@ static struct regval_list sensor_default_regs[] = {
 	//PLL&Frame Rate
 	{{0x01,	0x16} , {0x02}},
 	{{0x01,	0x17} , {0x00}},
-	{{0x01,	0x18} , {0x67}},
-	{{0x01,	0x19} , {0x02}},
+	{{0x01,	0x18} , {0x40}},
+	{{0x01,	0x19} , {0x01}},
 	{{0x01,	0x1A} , {0x04}},
-	{{0x01,	0x1B} , {0x01}},
+	{{0x01,	0x1B} , {0x00}},
 
 	//DCLK Polarity
 	{{0x01,	0x1C} , {0x00}},
@@ -209,7 +211,7 @@ static struct regval_list sensor_default_regs[] = {
 	{{0x01,	0x28} , {0x00}},
 
 	//Contrast
-	{{0x02,	0x00} , {0x00}},
+	{{0x02,	0x00} , {0x10}},
 
 	//Brightness
 	{{0x02,	0x01} , {0x00}},
@@ -350,9 +352,9 @@ static struct regval_list sensor_default_regs[] = {
 	{{0x03,	0x0F}, {0x10}},
 	{{0x03,	0x10}, {0x04}},
 	{{0x03,	0x11}, {0xFF}},
-	{{0x03,	0x12}, {0x08}},
-	{{0x03,	0x13}, {0x28}},
-	{{0x03,	0x14}, {0x66}},
+	{{0x03,	0x12}, {0x08}},//08
+	{{0x03,	0x13}, {0x35}},
+	{{0x03,	0x14}, {0x35}},
 	{{0x03,	0x15}, {0x96}},
 	{{0x03,	0x16}, {0x26}},
 	{{0x03,	0x17}, {0x02}},
@@ -688,6 +690,9 @@ static struct regval_list sensor_default_regs[] = {
 	{{0x01,	0x00} , {0x01}},
 	{{0x01,	0x02} , {0x02}},
 	{{0x01,	0x04} , {0x03}},
+
+
+
 };
 
 static struct regval_list sensor_uxga_regs[] = {
@@ -700,22 +705,11 @@ static struct regval_list sensor_uxga_regs[] = {
 	{{0x01,	0x12} , {0x04}},
 	{{0x01,	0x13} , {0xb0}},
 
-	//PLL&Frame Rate 15fps
-	{{0x01,	0x16} , {0x02}},
-	{{0x01,	0x18} , {0x69}},//0x67
-	{{0x01,	0x19} , {0x01}},//0x02
-	{{0x01,	0x1A} , {0x04}},
-	{{0x01,	0x1B} , {0x00}},//PCLK DIV
-
-	//banding
-	{{0x03,	0x15} , {0x16}},
-	{{0x03,	0x13} , {0x38}},//0x2866 for uxga ,0x388b  for hd720,0x3536 for svga
-	{{0x03,	0x14} , {0x8B}},//
 };
 
 static struct regval_list sensor_hd720_regs[] = {
 //Resolution Setting : 1280*720
-	{{0x01,	0x09} , {0x00}},
+	{{0x01,	0x09} , {0x01}},
 	{{0x01,	0x0A} , {0x00}},
 	{{0x01,	0x0B} , {0x03}},
 	{{0x01,	0x10} , {0x05}},
@@ -723,17 +717,8 @@ static struct regval_list sensor_hd720_regs[] = {
 	{{0x01,	0x12} , {0x02}},
 	{{0x01,	0x13} , {0xD0}},
 
-	//PLL Setting 15FPS Under 24MHz PCLK
-	{{0x01,	0x16} , {0x02}},
-	{{0x01,	0x18} , {0x69}},
-	{{0x01,	0x19} , {0x01}},
-	{{0x01,	0x1a} , {0x04}},
-	{{0x01,	0x1B} , {0x00}},//PCLK DIV
+      {{0x03,	0x00} , {0x81}},   // alc on  2012-2-17
 
-	//banding
-	{{0x03,	0x15} , {0x16}},
-	{{0x03,	0x13} , {0x38}},
-	{{0x03,	0x14} , {0x8B}},
 };
 
 static struct regval_list sensor_svga_regs[] = {
@@ -746,17 +731,8 @@ static struct regval_list sensor_svga_regs[] = {
 	{{0x01,	0x12} , {0x02}},
 	{{0x01,	0x13} , {0x58}},
 
-	//PLL Setting 30FPS Under 24MHz PCLK
-	{{0x01,	0x16} , {0x02}},
-	{{0x01,	0x18} , {0x69}},//0x40
-	{{0x01,	0x19} , {0x01}},
-	{{0x01,	0x1a} , {0x04}},
-	{{0x01,	0x1B} , {0x00}},//PCLK DIV
+	{{0x03,	0x00} , {0x81}},
 
-	//banding
-	{{0x03,	0x15} , {0x16}},
-	{{0x03,	0x13} , {0x38}},//0x35
-	{{0x03,	0x14} , {0x8B}},//0x36
 };
 
 static struct regval_list sensor_vga_regs[] = {
@@ -768,19 +744,8 @@ static struct regval_list sensor_vga_regs[] = {
 	{{0x01,	0x11} , {0x80}},
 	{{0x01,	0x12} , {0x01}},
 	{{0x01,	0x13} , {0xE0}},
+	{{0x03,	0x00} , {0x81}},
 
-	//PLL Setting 30FPS Under 24MHz PCLK
-	{{0x01,	0x16} , {0x02}},
-	{{0x01,	0x18} , {0x69}},//0x40
-	{{0x01,	0x19} , {0x01}},
-	{{0x01,	0x1a} , {0x04}},
-	{{0x01,	0x1B} , {0x00}},//PCLK DIV
-
-	//banding
-	{{0x03,	0x15} , {0x16}},
-	{{0x03,	0x13} , {0x38}},//0x35
-	{{0x03,	0x14} , {0x8B}},//0x36
-	{{0xff, 0xff} , {0x64}},
 };
 
 
@@ -1437,7 +1402,10 @@ static int sensor_init(struct v4l2_subdev *sd, u32 val)
 		return ret;
 	}
 
-	return sensor_write_array(sd, sensor_default_regs , ARRAY_SIZE(sensor_default_regs));
+	ret = sensor_write_array(sd, sensor_default_regs , ARRAY_SIZE(sensor_default_regs));
+	msleep(100);
+
+	return ret;
 }
 
 static long sensor_ioctl(struct v4l2_subdev *sd, unsigned int cmd, void *arg)
@@ -1678,12 +1646,144 @@ static int sensor_try_fmt(struct v4l2_subdev *sd,
 	return sensor_try_fmt_internal(sd, fmt, NULL, NULL);
 }
 
+static int g_pv_shutter_reg12 = 0;
+static int g_pv_shutter_reg13 = 0;
+
+static int AGain_shutter_reg14 = 0;
+static int AGain_shutter_reg15 = 0;
+static int DGain_shutter_reg16 = 0;
+static int DGain_shutter_reg17 = 0;
+
+static int sensor_s_fmt_before(struct v412_subdev *sd)
+{
+    struct regval_list regs;
+	int ret;
+
+	regs.reg_num[0] = 0x03;
+	regs.reg_num[1] = 0x00;
+	regs.value[0] = 0xC1;
+	ret = sensor_write(sd, regs.reg_num, regs.value);
+
+	regs.reg_num[0] = 0x00;
+	regs.reg_num[1] = 0x12;
+	ret = sensor_read(sd, regs.reg_num, &g_pv_shutter_reg12);
+
+	//g_pv_shutter_reg12 = regs.value;
+	printk("snesor_s_fmt_before g_pv_shutter_reg12 = [%x]\n", g_pv_shutter_reg12);
+	regs.reg_num[0] = 0x00;
+	regs.reg_num[1] = 0x13;
+
+	ret = sensor_read(sd, regs.reg_num, &g_pv_shutter_reg13);//  regs.value); james
+
+	//g_pv_shutter_reg13 = regs.value;
+
+	printk("snesor_s_fmt_before g_pv_shutter_reg13 = [%x]\n", g_pv_shutter_reg13);
+	regs.reg_num[0] = 0x00;
+	regs.reg_num[1] = 0x14;
+
+	ret = sensor_read(sd, regs.reg_num, &AGain_shutter_reg14);
+
+	regs.reg_num[0] = 0x00;
+	regs.reg_num[1] = 0x15;
+
+	ret = sensor_read(sd, regs.reg_num, &AGain_shutter_reg15);
+
+	regs.reg_num[0] = 0x00;
+	regs.reg_num[1] = 0x16;
+
+	ret = sensor_read(sd, regs.reg_num, &DGain_shutter_reg16);
+
+	regs.reg_num[0] = 0x00;
+	regs.reg_num[1] = 0x17;
+
+	ret = sensor_read(sd, regs.reg_num, &DGain_shutter_reg17);
+
+	printk("AGain_shutter_reg14 = [%d], AGain_shutter_reg15 = %x, DGain_shutter_reg16 = %x, DGain_shutter_reg17 = %x\n",
+	AGain_shutter_reg14, AGain_shutter_reg15, DGain_shutter_reg16, DGain_shutter_reg17);
+
+}
+
+static int sensor_s_fmt_after(struct v412_subdev *sd)
+{
+    struct regval_list regs;
+
+	int ret;
+#if 0//just for test   james 2012-2-17
+	regs.reg_num[0] = 0x00;
+	regs.reg_num[1] = 0x14;
+
+	ret = sensor_read(sd, regs.reg_num, &AGain_shutter_reg14);
+
+	regs.reg_num[0] = 0x00;
+	regs.reg_num[1] = 0x15;
+
+	ret = sensor_read(sd, regs.reg_num, &AGain_shutter_reg15);
+
+	regs.reg_num[0] = 0x00;
+	regs.reg_num[1] = 0x16;
+
+	ret = sensor_read(sd, regs.reg_num, &DGain_shutter_reg16);
+
+	regs.reg_num[0] = 0x00;
+	regs.reg_num[1] = 0x17;
+
+	ret = sensor_read(sd, regs.reg_num, &DGain_shutter_reg17);
+
+    printk("AGain_shutter_reg14 = [%d], AGain_shutter_reg15 = %x, DGain_shutter_reg16 = %x, DGain_shutter_reg17 = %x\n",
+        AGain_shutter_reg14, AGain_shutter_reg15, DGain_shutter_reg16, DGain_shutter_reg17);
+	#endif //just for test   james 2012-2-17
+#if 0
+	regs.reg_num[0] = 0x03;
+	regs.reg_num[1] = 0x00;
+	regs.value[0] = 0xc1;
+
+	ret = sensor_write(sd, regs.reg_num, regs.value);
+
+#endif
+	regs.reg_num[0] = 0x03;
+	regs.reg_num[1] = 0x04;  //   james
+	regs.value[0] = g_pv_shutter_reg12;
+
+	ret = sensor_write(sd, regs.reg_num, regs.value);
+
+	regs.reg_num[0] = 0x03;
+	regs.reg_num[1] = 0x05;//james
+	regs.value[0] = g_pv_shutter_reg13;
+
+	ret = sensor_write(sd, regs.reg_num, regs.value);
+	regs.reg_num[0] = 0x03;
+	regs.reg_num[1] = 0x07;
+	regs.value[0] = AGain_shutter_reg15;
+
+	ret = sensor_write(sd, regs.reg_num, regs.value);
+
+	regs.reg_num[0] = 0x03;
+	regs.reg_num[1] = 0x06;
+	regs.value[0] = AGain_shutter_reg14;
+
+	ret = sensor_write(sd, regs.reg_num, regs.value);
+
+	regs.reg_num[0] = 0x03;
+	regs.reg_num[1] = 0x08;
+	regs.value[0] = ((((DGain_shutter_reg16 << 8) | (DGain_shutter_reg17 & 0xFF)) >> 2) & 0xFF);
+
+	ret = sensor_write(sd, regs.reg_num, regs.value);
+
+	regs.reg_num[0] = 0x03;
+	regs.reg_num[1] = 0x00;
+	regs.value[0] = 0x01;  //0x41  2012-2-17
+	ret = sensor_write(sd, regs.reg_num, regs.value);
+
+	msleep(50);
+	return 0;
+}
 /*
  * Set a format.
  */
 static int sensor_s_fmt(struct v4l2_subdev *sd,
              struct v4l2_mbus_framefmt *fmt)//linux-3.0
 {
+	struct regval_list regs;
 	int ret;
 	struct sensor_format_struct *sensor_fmt;
 	struct sensor_win_size *wsize;
@@ -1692,10 +1792,13 @@ static int sensor_s_fmt(struct v4l2_subdev *sd,
 	ret = sensor_try_fmt_internal(sd, fmt, &sensor_fmt, &wsize);
 	if (ret)
 		return ret;
-
+	printk("chr wsize.width = [%d], wsize.height = [%d]\n", wsize->width, wsize->height);
 
 	sensor_write_array(sd, sensor_fmt->regs , sensor_fmt->regs_size);
-
+    if (wsize->width == 1600 && wsize->height == 1200)
+	{
+		sensor_s_fmt_before(sd);  // james added before capture
+	}
 	ret = 0;
 	if (wsize->regs)
 	{
@@ -1703,7 +1806,18 @@ static int sensor_s_fmt(struct v4l2_subdev *sd,
 		if (ret < 0)
 			return ret;
 	}
+    if (wsize->width == 1600 && wsize->height == 1200){
+		sensor_s_fmt_after(sd); //james
+		msleep(300);
+	}
+	 if ((wsize->width == 640 && wsize->height == 480)||(wsize->width == 800 && wsize->height==600)){
 
+	regs.reg_num[0] = 0x03;
+	regs.reg_num[1] = 0x00;
+	regs.value[0] = 0x81;
+	ret = sensor_write(sd, regs.reg_num, regs.value);
+		msleep(300); //james 2012-2-15
+	}
 	if (wsize->set_size)
 	{
 		ret = wsize->set_size(sd);
@@ -1779,7 +1893,7 @@ static int sensor_s_parm(struct v4l2_subdev *sd, struct v4l2_streamparm *parms)
 //	tpf->denominator = sensor_FRAME_RATE/div;
 //
 //	sensor_write(sd, REG_CLKRC, info->clkrc);
-	return 0;
+	return -EINVAL;
 }
 
 

@@ -57,7 +57,7 @@ build_kernel()
 	fi
 
 	build_standby
-	make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} -j8 uImage modules
+	make ARCH=${ARCH} CROSS_COMPILE=${CROSS_COMPILE} KBUILD_BUILD_USER=root KBUILD_BUILD_HOST=localhost -j8 uImage modules
 
 	update_kern_ver
 
