@@ -572,7 +572,7 @@ typedef struct
 	__lcd_hv_syuv_fdly_t	lcd_hv_syuv_fdly;
 
 	__lcd_lvds_if_t   		lcd_lvds_if;
-	__lcd_lvds_colordepth_t	lcd_lvds_colordepth; //color depth
+	__lcd_lvds_colordepth_t	lcd_lvds_colordepth; //color depth, 0:8bit; 1:6bit
 	__lcd_lvds_mode_t   	lcd_lvds_mode;
 	__u32   				lcd_lvds_io_polarity;
 
@@ -592,8 +592,7 @@ typedef struct
     __u32                  lcd_edp_tx_ic;   //0:anx9804;  1:anx6345
     __u32                  lcd_edp_tx_rate; //1(1.62G); 2(2.7G); 3(5.4G)
     __u32                  lcd_edp_tx_lane; //  1/2/4lane
-
-
+    __u32                  lcd_edp_colordepth; //color depth, 0:8bit; 1:6bit
 
 	__u32   lcd_dclk_freq;
 	__u32   lcd_x; //horizontal resolution
