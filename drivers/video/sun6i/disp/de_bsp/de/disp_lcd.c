@@ -424,6 +424,12 @@ __s32 LCD_parse_panel_para(__u32 sel, __panel_para_t * info)
         info->lcd_edp_tx_lane= value;
     }
 
+    ret = OSAL_Script_FetchParser_Data(primary_key, "lcd_edp_colordepth", &value, 1);
+    if(ret == 0)
+    {
+        info->lcd_edp_colordepth = value;
+    }
+
     ret = OSAL_Script_FetchParser_Data(primary_key, "lcd_hv_clk_phase", &value, 1);
     if(ret == 0)
     {
@@ -1015,6 +1021,54 @@ __s32 LCD_POWER_EN(__u32 sel, __bool b_en)
 					DE_WRN("enable eldo3 fail\n");
 				}
 	        }
+            else if((gpanel_info[sel].lcd_if == LCD_IF_EDP) && (gpanel_info[sel].lcd_edp_tx_ic == 1))
+	        {
+				__u8 data;
+				__u32 ret;
+				__u8 addr;
+
+				addr = 0x15;
+				data = 0x12;
+				ret = ar100_axp_write_reg(&addr, &data, 1); //set dldo1 to 2.5v
+				if(ret != 0)
+				{
+					DE_WRN("set dldo3 to 2.5v fail\n");
+				}
+				addr = 0x12;
+				ret = ar100_axp_read_reg(&addr, &data, 1);
+				if(ret != 0)
+				{
+					DE_WRN("axp read reg fail\n");
+				}
+				addr = 0x12;
+				data |= 0x08;
+				ar100_axp_write_reg(&addr, &data, 1); //enable dldo1
+				if(ret != 0)
+				{
+					DE_WRN("enable dldo1 fail\n");
+				}
+
+                addr = 0x1b;
+				data = 0x05;
+				ret = ar100_axp_write_reg(&addr, &data, 1); //set eldo3 to 1.2v
+				if(ret != 0)
+				{
+					DE_WRN("set eldo3 to 1.2v fail\n");
+				}
+				addr = 0x12;
+				ret = ar100_axp_read_reg(&addr, &data, 1);
+				if(ret != 0)
+				{
+					DE_WRN("axp read reg fail\n");
+				}
+				addr = 0x12;
+				data |= 0x04;
+				ar100_axp_write_reg(&addr, &data, 1); //enable eldo3
+				if(ret != 0)
+				{
+					DE_WRN("enable eldo3 fail\n");
+				}
+	        }
             msleep(50);
         }
         Disp_lcdc_pin_cfg(sel, DISP_OUTPUT_TYPE_LCD, 1);
@@ -1036,14 +1090,46 @@ __s32 LCD_POWER_EN(__u32 sel, __bool b_en)
 			ret = ar100_axp_read_reg(&addr, &data, 1);
 			if(ret != 0)
 			{
-				DE_WRN("axp read reg fail\n");
+                    DE_WRN("axp read reg fail\n");
 			}
 			data &= 0xfb;
 			ar100_axp_write_reg(&addr, &data, 1); //enable eldo3
 			if(ret != 0)
 			{
-				DE_WRN("disable eldo3 fail\n");
+                    DE_WRN("disable eldo3 fail\n");
 			}
+           }
+           else if((gpanel_info[sel].lcd_if == LCD_IF_EDP) && (gpanel_info[sel].lcd_edp_tx_ic == 1))
+           {
+                __u8 data;
+                __u32 ret;
+                __u8 addr;
+
+                addr = 0x12;
+                ret = ar100_axp_read_reg(&addr, &data, 1);
+                if(ret != 0)
+                {
+                    DE_WRN("axp read reg fail\n");
+                }
+                data &= 0xfb;
+                ar100_axp_write_reg(&addr, &data, 1); //disable eldo3
+                if(ret != 0)
+                {
+                    DE_WRN("disable eldo3 fail\n");
+                }
+
+                addr = 0x12;
+                ret = ar100_axp_read_reg(&addr, &data, 1);
+                if(ret != 0)
+                {
+                    DE_WRN("axp read reg fail\n");
+                }
+                data &= 0xf7;
+                ar100_axp_write_reg(&addr, &data, 1); //disable dldo1
+                if(ret != 0)
+                {
+                    DE_WRN("disable dldo1 fail\n");
+                }
            }
 
 		udelay(200);
