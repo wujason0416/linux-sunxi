@@ -631,11 +631,13 @@ __s32 DE_BE_Disable(__u32 sel)
     return 0;
 }
 
-// 0:lcd
+// 0:lcd only
+// 2:lcd0+fe0; 3:lcd1+fe0
+// 4:lcd0+fe1; 5:lcd1+fe1
 // 6:fe0 only;  7:fe1 only
 __s32 DE_BE_Output_Select(__u32 sel, __u32 out_sel)
 {
-    out_sel = ((out_sel != 0) && (out_sel != 6) && (out_sel !=7))? 0:out_sel;
+    out_sel = (out_sel == 1)? 0:out_sel;
     DE_BE_WUINT32(sel,DE_BE_MODE_CTL_OFF,(DE_BE_RUINT32(sel, DE_BE_MODE_CTL_OFF) & 0xff8fffff) | (out_sel << 20));//start
 
     if((out_sel == 6) || (out_sel == 7))
