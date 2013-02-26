@@ -511,7 +511,6 @@ __s32 BSP_disp_layer_close(__u32 sel, __u32 hid)
             DE_BE_Layer_Enable(sel, hid,FALSE);
             BSP_disp_cfg_finish(sel);
             layer_man->status &= LAYER_OPEN_MASK;
-            msleep(10);
         }
         return DIS_SUCCESS;
     }
