@@ -345,6 +345,7 @@ __s32 IEP_Deu_Enable(__u32 sel, __u32 enable)
 		DEU_EBIOS_Set_Csc_Coeff(sel, gdeu[sel].frameinfo.csc_mode);	
 		DEU_EBIOS_Csc_Enable(sel, 1);
 		g_deu_status[sel] |= DEU_USED;
+        g_deu_status[sel] &= DEU_NEED_CLOSED_MASK;
 		
 	}
 	else

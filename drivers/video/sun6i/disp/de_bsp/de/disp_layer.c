@@ -406,9 +406,13 @@ __s32 BSP_disp_layer_release(__u32 sel, __u32 hid)
 
     BSP_disp_cfg_start(sel);
     
+    if(BSP_disp_video_get_start(sel,IDTOHAND(hid)))
+    {
+        BSP_disp_video_stop(sel, IDTOHAND(hid));
+    }
+
     layer_man = &gdisp.screen[sel].layer_manage[hid];
-        
-    
+
     if(layer_man->status & LAYER_USED)
     {
         if(layer_man->para.mode == DISP_LAYER_WORK_MODE_SCALER)
@@ -456,11 +460,6 @@ __s32 BSP_disp_layer_release(__u32 sel, __u32 hid)
     DE_BE_Layer_ColorKey_Enable(sel, hid, FALSE);
 
     BSP_disp_cfg_finish(sel);
-    if(BSP_disp_video_get_start(sel,IDTOHAND(hid)))
-    {
-        //pr_warn("========bsp_disp_video_stop======,sel=%d,hid=%d\n", sel, hid);
-        BSP_disp_video_stop(sel, IDTOHAND(hid));
-    }
     
     OSAL_IrqLock(&cpu_sr);
     layer_man->para.prio = IDLE_PRIO;
@@ -512,6 +511,7 @@ __s32 BSP_disp_layer_close(__u32 sel, __u32 hid)
             DE_BE_Layer_Enable(sel, hid,FALSE);
             BSP_disp_cfg_finish(sel);
             layer_man->status &= LAYER_OPEN_MASK;
+            msleep(10);
         }
         return DIS_SUCCESS;
     }

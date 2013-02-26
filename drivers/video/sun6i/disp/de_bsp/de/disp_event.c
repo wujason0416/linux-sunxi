@@ -45,7 +45,7 @@ __s32 BSP_disp_vsync_event_enable(__u32 sel, __bool enable)
     
     return DIS_SUCCESS;
 }
-//return 10fps
+//return 0.1fps
 __s32 bsp_disp_get_fps(__u32 sel)
 {
     __u32 pre_time_index, cur_time_index;
