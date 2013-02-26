@@ -107,3 +107,5 @@ arch/arm/mach-sun5i/pm/standby/super/resume/resume1.code
 arch/arm/mach-sun5i/pm/standby/super/suspend/suspend.code
 arch/arm/mach-sun5i/pm/standby/suspend.map
 
+modules/mali/DX910-SW-99002-r3p1-01rel1/driver/src/devicedrv/mali/Module.symvers
+modules/mali/DX910-SW-99002-r3p1-01rel1/driver/src/devicedrv/ump/Module.symvers
