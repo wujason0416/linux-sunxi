@@ -467,7 +467,9 @@ void NAND_PIORequest(void)
 	/* ≈‰÷√gpio list */
 	if(0 != sw_gpio_setall_range(&list[0].gpio, cnt))
 		printk("sw_gpio_setall_range failed\n");
+     return;
 end:
+    printk("nand:gpio_request failed\n");
 	/*  Õ∑≈gpio */
 	while(i--)
 		gpio_free(list[i].gpio.gpio);
