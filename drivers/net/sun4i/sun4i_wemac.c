@@ -42,22 +42,22 @@
 #include <mach/clock.h>
 #include <mach/platform.h>
 
+#include "../../power/axp_power/axp-gpio.h"
+#include <linux/regulator/consumer.h>
+
+
 #include "sun4i_wemac.h"
 
-#undef	PHY_POWER
+#define	PHY_POWER
 #undef	DYNAMIC_MAC_SYSCONFIG
-#undef	SYSCONFIG_GPIO
-
-/* #undef	SYSCONFIG_CCMU */
+#define	SYSCONFIG_GPIO
 #define	SYSCONFIG_CCMU
 
+#undef	PKT_DUMP
+#undef	PHY_DUMP
+#undef	MAC_DUMP
+
 /* Board/System/Debug information/definition ---------------- */
-
-#define CARDNAME	"wemac"
-#define DRV_VERSION	"3.00"
-#define DMA_CPU_TRRESHOLD 2000
-
-/* debug code */
 #define CONFIG_WEMAC_DEBUGLEVEL 0
 
 #ifdef DEBUG
@@ -75,6 +75,9 @@
 
 #endif
 
+#define CARDNAME	"wemac"
+#define DRV_VERSION	"3.00"
+#define DMA_CPU_TRRESHOLD 2000
 #ifndef PHY_MAX_ADDR
 #define PHY_MAX_ADDR 0x1f
 #endif
@@ -158,7 +161,6 @@ typedef struct wemac_board_info {
 	u32 mos_pin_handler;
 #endif
 
-	struct standby_data *reg_saves;
 	u32 multi_filter[2];
 } wemac_board_info_t;
 
@@ -174,6 +176,141 @@ static void wemac_rx(struct net_device *dev);
 static void wemac_get_macaddr(wemac_board_info_t *db);
 static void emac_reg_dump(wemac_board_info_t *db);
 static void phy_reg_dump(wemac_board_info_t *db);
+static void pkt_dump(unsigned char *buf, int len);
+
+/* add by chenjd@allwinnertech.com,20130108
+* EMAC POWER:operation for AXP GPIO
+*/
+#define  EXTERN_PIN_LDO_MASK     200
+static u32 alloc_axp_pin(user_gpio_set_t *gpio_list){
+	u32 pin_handle = 0;
+	char name[32];
+  	memset(name, 0, 32);
+
+  	if(gpio_list->port == 0xffff){  //axp,
+    	if(gpio_list->port_num >= EXTERN_PIN_LDO_MASK){ //port num is above 200
+  	#ifdef  CONFIG_REGULATOR
+		#ifdef CONFIG_AW_AXP15
+            switch((gpio_list->port_num - EXTERN_PIN_LDO_MASK)){
+                case 1:
+                    strcpy(name, "axp15_rtc");	//rtc ldo0 --> power201
+                break;
+
+                case 2:
+                    strcpy(name, "axp15_analog/fm");	//aldo1 -->power202
+                break;
+
+                case 3:
+                    strcpy(name, "axp15_analog/fm2");	//aldo2 -->power203
+                break;
+
+                case 4:
+                    strcpy(name, "axp15_pll/sdram");	//dldo1 -->power204
+                break;
+
+                case 5:
+                    strcpy(name, "axp15_pll/hdmi");		//dldo2 -->power205
+                break;
+
+                default:
+                    printk("ERR: unkown gpio_list->port_num(%d)\n", gpio_list->port_num);
+                    goto failed;
+            }
+		#else
+			switch((gpio_list->port_num - EXTERN_PIN_LDO_MASK)){
+                case 1:
+                    strcpy(name, "axp20_rtc");
+                break;
+
+                case 2:
+                    strcpy(name, "axp20_analog/fm");
+                break;
+
+                case 3:
+                    strcpy(name, "axp20_pll");
+                break;
+
+                case 4:
+                    strcpy(name, "axp20_hdmi");
+                break;
+
+                default:
+                    printk("ERR: unkown gpio_list->port_num(%d)\n", gpio_list->port_num);
+                    goto failed;
+            }
+        #endif
+
+            pin_handle = (u32)regulator_get(NULL, name);
+            if(pin_handle == 0){
+                printk("ERR: regulator_get failed\n");
+                return 0;
+            }
+
+			printk("get AXP handle for axp port num above 200,handle is %x\n",pin_handle);
+            regulator_force_disable((struct regulator*)pin_handle);
+  #else
+  			printk("CONFIG_REGULATOR is not define\n");
+  #endif
+        }else{
+        	axp_gpio_set_io(gpio_list->port_num, gpio_list->mul_sel);
+            axp_gpio_set_value(gpio_list->port_num, gpio_list->data);
+            printk("get AXP handle for axp port num is %d\n",100+gpio_list->port_num);
+            return (100 + gpio_list->port_num);
+        }
+  	}
+failed:
+	return pin_handle;
+}
+
+static void free_axp_pin(u32 pin_handle, user_gpio_set_t *gpio_list){
+	if(pin_handle){
+		if(gpio_list->port == 0xffff) { //AXP
+			if(gpio_list->port_num >= EXTERN_PIN_LDO_MASK){
+			#ifdef  CONFIG_REGULATOR
+				printk("free axp pin");
+				regulator_force_disable((struct regulator*)pin_handle);
+			#else
+				printk("CONFIG_REGULATOR is not define\n");
+			#endif
+			}
+			else{
+				axp_gpio_set_io(gpio_list->port_num, gpio_list->mul_sel);
+        		axp_gpio_set_value(gpio_list->port_num, gpio_list->data);
+			}
+		}
+	}
+	return;
+}
+
+static void set_axp_power(u32 handler, user_gpio_set_t *drv_vbus_gpio_set, int is_on){
+	u32 on_off = 0;
+	int new_vdd = 3300;
+	if(handler == 0){
+		printk("wrn: handler is null\n");
+		return;
+	}
+	if(drv_vbus_gpio_set->port == 0xffff){
+		if(drv_vbus_gpio_set->port_num >= EXTERN_PIN_LDO_MASK){
+		#ifdef  CONFIG_REGULATOR
+			printk("set emac axp power:%d",is_on);
+    	if(is_on){
+			regulator_set_voltage((struct regulator*)handler, new_vdd*1000, new_vdd*1000);
+			regulator_set_mode((struct regulator*) handler,REGULATOR_MODE_NORMAL);
+      		regulator_enable((struct regulator*)handler);
+    	}else{
+        	regulator_disable((struct regulator*)handler);
+    	}
+		#else
+		printk("CONFIG_REGULATOR is not define\n");
+		#endif
+    	}else{
+     	 	axp_gpio_set_value(drv_vbus_gpio_set->port_num, on_off);
+     	}
+	}
+}
+
+
+
 
 struct sw_dma_client emacrx_dma_client = {
 	.name="EMACRX_DMA",
@@ -375,7 +512,7 @@ static void wemac_dumpblk_32bit(void __iomem *reg, int count)
 
 static void wemac_schedule_poll(wemac_board_info_t *db)
 {
-	schedule_delayed_work(&db->phy_poll, HZ * 1);
+	schedule_delayed_work(&db->phy_poll, HZ/10);
 }
 
 static int wemac_ioctl(struct net_device *dev, struct ifreq *req, int cmd)
@@ -765,18 +902,24 @@ static void wemac_release_board(struct platform_device *pdev,
 #endif
 
 #ifdef PHY_POWER
-	if(db->mos_pin_handler)
-		gpio_release(db->mos_pin_handler, 0);
-	if(db->mos_gpio)
+	if(db->mos_gpio){
+		if(db->mos_gpio->port == 0xffff){//AXP
+			free_axp_pin(db->mos_pin_handler,db->mos_gpio);
+		}else{//ic
+			if(db->mos_pin_handler){
+				gpio_release(db->mos_pin_handler, 0);
+			}
+
+		}
 		kfree(db->mos_gpio);
+	}
 #endif
 }
 
 /*
  *  Set WEMAC multicast address
  */
-	static void
-wemac_set_rx_mode(struct net_device *dev)
+static void wemac_set_rx_mode(struct net_device *dev)
 {
 	wemac_board_info_t *db = netdev_priv(dev);
 	struct netdev_hw_addr *ha;
@@ -870,14 +1013,21 @@ static int wemac_phy_init(wemac_board_info_t *db)
 	struct mii_if_info *mii_if = &db->mii;
 	int i;
 	unsigned long timeout;
-	u16 phy_status;
+	u32 phy_status;
 	u16 phy_reg;
 	u32 reg_val;
 
 #ifdef PHY_POWER
-	if(db->mos_pin_handler){
-		db->mos_gpio->data = 1;
-		gpio_set_one_pin_status(db->mos_pin_handler, db->mos_gpio, "emac_power", 1);
+	if(db->mos_gpio){
+		if(db->mos_gpio->port == 0xffff){//AXP
+			set_axp_power(db->mos_pin_handler,db->mos_gpio, 1);
+			mdelay(10);
+		}else{//ic
+			if(db->mos_pin_handler){
+				db->mos_gpio->data = 1;
+				gpio_set_one_pin_status(db->mos_pin_handler, db->mos_gpio, "emac_power", 1);
+			}
+		}
 	}
 #endif
 
@@ -888,11 +1038,12 @@ static int wemac_phy_init(wemac_board_info_t *db)
 	if(phy_addr == -1){
 		/* scan phy and find the address */
 		for (i = 0; i < PHY_MAX_ADDR; i++) {
-			phy_status = (*mii_if->mdio_read)(mii_if->dev, i, MII_BMSR);
-			wemac_dbg(db, 6, "[emac]: Read the phy_status: (0x%04x), "
+			phy_status = ((*mii_if->mdio_read)(mii_if->dev, i, MII_PHYSID1) & 0xffff) << 16;
+			phy_status |= ((*mii_if->mdio_read)(mii_if->dev, i, MII_PHYSID2) & 0xffff);
+			wemac_dbg(db, 6, "[emac]: Read the phy_id: (0x%08x), "
 									"addr: (0x%04x)\n", phy_status, i);
 
-			if(phy_status == 0xffff || phy_status == 0x0000)
+			if ((phy_status & 0x1fffffff) == 0x1fffffff)
 				continue;
 
 			mii_if->phy_id = i;
@@ -913,7 +1064,7 @@ static int wemac_phy_init(wemac_board_info_t *db)
 	(*mii_if->mdio_write)(mii_if->dev, mii_if->phy_id, MII_BMCR, BMCR_RESET | phy_reg);
 
 	/* time out is 100ms */
-	timeout = jiffies + HZ/10;
+	timeout = jiffies + HZ/20;
 	while(wemac_phy_read(mii_if->dev, db->mii.phy_id, MII_BMCR) & BMCR_RESET){
 		if(time_after(jiffies, timeout)){
 			printk(KERN_WARNING "Reset the phy is timeout!!\n");
@@ -1225,6 +1376,7 @@ static void wemac_rx(struct net_device *dev)
 				netif_rx(skb);
 				dev->stats.rx_packets++;
 			}
+			pkt_dump((unsigned char *)rdptr, RxLen);
 		} else {
 			/* need to dump the packet's data */
 			(db->dumpblk)(db->emac_vbase + EMAC_RX_IO_DATA_REG, RxLen);
@@ -1298,14 +1450,14 @@ static void wemac_poll_controller(struct net_device *dev)
 
 static void phy_reg_dump(wemac_board_info_t *db)
 {
-#ifdef DEBUG
+#if defined(DEBUG) && defined(PHY_DUMP)
 	struct net_device *ndev = db->ndev;
 	struct mii_if_info *mii_if = &db->mii;
 	int i = 0;
 
 	wemac_dbg(db, 6, "\n############[PHY dump]############\n");
 	for(i=0; i <= MII_EXPANSION; i++){
-		wemac_dbg(db, 6, wemac_phy_read(ndev, mii_if->phy_id, i));
+		wemac_dbg(db, 6, "PHY_REG(0x%02x): 0x%08x\n", i, wemac_phy_read(ndev, mii_if->phy_id, i));
 	}
 	wemac_dbg(db, 6, "\n############[PHY dump]############\n");
 #endif
@@ -1313,7 +1465,7 @@ static void phy_reg_dump(wemac_board_info_t *db)
 
 static void emac_reg_dump(wemac_board_info_t *db)
 {
-#ifdef DEBUG
+#if defined(DEBUG) && defined(MAC_DUMP)
 	int i=0;
 	void __iomem *vbase = db->emac_vbase;
 
@@ -1322,6 +1474,20 @@ static void emac_reg_dump(wemac_board_info_t *db)
 		wemac_dbg(db, 6, "(OFFSET: 0x%02x) -- 0x%08x\n", i, readl(vbase + i));
 	}
 	wemac_dbg(db, 6, "\n============[Regsiter dump]============\n");
+#endif
+}
+
+static void pkt_dump(unsigned char *buf, int len)
+{
+#if defined(DEBUG) && defined(PKT_DUMP)
+	int j;
+	printk("len = %d byte, buf addr: 0x%p", len, buf);
+	for (j = 0; j < len; j++) {
+		if ((j % 16) == 0)
+			printk("\n %03x:", j);
+		printk(" %02x", buf[j]);
+	}
+	printk("\n");
 #endif
 }
 
@@ -1382,7 +1548,6 @@ static int wemac_phy_read(struct net_device *dev, int phyaddr, int reg)
 	writel((phyaddr << 8) | reg, db->emac_vbase + EMAC_MAC_MADR_REG);
 	/* pull up the phy io line */
 	writel(0x1, db->emac_vbase + EMAC_MAC_MCMD_REG);
-	spin_unlock_irqrestore(&db->lock,flags);
 
 	/* time out is 10ms */
 	timeout = jiffies + HZ/100;
@@ -1393,12 +1558,11 @@ static int wemac_phy_read(struct net_device *dev, int phyaddr, int reg)
 		}
 	}
 
-	/* push down the phy io line and read data */
-	spin_lock_irqsave(&db->lock,flags);
+	/* and read data */
+	ret = readl(db->emac_vbase + EMAC_MAC_MRDD_REG);
+
 	/* push down the phy io line */
 	writel(0x0, db->emac_vbase + EMAC_MAC_MCMD_REG);
-	/* and write data */
-	ret = readl(db->emac_vbase + EMAC_MAC_MRDD_REG);
 	spin_unlock_irqrestore(&db->lock,flags);
 
 	mutex_unlock(&db->addr_lock);
@@ -1421,23 +1585,20 @@ static void wemac_phy_write(struct net_device *dev,
 	spin_lock_irqsave(&db->lock,flags);
 	/* issue the phy address and reg */
 	writel((phyaddr << 8) | reg, db->emac_vbase + EMAC_MAC_MADR_REG);
-	writel(0x1, db->emac_vbase + EMAC_MAC_MCMD_REG);
-	spin_unlock_irqrestore(&db->lock, flags);
+	writel(0x0, db->emac_vbase + EMAC_MAC_MCMD_REG);
+
+	/* and write data */
+	writel(value, db->emac_vbase + EMAC_MAC_MWTD_REG);
 
 	/* time out is 10ms */
 	timeout = jiffies + HZ/100;
 	while(readl(db->emac_vbase + EMAC_MAC_MIND_REG) & 0x01){
 		if(time_after(jiffies, timeout)){
-			printk(KERN_WARNING "Read the EMAC_MAC_MCMD_REG is timeout!\n");
+			printk(KERN_WARNING "Write the EMAC_MAC_MWTD_REG is timeout!\n");
 			break;
 		}
 	}
 
-	spin_lock_irqsave(&db->lock,flags);
-	/* push down the phy io line */
-	writel(0x0, db->emac_vbase + EMAC_MAC_MCMD_REG);
-	/* and write data */
-	writel(value, db->emac_vbase + EMAC_MAC_MWTD_REG);
 	spin_unlock_irqrestore(&db->lock, flags);
 
 	mutex_unlock(&db->addr_lock);
@@ -1445,14 +1606,20 @@ static void wemac_phy_write(struct net_device *dev,
 
 static void wemac_shutdown(struct net_device *dev)
 {
-	unsigned long timeout;
+	//unsigned long timeout;
 	unsigned int reg_val;
 	wemac_board_info_t *db = netdev_priv(dev);
 
 #ifdef PHY_POWER
-	if(db->mos_pin_handler){
-		db->mos_gpio->data = 0;
-		gpio_set_one_pin_status(db->mos_pin_handler, db->mos_gpio, "emac_power", 1);
+	if(db->mos_gpio){
+		if(db->mos_gpio->port == 0xffff){//AXP
+			set_axp_power(db->mos_pin_handler,db->mos_gpio, 0);
+		}else{//ic
+			if(db->mos_pin_handler){
+				db->mos_gpio->data = 0;
+				gpio_set_one_pin_status(db->mos_pin_handler, db->mos_gpio, "emac_power", 1);
+			}
+		}
 	}
 #endif
 
@@ -1477,20 +1644,22 @@ static void wemac_shutdown(struct net_device *dev)
 
 	wemac_phy_write(dev, db->mii.phy_id, MII_BMCR, BMCR_RESET);
 
+#if 0
 	/* time out is 100ms */
 	timeout = jiffies + HZ/10;
+	printk("DEBUG==============\n");
 	while(wemac_phy_read(dev, db->mii.phy_id, MII_BMCR) & BMCR_RESET){
+		printk("DEBUG+++++++++++++++\n");
 		if(time_after(jiffies, timeout)){
 			printk(KERN_WARNING "Reset the phy is timeout!!\n");
 			break;
 		}
 	}
+#endif
 
-	do{
-		reg_val = wemac_phy_read(dev, db->mii.phy_id, MII_BMCR);
-		/* PHY POWER DOWN */
-		wemac_phy_write(dev, db->mii.phy_id, MII_BMCR, BMCR_PDOWN | reg_val);	
-	}while(!(wemac_phy_read(dev, db->mii.phy_id, MII_BMCR) & BMCR_PDOWN));
+	reg_val = wemac_phy_read(dev, db->mii.phy_id, MII_BMCR);
+	/* PHY POWER DOWN */
+	wemac_phy_write(dev, db->mii.phy_id, MII_BMCR, BMCR_PDOWN | reg_val);
 
 	phy_reg_dump(db);
 	emac_reg_dump(db);
@@ -1556,7 +1725,13 @@ static int __devinit wemac_probe(struct platform_device *pdev)
 	struct wemac_plat_data *pdata = pdev->dev.platform_data;
 	struct wemac_board_info *db;	/* Point a board information structure */
 	struct net_device *ndev;
-	struct resource *iomem_emac, *iomem_gpio, *iomem_sram, *iomem_ccmu;
+	struct resource *iomem_emac, *iomem_sram;
+#ifndef SYSCONFIG_GPIO
+	struct resource *iomem_gpio;
+#endif
+#ifndef SYSCONFIG_CCMU
+	struct resource *iomem_ccmu;
+#endif
 	int ret = 0;
 	int iosize;
 
@@ -1678,7 +1853,11 @@ static int __devinit wemac_probe(struct platform_device *pdev)
 			printk(KERN_ERR "can't get information emac_power gpio\n");
 			kfree(db->mos_gpio);
 		}else{
-			db->mos_pin_handler = gpio_request(db->mos_gpio, 1);
+			if(db->mos_gpio->port == 0xffff){//AXP gpio
+				db->mos_pin_handler = alloc_axp_pin(db->mos_gpio);
+			}else{//ic gpio
+				db->mos_pin_handler = gpio_request(db->mos_gpio, 1);
+			}
 			if(0 == db->mos_pin_handler){
 				printk(KERN_ERR "can't request gpio_port %d, port_num %d\n",
 						db->mos_gpio->port, db->mos_gpio->port_num);
@@ -1956,21 +2135,17 @@ static struct platform_driver wemac_driver = {
 	.resume  = wemac_drv_resume,
 };
 
+#ifndef MODULE
 static int __init set_mac_addr(char *str)
 {
 	char* p = str;
 
 	memcpy(mac_str, p, 18);
-	
-#if 0
-	int i;
-	for(i=0;i<6;i++,p++)
-		mac_addr[i] = simple_strtoul(p, &p, 16);
-#endif
 
 	return 0;
 }
 __setup("mac_addr=", set_mac_addr);
+#endif
 
 static int __init wemac_init(void)
 {
