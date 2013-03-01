@@ -2291,6 +2291,13 @@ CONFIG_SENSORS_LIS3DH_ACC=m
 CONFIG_SENSORS_LIS3DE_ACC=m
 
 #
+# MediaTek Connectivity Combo Chip Config
+#
+# CONFIG_MTK_COMBO is not set
+# CONFIG_MTK_COMBO_CHIP_MT6620 is not set
+# CONFIG_MTK_GPS is not set
+
+#
 # gpu
 #
 # CONFIG_GATOR_PERF is not set

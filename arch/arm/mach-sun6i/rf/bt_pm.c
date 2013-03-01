@@ -43,6 +43,10 @@ static int rfkill_set_power(void *data, bool blocked)
                 wifi_pm_gpio_ctrl("rtk_rtl8723as_bt_dis", 0);
             }
             break;
+
+        case 7: /* mtk6620 */
+            RF_MSG("[init] just record bt module select %d !!\n",mod_sel);
+            break;
         default:
             RF_MSG("no bt module matched !!\n");
     }
