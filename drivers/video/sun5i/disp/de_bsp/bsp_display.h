@@ -99,9 +99,14 @@ typedef struct
 	__s32 (*hdmi_mode_support)(__disp_tv_mode_t mode);
 	__s32 (*hdmi_get_HPD_status)(void);
 	__s32 (*hdmi_set_pll)(__u32 pll, __u32 clk);
+    __s32 (*hdmi_dvi_enable)(__u32 mode);
+    __s32 (*hdmi_dvi_support)(void);
+    __s32 (*hmdi_get_input_csc)(void);
+    __s32 (*hdmi_suspend)(void);
+    __s32 (*hdmi_resume)(void);
 	__s32 (*disp_int_process)(__u32 sel);
-        __s32 (*hdmi_suspend)(void);
-        __s32 (*hdmi_resume)(void);
+    __s32 (*vsync_event)(__u32 sel);
+	__u32 hdmi_cts_compatibility;//0:force hdmi; 1:force dvi; 2:auto
 }__disp_bsp_init_para;
 
 
@@ -144,6 +149,7 @@ extern __s32 BSP_disp_store_scaler_reg(__u32 sel, __u32 addr);
 extern __s32 BSP_disp_restore_scaler_reg(__u32 sel, __u32 addr);
 extern __s32 BSP_disp_restore_lcdc_reg(__u32 sel);
 extern __s32 BSP_disp_restore_tvec_reg(__u32 sel);
+extern __s32 BSP_disp_vsync_event_enable(__u32 sel, __bool enable);
 
 extern __s32 BSP_disp_layer_request(__u32 sel, __disp_layer_work_mode_t mode);
 extern __s32 BSP_disp_layer_release(__u32 sel, __u32 hid);
@@ -251,6 +257,10 @@ extern __s32 BSP_disp_hdmi_check_support_mode(__u32 sel, __u8  mode);
 extern __s32 BSP_disp_hdmi_get_hpd_status(__u32 sel);
 extern __s32 BSP_disp_hdmi_set_src(__u32 sel, __disp_lcdc_src_t src);
 extern __s32 BSP_disp_set_hdmi_func(__disp_hdmi_func * func);
+extern __s32 BSP_disp_set_hdmi_hpd(__u32 hpd);
+extern __s32 BSP_disp_hdmi_dvi_enable(__u32 sel, __u32 enable);
+extern __s32 BSP_disp_hdmi_dvi_support(__u32 sel);
+extern __s32 BSP_dsip_hdmi_get_input_csc(__u32 sel);
 extern __s32 BSP_disp_hdmi_suspend(void);
 extern __s32 BSP_disp_hdmi_resume(void);
 

@@ -574,7 +574,7 @@ __s32 Scaler_Set_Output_Size(__u32 sel, __disp_rectsz_t *size)
 	in_scan.field = FALSE;
 	in_scan.bottom = FALSE;
 
-	out_scan.field = (gdisp.screen[screen_index].iep_status == DE_FLICKER_USED)?FALSE: gdisp.screen[screen_index].b_out_interlace;
+	out_scan.field = (gdisp.screen[screen_index].iep_status & DE_FLICKER_USED)?FALSE: gdisp.screen[screen_index].b_out_interlace;
     
 	DE_SCAL_Set_Scaling_Factor(sel, &in_scan, &in_size, &in_type, &out_scan, &out_size, &out_type);
 	if(scaler->enhance_en == TRUE)
@@ -637,7 +637,7 @@ __s32 Scaler_Set_SclRegn(__u32 sel, __disp_rect_t *scl_rect)
 	in_scan.field = FALSE;
 	in_scan.bottom = FALSE;
 
-	out_scan.field = (gdisp.screen[screen_index].iep_status == DE_FLICKER_USED)?FALSE: gdisp.screen[screen_index].b_out_interlace;
+	out_scan.field = (gdisp.screen[screen_index].iep_status & DE_FLICKER_USED)?FALSE: gdisp.screen[screen_index].b_out_interlace;
 
 	if(scaler->in_fb.cs_mode > DISP_VXYCC)
 	{
@@ -879,7 +879,7 @@ __s32 BSP_disp_scaler_set_smooth(__u32 sel, __disp_video_smooth_t  mode)
 	in_scan.field = FALSE;
 	in_scan.bottom = FALSE;
 
-	out_scan.field = (gdisp.screen[screen_index].iep_status == DE_FLICKER_USED)?FALSE: gdisp.screen[screen_index].b_out_interlace;
+	out_scan.field = (gdisp.screen[screen_index].iep_status & DE_FLICKER_USED)?FALSE: gdisp.screen[screen_index].b_out_interlace;
 
 	gdisp.scaler[sel].coef_change = 1;
     scaler->b_reg_change = TRUE;

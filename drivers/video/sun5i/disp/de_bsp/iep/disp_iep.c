@@ -468,7 +468,7 @@ __s32 Disp_de_flicker_enable(__u32 sel, __u32 en)
 				        
 					DE_BE_Set_Outitl_enable(sel, TRUE);	//must do in sun5i
 					
-					gdisp.screen[sel].iep_status &= DE_FLICKER_NEED_CLOSED;
+					gdisp.screen[sel].iep_status |= DE_FLICKER_NEED_CLOSED;
 			
 					BSP_disp_cfg_finish(sel);
 				}
@@ -564,6 +564,8 @@ __s32 Disp_de_flicker_init(__u32 sel)
     
 	if(sel == 0)
 	{
+		iep_clk_open(sel);
+		
 		DE_IEP_Set_Mode(sel, 1);
 		DE_IEP_Set_Display_Size(sel, scn_width, scn_height);
 		DE_IEP_Set_Csc_Coeff(sel, 1);

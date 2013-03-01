@@ -132,7 +132,7 @@ static __inline __s32 Hal_Set_Frame(__u32 sel, __u32 tcon_index, __u32 id)
     	in_scan.field = g_video[sel][id].fetch_field;
     	in_scan.bottom = g_video[sel][id].fetch_bot;
 
-    	out_scan.field = (gdisp.screen[sel].iep_status == DE_FLICKER_USED)?0: gdisp.screen[sel].b_out_interlace;
+    	out_scan.field = (gdisp.screen[sel].iep_status & DE_FLICKER_USED)?0: gdisp.screen[sel].b_out_interlace;
         
     	if(scaler->out_fb.cs_mode > DISP_VXYCC)
     	{

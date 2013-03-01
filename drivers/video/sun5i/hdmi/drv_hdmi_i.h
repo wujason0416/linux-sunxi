@@ -30,12 +30,14 @@
 #include <linux/drv_display.h>
 #include <linux/drv_hdmi.h>
 
+extern __u32 hdmi_print;
+extern __u32 rgb_only;
 #if 1
 #define OSAL_PRINTF(msg...) {printk(KERN_WARNING "[HDMI] ");printk(msg);}
-#define __inf(msg...)
-#define __msg(msg...)
-#define __wrn(msg...)       {printk(KERN_WARNING "[HDMI WRN] file:%s,line:%d:    ",__FILE__,__LINE__);printk(msg);}
-#define __here__
+#define __inf(msg...)       do{if(hdmi_print){printk(KERN_WARNING "[HDMI] ");printk(msg);}}while(0)
+#define __msg(msg...)       do{if(hdmi_print){printk(KERN_WARNING "[HDMI] file:%s,line:%d:",__FILE__,__LINE__);printk(msg);}}while(0)
+#define __wrn(msg...)       do{printk(KERN_WARNING "[HDMI WRN] file:%s,line:%d:    ",__FILE__,__LINE__);printk(msg);}while(0)
+#define __here__            do{if(hdmi_print){printk(KERN_WARNING "[HDMI] file:%s,line:%d\n",__FILE__,__LINE__);}}while(0)
 #else
 #define OSAL_PRINTF(msg...) {printk(KERN_WARNING "[HDMI] ");printk(msg);}
 #define __inf(msg...)       {printk(KERN_WARNING "[HDMI] ");printk(msg);}

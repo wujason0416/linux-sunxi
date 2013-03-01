@@ -418,7 +418,7 @@ __s32 DE_SCAL_Set_Scaling_Factor(__u8 sel, __scal_scan_mod_t *in_scan, __scal_sr
     __s32 in_w0, in_h0, out_w0, out_h0;
     __s32 ch0_hstep, ch0_vstep ;
 	__s8 w_shift, h_shift;
-    
+
     in_w0 = in_size->scal_width;
     in_h0 = in_size->scal_height;
 

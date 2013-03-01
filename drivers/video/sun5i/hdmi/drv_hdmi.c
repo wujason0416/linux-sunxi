@@ -211,6 +211,23 @@ __s32 Hdmi_set_pll(__u32 pll, __u32 clk)
     return 0;
 }
 
+__s32 Hdmi_dvi_enable(__u32 mode)
+{
+	return Hdmi_hal_cts_enable(mode);//Hdmi_hal_dvi_enable(mode);
+}
+
+__s32 Hdmi_dvi_support(void)
+{
+    return Hdmi_hal_dvi_support();
+}
+
+__s32 Hdmi_get_input_csc(void)
+{
+    return Hmdi_hal_get_input_csc();
+}
+
+
+
 int Hdmi_run_thread(void *parg)
 {
 	while (1)
@@ -234,6 +251,57 @@ int Hdmi_run_thread(void *parg)
 			hdmi_delay_ms(200);   
 		}
 	}
+
+	return 0;
+}
+
+__s32 Hdmi_suspend(void)
+{
+    if(HDMI_task)
+	{
+		kthread_stop(HDMI_task);
+		HDMI_task = 0;
+	}
+    Hdmi_hal_suspend();
+
+    return 0;
+}
+
+__s32 Hdmi_resume(void)
+{
+    HDMI_task = kthread_create(Hdmi_run_thread, (void*)0, "hdmi proc");
+	if(IS_ERR(HDMI_task))
+	{
+	    __s32 err = 0;
+	    
+		__wrn("Unable to start kernel thread %s.\n","hdmi proc");
+		err = PTR_ERR(HDMI_task);
+		HDMI_task = NULL;
+		return err;
+	}
+	wake_up_process(HDMI_task);
+    Hdmi_hal_resume();
+
+    return 0;
+}
+
+extern __s32 disp_set_hdmi_hpd(__u32 hpd);
+
+void hdmi_report_hpd_work(struct work_struct *work)
+{
+	if(Hdmi_get_HPD_status())
+    {
+        disp_set_hdmi_hpd(1);
+    }
+    else
+    {
+        disp_set_hdmi_hpd(0);
+    }
+}
+
+__s32 Hdmi_hpd_event()
+{
+    schedule_work(&ghdmi.hpd_work);
 
 	return 0;
 }
@@ -274,9 +342,14 @@ __s32 Hdmi_init(void)
 	disp_func.hdmi_mode_support = Hdmi_mode_support;
 	disp_func.hdmi_get_HPD_status = Hdmi_get_HPD_status;
 	disp_func.hdmi_set_pll = Hdmi_set_pll;
-        disp_func.hdmi_suspend = Hdmi_suspend;
-        disp_func.hdmi_resume = Hdmi_resume;
+	disp_func.hdmi_dvi_enable= Hdmi_dvi_enable;
+	disp_func.hdmi_dvi_support= Hdmi_dvi_support;
+    disp_func.hdmi_get_input_csc = Hdmi_get_input_csc;
+    disp_func.hdmi_suspend = Hdmi_suspend;
+    disp_func.hdmi_resume = Hdmi_resume;
 	disp_set_hdmi_func(&disp_func);
+
+    INIT_WORK(&ghdmi.hpd_work, hdmi_report_hpd_work);
 
 	return 0;
 }
@@ -299,16 +372,4 @@ __s32 Hdmi_exit(void)
 	return 0;
 }
 
-__s32 Hdmi_suspend(void)
-{
-    Hdmi_exit();
 
-    return 0;
-}
-
-__s32 Hdmi_resume(void)
-{
-    Hdmi_init();
-
-    return  0; 
-}

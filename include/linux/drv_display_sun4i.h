@@ -264,6 +264,15 @@ typedef enum
     DISP_EXIT_MODE_CLEAN_PARTLY = 1,//only clean interrupt temply
 }__disp_exit_mode_t;
 
+typedef enum
+{    
+    DISP_OUT_CSC_TYPE_LCD        = 0,    
+    DISP_OUT_CSC_TYPE_TV         = 1,    
+    DISP_OUT_CSC_TYPE_HDMI_YUV   = 2,    
+    DISP_OUT_CSC_TYPE_VGA        = 3,    
+    DISP_OUT_CSC_TYPE_HDMI_RGB   = 4,    
+}__disp_out_csc_type_t;
+
 
 typedef enum//only for debug!!!
 {
@@ -375,7 +384,10 @@ typedef struct
     __s32 (*hdmi_mode_support)(__disp_tv_mode_t mode);
     __s32 (*hdmi_get_HPD_status)(void);
     __s32 (*hdmi_set_pll)(__u32 pll, __u32 clk);
-    __s32 (*hdmi_suspend)(void);
+    __s32 (*hdmi_dvi_enable)(__u32 mode);    
+    __s32 (*hdmi_dvi_support)(void);    
+    __s32 (*hdmi_get_input_csc)(void);     
+    __s32 (*hdmi_suspend)(void);    
     __s32 (*hdmi_resume)(void);
 }__disp_hdmi_func;
 

@@ -199,7 +199,8 @@ __s32 BSP_disp_tv_open(__u32 sel)
         tve_clk_on(sel);
         lcdc_clk_on(sel, 1);
 
-        BSP_disp_set_output_csc(sel, DISP_OUTPUT_TYPE_TV,gdisp.screen[sel].iep_status&DRC_USED);
+        gdisp.screen[sel].output_csc_type = DISP_OUT_CSC_TYPE_TV;
+        BSP_disp_set_output_csc(sel, gdisp.screen[sel].output_csc_type,gdisp.screen[sel].iep_status&DRC_USED);
         DE_BE_set_display_size(sel, tv_mode_to_width(tv_mod), tv_mode_to_height(tv_mod));
         DE_BE_Output_Select(sel, sel);
 		DE_BE_Set_Outitl_enable(sel, Disp_get_screen_scan_mode(tv_mod));
@@ -226,8 +227,7 @@ __s32 BSP_disp_tv_open(__u32 sel)
         TCON1_open(sel);
         Disp_TVEC_Open(sel);
 
-        Disp_Switch_Dram_Mode(DISP_OUTPUT_TYPE_TV, tv_mod);  
-        Disp_de_flicker_enable(sel, TRUE);
+        Disp_Switch_Dram_Mode(DISP_OUTPUT_TYPE_TV, tv_mod);
 #ifdef __LINUX_OSAL__
         {
             user_gpio_set_t  gpio_info[1];
@@ -258,6 +258,7 @@ __s32 BSP_disp_tv_open(__u32 sel)
         gdisp.screen[sel].status |= TV_ON;
         gdisp.screen[sel].lcdc_status |= LCDC_TCON1_USED;
         gdisp.screen[sel].output_type = DISP_OUTPUT_TYPE_TV;
+        Disp_de_flicker_enable(sel, TRUE);
 #ifdef __LINUX_OSAL__
         Display_set_fb_timming(sel);
 #endif

@@ -318,6 +318,14 @@ __s32 disp_set_hdmi_func(__disp_hdmi_func * func)
     return 0;
 }
 
+__s32 disp_set_hdmi_hpd(__u32 hpd)
+{
+    BSP_disp_set_hdmi_hpd(hpd);
+
+    return 0;
+}
+
+
 __s32 DRV_DISP_Init(void)
 {
     __disp_bsp_init_para para;
@@ -604,7 +612,7 @@ void backlight_late_resume(struct early_suspend *h)
         }
         else if(suspend_output_type[i] == DISP_OUTPUT_TYPE_HDMI)
         {
-	    BSP_disp_hdmi_set_mode(i, BSP_disp_hdmi_get_mode(i));
+            BSP_disp_hdmi_set_mode(i, BSP_disp_hdmi_get_mode(i));
             BSP_disp_hdmi_open(i);
         }
     }
@@ -1985,6 +1993,7 @@ static void __exit disp_module_exit(void)
 
 EXPORT_SYMBOL(disp_set_hdmi_func);
 EXPORT_SYMBOL(DRV_DISP_Init);
+EXPORT_SYMBOL(disp_set_hdmi_hpd);
 
 
 module_init(disp_module_init);

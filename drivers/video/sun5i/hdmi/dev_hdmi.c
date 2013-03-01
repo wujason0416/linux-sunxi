@@ -27,6 +27,69 @@ struct platform_device hdmi_device =
 	.dev            = {}
 };
 
+static ssize_t hdmi_debug_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	return sprintf(buf, "debug=%s\n", hdmi_print?"on" : "off");
+}
+
+static ssize_t hdmi_debug_store(struct device *dev,
+				struct device_attribute *attr,
+				const char *buf, size_t count)
+{
+	if (count < 1)
+        return -EINVAL;
+
+    if (strnicmp(buf, "on", 2) == 0 || strnicmp(buf, "1", 1) == 0)
+    {
+        hdmi_print = 1;
+	}
+    else if (strnicmp(buf, "off", 3) == 0 || strnicmp(buf, "0", 1) == 0)
+	{
+        hdmi_print = 0;
+    }
+    else
+    {
+        return -EINVAL;
+    }
+
+	return count;
+}
+
+static DEVICE_ATTR(debug, S_IRUGO|S_IWUSR|S_IWGRP,
+		hdmi_debug_show, hdmi_debug_store);
+
+static ssize_t hdmi_rgb_only_show(struct device *dev,
+		struct device_attribute *attr, char *buf)
+{
+	return sprintf(buf, "rgb_only=%s\n", rgb_only?"on" : "off");
+}
+
+static ssize_t hdmi_rgb_only_store(struct device *dev,
+				struct device_attribute *attr,
+				const char *buf, size_t count)
+{
+	if (count < 1)
+        return -EINVAL;
+
+    if (strnicmp(buf, "on", 2) == 0 || strnicmp(buf, "1", 1) == 0)
+    {
+        rgb_only = 1;
+	}
+    else if (strnicmp(buf, "off", 3) == 0 || strnicmp(buf, "0", 1) == 0)
+	{
+        rgb_only = 0;
+    }
+    else
+    {
+        return -EINVAL;
+    }
+
+	return count;
+}
+
+static DEVICE_ATTR(rgb_only, S_IRUGO|S_IWUSR|S_IWGRP,
+		hdmi_rgb_only_show, hdmi_rgb_only_store);
 
 static int __init hdmi_probe(struct platform_device *pdev)
 {
@@ -117,6 +180,17 @@ static const struct file_operations hdmi_fops =
 	.mmap       = hdmi_mmap,
 };
 
+static struct attribute *hdmi_attributes[] = {
+    &dev_attr_debug.attr,
+    &dev_attr_rgb_only.attr,
+    NULL
+};
+
+static struct attribute_group hdmi_attribute_group = {
+	.name = "attr",
+	.attrs = hdmi_attributes
+};
+
 int __init hdmi_module_init(void)
 {
 	int ret = 0, err;
@@ -140,6 +214,10 @@ int __init hdmi_module_init(void)
         __wrn("class_create fail\n");
         return -1;
     }
+
+    ghdmi.dev = device_create(hdmi_class, NULL, devid, NULL, "hdmi");
+    ret = sysfs_create_group(&ghdmi.dev->kobj,
+                             &hdmi_attribute_group);
     
 	ret |= hdmi_i2c_add_driver();
 
