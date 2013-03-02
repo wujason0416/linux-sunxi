@@ -71,6 +71,7 @@ int main(struct aw_pm_info *arg)
 {
 	char    *tmpPtr = (char *)&__bss_start;
 
+	serial_init();
 	if(!arg){
 		/* standby parameter is invalid */
 		return -1;
