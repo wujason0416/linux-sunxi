@@ -56,14 +56,8 @@ static inline void arch_reset(char mode, const char *cmd)
 #endif
 }
 
-enum {
-	SUNXI_CHIP_ID_A10 = 1623,
-	SUNXI_CHIP_ID_A13 = 1625,
-};
-
 /* BROM access only possible after iomap()s */
 u32 sunxi_chip_id(void);
-int sunxi_pr_chip_id(void);
 int sunxi_pr_brom(void);
 
 enum sw_ic_ver {
