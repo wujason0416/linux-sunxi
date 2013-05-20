@@ -68,6 +68,8 @@ u32 sunxi_brom_chip_id(void);
 int sunxi_pr_chip_id(void);
 int sunxi_pr_brom(void);
 
+u32 sunxi_sramc_chip_id(void);
+
 enum sw_ic_ver {
 	SUNXI_VER_UNKNOWN = 0xffffffff,
 
