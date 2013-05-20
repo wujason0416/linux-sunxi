@@ -57,7 +57,7 @@ static inline void arch_reset(char mode, const char *cmd)
 }
 
 /* BROM access only possible after iomap()s */
-u32 sunxi_chip_id(void);
+u32 sunxi_brom_chip_id(void);
 int sunxi_pr_chip_id(void);
 int sunxi_pr_brom(void);
 
