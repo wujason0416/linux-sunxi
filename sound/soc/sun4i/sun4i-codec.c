@@ -23,7 +23,6 @@
 #ifdef CONFIG_PM
 #include <linux/pm.h>
 #endif
-#include <asm/mach-types.h>
 #include <sound/core.h>
 #include <sound/pcm.h>
 #include <sound/pcm_params.h>
@@ -338,7 +337,7 @@ static  int codec_init(void)
 	codec_wr_control(SUN4I_ADC_ACTL, 0x1, PA_ENABLE, 0x1);
 	codec_wr_control(SUN4I_DAC_FIFOC, 0x3, DRA_LEVEL,0x3);
 	//set volume
-	if (machine_is_sun4i()) {
+	if (sunxi_is_sun4i()) {
 		int rc;
 		int device_lr_change = 0;
 		if (codec_chip_ver == SUNXI_VER_A10A)
@@ -535,7 +534,7 @@ int __devinit snd_chip_codec_mixer_new(struct snd_card *card)
 				return err;
 			}
 		}
-	} else if (machine_is_sun5i() ||
+	} else if (sunxi_is_sun5i() ||
 		   codec_chip_ver == SUNXI_VER_A10B ||
 		   codec_chip_ver == SUNXI_VER_A10C) {
 		for (idx = 0; idx < ARRAY_SIZE(codec_snd_controls_b_c); idx++) {

@@ -18,16 +18,6 @@ config SUNXI_IGNORE_ATAG_MEM
 	depends on ARCH_SUN4I || ARCH_SUN5I
 	default n
 
-config MACH_SUN4I
-	bool
-	depends on ARCH_SUN4I
-	default y
-
-config MACH_SUN5I
-	bool
-	depends on ARCH_SUN5I
-	default y
-
 config SUNXI_SCALING_MIN
 	int "Minimum clockspeed for the cpu governor"
 	default "60"
