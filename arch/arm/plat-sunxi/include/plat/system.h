@@ -62,6 +62,7 @@ enum sunxi_chip_id {
 	SUNXI_MACH_SUN4I = 1623,
 	SUNXI_MACH_SUN5I = 1625,
 	SUNXI_MACH_SUN6I = 1633,
+	SUNXI_MACH_SUN7I = 1651,
 };
 
 enum {
@@ -69,6 +70,7 @@ enum {
 	SUNXI_BIT_SUN4I = BIT(30),
 	SUNXI_BIT_SUN5I = BIT(29),
 	SUNXI_BIT_SUN6I = BIT(28),
+	SUNXI_BIT_SUN7I = BIT(27),
 
 	/* SUNXI_BIT_UNKNOWN can't OR anything known */
 	SUNXI_BIT_UNKNOWN = BIT(20),
@@ -83,6 +85,9 @@ enum {
 
 	/* sun6i */
 	SUNXI_SOC_A31  = SUNXI_BIT_SUN6I | BIT(4),
+
+	/* sun7i */
+	SUNXI_SOC_A20  = SUNXI_BIT_SUN7I | BIT(4),
 
 	SUNXI_REV_UNKNOWN = 0,
 	SUNXI_REV_A,
@@ -120,6 +125,9 @@ enum sw_ic_ver {
 
 	/* sun6i */
 	SUNXI_VER_A31 = SUNXI_SOC_A31,
+
+	/* sun7i */
+	SUNXI_VER_A20 = SUNXI_SOC_A20,
 };
 
 enum sw_ic_ver sw_get_ic_ver(void) __pure;
@@ -131,31 +139,37 @@ enum sw_ic_ver sw_get_ic_ver(void) __pure;
 #define sunxi_is_sun4i()	(sunxi_chip_id() == SUNXI_MACH_SUN4I)
 #define sunxi_is_sun5i()	(sunxi_chip_id() == SUNXI_MACH_SUN5I)
 #define sunxi_is_sun6i()	(sunxi_chip_id() == SUNXI_MACH_SUN6I)
+#define sunxi_is_sun7i()	(sunxi_chip_id() == SUNXI_MACH_SUN7I)
 #define sunxi_is_a10()		_sunxi_is(SUNXI_SOC_A10)
 #define sunxi_is_a13()		_sunxi_is(SUNXI_SOC_A13)
 #define sunxi_is_a12()		_sunxi_is(SUNXI_SOC_A12)
 #define sunxi_is_a10s()		_sunxi_is(SUNXI_SOC_A10S)
 #define sunxi_is_a31()		_sunxi_is(SUNXI_SOC_A31)
+#define sunxi_is_a20()		_sunxi_is(SUNXI_SOC_A20)
 
 #elif defined(CONFIG_ARCH_SUN4I)
 #define sunxi_is_sun4i()	(sunxi_chip_id() == SUNXI_MACH_SUN4I)
 #define sunxi_is_sun5i()	(0)
 #define sunxi_is_sun6i()	(0)
+#define sunxi_is_sun7i()	(0)
 #define sunxi_is_a10()		_sunxi_is(SUNXI_SOC_A10)
 #define sunxi_is_a13()		(0)
 #define sunxi_is_a12()		(0)
 #define sunxi_is_a10s()		(0)
 #define sunxi_is_a31()		(0)
+#define sunxi_is_a20()		(0)
 
 #elif defined(CONFIG_ARCH_SUN5I)
 #define sunxi_is_sun4i()	(0)
 #define sunxi_is_sun5i()	(sunxi_chip_id() == SUNXI_MACH_SUN5I)
 #define sunxi_is_sun6i()	(0)
+#define sunxi_is_sun7i()	(0)
 #define sunxi_is_a10()		(0)
 #define sunxi_is_a13()		_sunxi_is(SUNXI_SOC_A13)
 #define sunxi_is_a12()		_sunxi_is(SUNXI_SOC_A12)
 #define sunxi_is_a10s()		_sunxi_is(SUNXI_SOC_A10S)
 #define sunxi_is_a31()		(0)
+#define sunxi_is_a20()		(0)
 
 #endif
 
